@@ -4,13 +4,17 @@
  * and open the template in the editor.
  */
 
-package finalproject;
+package main;
+
+import backendproject.ThreadCommand;
+import frontendproject.WebServer;
+import nanohttpd.ServerRunner;
 
 /**
  *
  * @author kyle
  */
-public class FinalProject
+public class Main
 {
 
     /**
@@ -18,7 +22,9 @@ public class FinalProject
      */
     public static void main(String[] args)
     {
-        // TODO code application logic here
+        ThreadCommand threadCommand = new ThreadCommand();
+        threadCommand.start();
+        ServerRunner.run(WebServer.class);
     }
     
 }
