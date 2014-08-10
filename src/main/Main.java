@@ -6,8 +6,8 @@
 
 package main;
 
-import backendproject.ThreadCommand;
-import frontendproject.WebServer;
+import threads.ThreadCommand;
+import server.WebServer;
 import nanohttpd.ServerRunner;
 
 /**
@@ -22,8 +22,8 @@ public class Main
      */
     public static void main(String[] args)
     {
-        ThreadCommand threadCommand = new ThreadCommand();
-        threadCommand.start();
+//        ThreadCommand threadCommand = new ThreadCommand();
+//        threadCommand.start();
         ServerRunner.run(WebServer.class);
     }
     
