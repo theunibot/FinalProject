@@ -19,6 +19,9 @@ public class CommandQueueWrapper
 
     private static CommandQueueWrapper cw = null;
 
+    private CommandQueue[] queues = new CommandQueue[3];
+    private StatusQueue statusQueue = new StatusQueue();
+
     public static CommandQueueWrapper getInstance()
     {
         if (cw == null)
@@ -35,9 +38,6 @@ public class CommandQueueWrapper
             queues[i] = new CommandQueue();
         }
     }
-
-    private CommandQueue[] queues = new CommandQueue[3];
-    private StatusQueue statusQueue = new StatusQueue();
 
     /**
      * Clear the command queue of the given num
@@ -82,7 +82,7 @@ public class CommandQueueWrapper
             statusQueue.add(new StatusObject(id, CommandQueueStatus.PENDING));
         }
     }
-    
+
     public void add(int queueIndex, long id, EnumShelfUnit desktop, int desktopShelf, int layer, EffectType e, boolean checkable)
     {
         queues[queueIndex].add(id, desktop, desktopShelf, layer, e);//(id, desktop, desktopShelf, content);//add(id, desktop, e);
@@ -91,7 +91,7 @@ public class CommandQueueWrapper
             statusQueue.add(new StatusObject(id, CommandQueueStatus.PENDING));
         }
     }
-    
+
     public void add(int queueIndex, long id, EnumShelfUnit desktop, String content, boolean checkable)
     {
         queues[queueIndex].add(id, desktop, content);//add(id, desktop, e);
@@ -110,7 +110,7 @@ public class CommandQueueWrapper
     {
         return queues[index].getFirst();
     }
-    
+
     public CommandQueueStatus getStatus(String id)
     {
         long l = Long.parseLong(id);

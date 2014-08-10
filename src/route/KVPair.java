@@ -6,20 +6,20 @@
 
 package route;
 
-import enums.EnumRouteInfo;
-
 /**
  *
  * @author kyle
  */
-public class ObjectRoute
+public class KVPair
 {
-    String name;
-    EnumRouteInfo routeInfo;
 
-    public ObjectRoute(String name, EnumRouteInfo routeInfo)
+    public String key;
+    public String value;
+
+    public KVPair(String key, String value)
     {
-        this.name = name;
-        this.routeInfo = routeInfo;
-    }      
+        this.key = key;
+        this.value = value;
+    }
+
 }

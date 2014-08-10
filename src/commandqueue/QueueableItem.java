@@ -54,4 +54,11 @@ public class QueueableItem
         this.effect = effect;
     }
 
+    public long getId()
+    {
+        return id;
+    }
+    
+    
+
 }

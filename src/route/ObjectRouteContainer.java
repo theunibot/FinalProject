@@ -15,10 +15,10 @@ import java.util.ArrayList;
 public class ObjectRouteContainer
 {
 
-    ArrayList<ObjectRoute> d1l = new ArrayList<>();
-    ArrayList<ObjectRoute> d1r = new ArrayList<>();
-    ArrayList<ObjectRoute> d2l = new ArrayList<>();
-    ArrayList<ObjectRoute> d2r = new ArrayList<>();
+    ArrayList<String> d1l = new ArrayList<>();
+    ArrayList<String> d1r = new ArrayList<>();
+    ArrayList<String> d2l = new ArrayList<>();
+    ArrayList<String> d2r = new ArrayList<>();
 
     private static ObjectRouteContainer orc = null;
 
@@ -36,7 +36,7 @@ public class ObjectRouteContainer
      * @param r route to select
      * @param o RouteObject to add 
      */
-    public void add(EnumRouteInfo r, ObjectRoute o)
+    public void add(EnumRouteInfo r, String o)
     {
         if (r == EnumRouteInfo.D1L)
         {
@@ -61,7 +61,7 @@ public class ObjectRouteContainer
      * @param r which route section to return
      * @return ArrayList of ObjectRoute
      */
-    public ArrayList<ObjectRoute> get(EnumRouteInfo r)
+    public ArrayList<String> get(EnumRouteInfo r)
     {
         if (r == EnumRouteInfo.D1L)
         {

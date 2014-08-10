@@ -1,7 +1,7 @@
-package nanohttpd;
+package server.nanohttpd;
 
-import nanohttpd.NanoHTTPD.IHTTPSession;
-import nanohttpd.NanoHTTPD.Response;
+import server.nanohttpd.NanoHTTPD.IHTTPSession;
+import server.nanohttpd.NanoHTTPD.Response;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;

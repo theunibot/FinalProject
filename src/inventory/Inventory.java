@@ -24,7 +24,7 @@ public class Inventory
     List<Shelf> d1 = Collections.synchronizedList(new ArrayList<Shelf>());
     List<Shelf> d2 = Collections.synchronizedList(new ArrayList<Shelf>());
     List<Shelf> cachePoint = Collections.synchronizedList(new ArrayList<Shelf>());
-    List<Shelf> sign = Collections.synchronizedList(new ArrayList<Shelf>());
+//    List<Shelf> sign = Collections.synchronizedList(new ArrayList<Shelf>());
 
     /**
      * Returns an instance Inventory
@@ -108,11 +108,7 @@ public class Inventory
         else if (su == EnumShelfUnit.CP)
         {
             return cachePoint;
-        }
-        else if (su == EnumShelfUnit.S)
-        {
-            return sign;
-        }
+        }        
         return null;
     }
 

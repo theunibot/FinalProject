@@ -25,10 +25,13 @@ public class StatusQueue
     public void add(StatusObject so)
     {
         statusQueue.add(so);
-        System.out.println("Status Queue so far:");
-        for (StatusObject so2 : statusQueue)
+        if (main.Main.DEBUG)
         {
-            System.out.println("ID: " + so2.getId() + " Status: " + so2.getStatus());
+            System.out.println("Status Queue so far:");
+            for (StatusObject so2 : statusQueue)
+            {
+                System.out.println("ID: " + so2.getId() + " Status: " + so2.getStatus());
+            }
         }
     }
 
@@ -50,7 +53,7 @@ public class StatusQueue
         }
         return CommandQueueStatus.UNKNOWN;
     }
-    
+
     public void setStatus(long id, CommandQueueStatus status)
     {
         for (int i = 0; i < statusQueue.size(); i++)
@@ -60,7 +63,7 @@ public class StatusQueue
             {
                 so.setStatus(status);
             }
-        }        
+        }
     }
 
 }

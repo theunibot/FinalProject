@@ -83,13 +83,7 @@ public class ArmOperations
             armOprations = new ArmOperations();
         }
         return armOprations;
-    }
-
-    public boolean runCommand()
-    {
-
-        return true;
-    }
+    }    
 }
 /*
 System.out.println("running");

@@ -1,4 +1,4 @@
-package nanohttpd;
+package server.nanohttpd;
 
 import java.io.*;
 import java.net.InetAddress;

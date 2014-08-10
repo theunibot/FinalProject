@@ -3,12 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package main;
 
 import threads.ThreadCommand;
 import server.WebServer;
-import nanohttpd.ServerRunner;
+import server.nanohttpd.ServerRunner;
 
 /**
  *
@@ -16,6 +15,8 @@ import nanohttpd.ServerRunner;
  */
 public class Main
 {
+
+    public static final boolean DEBUG = true;
 
     /**
      * @param args the command line arguments
@@ -26,5 +27,5 @@ public class Main
 //        threadCommand.start();
         ServerRunner.run(WebServer.class);
     }
-    
+
 }

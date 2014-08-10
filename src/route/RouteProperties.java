@@ -9,18 +9,25 @@ package route;
  *
  * @author kyle
  */
-public class RouteState
+public class RouteProperties
 {
 
     private String routeName;
     private RouteType routeType = null;
     private RouteSide routeSide = null;
 
-    public RouteState(String routeName)
+    public RouteProperties(String routeName)
     {
         this.routeName = routeName;
     }
 
+    public RouteProperties(String routeName, RouteType routeType, RouteSide routeSide)
+    {
+        this.routeName = routeName;
+        this.routeType = routeType;
+        this.routeSide = routeSide;
+    }
+       
     public String getRouteName()
     {
         return routeName;

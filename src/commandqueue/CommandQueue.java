@@ -94,11 +94,17 @@ public class CommandQueue
         }
     }
 
-    public QueueableItem getElement(int id)
+    public QueueableItem getElement(long id)
     {
         synchronized (queue)
         {
-
+            for (QueueableItem q : queue)
+            {
+                if(q.getId() == id)
+                {
+                    return q;
+                }
+            }
         }
         return null;
     }

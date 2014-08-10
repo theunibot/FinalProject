@@ -14,9 +14,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.activation.MimeType;
-import nanohttpd.NanoHTTPD;
-import static nanohttpd.NanoHTTPD.MIME_HTML;
-import static nanohttpd.NanoHTTPD.MIME_PLAINTEXT;
+import server.nanohttpd.NanoHTTPD;
+import static server.nanohttpd.NanoHTTPD.MIME_HTML;
+import static server.nanohttpd.NanoHTTPD.MIME_PLAINTEXT;
 
 /**
  *
@@ -77,7 +77,10 @@ public class WebServer extends NanoHTTPD
             String uri = session.getUri();
 
             //=== PARSE URI===
-            System.out.println("Unparsed: " + method + " '" + uri + "' ");
+            if (main.Main.DEBUG)
+            {
+                System.out.println("Unparsed: " + method + " '" + uri + "' ");
+            }
             if (uri.endsWith("/"))//remove the last slash on a uri
             {
                 uri = uri.substring(0, uri.length() - 1);
@@ -86,7 +89,10 @@ public class WebServer extends NanoHTTPD
             {
                 uri = uri.replaceFirst(API_SUBDIR, "");
             }
-            System.out.println("Parsed:   " + method + " '" + uri + "' ");
+            if (main.Main.DEBUG)
+            {
+                System.out.println("Parsed:   " + method + " '" + uri + "' ");
+            }
             //===END PARSE URI===
 
             if (uri.equals(MAIN[0]) || uri.equals(MAIN[1]))
@@ -140,7 +146,10 @@ public class WebServer extends NanoHTTPD
                 {
                     extension = pieces[pieces.length - 1];
                 }
-                System.out.print("Extension: " + extension + " ");
+                if (main.Main.DEBUG)
+                {
+                    System.out.print("Extension: " + extension + " ");
+                }
 
                 if (extension != null && mimeTypes.get(extension) != null)
                 {

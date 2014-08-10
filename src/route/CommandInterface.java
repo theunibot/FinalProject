@@ -9,7 +9,15 @@ package route;
  *
  * @author kyle
  */
-public enum ObjectRouteType
+public interface CommandInterface
 {
-    DEFINE,CARTESIAN
+
+    
+    public String toString();
+    
+    public boolean isRouteDefine();
+    
+    public CommandType getObjectType();
+    
 }
+

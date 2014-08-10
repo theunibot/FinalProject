@@ -4,10 +4,10 @@
  * and open the template in the editor.
  */
 
-package frontendtests;
+package tests;
 
 import java.util.Map;
-import nanohttpd.NanoHTTPD;
+import server.nanohttpd.NanoHTTPD;
 
 /**
  *

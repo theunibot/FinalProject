@@ -9,13 +9,13 @@ package route;
  *
  * @author kyle
  */
-public class ObjectRouteDefine implements ObjectRouteInterface
+public class CommandDefine implements CommandInterface
 {
 
     private String routeName;
     
 
-    public ObjectRouteDefine(String routeName)
+    public CommandDefine(String routeName)
     {
         this.routeName = routeName.trim();    
     }
@@ -33,9 +33,9 @@ public class ObjectRouteDefine implements ObjectRouteInterface
     }
 
     @Override
-    public ObjectRouteType getObjectType()
+    public CommandType getObjectType()
     {
-        return ObjectRouteType.DEFINE;
+        return CommandType.DEFINE;
     }
 
 }

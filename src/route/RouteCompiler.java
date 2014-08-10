@@ -5,13 +5,13 @@
  */
 package route;
 
-import route.RouteListWrapper;
+import route.Route;
 import robotoperations.ResponseObject;
 import robotoperations.R12Operations;
 import utils.FileUtils;
-import route.ObjectRouteType;
+import route.CommandType;
 import route.ObjectRouteContainer;
-import route.ObjectRouteCartesianCommand;
+import route.CommandCartesian;
 import java.util.ArrayList;
 import utils.Utils;
 
@@ -94,12 +94,12 @@ public class RouteCompiler
             pathToFile = FileUtils.getFilesFolderString() + prefix + ROUTE_FILE_BASENAME + ".txt";
             ArrayList<String> lines = FileUtils.readCommandFileOrGenEmpty(pathToFile, ROUTE_COMPILER_FILE_CONTENTS);
             System.out.println("Read " + lines.size() + " line(s) from route compiler file.");
-            ArrayList<RouteListWrapper> routes = parseLines(lines, prefix);
+            ArrayList<Route> routes = parseLines(lines, prefix);
 
-            for (RouteListWrapper route : routes)
+            for (Route route : routes)
             {
-
-                ArrayList<String> commands = route.getCommands();
+                
+                ArrayList<String> commands = route.getRoboforthCommands();
                 for (String commandString : commands)
                 {
                     System.out.println(commandString);
@@ -126,11 +126,11 @@ public class RouteCompiler
         return true;
     }
 
-    private ArrayList<RouteListWrapper> parseLines(ArrayList<String> lines, String prefix)
+    private ArrayList<Route> parseLines(ArrayList<String> lines, String prefix)
     {
-        RouteState routeState = new RouteState(null);
-        ArrayList<RouteListWrapper> routeObjList = new ArrayList<RouteListWrapper>();
-        RouteListWrapper currentRouteObjectList = null;        //set route type, D1, D2, etc
+        RouteProperties routeState = new RouteProperties(null);
+        ArrayList<Route> routeObjList = new ArrayList<Route>();
+        Route currentRouteObjectList = null;        //set route type, D1, D2, etc
         routeState.setRouteType(getRouteType(prefix));
         int lineCount = 1;//used in error tracking
         for (String line : lines)
@@ -154,7 +154,7 @@ public class RouteCompiler
             {
                 String routeName = prefix + line.replace(ROUTE_PREFIX, "").trim();
                 routeState.setRouteName(routeName);//sets the name of the route for use
-                currentRouteObjectList = new RouteListWrapper(routeName, routeState);
+                currentRouteObjectList = new Route( routeState);
                 routeObjList.add(currentRouteObjectList);
             }
             else if (currentRouteObjectList != null)//not defining a new command, so a cartesian command
@@ -166,9 +166,9 @@ public class RouteCompiler
                     String pitch = "0", yaw = "0", roll = "0";
                     
                     //grab the pitch,yaw,roll from the last cartesian command
-                    if (currentRouteObjectList.getLastObject() != null && currentRouteObjectList.getLastObject().getObjectType() == ObjectRouteType.CARTESIAN)
+                    if (currentRouteObjectList.getFirstObject() != null && currentRouteObjectList.getFirstObject().getObjectType() == CommandType.CARTESIAN)
                     {
-                        ObjectRouteCartesianCommand orcc = (ObjectRouteCartesianCommand)currentRouteObjectList.getLastObject();
+                        CommandCartesian orcc = (CommandCartesian)currentRouteObjectList.getFirstObject();
                         pitch = String.valueOf(orcc.getPitch());
                         yaw = String.valueOf(orcc.getYaw());
                         roll = String.valueOf(orcc.getRoll());
@@ -176,7 +176,7 @@ public class RouteCompiler
                     pieces[0] = Utils.xyInToMmStr(pieces[0]);
                     pieces[1] = Utils.xyInToMmStr(pieces[1]);
                     pieces[2] = Utils.xyInToMmStr(pieces[2]);
-                    currentRouteObjectList.add(new ObjectRouteCartesianCommand(pieces[0], pieces[1], pieces[2], pitch, yaw, roll, routeState.getRouteName(), currentRouteObjectList.size() + 1));
+                    currentRouteObjectList.add(new CommandCartesian(pieces[0], pieces[1], pieces[2], pitch, yaw, roll, routeState.getRouteName(), currentRouteObjectList.size() + 1));
                 }
                 else if (pieces.length == 6)//x,y,z,pitch,yaw,roll
                 {
@@ -208,7 +208,7 @@ public class RouteCompiler
                     pieces[0] = Utils.xyInToMmStr(pieces[0]);
                     pieces[1] = Utils.xyInToMmStr(pieces[1]);
                     pieces[2] = Utils.xyInToMmStr(pieces[2]);
-                    currentRouteObjectList.add(new ObjectRouteCartesianCommand(pieces[0], pieces[1], pieces[2], pitch, yaw, roll, routeState.getRouteName(), currentRouteObjectList.size() + 1));
+                    currentRouteObjectList.add(new CommandCartesian(pieces[0], pieces[1], pieces[2], pitch, yaw, roll, routeState.getRouteName(), currentRouteObjectList.size() + 1));
                 }
                 else//error in format of info
                 {
@@ -246,31 +246,6 @@ public class RouteCompiler
 //
 }
 
-enum RouteType
-{
-
-    D1, D2, S
-}
-
-enum RouteSide
-{
-
-    LEFT, RIGHT
-}
-
-class KVPair
-{
-
-    public String key;
-    public String value;
-
-    public KVPair(String key, String value)
-    {
-        this.key = key;
-        this.value = value;
-    }
-
-}
 //    private RouteInfo getRouteInfo(RouteType type, RouteSide side)
 //    {
 //        if (type == RouteType.D1)
@@ -337,7 +312,7 @@ class KVPair
 //                String[] pieces = line.split(" ");//splits the line to pieces
 //                if (pieces.length == 3)//x,y,z only
 //                {
-//                    commands.add(new ObjectRouteCartesianCommand(pieces[0], pieces[1], pieces[2], "0", "0", "0", currentRoute, currentLine));
+//                    commands.add(new CommandCartesian(pieces[0], pieces[1], pieces[2], "0", "0", "0", currentRoute, currentLine));
 //                }
 //                else if (pieces.length == 6)//x,y,z,pitch,yaw,roll
 //                {
@@ -366,7 +341,7 @@ class KVPair
 //                            roll = worint.value;
 //                        }
 //                    }
-//                    commands.add(new ObjectRouteCartesianCommand(pieces[0], pieces[1], pieces[2], pitch, yaw, roll, currentRoute, currentLine));
+//                    commands.add(new CommandCartesian(pieces[0], pieces[1], pieces[2], pitch, yaw, roll, currentRoute, currentLine));
 //                }
 //                else//error in format of info
 //                {

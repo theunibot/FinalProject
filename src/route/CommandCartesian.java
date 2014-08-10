@@ -9,7 +9,7 @@ package route;
  *
  * @author kyle
  */
-public class ObjectRouteCartesianCommand implements ObjectRouteInterface
+public class CommandCartesian implements CommandInterface
 {
 
     private int x;
@@ -25,7 +25,7 @@ public class ObjectRouteCartesianCommand implements ObjectRouteInterface
     private String routeName;
     private int line;
 
-    public ObjectRouteCartesianCommand(String x, String y, String z, String pitch, String yaw, String roll, String routeName, int line)
+    public CommandCartesian(String x, String y, String z, String pitch, String yaw, String roll, String routeName, int line)
     {
         //turn 300.0 to 3000
         x = x.replace(".", "");
@@ -88,9 +88,9 @@ public class ObjectRouteCartesianCommand implements ObjectRouteInterface
     }
 
     @Override
-    public ObjectRouteType getObjectType()
+    public CommandType getObjectType()
     {
-        return ObjectRouteType.CARTESIAN;
+        return CommandType.CARTESIAN;
     }
 
 }

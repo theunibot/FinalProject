@@ -1,8 +1,8 @@
-package nanohttpd;
+package server.nanohttpd;
 
 import java.util.Map;
 
-import static nanohttpd.NanoHTTPD.Response;
+import static server.nanohttpd.NanoHTTPD.Response;
 
 /**
  * @author Paul S. Hawke (paul.hawke@gmail.com)

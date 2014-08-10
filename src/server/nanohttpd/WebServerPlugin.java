@@ -1,9 +1,9 @@
-package nanohttpd;
+package server.nanohttpd;
 
 import java.io.File;
 import java.util.Map;
 
-import nanohttpd.NanoHTTPD.IHTTPSession;
+import server.nanohttpd.NanoHTTPD.IHTTPSession;
 
 /**
 * @author Paul S. Hawke (paul.hawke@gmail.com)

@@ -1,4 +1,4 @@
-package nanohttpd;
+package server.nanohttpd;
 
 /**
 * @author Paul S. Hawke (paul.hawke@gmail.com)

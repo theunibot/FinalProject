@@ -22,9 +22,6 @@ public class ThreadCommand extends Thread
     public void run()
     {
         init();
-
-        ao.runCommand();
-
     }
 
     private void init()

@@ -4,13 +4,14 @@
  * and open the template in the editor.
  */
 
-package enums;
+package route;
 
 /**
  *
  * @author kyle
  */
-public enum EnumShelfUnit
+public enum RouteSide
 {
-    D1, D2, CP
+
+    LEFT, RIGHT
 }
