@@ -59,6 +59,14 @@ public class QueueableItem
         return id;
     }
     
+    @Override public String toString() {
+        StringBuilder result = new StringBuilder();
+        
+        result.append("Command (toString not implement)");
+        
+        return result.toString();
+    }
+    
     
 
 }

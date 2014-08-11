@@ -7,6 +7,7 @@ package commandqueue;
 
 import enums.EffectType;
 import enums.EnumShelfUnit;
+import java.util.concurrent.Semaphore;
 
 /**
  *
@@ -19,6 +20,9 @@ public class CommandQueueWrapper
 
     private CommandQueue[] queues = new CommandQueue[3];
     private StatusQueue statusQueue = new StatusQueue();
+    private Semaphore queueSemaphore = new Semaphore(0);
+    private Boolean killThread = false;
+    private int roundRobin = 1;
 
     public static CommandQueueWrapper getInstance()
     {
@@ -42,6 +46,8 @@ public class CommandQueueWrapper
      */
     public void clear(int num)
     {
+        // note that we are not decrementing the counted semaphore (queueSemaphore), so this will
+        // cause excess sempahore permits that will get drained by the CommandProcessor
         queues[num].clear();
     }
 
@@ -61,6 +67,8 @@ public class CommandQueueWrapper
         {
             statusQueue.add(new StatusObject(id, CommandQueueStatus.PENDING));
         }
+        // signal that we have something to do
+        queueSemaphore.release();
     }
 
     /**
@@ -79,6 +87,8 @@ public class CommandQueueWrapper
         {
             statusQueue.add(new StatusObject(id, CommandQueueStatus.PENDING));
         }
+        // signal that we have something to do
+        queueSemaphore.release();
     }
 
     public void add(int queueIndex, long id, EnumShelfUnit desktop, int desktopShelf, int layer, EffectType e, boolean checkable)
@@ -88,6 +98,8 @@ public class CommandQueueWrapper
         {
             statusQueue.add(new StatusObject(id, CommandQueueStatus.PENDING));
         }
+        // signal that we have something to do
+        queueSemaphore.release();
     }
 
     public void add(int queueIndex, long id, EnumShelfUnit desktop, String content, boolean checkable)
@@ -97,21 +109,68 @@ public class CommandQueueWrapper
         {
             statusQueue.add(new StatusObject(id, CommandQueueStatus.PENDING));
         }
+        // signal that we have something to do
+        queueSemaphore.release();
     }
 
     /**
-     * Gets the first command in the list
+     * Gets the next command in the list (blocking until command available)
      *
-     * @return First command in list or null if none found
+     * @return Next QueueableItem from the queues, following priority rules.  Returns
+     *          null if the thread should be killed
      */
-    public QueueableItem getFirst(int index)
+    public QueueableItem getItem()
     {
-        return queues[index].getFirst();
+        // safety valve ... don't sleep if we know a kill is waiting
+        if (killThread)
+            return null;
+        // now wait on the semaphore
+        try {
+            queueSemaphore.acquire();
+        } catch (InterruptedException e) {
+            return null;
+        }
+        // first, see if we should kill
+        if (killThread)
+            return null;
+        // check if anything in the high priority queue
+        QueueableItem cmd;
+        cmd = queues[0].getFirst();
+        if (cmd != null)
+            return cmd;
+        // now try the next queue based on round-robin
+        for (int scan = 0; scan < 2; ++scan) {
+            // switch robin
+            roundRobin++;
+            // does this one have something for us?
+            cmd = queues[roundRobin % 2 + 1].getFirst();
+            if (cmd != null)
+                return cmd;
+        }
+        // we got nothing.  
+        System.out.println("CommandQueueWrapper.getItem found nothing; maybe due to queue clear?");
+        return null;
     }
 
+    /**
+     * Gets status of the specific queued element; removes from list when complete
+     * 
+     * @param id Id of the queued item to check
+     * @return Status of the command
+     */
     public CommandQueueStatus getStatus(String id)
     {
         long l = Long.parseLong(id);
         return statusQueue.getStatus(l);
+    }
+    
+    /**
+     * Sends a kill message back to the controlling thread, via the getItem call
+     */
+    public void kill() 
+    {
+        killThread = true;
+        // signal that we have something to do
+        queueSemaphore.release();        
     }
 }

@@ -6,6 +6,7 @@
 package threads;
 
 import robotoperations.ArmOperations;
+import commandprocessor.CommandProcessor;
 
 /**
  *
@@ -13,9 +14,6 @@ import robotoperations.ArmOperations;
  */
 public class ThreadCommand extends Thread
 {
-
-    private volatile boolean isRunning = true;
-
     private ArmOperations ao;
 
     @Override
@@ -26,19 +24,18 @@ public class ThreadCommand extends Thread
 
     private void init()
     {
+        CommandProcessor cp;
         ao = ArmOperations.getInstance();
         boolean success = ao.init();
         if (success)
         {
-            System.out.println("All Inits successful");
+            System.out.println("All Arm Inits successful");
+            // now bring up the command processor
+            cp = new CommandProcessor();
+            cp.processCommands();
         }
+        System.out.println("CommandProcess thread terminating");
+ 
     }
 
-    /**
-     * Stops the thread gracefully
-     */
-    public void kill()
-    {
-        this.isRunning = false;
-    }
 }

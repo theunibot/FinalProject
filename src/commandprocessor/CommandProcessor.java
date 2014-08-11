@@ -6,6 +6,7 @@
 package commandprocessor;
 
 import commandqueue.CommandQueueWrapper;
+import commandqueue.QueueableItem;
 import robotoperations.ArmOperations;
 
 /**
@@ -28,21 +29,25 @@ public class CommandProcessor
         return cp;
     }
 
-    private CommandProcessor()
+    public CommandProcessor()
     {
         cmdq = CommandQueueWrapper.getInstance();
         ao = ArmOperations.getInstance();
     }
     
-    //hello world
-    /*
-    The goal of the Command Processor is to take the first item from the Command
-    Queue and process it into chuncks - "Clear Desktop 1" becomes RoboForth to 
-    do that.
+    public void processCommands() {
+        while (true) 
+        {
+            QueueableItem cmd = cmdq.getItem();
+            if (cmd == null) {
+                System.out.println("Received kill in processCommands; terminating");
+                break;
+            }
+            // process the command
+            System.out.println("Processing command " + cmd.toString());
+        }
+        // done - terminate
+    }
     
-    To do so, the Command Processor leverages the library of routes held in the
-    Route Complier as well as uses a lookup table to figure out what to set the
-    start and end points of each route to.
-    */
 
 }
