@@ -6,7 +6,7 @@
 package commandqueue;
 
 import enums.EffectType;
-import enums.EnumShelfUnit;
+import enums.ShelfUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,7 +44,7 @@ public class CommandQueue
         }
     }
 
-    public void add(long id, EnumShelfUnit desktop, String content)
+    public void add(long id, ShelfUnit desktop, String content)
     {
         synchronized (queue)
         {
@@ -52,7 +52,7 @@ public class CommandQueue
         }
     }
     
-    public void add(long id, EnumShelfUnit desktop, int desktopShelf, String content)
+    public void add(long id, ShelfUnit desktop, int desktopShelf, String content)
     {
         synchronized (queue)
         {
@@ -69,7 +69,7 @@ public class CommandQueue
      * @param layer
      * @param e
      */
-    public void add(long id, EnumShelfUnit desktop, int desktopShelf, int layer, EffectType e)
+    public void add(long id, ShelfUnit desktop, int desktopShelf, int layer, EffectType e)
     {
         synchronized (queue)
         {

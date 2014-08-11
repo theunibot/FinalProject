@@ -11,7 +11,7 @@ package enums;
  * @author kyle
  */
 
-public enum EnumRouteInfo
+public enum RouteInfo
 {
 
     D1L, D1R, D2L, D2R, S

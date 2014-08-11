@@ -5,8 +5,8 @@
  */
 package inventory;
 
-import enums.EnumDiskType;
-import enums.EnumShelfUnit;
+import enums.DiskType;
+import enums.ShelfUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,17 +47,17 @@ public class Inventory
     {
         for (int i = 0; i < 6; i++)
         {
-            d1.add(new Shelf(EnumDiskType.EMPTY));
-            d2.add(new Shelf(EnumDiskType.EMPTY));
+            d1.add(new Shelf(DiskType.EMPTY));
+            d2.add(new Shelf(DiskType.EMPTY));
         }
 
         for (int i = 0; i < 20; i++)
         {
-            cachePoint.add(new Shelf(EnumDiskType.EMPTY));
+            cachePoint.add(new Shelf(DiskType.EMPTY));
         }
     }
 
-    public Shelf getShelf(EnumShelfUnit su, int index)
+    public Shelf getShelf(ShelfUnit su, int index)
     {
         synchronized (shelfUnitToArrayList(su))
         {
@@ -70,7 +70,7 @@ public class Inventory
 
     }
 
-    public EnumDiskType getDisk(EnumShelfUnit su, int index)
+    public DiskType getDisk(ShelfUnit su, int index)
     {
         synchronized (shelfUnitToArrayList(su))
         {
@@ -82,7 +82,7 @@ public class Inventory
         }
     }
 
-    public boolean setDisk(EnumShelfUnit su, EnumDiskType dt, int index)
+    public boolean setDisk(ShelfUnit su, DiskType dt, int index)
     {
         synchronized (shelfUnitToArrayList(su))
         {
@@ -95,17 +95,17 @@ public class Inventory
         }
     }
 
-    private List<Shelf> shelfUnitToArrayList(EnumShelfUnit su)
+    private List<Shelf> shelfUnitToArrayList(ShelfUnit su)
     {
-        if (su == EnumShelfUnit.D1)
+        if (su == ShelfUnit.D1)
         {
             return d1;
         }
-        else if (su == EnumShelfUnit.D2)
+        else if (su == ShelfUnit.D2)
         {
             return d2;
         }
-        else if (su == EnumShelfUnit.CP)
+        else if (su == ShelfUnit.CP)
         {
             return cachePoint;
         }        

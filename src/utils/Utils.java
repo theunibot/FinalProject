@@ -7,7 +7,7 @@ package utils;
 
 import commandqueue.CommandQueueStatus;
 import enums.EffectType;
-import enums.EnumShelfUnit;
+import enums.ShelfUnit;
 import server.KVObj;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -122,15 +122,15 @@ public class Utils
         }
     }
 
-    public static EnumShelfUnit stringToEnumShelfUnit(String s)
+    public static ShelfUnit stringToEnumShelfUnit(String s)
     {
         if(s.trim().equals("1"))
         {
-            return EnumShelfUnit.D1;
+            return ShelfUnit.D1;
         }
         else if(s.trim().equals("2"))
         {
-            return EnumShelfUnit.D2;
+            return ShelfUnit.D2;
         }
         return null;
     }

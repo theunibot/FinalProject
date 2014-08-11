@@ -6,7 +6,7 @@
 package commandqueue;
 
 import enums.EffectType;
-import enums.EnumShelfUnit;
+import enums.ShelfUnit;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -80,7 +80,7 @@ public class CommandQueueWrapper
      * @param content element content
      * @param checkable if checkable with status
      */
-    public void add(int queueIndex, long id, EnumShelfUnit desktop, int desktopShelf, String content, boolean checkable)
+    public void add(int queueIndex, long id, ShelfUnit desktop, int desktopShelf, String content, boolean checkable)
     {
         queues[queueIndex].add(id, desktop, desktopShelf, content);//add(id, desktop, e);
         if (checkable)
@@ -91,7 +91,7 @@ public class CommandQueueWrapper
         queueSemaphore.release();
     }
 
-    public void add(int queueIndex, long id, EnumShelfUnit desktop, int desktopShelf, int layer, EffectType e, boolean checkable)
+    public void add(int queueIndex, long id, ShelfUnit desktop, int desktopShelf, int layer, EffectType e, boolean checkable)
     {
         queues[queueIndex].add(id, desktop, desktopShelf, layer, e);//(id, desktop, desktopShelf, content);//add(id, desktop, e);
         if (checkable)
@@ -102,7 +102,7 @@ public class CommandQueueWrapper
         queueSemaphore.release();
     }
 
-    public void add(int queueIndex, long id, EnumShelfUnit desktop, String content, boolean checkable)
+    public void add(int queueIndex, long id, ShelfUnit desktop, String content, boolean checkable)
     {
         queues[queueIndex].add(id, desktop, content);//add(id, desktop, e);
         if (checkable)

@@ -10,7 +10,7 @@ package enums;
  *
  * @author kyle
  */
-public enum EnumDiskType
+public enum DiskType
 {
     EMPTY, ADOBE
 }

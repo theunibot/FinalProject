@@ -6,7 +6,7 @@
 package commandqueue;
 
 import enums.EffectType;
-import enums.EnumShelfUnit;
+import enums.ShelfUnit;
 
 /**
  *
@@ -18,7 +18,7 @@ public class QueueableItem
     private long id;
     private String content;
 
-    private EnumShelfUnit desktop;
+    private ShelfUnit desktop;
     private int desktopShelf;
     private int cachePointLayer;
     private EffectType effect;
@@ -29,14 +29,14 @@ public class QueueableItem
         this.content = content;
     }
 
-    public QueueableItem(long id, EnumShelfUnit desktop, String content)
+    public QueueableItem(long id, ShelfUnit desktop, String content)
     {
         this.id = id;
         this.desktop = desktop;
         this.content = content;
     }
 
-    public QueueableItem(long id, EnumShelfUnit desktop, int desktopShelf, String content)
+    public QueueableItem(long id, ShelfUnit desktop, int desktopShelf, String content)
     {
         this.id = id;
         this.desktop = desktop;
@@ -44,7 +44,7 @@ public class QueueableItem
         this.content = content;
     }
     
-    public QueueableItem(long id, EnumShelfUnit desktop, int desktopShelf, int cachePointLayer, EffectType effect)
+    public QueueableItem(long id, ShelfUnit desktop, int desktopShelf, int cachePointLayer, EffectType effect)
     {
         this.id = id;
         this.content = content;

@@ -10,7 +10,7 @@ package enums;
  *
  * @author kyle
  */
-public enum EnumShelfUnit
+public enum ShelfUnit
 {
     D1, D2, CP
 }

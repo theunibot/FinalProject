@@ -10,7 +10,7 @@ import utils.FileUtils;
 import java.util.ArrayList;
 import route.Route;
 import route.Cartesian;
-import enums.EnumShelfUnit;
+import enums.ShelfUnit;
 
 /**
  *
@@ -108,7 +108,7 @@ public class ArmOperations
      * @param stackPosition stack position (when CP) - where 1 is bottom disc, and 2 is top disc)
      * @return success (true) or failure (false)
      */
-    public Boolean pick(EnumShelfUnit unit, int stackPosition) {
+    public Boolean pick(ShelfUnit unit, int stackPosition) {
         return true;
     }
     
@@ -120,7 +120,7 @@ public class ArmOperations
      * @param stackPosition stack position (when CP) - where 1 is bottom disc, and 2 is top disc)
      * @return success (true) or failure (false)
      */
-    public Boolean drop(EnumShelfUnit unit, int stackPosition) {
+    public Boolean drop(ShelfUnit unit, int stackPosition) {
         return true;
     }
     

@@ -5,7 +5,7 @@
  */
 package inventory;
 
-import enums.EnumDiskType;
+import enums.DiskType;
 
 /**
  *
@@ -14,23 +14,23 @@ import enums.EnumDiskType;
 public class Shelf
 {
 
-    private EnumDiskType disk;
+    private DiskType disk;
 
     public Shelf()
     {
     }
 
-    public Shelf(EnumDiskType disk)
+    public Shelf(DiskType disk)
     {
         this.disk = disk;
     }
 
-    public EnumDiskType getDisk()
+    public DiskType getDisk()
     {
         return disk;
     }
 
-    public void setDisk(EnumDiskType disk)
+    public void setDisk(DiskType disk)
     {
         this.disk = disk;
     }
