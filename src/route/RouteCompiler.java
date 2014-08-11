@@ -10,7 +10,6 @@ import robotoperations.ResponseObject;
 import robotoperations.R12Operations;
 import utils.FileUtils;
 import route.CommandType;
-import route.ObjectRouteContainer;
 import route.CommandCartesian;
 import java.util.ArrayList;
 import utils.Utils;
@@ -23,8 +22,7 @@ public class RouteCompiler
 {
 
     private static RouteCompiler routeCompiler = null;
-    private R12Operations r12o = R12Operations.getInstance();
-    private ObjectRouteContainer orc = ObjectRouteContainer.getInstance();
+    private R12Operations r12o = R12Operations.getInstance();   
     private RouteHolder rh = RouteHolder.getInstance();
 
     //String consts
