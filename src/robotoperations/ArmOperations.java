@@ -8,6 +8,9 @@ package robotoperations;
 import route.RouteCompiler;
 import utils.FileUtils;
 import java.util.ArrayList;
+import route.Route;
+import route.Cartesian;
+import enums.EnumShelfUnit;
 
 /**
  *
@@ -84,6 +87,63 @@ public class ArmOperations
         }
         return armOprations;
     }    
+    
+    /**
+     * Run a route, with a modified starting and ending Cartesian coordinates
+     * 
+     * @param route the route to run
+     * @param start the starting coordinate to use on the route
+     * @param end the ending coordinate to use on the route
+     * @return success (true) or failure (false)
+     */
+    public Boolean runRoute(Route route, Cartesian start, Cartesian end) {
+        return true;
+    }
+    
+    /**
+     * Pickup a disc from a slot.  Assumes that the robot is already at the safe pickup location
+     * for the specified disc, and is not already holding one
+     * 
+     * @param unit if this is a CP or a desktop
+     * @param stackPosition stack position (when CP) - where 1 is bottom disc, and 2 is top disc)
+     * @return success (true) or failure (false)
+     */
+    public Boolean pick(EnumShelfUnit unit, int stackPosition) {
+        return true;
+    }
+    
+    /**
+     * Drop off a disc to a slot.  Assumes that the robot is already at the safe dropoff location
+     * for the specified disc, and is currently holding a disc
+     * 
+     * @param unit if this is a CP or a desktop
+     * @param stackPosition stack position (when CP) - where 1 is bottom disc, and 2 is top disc)
+     * @return success (true) or failure (false)
+     */
+    public Boolean drop(EnumShelfUnit unit, int stackPosition) {
+        return true;
+    }
+    
+    /**
+     * Execute the robot calibrate command.  WARNING: The robot arm MUST be in HOME and safe/ready for this
+     * command to be successful and not damage the table/arm.
+     * 
+     * @return success (true) or failure (false)
+     */
+    public Boolean calibrate() {
+        return true;
+    }
+
+    /**
+     * Move the robot to the HOME position, using a safe route that will not hit any objects
+     * 
+     * @return success (true) or failure (false)
+     */
+    public Boolean home() {
+        return true;
+    }
+    
+    
 }
 /*
 System.out.println("running");

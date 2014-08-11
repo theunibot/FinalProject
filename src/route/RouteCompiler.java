@@ -59,7 +59,7 @@ public class RouteCompiler
             + "//Each command should be on its own line.\n"
             + "//All comments must be on their own line and start with \"//\"\n"
             + "//\n"
-            + "//To Be Implemented: To declare a route to be avalible for use the syntax \"include: <name of route>\" to ensure\n"
+            + "//To Be Implemented: To declare a route to be available for use the syntax \"include: <name of route>\" to ensure\n"
             + "//the route is added to a usable list for the program"
             + "\n"
             + "\n" + ROUTE_LEFT + ""
