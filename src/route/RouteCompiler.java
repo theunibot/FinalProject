@@ -9,7 +9,6 @@ import route.Route;
 import robotoperations.ResponseObject;
 import robotoperations.ArmOperations;
 import utils.FileUtils;
-import route.CommandType;
 import route.CommandCartesian;
 import java.util.ArrayList;
 import utils.Utils;
