@@ -154,9 +154,9 @@ public class RouteCompiler
                     String pitch = "0", yaw = "0", roll = "0";
 
                     //grab the pitch,yaw,roll from the last cartesian command
-                    if (route.getFirstObject() != null && route.getFirstObject().getObjectType() == CommandType.CARTESIAN)
+                    if (route.getLastObject() != null)
                     {
-                        CommandCartesian orcc = (CommandCartesian) route.getFirstObject();
+                        CommandCartesian orcc = route.getLastObject();
                         pitch = String.valueOf(orcc.getCartesian().getPitch());
                         yaw = String.valueOf(orcc.getCartesian().getYaw());
                         roll = String.valueOf(orcc.getCartesian().getRoll());

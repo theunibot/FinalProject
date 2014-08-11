@@ -143,8 +143,18 @@ public class ArmOperations
         return true;
     }
     
-    // TEMPORARY UNTIL REFACTOR COMPLETE
-    
+    public boolean learnRoute(Route route) {
+        //gets and executes each command in the route
+        ArrayList<String> commands = route.getRoboforthCommands();
+        for (String commandString : commands)
+        {
+            System.out.println(commandString);
+            if (!runCommand(commandString))
+                return false;
+        }        
+        return true;
+    }
+
     private boolean runCommand(String commandString)
     {
         r12o.write(commandString);
@@ -158,17 +168,6 @@ public class ArmOperations
         return true;
     }
 
-    public boolean learnRoute(Route route) {
-        //gets and executes each command in the route
-        ArrayList<String> commands = route.getRoboforthCommands();
-        for (String commandString : commands)
-        {
-            System.out.println(commandString);
-            if (!runCommand(commandString))
-                return false;
-        }        
-        return true;
-    }
 }
 /*
 System.out.println("running");

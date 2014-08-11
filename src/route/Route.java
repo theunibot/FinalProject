@@ -5,7 +5,6 @@
  */
 package route;
 
-import route.CommandInterface;
 import java.util.ArrayList;
 
 /**
@@ -15,7 +14,7 @@ import java.util.ArrayList;
 public class Route
 {
 
-    ArrayList<CommandInterface> commands = new ArrayList<>();
+    ArrayList<CommandCartesian> commands = new ArrayList<>();
 
     private RouteProperties routeProperties = new RouteProperties(null);
 
@@ -31,12 +30,12 @@ public class Route
         return commands.size();
     }
 
-    public void add(CommandInterface o)
+    public void add(CommandCartesian o)
     {
         commands.add(o);
     }
 
-    public CommandInterface getFirstObject()
+    public CommandCartesian getLastObject()
     {
         if(commands.size() > 0)
         {
@@ -56,7 +55,7 @@ public class Route
         commandStrings = new ArrayList<>();
         commandStrings.add("ROUTE " + this.routeProperties.getRouteName());
         commandStrings.add(commands.size() + " RESERVE");
-        for (CommandInterface o : commands)
+        for (CommandCartesian o : commands)
         {
             commandStrings.add(o.toString());
         }

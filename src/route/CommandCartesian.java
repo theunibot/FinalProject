@@ -9,7 +9,7 @@ package route;
  *
  * @author kyle
  */
-public class CommandCartesian implements CommandInterface
+public class CommandCartesian 
 {
     private Cartesian coord;
     private String routeName;
@@ -26,7 +26,6 @@ public class CommandCartesian implements CommandInterface
         return this.coord;
     }
     
-    @Override
     public boolean isRouteDefine()
     {
         return false;
@@ -38,11 +37,4 @@ public class CommandCartesian implements CommandInterface
         return "LEARN\r"
                 + "DECIMAL " + coord.getRollStr() + " " + coord.getYawStr() + " " + coord.getPitchStr() + " " + coord.getZ() + " " + coord.getY() + " " + coord.getX() + " " + routeName + " " + line + " LINE DLD\r";
     }
-
-    @Override
-    public CommandType getObjectType()
-    {
-        return CommandType.CARTESIAN;
-    }
-
 }
