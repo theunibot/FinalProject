@@ -143,19 +143,49 @@ public class ArmOperations
         return true;
     }
     
+    /**
+     * Tell the robot to energize the arm
+     * 
+     * @return success (true) or failure (false)
+     */
+    public Boolean energize() {
+        return true;
+    }
+    
+    /**
+     * Tell the robot to de-energize
+     * 
+     * @return success (true) or failure (false)
+     */
+    public Boolean deEnergize() {
+        return true;
+    }
+    
+    /**
+     * Program a route into the robot controller
+     * 
+     * @param route route to add to the controller
+     * @return success (true) or failure (false)
+     */
     public boolean learnRoute(Route route) {
         //gets and executes each command in the route
         ArrayList<String> commands = route.getRoboforthCommands();
         for (String commandString : commands)
         {
             System.out.println(commandString);
-            if (!runCommand(commandString))
+            if (!runRouteCommand(commandString))
                 return false;
         }        
         return true;
     }
 
-    private boolean runCommand(String commandString)
+    /**
+     * Sends an individual route command to robot and looks for errors
+     * 
+     * @param commandString command to execute
+     * @return success (true) or failure (false)
+     */
+    private boolean runRouteCommand(String commandString)
     {
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);
@@ -169,72 +199,3 @@ public class ArmOperations
     }
 
 }
-/*
-System.out.println("running");
-        String command;
-        ResponseObject response;
-
-        command = "HOME";
-        r12o.write(command);
-        response = r12o.getResponse(command);
-
-        if (!response.isSuccessful())
-        {
-            System.err.println("Command Failed! Cmd: " + command + " Response Msg: " + response.getMsg());
-//                    return false;
-        }
-
-        for (int i = 0; i < 1000; i++)
-        {
-            System.out.println("looped");
-
-            command = "3000 3000 3000 MOVETO";
-            r12o.write(command);
-            response = r12o.getResponse(command);
-
-            System.out.println(response.getMsg());
-            if (!response.isSuccessful())
-            {
-                System.err.println("Command Failed! Cmd: " + command + " Response Msg: " + response.getMsg());
-//                    return false;
-            }
-
-            command = "HOME";
-            r12o.write(command);
-            response = r12o.getResponse(command);
-
-            if (!response.isSuccessful())
-            {
-                System.err.println("Command Failed! Cmd: " + command + " Response Msg: " + response.getMsg());
-//                    return false;
-            }
-
-//            command = "HOME";
-//            r12o.write(command);
-//            response = r12o.getResponse(command);
-//
-//            if (!response.isSuccessful())
-//            {
-//                System.err.println("Command Failed! Cmd: " + command + " Response Msg: " + response.getMsg());
-////                    return false;
-//            }
-//
-//            command = "TEST RUN";
-//            r12o.write(command);
-//            response = r12o.getResponse(command);
-//
-//            if (!response.isSuccessful())
-//            {
-//                System.err.println("Command Failed! Cmd: " + command + " Response Msg: " + response.getMsg());
-////                    return false;
-//            }
-//            command = "GRIP";
-//            r12o.write(command);
-//            response = r12o.getResponse(command);
-//
-//            if (!response.isSuccessful())
-//            {
-//                System.err.println("Command Failed! Cmd: " + command + " Response Msg: " + response.getMsg());
-////                    return false;
-//            }
-*/
