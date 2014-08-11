@@ -25,13 +25,13 @@ public class ServerRunner
         }
         catch (IOException ioe)
         {
-            System.err.println("Couldn't start server:\n" + ioe);
+            System.err.println("Couldn't start server:" + ioe);
             System.exit(-1);
         }
 
         if (main.Main.DEBUG)
         {
-            System.out.println("Server started, Hit Enter to stop.\n");
+            System.out.println("Server started, Hit Enter to stop.");
 
             try
             {
@@ -42,7 +42,7 @@ public class ServerRunner
             }
 
             server.stop();
-            System.out.println("Server stopped.\n");
+            System.out.println("Server stopped.");
         }
 
     }

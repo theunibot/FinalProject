@@ -40,15 +40,15 @@ public class R12Operations
      * @return boolean of success
      */
     public boolean init(){
-    if(Simulated){
-        return true;
-    }
-    else{
-        r12i = R12Interface.getInstance();
-        loadInfoFromFile();
-        boolean success = r12i.init(address, port);
-        return success;
-    }
+        if(Simulated){
+            return true;
+        }
+        else{
+            r12i = R12Interface.getInstance();
+            loadInfoFromFile();
+            boolean success = r12i.init(address, port);
+            return success;
+        }
     }
     
     /**
@@ -58,24 +58,24 @@ public class R12Operations
      * @return ResponseObject wrapper object for command sent
      */
     public ResponseObject getResponse(String command){    
-    if(Simulated){
-        return new ResponseObject(ArmOperations.RESPONSE_OK, true);
-    }
-    else{
-        String responseStr = readNoEcho(command);
-
-        //clean up string
-        responseStr = responseStr.replace("\n>", "");//filters the ">" and the new line. Saves all other new lines
-        responseStr = responseStr.replace(">", "");//removes any missed ">"
-        responseStr = responseStr.trim();
-        boolean succesful = false;
-        if (responseStr.endsWith(ArmOperations.RESPONSE_OK))
-        {
-            succesful = true;
+        if(Simulated){
+            return new ResponseObject(ArmOperations.RESPONSE_OK, true);
         }
-        return new ResponseObject(responseStr, succesful);
+        else{
+            String responseStr = readNoEcho(command);
 
-    }
+            //clean up string
+            responseStr = responseStr.replace("\n>", "");//filters the ">" and the new line. Saves all other new lines
+            responseStr = responseStr.replace(">", "");//removes any missed ">"
+            responseStr = responseStr.trim();
+            boolean succesful = false;
+            if (responseStr.endsWith(ArmOperations.RESPONSE_OK))
+            {
+                succesful = true;
+            }
+            return new ResponseObject(responseStr, succesful);
+
+        }
     }
     private void loadInfoFromFile()
     {
@@ -148,12 +148,8 @@ public class R12Operations
      * @param s command to send, no return needed
      */
     public void write(String s){
-    if(Simulated){
-        r12i.write(s + "\r");
-    }
-    {
-        r12i.write(s + "\r");
-    }
+        if(!Simulated)
+            r12i.write(s + "\r");
     }
 
     public static R12Operations getInstance()
