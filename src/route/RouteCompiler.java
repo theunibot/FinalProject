@@ -25,6 +25,7 @@ public class RouteCompiler
     private static RouteCompiler routeCompiler = null;
     private R12Operations r12o = R12Operations.getInstance();
     private ObjectRouteContainer orc = ObjectRouteContainer.getInstance();
+    private RouteHolder rh = RouteHolder.getInstance();
 
     //String consts
     public static final String ROUTE_PREFIX = "route ";
@@ -98,7 +99,10 @@ public class RouteCompiler
 
             for (Route route : routes)
             {
-
+                //adds routes to the route holder
+                rh.addRoute(route);
+                
+                //gets and executes each command in the route
                 ArrayList<String> commands = route.getRoboforthCommands();
                 for (String commandString : commands)
                 {
