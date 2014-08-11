@@ -31,10 +31,8 @@ public class CommandCartesian
         return false;
     }
     
-    @Override
     public String toString()
     {        
-        return "LEARN\r"
-                + "DECIMAL " + coord.getRollStr() + " " + coord.getYawStr() + " " + coord.getPitchStr() + " " + coord.getZ() + " " + coord.getY() + " " + coord.getX() + " " + routeName + " " + line + " LINE DLD\r";
+        return "DECIMAL " + coord.getRollStr() + " " + coord.getYawStr() + " " + coord.getPitchStr() + " " + coord.getZ() + " " + coord.getY() + " " + coord.getX() + " " + routeName + " " + line + " LINE DLD\r";
     }
 }

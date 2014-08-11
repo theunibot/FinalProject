@@ -57,6 +57,7 @@ public class Route
         commandStrings.add(commands.size() + " RESERVE");
         for (CommandCartesian o : commands)
         {
+            commandStrings.add("LEARN");
             commandStrings.add(o.toString());
         }
         return commandStrings;
