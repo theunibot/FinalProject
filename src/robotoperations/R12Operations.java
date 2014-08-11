@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class R12Operations
 {
-
+    public boolean Simulated = true;
     //Command Objects
     private R12Interface r12i = null;
     private static R12Operations r12Operations = null;
@@ -39,12 +39,16 @@ public class R12Operations
      *
      * @return boolean of success
      */
-    public boolean init()
-    {
+    public boolean init(){
+    if(Simulated){
+        return true;
+    }
+    else{
         r12i = R12Interface.getInstance();
         loadInfoFromFile();
         boolean success = r12i.init(address, port);
         return success;
+    }
     }
     
     /**
@@ -53,8 +57,11 @@ public class R12Operations
      * @param command command sent, used to filter out of response.
      * @return ResponseObject wrapper object for command sent
      */
-    public ResponseObject getResponse(String command)
-    {
+    public ResponseObject getResponse(String command){    
+    if(Simulated){
+        return new ResponseObject(ArmOperations.RESPONSE_OK, true);
+    }
+    else{
         String responseStr = readNoEcho(command);
 
         //clean up string
@@ -69,7 +76,7 @@ public class R12Operations
         return new ResponseObject(responseStr, succesful);
 
     }
-
+    }
     private void loadInfoFromFile()
     {
 
@@ -140,9 +147,13 @@ public class R12Operations
      *
      * @param s command to send, no return needed
      */
-    public void write(String s)
+    public void write(String s){
+    if(Simulated){
+        r12i.write(s + "\r");
+    }
     {
         r12i.write(s + "\r");
+    }
     }
 
     public static R12Operations getInstance()
