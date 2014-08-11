@@ -36,6 +36,7 @@ public class CommandProcessor
     }
     
     public void processCommands() {
+        System.out.println("Command processor started");
         while (true) 
         {
             QueueableItem cmd = cmdq.getItem();
@@ -47,6 +48,10 @@ public class CommandProcessor
             System.out.println("Processing command " + cmd.toString());
         }
         // done - terminate
+    }
+    
+    public void kill() {
+        cmdq.kill();
     }
     
 

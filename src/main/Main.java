@@ -23,9 +23,12 @@ public class Main
      */
     public static void main(String[] args)
     {
-//        ThreadCommand threadCommand = new ThreadCommand();
-//        threadCommand.start();
+        ThreadCommand threadCommand = new ThreadCommand();
+        threadCommand.start();
+        // start up the web server
         ServerRunner.run(WebServer.class);
+        // web server is down; make sure the command thread is down
+        threadCommand.kill();
     }
 
 }
