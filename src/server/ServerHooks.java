@@ -5,14 +5,15 @@
  */
 package server;
 
-import utils.Utils;
 import commandqueue.CommandQueueWrapper;
+import commands.*;
 import enums.CommandStatus;
+import enums.EffectType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import commands.*;
+import utils.Utils;
 
 /**
  *
@@ -45,276 +46,103 @@ public class ServerHooks
 
     public String enqueue(Map<String, String> params)
     {
+        CommandInterface cmd = null;
+
         response.clear();
         String command = "";
-        if ((command = params.get("command")) != null)
-        {
-            
-            command = command.toLowerCase();    //convert the command to lowercase, case doesn't matter
-            System.out.println("COMMAND: " + command);
-            if (command.equals("mount-layer") && !errorState)
-            {
-                System.out.println("MountLayer called");
-                String queue, checkableStr, layer, shelf, desktop, effect = "";
-                if ((queue = params.get("queue")) == null)
-                {
-                    System.out.println("queue not found");
-                    return Utils.genericEnqueueFail();
-                }
-                if ((checkableStr = params.get("status")) == null)
-                {
-                    System.out.println("status not found");
-                    return Utils.genericEnqueueFail();
-                }
-                if ((layer = params.get("layer")) == null)
-                {
-                    System.out.println("layer not found");
-                    return Utils.genericEnqueueFail();
-                }
-                if ((shelf = params.get("shelf")) == null)
-                {
-                    System.out.println("shelf not found");
-                    return Utils.genericEnqueueFail();
-                }
-                if ((desktop = params.get("desktop")) == null)
-                {
-                    System.out.println("desktop not found");
-                    return Utils.genericEnqueueFail();
-                }
-                if ((effect = params.get("effect")) == null)
-                {
-                    System.out.println("effect not found");
-                    return Utils.genericEnqueueFail();
-                }
-                //no fails
-                boolean checkable = false;
-                if (Integer.parseInt(checkableStr) == 1)
-                {
-                    checkable = true;
-                }
+        
+        // decode all possible parameters
+        String queue = params.get("queue");
+        Integer queueInt = Integer.parseInt(queue);
+        String status = params.get("status");
+        Boolean statusBool = (Integer.parseInt(status) == 1);
 
-                int queueint = Integer.parseInt(queue);
-                CommandMountLayer cmd = new CommandMountLayer(Utils.stringToEnumShelfType(shelf), Integer.parseInt(shelf), Integer.parseInt(layer), Utils.effectStringToEffectType(effect));
-                cmdq.add(queueint, cmd, checkable);
-                
-                //response
-                response.add(new KVObj("id", String.valueOf(cmd.getClass())));
-                return Utils.buildJSON(response);
-
-            }
-            else if (command.equals("replace-layer") && !errorState)
-            {
-                String queue, checkableStr, layer, shelf, desktop, effect = "";
-                if ((queue = params.get("queue")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                if ((checkableStr = params.get("status")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                if ((layer = params.get("layer")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                if ((shelf = params.get("shelf")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                if ((desktop = params.get("desktop")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                if ((effect = params.get("effect")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-
-                boolean checkable = false;
-                if (Integer.parseInt(checkableStr) == 1)
-                {
-                    checkable = true;
-                }
-                int queueint = Integer.parseInt(queue);
-
-                return null;
-            }
-            else if (command.equals("replace-layer") && !errorState)
-            {
-                String queue, checkableStr, shelf, desktop, effect = "";
-                if ((queue = params.get("queue")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                if ((checkableStr = params.get("status")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                if ((shelf = params.get("shelf")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                if ((desktop = params.get("desktop")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                if ((effect = params.get("effect")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                //no fails
-
-                //no fails
-                boolean checkable = false;
-                if (Integer.parseInt(checkableStr) == 1)
-                {
-                    checkable = true;
-                }
-                int queueint = Integer.parseInt(queue);
-                return null;
-            }
-            else if (command.equals("empty-desktop") && !errorState)
-            {
-                String queue, checkableStr, desktop = "";
-                if ((queue = params.get("queue")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                if ((checkableStr = params.get("status")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                if ((desktop = params.get("desktop")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                //no fails
-                boolean checkable = false;
-                if (Integer.parseInt(checkableStr) == 1)
-                {
-                    checkable = true;
-                }
-
-                int queueint = Integer.parseInt(queue);
-                return null;
-            }
-            else if (command.equals("show-sign") && !errorState)
-            {
-                String queue, checkableStr, layer, effect = "";
-                if ((queue = params.get("queue")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                if ((checkableStr = params.get("status")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                if ((layer = params.get("layer")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                if ((effect = params.get("effect")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                //no fails
-                boolean checkable = false;
-                if (Integer.parseInt(checkableStr) == 1)
-                {
-                    checkable = true;
-                }
-                int queueint = Integer.parseInt(queue);
-
-                return null;
-            }
-            else if (command.equals("arm-home"))
-            {
-                String queue, checkableStr = "";
-                if ((queue = params.get("queue")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                if ((checkableStr = params.get("status")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                
-                boolean checkable = false;
-                if (Integer.parseInt(checkableStr) == 1)
-                {
-                    checkable = true;
-                }
-                int queueint = Integer.parseInt(queue);
-                return null;
-            }
-            else if (command.equals("arm-calibrate"))
-            {
-                String queue, checkableStr = "";
-                if ((queue = params.get("queue")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                if ((checkableStr = params.get("status")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                
-                boolean checkable = false;
-                if (Integer.parseInt(checkableStr) == 1)
-                {
-                    checkable = true;
-                }
-                int queueint = Integer.parseInt(queue);
-                return null;
-            }
-            else if (command.equals("arm-energize"))
-            {
-                String queue, checkableStr = "";
-                if ((queue = params.get("queue")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                if ((checkableStr = params.get("status")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                
-                boolean checkable = false;
-                if (Integer.parseInt(checkableStr) == 1)
-                {
-                    checkable = true;
-                }
-                int queueint = Integer.parseInt(queue);
-                return null;
-            }
-            else if (command.equals("arm-de-energize"))
-            {
-                String queue, checkableStr = "";
-                if ((queue = params.get("queue")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                if ((checkableStr = params.get("status")) == null)
-                {
-                    return Utils.genericEnqueueFail();
-                }
-                boolean checkable = false;
-                if (Integer.parseInt(checkableStr) == 1)
-                {
-                    checkable = true;
-                }
-                int queueint = Integer.parseInt(queue);
-                return null;
-            }
-            else//unknown command type
-            {
-                return Utils.genericEnqueueFail();
-            }
-        }
-        else
-        {
+        String layer = params.get("layer");
+        Integer layerInt = Integer.parseInt(layer);
+        String shelf = params.get("shelf");
+        Integer shelfInt = Integer.parseInt(shelf);
+        String desktop = params.get("desktop");
+        Integer desktopInt = Integer.parseInt(desktop);
+        String effect = params.get("effect");
+        EffectType effectEnum = Utils.effectStringToEffectType(effect);
+        
+        // process the command ... start by making sure it actually is a "command"...
+        if ((command = params.get("command")) == null) {
+            // failed to get a valid command
+            System.out.println("Enqueue with missing 'command' tag");
             return Utils.genericEnqueueFail();
         }
+        // also make sure the queue and status flags were provided    
+        if ( (queue == null) || (status == null) ) {
+            System.out.println("Request failure: missing required parameter");
+            return Utils.genericEnqueueFail();
+        }
+        
+        // now decode the command and build up the queue item
+        command = command.toLowerCase();    //convert the command to lowercase, case doesn't matter
+        System.out.println("Executing command: " + command);
+        switch (command) {
+            case "mount-layer":
+            case "replace-layer":
+                if (!errorState) {
+                    if ( (layer == null) || (shelf == null) || (desktop == null) || (effect == null) ) {
+                        System.out.println("Request failure: missing required parameter");
+                        return Utils.genericEnqueueFail();
+                    }
+                    cmd = new CommandMountLayer(layerInt, shelfInt, desktopInt, effectEnum);
+                }
+                break;
+            case "show-layer":
+                if (!errorState) {
+                    if ( (shelf == null) || (desktop == null) || (effect == null) ) {
+                        System.out.println("Request failure: missing required parameter");
+                        return Utils.genericEnqueueFail();
+                    }
+                    cmd = new CommandShowLayer(shelfInt, desktopInt, effectEnum);
+                }
+                break;
+            case "empty-desktop":
+                if (!errorState) {
+                    if ( (desktop == null) ) {
+                        System.out.println("Request failure: missing required parameter");
+                        return Utils.genericEnqueueFail();
+                    }
+                    cmd = new CommandEmptyDesktop(desktopInt);
+                }
+                break;
+            case "show-sign":
+                if (!errorState) {
+                    if ( (layer == null) || (effect == null) ) {
+                        System.out.println("Request failure: missing required parameter");
+                        return Utils.genericEnqueueFail();
+                    }
+                    cmd = new CommandShowSign(layerInt, effectEnum);
+                }
+                break;
+            case "arm-home":
+                cmd = new CommandArmHome();
+                break;
+            case "arm-calibrate":
+                cmd = new CommandArmCalibrate();
+                break;
+            case "arm-energize":
+                cmd = new CommandArmEnergize();
+                break;
+            case "arm-de-energize":
+                cmd = new CommandArmDeEnergize();
+                break;
+        }
+        // did we build a command?
+        if (cmd != null) {
+            cmdq.add(queueInt, cmd, statusBool);
+            response.add(new KVObj("id", String.valueOf(cmd.getId())));
+            System.out.println("Enqueued request; ID is " + cmd.getId());
+            return Utils.buildJSON(response);
+        }
+
+        // somehow we failed...
+        System.out.println("Failed to enqueue command");
+        return Utils.genericEnqueueFail();
     }
 
     private final String STATUS_ID_KEY = "id";

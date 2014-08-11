@@ -12,8 +12,8 @@ import enums.*;
  *
  * @author cmidgley
  */
-public class CommandMountLayer extends CommandInterface {
-    public CommandMountLayer(Integer layer, Integer shelf, Integer desktop, EffectType effect) {
+public class CommandShowSign extends CommandInterface {
+    public CommandShowSign(Integer layer, EffectType effect) {
         
     }
 }
