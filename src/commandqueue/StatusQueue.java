@@ -5,7 +5,7 @@
  */
 package commandqueue;
 
-import commandqueue.CommandQueueStatus;
+import enums.CommandStatus;
 import java.util.ArrayList;
 
 /**
@@ -35,7 +35,7 @@ public class StatusQueue
         }
     }
 
-    public CommandQueueStatus getStatus(long id)
+    public CommandStatus getStatus(long id)
     {
 //        for (StatusObject so : statusQueue)
         for (int i = 0; i < statusQueue.size(); i++)
@@ -43,18 +43,18 @@ public class StatusQueue
             StatusObject so = statusQueue.get(i);
             if (so.getId() == id)
             {
-                CommandQueueStatus status = so.getStatus();
-                if (status.equals(CommandQueueStatus.COMPLETE))
+                CommandStatus status = so.getStatus();
+                if (status.equals(CommandStatus.COMPLETE))
                 {
                     statusQueue.remove(i);
                 }
                 return status;
             }
         }
-        return CommandQueueStatus.UNKNOWN;
+        return CommandStatus.UNKNOWN;
     }
 
-    public void setStatus(long id, CommandQueueStatus status)
+    public void setStatus(long id, CommandStatus status)
     {
         for (int i = 0; i < statusQueue.size(); i++)
         {

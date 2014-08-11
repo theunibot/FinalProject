@@ -10,7 +10,7 @@ package enums;
  *
  * @author kyle
  */
-public enum ShelfUnit
+public enum RouteType
 {
-    D1, D2, CP
+    D1, D2, S
 }

@@ -5,9 +5,9 @@
  */
 package utils;
 
-import commandqueue.CommandQueueStatus;
+import enums.CommandStatus;
 import enums.EffectType;
-import enums.ShelfUnit;
+import enums.ShelfType;
 import server.KVObj;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -27,6 +27,7 @@ public class Utils
      *
      * @return 64 bit ID
      */
+    /*
     public static long getID()
     {
         if (idItr == Long.MAX_VALUE - 1)//roll over instead of overflow
@@ -36,6 +37,7 @@ public class Utils
         idItr++;
         return idItr - 1;
     }
+    */
     
     public static void sleep(long time)
     {
@@ -77,26 +79,26 @@ public class Utils
     }
 
     /**
-     * Converts the CommandQueueStatus enum to a string for output.
+     * Converts the CommandStatus enum to a string for output.
      *
      * @param enum Enum to convert to String
      * @return String version
      */
-    public static String commandQueueStatusEnumToString(CommandQueueStatus enm)
+    public static String commandQueueStatusEnumToString(CommandStatus enm)
     {
-        if (enm == CommandQueueStatus.COMPLETE)
+        if (enm == CommandStatus.COMPLETE)
         {
             return "complete";
         }
-        else if (enm == CommandQueueStatus.EXECUTING)
+        else if (enm == CommandStatus.EXECUTING)
         {
             return "executing";
         }
-        else if (enm == CommandQueueStatus.PENDING)
+        else if (enm == CommandStatus.PENDING)
         {
             return "pending";
         }
-        else if (enm == CommandQueueStatus.UNKNOWN)
+        else if (enm == CommandStatus.UNKNOWN)
         {
             return "unknown";
         }
@@ -122,15 +124,15 @@ public class Utils
         }
     }
 
-    public static ShelfUnit stringToEnumShelfUnit(String s)
+    public static ShelfType stringToEnumShelfType(String s)
     {
         if(s.trim().equals("1"))
         {
-            return ShelfUnit.D1;
+            return ShelfType.D1;
         }
         else if(s.trim().equals("2"))
         {
-            return ShelfUnit.D2;
+            return ShelfType.D2;
         }
         return null;
     }
@@ -146,7 +148,6 @@ public class Utils
     public static String genericEnqueueFail(String error)
     {
         response = new ArrayList<KVObj>();
-        response.add(new KVObj("id", String.valueOf(Utils.getID())));
         response.add(new KVObj("error", error));
         return Utils.buildJSON(response);
     }

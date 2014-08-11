@@ -4,14 +4,13 @@
  * and open the template in the editor.
  */
 
-package commandqueue;
+package enums;
 
 /**
  *
  * @author kyle
  */
-public enum CommandQueueStatus
+public enum CommandStatus
 {
-
     PENDING, EXECUTING, COMPLETE, UNKNOWN
 }

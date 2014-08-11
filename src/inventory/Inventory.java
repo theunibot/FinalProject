@@ -6,7 +6,7 @@
 package inventory;
 
 import enums.DiskType;
-import enums.ShelfUnit;
+import enums.ShelfType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -57,7 +57,7 @@ public class Inventory
         }
     }
 
-    public Shelf getShelf(ShelfUnit su, int index)
+    public Shelf getShelf(ShelfType su, int index)
     {
         synchronized (shelfUnitToArrayList(su))
         {
@@ -70,7 +70,7 @@ public class Inventory
 
     }
 
-    public DiskType getDisk(ShelfUnit su, int index)
+    public DiskType getDisk(ShelfType su, int index)
     {
         synchronized (shelfUnitToArrayList(su))
         {
@@ -82,7 +82,7 @@ public class Inventory
         }
     }
 
-    public boolean setDisk(ShelfUnit su, DiskType dt, int index)
+    public boolean setDisk(ShelfType su, DiskType dt, int index)
     {
         synchronized (shelfUnitToArrayList(su))
         {
@@ -95,17 +95,17 @@ public class Inventory
         }
     }
 
-    private List<Shelf> shelfUnitToArrayList(ShelfUnit su)
+    private List<Shelf> shelfUnitToArrayList(ShelfType su)
     {
-        if (su == ShelfUnit.D1)
+        if (su == ShelfType.D1)
         {
             return d1;
         }
-        else if (su == ShelfUnit.D2)
+        else if (su == ShelfType.D2)
         {
             return d2;
         }
-        else if (su == ShelfUnit.CP)
+        else if (su == ShelfType.CP)
         {
             return cachePoint;
         }        

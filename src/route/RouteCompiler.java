@@ -5,6 +5,8 @@
  */
 package route;
 
+import enums.RouteSide;
+import enums.RouteType;
 import route.Route;
 import robotoperations.ResponseObject;
 import robotoperations.ArmOperations;
@@ -126,18 +128,14 @@ public class RouteCompiler
                 for (String chunk : chunks)
                 {
                     if (chunk.equals(ROUTE_LEFT))
-                    {
                         routeProperties.setRouteSide(RouteSide.LEFT);
-                    }
                     else if (chunk.equals(ROUTE_RIGHT))
                         routeProperties.setRouteSide(RouteSide.MIDDLE);
                     else if (chunk.equals(ROUTE_RIGHT))
-                    {
                         routeProperties.setRouteSide(RouteSide.RIGHT);
-                    }
                 }
             }
-            else if (line.startsWith(ROUTE_PREFIX))//new Route
+            else if (line.startsWith(ROUTE_PREFIX)) //new Route
             {
                 String routeName = prefix + line.replace(ROUTE_PREFIX, "").trim();
                 routeProperties.setRouteName(routeName);//sets the name of the route for use

@@ -6,7 +6,7 @@
 
 package commandqueue;
 
-import commandqueue.CommandQueueStatus;
+import enums.CommandStatus;
 
 /**
  *
@@ -15,9 +15,9 @@ import commandqueue.CommandQueueStatus;
 public class StatusObject
 {
     private long id;
-    private CommandQueueStatus status;
+    private CommandStatus status;
 
-    public StatusObject(long id, CommandQueueStatus status)
+    public StatusObject(long id, CommandStatus status)
     {
         this.id = id;
         this.status = status;
@@ -28,12 +28,12 @@ public class StatusObject
         return id;
     }
 
-    public CommandQueueStatus getStatus()
+    public CommandStatus getStatus()
     {
         return status;
     }
     
-    public void setStatus(CommandQueueStatus status)
+    public void setStatus(CommandStatus status)
     {
         this.status = status;
     }

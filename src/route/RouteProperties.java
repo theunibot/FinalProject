@@ -5,6 +5,9 @@
  */
 package route;
 
+import enums.RouteSide;
+import enums.RouteType;
+
 /**
  *
  * @author kyle

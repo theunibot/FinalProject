@@ -6,7 +6,7 @@
 package commandprocessor;
 
 import commandqueue.CommandQueueWrapper;
-import commandqueue.QueueableItem;
+import commands.CommandInterface;
 import robotoperations.ArmOperations;
 
 /**
@@ -39,7 +39,7 @@ public class CommandProcessor
         System.out.println("Command processor started");
         while (true) 
         {
-            QueueableItem cmd = cmdq.getItem();
+            CommandInterface cmd = cmdq.getItem();
             if (cmd == null) {
                 System.out.println("Received kill in processCommands; terminating");
                 break;

@@ -5,8 +5,10 @@
  */
 package commandqueue;
 
+import enums.CommandStatus;
+import commands.CommandInterface;
 import enums.EffectType;
-import enums.ShelfUnit;
+import enums.ShelfType;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -56,58 +58,14 @@ public class CommandQueueWrapper
      * or desktop.
      *
      * @param queueIndex index of the queue to add to
-     * @param id element id
-     * @param content element content
+     * @param cmd command to add to the queue
      * @param checkable if checkable with status
      */
-    public void add(int queueIndex, long id, String content, boolean checkable)
+    public void add(int queueIndex, CommandInterface cmd, boolean checkable)
     {
-        queues[queueIndex].add(id, content);
-        if (checkable)
-        {
-            statusQueue.add(new StatusObject(id, CommandQueueStatus.PENDING));
-        }
-        // signal that we have something to do
-        queueSemaphore.release();
-    }
-
-    /**
-     * Adds an element to the given queue. Standard command not requiring a sign
-     * or desktop.
-     *
-     * @param queueIndex index of the queue to add to
-     * @param id element id
-     * @param content element content
-     * @param checkable if checkable with status
-     */
-    public void add(int queueIndex, long id, ShelfUnit desktop, int desktopShelf, String content, boolean checkable)
-    {
-        queues[queueIndex].add(id, desktop, desktopShelf, content);//add(id, desktop, e);
-        if (checkable)
-        {
-            statusQueue.add(new StatusObject(id, CommandQueueStatus.PENDING));
-        }
-        // signal that we have something to do
-        queueSemaphore.release();
-    }
-
-    public void add(int queueIndex, long id, ShelfUnit desktop, int desktopShelf, int layer, EffectType e, boolean checkable)
-    {
-        queues[queueIndex].add(id, desktop, desktopShelf, layer, e);//(id, desktop, desktopShelf, content);//add(id, desktop, e);
-        if (checkable)
-        {
-            statusQueue.add(new StatusObject(id, CommandQueueStatus.PENDING));
-        }
-        // signal that we have something to do
-        queueSemaphore.release();
-    }
-
-    public void add(int queueIndex, long id, ShelfUnit desktop, String content, boolean checkable)
-    {
-        queues[queueIndex].add(id, desktop, content);//add(id, desktop, e);
-        if (checkable)
-        {
-            statusQueue.add(new StatusObject(id, CommandQueueStatus.PENDING));
+        queues[queueIndex].add(cmd);
+        if (checkable) {
+            statusQueue.add(new StatusObject(cmd.getId(), CommandStatus.PENDING));
         }
         // signal that we have something to do
         queueSemaphore.release();
@@ -116,10 +74,10 @@ public class CommandQueueWrapper
     /**
      * Gets the next command in the list (blocking until command available)
      *
-     * @return Next QueueableItem from the queues, following priority rules.  Returns
-     *          null if the thread should be killed
+     * @return Next CommandInterface from the queues, following priority rules.  Returns
+          null if the thread should be killed
      */
-    public QueueableItem getItem()
+    public CommandInterface getItem()
     {
         // safety valve ... don't sleep if we know a kill is waiting
         if (killThread)
@@ -134,7 +92,7 @@ public class CommandQueueWrapper
         if (killThread)
             return null;
         // check if anything in the high priority queue
-        QueueableItem cmd;
+        CommandInterface cmd;
         cmd = queues[0].getFirst();
         if (cmd != null)
             return cmd;
@@ -158,7 +116,7 @@ public class CommandQueueWrapper
      * @param id Id of the queued item to check
      * @return Status of the command
      */
-    public CommandQueueStatus getStatus(String id)
+    public CommandStatus getStatus(String id)
     {
         long l = Long.parseLong(id);
         return statusQueue.getStatus(l);

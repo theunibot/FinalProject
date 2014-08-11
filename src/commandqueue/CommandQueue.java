@@ -5,8 +5,9 @@
  */
 package commandqueue;
 
+import commands.CommandInterface;
 import enums.EffectType;
-import enums.ShelfUnit;
+import enums.ShelfType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
 public class CommandQueue
 {
 
-    private List<QueueableItem> queue = Collections.synchronizedList(new ArrayList<QueueableItem>());
+    private List<CommandInterface> queue = Collections.synchronizedList(new ArrayList<CommandInterface>());
 
     /**
      * Clear the command queue
@@ -30,50 +31,15 @@ public class CommandQueue
             queue.clear();
         }
     }
-
-    /**
-     * Add a Command String to the Queue
-     *
-     * @param s Command String
-     */
-    public void add(long id, String s)
-    {
-        synchronized (queue)
-        {
-            queue.add(new QueueableItem(id, s));
-        }
-    }
-
-    public void add(long id, ShelfUnit desktop, String content)
-    {
-        synchronized (queue)
-        {
-            queue.add(new QueueableItem(id, desktop, content));
-        }
-    }
-    
-    public void add(long id, ShelfUnit desktop, int desktopShelf, String content)
-    {
-        synchronized (queue)
-        {
-            queue.add(new QueueableItem(id, desktop, desktopShelf, content));
-        }
-    }
     
     /**
-     * Add a move command to the queue
-     *
-     * @param id
-     * @param desktop
-     * @param desktopShelf 
-     * @param layer
-     * @param e
+     * add a command to the queue
+     * 
+     * @param cmd - command interface to add 
      */
-    public void add(long id, ShelfUnit desktop, int desktopShelf, int layer, EffectType e)
-    {
-        synchronized (queue)
-        {
-            queue.add(new QueueableItem(id, desktop, desktopShelf, layer, e));
+    public void add(CommandInterface cmd) {
+        synchronized (queue) {
+            queue.add(cmd);
         }
     }
 
@@ -82,7 +48,7 @@ public class CommandQueue
      *
      * @return First command in list or null if none found
      */
-    public QueueableItem getFirst()
+    public CommandInterface getFirst()
     {
         synchronized (queue)
         {
@@ -94,11 +60,17 @@ public class CommandQueue
         }
     }
 
-    public QueueableItem getElement(long id)
+    /**
+     * Locate a specific command in the queue by Id
+     * 
+     * @param id
+     * @return 
+     */
+    public CommandInterface getById(long id)
     {
         synchronized (queue)
         {
-            for (QueueableItem q : queue)
+            for (CommandInterface q : queue)
             {
                 if(q.getId() == id)
                 {

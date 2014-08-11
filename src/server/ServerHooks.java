@@ -7,11 +7,12 @@ package server;
 
 import utils.Utils;
 import commandqueue.CommandQueueWrapper;
-import commandqueue.CommandQueueStatus;
+import enums.CommandStatus;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import commands.*;
 
 /**
  *
@@ -40,25 +41,18 @@ public class ServerHooks
         return s;
     }
 
-    //enqueue stuff
-    private final String ENQUEUE_COMMAND = "command";
-    private final String[] ENQUEUE_COMMANDS =
-    {
-        "mount-layer", "replace-layer", "show-layer", "empty-desktop", "show-sign", "arm-home", "arm-calibrate", "arm-energize", "arm-de-energize"
-    };    
-
     private volatile boolean errorState = false;
 
     public String enqueue(Map<String, String> params)
     {
         response.clear();
         String command = "";
-        if ((command = params.get(ENQUEUE_COMMAND)) != null)
+        if ((command = params.get("command")) != null)
         {
             
-            command = command.toLowerCase();//convert the command to lowercase, case doesn't matter
+            command = command.toLowerCase();    //convert the command to lowercase, case doesn't matter
             System.out.println("COMMAND: " + command);
-            if (command.equals(ENQUEUE_COMMANDS[0]) && !errorState)//mnt lyr
+            if (command.equals("mount-layer") && !errorState)
             {
                 System.out.println("MountLayer called");
                 String queue, checkableStr, layer, shelf, desktop, effect = "";
@@ -98,16 +92,17 @@ public class ServerHooks
                 {
                     checkable = true;
                 }
-                long id = Utils.getID();
+
                 int queueint = Integer.parseInt(queue);
-                cmdq.add(queueint, id, Utils.stringToEnumShelfUnit(shelf), Integer.parseInt(shelf), Integer.parseInt(layer), Utils.effectStringToEffectType(effect) , checkable);
+                CommandMountLayer cmd = new CommandMountLayer(Utils.stringToEnumShelfType(shelf), Integer.parseInt(shelf), Integer.parseInt(layer), Utils.effectStringToEffectType(effect));
+                cmdq.add(queueint, cmd, checkable);
                 
                 //response
-                response.add(new KVObj("id", String.valueOf(id)));
+                response.add(new KVObj("id", String.valueOf(cmd.getClass())));
                 return Utils.buildJSON(response);
 
             }
-            else if (command.equals(ENQUEUE_COMMANDS[1]) && !errorState)//rep lyr
+            else if (command.equals("replace-layer") && !errorState)
             {
                 String queue, checkableStr, layer, shelf, desktop, effect = "";
                 if ((queue = params.get("queue")) == null)
@@ -134,21 +129,17 @@ public class ServerHooks
                 {
                     return Utils.genericEnqueueFail();
                 }
-                //no fails
+
                 boolean checkable = false;
                 if (Integer.parseInt(checkableStr) == 1)
                 {
                     checkable = true;
                 }
-                long id = Utils.getID();
-//                int queueint = Integer.parseInt(queue);
-//                cmdq.add(queueint, id, Utils.stringToEnumShelfUnit(shelf), Integer.parseInt(shelf), "shake", checkable);
-                
-                //response
-                response.add(new KVObj("id", String.valueOf(id)));
-                return Utils.buildJSON(response);
+                int queueint = Integer.parseInt(queue);
+
+                return null;
             }
-            else if (command.equals(ENQUEUE_COMMANDS[2]) && !errorState)//shw lyr
+            else if (command.equals("replace-layer") && !errorState)
             {
                 String queue, checkableStr, shelf, desktop, effect = "";
                 if ((queue = params.get("queue")) == null)
@@ -179,15 +170,10 @@ public class ServerHooks
                 {
                     checkable = true;
                 }
-                long id = Utils.getID();
                 int queueint = Integer.parseInt(queue);
-                cmdq.add(queueint, id, Utils.stringToEnumShelfUnit(shelf), Integer.parseInt(shelf), "shake", checkable);
-                
-                //response
-                response.add(new KVObj("id", String.valueOf(id)));
-                return Utils.buildJSON(response);
+                return null;
             }
-            else if (command.equals(ENQUEUE_COMMANDS[3]) && !errorState)//emty dsktp
+            else if (command.equals("empty-desktop") && !errorState)
             {
                 String queue, checkableStr, desktop = "";
                 if ((queue = params.get("queue")) == null)
@@ -208,15 +194,11 @@ public class ServerHooks
                 {
                     checkable = true;
                 }
-                long id = Utils.getID();
+
                 int queueint = Integer.parseInt(queue);
-                cmdq.add(queueint, id, Utils.stringToEnumShelfUnit(desktop), "clear", checkable);
-                
-                //response
-                response.add(new KVObj("id", String.valueOf(id)));
-                return Utils.buildJSON(response);
+                return null;
             }
-            else if (command.equals(ENQUEUE_COMMANDS[4]) && !errorState)//shw sign
+            else if (command.equals("show-sign") && !errorState)
             {
                 String queue, checkableStr, layer, effect = "";
                 if ((queue = params.get("queue")) == null)
@@ -241,18 +223,11 @@ public class ServerHooks
                 {
                     checkable = true;
                 }
-                long id = Utils.getID();
                 int queueint = Integer.parseInt(queue);
-                
-//                cmdq.add(queueint, id, command, checkable);
-                //TODO
-                
-                
-                //response
-                response.add(new KVObj("id", String.valueOf(id)));
-                return Utils.buildJSON(response);
+
+                return null;
             }
-            else if (command.equals(ENQUEUE_COMMANDS[5]))//arm home
+            else if (command.equals("arm-home"))
             {
                 String queue, checkableStr = "";
                 if ((queue = params.get("queue")) == null)
@@ -269,14 +244,10 @@ public class ServerHooks
                 {
                     checkable = true;
                 }
-                long id = Utils.getID();
                 int queueint = Integer.parseInt(queue);
-                cmdq.add(queueint, id, "home", checkable);                
-                //response
-                response.add(new KVObj("id", String.valueOf(id)));
-                return Utils.buildJSON(response);
+                return null;
             }
-            else if (command.equals(ENQUEUE_COMMANDS[6]))//arm calibr
+            else if (command.equals("arm-calibrate"))
             {
                 String queue, checkableStr = "";
                 if ((queue = params.get("queue")) == null)
@@ -293,14 +264,10 @@ public class ServerHooks
                 {
                     checkable = true;
                 }
-                long id = Utils.getID();
                 int queueint = Integer.parseInt(queue);
-                cmdq.add(queueint, id, "calibrate", checkable);                
-                //response
-                response.add(new KVObj("id", String.valueOf(id)));
-                return Utils.buildJSON(response);
+                return null;
             }
-            else if (command.equals(ENQUEUE_COMMANDS[7]))//energize
+            else if (command.equals("arm-energize"))
             {
                 String queue, checkableStr = "";
                 if ((queue = params.get("queue")) == null)
@@ -317,14 +284,10 @@ public class ServerHooks
                 {
                     checkable = true;
                 }
-                long id = Utils.getID();
                 int queueint = Integer.parseInt(queue);
-                cmdq.add(queueint, id, "energize", checkable);                
-                //response
-                response.add(new KVObj("id", String.valueOf(id)));
-                return Utils.buildJSON(response);
+                return null;
             }
-            else if (command.equals(ENQUEUE_COMMANDS[8]))//de-energize
+            else if (command.equals("arm-de-energize"))
             {
                 String queue, checkableStr = "";
                 if ((queue = params.get("queue")) == null)
@@ -340,13 +303,8 @@ public class ServerHooks
                 {
                     checkable = true;
                 }
-                long id = Utils.getID();
                 int queueint = Integer.parseInt(queue);
-                cmdq.add(queueint, id, "de-energize", checkable);
-                
-                //response
-                response.add(new KVObj("id", String.valueOf(id)));
-                return Utils.buildJSON(response);
+                return null;
             }
             else//unknown command type
             {
@@ -368,7 +326,7 @@ public class ServerHooks
         response.clear();
         String id;
 
-        CommandQueueStatus status = CommandQueueStatus.UNKNOWN;
+        CommandStatus status = CommandStatus.UNKNOWN;
 
         
         if ((id = params.get(STATUS_ID_KEY)) != null)
