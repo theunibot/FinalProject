@@ -98,7 +98,7 @@ public class RouteCompiler
 
             for (Route route : routes)
             {
-                
+
                 ArrayList<String> commands = route.getRoboforthCommands();
                 for (String commandString : commands)
                 {
@@ -128,10 +128,10 @@ public class RouteCompiler
 
     private ArrayList<Route> parseLines(ArrayList<String> lines, String prefix)
     {
-        RouteProperties routeState = new RouteProperties(null);
-        ArrayList<Route> routeObjList = new ArrayList<Route>();
-        Route currentRouteObjectList = null;        //set route type, D1, D2, etc
-        routeState.setRouteType(getRouteType(prefix));
+        RouteProperties routeProperties = new RouteProperties(null);
+        ArrayList<Route> listOfRoutes = new ArrayList<Route>();
+        Route route = null;        //set route type, D1, D2, etc
+        routeProperties.setRouteType(getRouteType(prefix));
         int lineCount = 1;//used in error tracking
         for (String line : lines)
         {
@@ -142,33 +142,33 @@ public class RouteCompiler
                 {
                     if (chunk.equals(ROUTE_LEFT))
                     {
-                        routeState.setRouteSide(RouteSide.LEFT);
+                        routeProperties.setRouteSide(RouteSide.LEFT);
                     }
                     else if (chunk.equals(ROUTE_RIGHT))
                     {
-                        routeState.setRouteSide(RouteSide.RIGHT);
+                        routeProperties.setRouteSide(RouteSide.RIGHT);
                     }
                 }
             }
             else if (line.startsWith(ROUTE_PREFIX))//new Route
             {
                 String routeName = prefix + line.replace(ROUTE_PREFIX, "").trim();
-                routeState.setRouteName(routeName);//sets the name of the route for use
-                currentRouteObjectList = new Route( routeState);
-                routeObjList.add(currentRouteObjectList);
+                routeProperties.setRouteName(routeName);//sets the name of the route for use
+                route = new Route(routeProperties);
+                listOfRoutes.add(route);
             }
-            else if (currentRouteObjectList != null)//not defining a new command, so a cartesian command
+            else if (route != null)//not defining a new command, so a cartesian command
             {
 
                 String[] pieces = line.split(" ");//splits the line to pieces
                 if (pieces.length == 3)//x,y,z only
                 {
                     String pitch = "0", yaw = "0", roll = "0";
-                    
+
                     //grab the pitch,yaw,roll from the last cartesian command
-                    if (currentRouteObjectList.getFirstObject() != null && currentRouteObjectList.getFirstObject().getObjectType() == CommandType.CARTESIAN)
+                    if (route.getFirstObject() != null && route.getFirstObject().getObjectType() == CommandType.CARTESIAN)
                     {
-                        CommandCartesian orcc = (CommandCartesian)currentRouteObjectList.getFirstObject();
+                        CommandCartesian orcc = (CommandCartesian) route.getFirstObject();
                         pitch = String.valueOf(orcc.getPitch());
                         yaw = String.valueOf(orcc.getYaw());
                         roll = String.valueOf(orcc.getRoll());
@@ -176,7 +176,7 @@ public class RouteCompiler
                     pieces[0] = Utils.xyInToMmStr(pieces[0]);
                     pieces[1] = Utils.xyInToMmStr(pieces[1]);
                     pieces[2] = Utils.xyInToMmStr(pieces[2]);
-                    currentRouteObjectList.add(new CommandCartesian(pieces[0], pieces[1], pieces[2], pitch, yaw, roll, routeState.getRouteName(), currentRouteObjectList.size() + 1));
+                    route.add(new CommandCartesian(pieces[0], pieces[1], pieces[2], pitch, yaw, roll, routeProperties.getRouteName(), route.size() + 1));
                 }
                 else if (pieces.length == 6)//x,y,z,pitch,yaw,roll
                 {
@@ -208,21 +208,20 @@ public class RouteCompiler
                     pieces[0] = Utils.xyInToMmStr(pieces[0]);
                     pieces[1] = Utils.xyInToMmStr(pieces[1]);
                     pieces[2] = Utils.xyInToMmStr(pieces[2]);
-                    currentRouteObjectList.add(new CommandCartesian(pieces[0], pieces[1], pieces[2], pitch, yaw, roll, routeState.getRouteName(), currentRouteObjectList.size() + 1));
+                    route.add(new CommandCartesian(pieces[0], pieces[1], pieces[2], pitch, yaw, roll, routeProperties.getRouteName(), route.size() + 1));
                 }
                 else//error in format of info
                 {
-                    System.err.println("Format of line " + lineCount + " wrong: " + line);
+                    System.err.println("Format of line " + lineCount + " wrong. The line: " + line);
                     //ignore line
                 }
             }
             lineCount++;
         }
 
-        return routeObjList;
+        return listOfRoutes;
     }
-    
-//    
+
     private RouteType getRouteType(String prefix)
     {
         if (prefix.equals(ROUTE_FILE_PREFIXS[0]))//D1
@@ -242,116 +241,4 @@ public class RouteCompiler
             return null;
         }
     }
-
-//
 }
-
-//    private RouteInfo getRouteInfo(RouteType type, RouteSide side)
-//    {
-//        if (type == RouteType.D1)
-//        {
-//            if (side == RouteSide.LEFT)
-//            {
-//                return RouteInfo.D1L;
-//            }
-//            else if (side == RouteSide.RIGHT)
-//            {
-//                return RouteInfo.D1R;
-//            }
-//        }
-//        else if (type == RouteType.D2)
-//        {
-//            if (side == RouteSide.LEFT)
-//            {
-//                return RouteInfo.D2L;
-//            }
-//            else if (side == RouteSide.RIGHT)
-//            {
-//                return RouteInfo.D2R;
-//            }
-//        }
-//        else if (type == RouteType.S)
-//        {
-//            return RouteInfo.S;
-//        }
-//
-//        return null;
-//    }
-//private ArrayList<ObjectRouteInterface> parseLines(ArrayList<String> lines, String prefix)
-//    {
-//        ArrayList<ObjectRouteInterface> commands = new ArrayList<ObjectRouteInterface>();
-//
-//        RouteType routeDesktop = getRouteType(prefix);
-//
-//        String currentRoute = null;
-//        int currentLine = 1;
-//        RouteSide routeSide = null;
-//        int i = 0;
-//        for (String line : lines)
-//        {
-//            if (line.startsWith(ROUTE_PREFIX) && routeSide != null && routeDesktop != null)//is route def
-//            {
-//                String routeName = line.replace(ROUTE_PREFIX, "").trim();
-//                currentRoute = prefix + routeName;
-//                commands.add(new ObjectRouteDefine(currentRoute));
-//                orc.add(getRouteInfo(routeDesktop, routeSide), new ObjectRoute(routeName, getRouteInfo(routeDesktop, routeSide)));
-//
-//                currentLine = 0;
-//            }
-//            else if (line.equals(ROUTE_LEFT))
-//            {
-//                routeSide = RouteSide.LEFT;
-//            }
-//            else if (line.equals(ROUTE_RIGHT))
-//            {
-//                routeSide = RouteSide.RIGHT;
-//            }
-//            else if (currentRoute != null)//not defining a new command, so a cartesian command
-//            {
-//
-//                String[] pieces = line.split(" ");//splits the line to pieces
-//                if (pieces.length == 3)//x,y,z only
-//                {
-//                    commands.add(new CommandCartesian(pieces[0], pieces[1], pieces[2], "0", "0", "0", currentRoute, currentLine));
-//                }
-//                else if (pieces.length == 6)//x,y,z,pitch,yaw,roll
-//                {
-//                    String roll = pieces[5];
-//                    String pitch = pieces[4];
-//                    String yaw = pieces[3];
-//
-//                    for (ParseObj porint : PITCH_ORIENTATION)
-//                    {
-//                        if (pitch.equals(porint.key))
-//                        {
-//                            pitch = porint.value;
-//                        }
-//                    }
-//                    for (ParseObj yorint : YAW_ORIENTATION)
-//                    {
-//                        if (yaw.equals(yorint.key))
-//                        {
-//                            yaw = yorint.value;
-//                        }
-//                    }
-//                    for (ParseObj worint : ROLL_ORIENTATION)
-//                    {
-//                        if (roll.equals(worint.key))
-//                        {
-//                            roll = worint.value;
-//                        }
-//                    }
-//                    commands.add(new CommandCartesian(pieces[0], pieces[1], pieces[2], pitch, yaw, roll, currentRoute, currentLine));
-//                }
-//                else//error in format of info
-//                {
-//                    System.err.println("Format of line " + i + " wrong: " + line);
-//                    //ignore line
-//                }
-//                currentLine++;
-//                i++;
-//            }
-//        }
-//        return commands;
-//    }
-
