@@ -105,7 +105,7 @@ public class R12Operations
      * @param command command to filter out
      * @return response without the command
      */
-    public String readNoEcho(String command)
+    private String readNoEcho(String command)
     {
         return read().replaceFirst(command, "").trim();
     }
@@ -115,7 +115,7 @@ public class R12Operations
      *
      * @return String including echo of command
      */
-    public String read()
+    private String read()
     {
         byte[] buffer = new byte[65536];
         int offsetIterator = 0;//length of the buffer. Actual last pos is this - 1
