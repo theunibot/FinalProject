@@ -150,6 +150,8 @@ public class RouteCompiler
                         routeProperties.setRouteSide(RouteSide.LEFT);
                     }
                     else if (chunk.equals(ROUTE_RIGHT))
+                        routeProperties.setRouteSide(RouteSide.MIDDLE);
+                    else if (chunk.equals(ROUTE_RIGHT))
                     {
                         routeProperties.setRouteSide(RouteSide.RIGHT);
                     }

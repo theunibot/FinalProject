@@ -13,5 +13,5 @@ package route;
 public enum RouteSide
 {
 
-    LEFT, RIGHT
+    LEFT, RIGHT, MIDDLE
 }
