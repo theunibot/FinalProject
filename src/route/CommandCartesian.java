@@ -36,7 +36,7 @@ public class CommandCartesian implements CommandInterface
     public String toString()
     {        
         return "LEARN\r"
-                + "DECIMAL " + coord.getRollStr() + " " + coord.getYawStr() + " " + coord.getPitchStr() + " " + coord.getZ() + " " + coord.getY() + " " + coord.getX() + " " + routeName + " " + line + " DLD\r";
+                + "DECIMAL " + coord.getRollStr() + " " + coord.getYawStr() + " " + coord.getPitchStr() + " " + coord.getZ() + " " + coord.getY() + " " + coord.getX() + " " + routeName + " " + line + " LINE DLD\r";
     }
 
     @Override
