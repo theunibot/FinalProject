@@ -29,6 +29,7 @@ public class RouteCompiler
     public static final String ROUTE_PREFIX = "route ";
     public static final String ROUTE_FILE_BASENAME = "routes";
     public static final String ROUTE_LEFT = "left";
+    public static final String ROUTE_MIDDLE = "middle";
     public static final String ROUTE_RIGHT = "right";
 
     public static final String[] ROUTE_FILE_PREFIXS =
@@ -62,6 +63,8 @@ public class RouteCompiler
             + "//the route is added to a usable list for the program"
             + "\n"
             + "\n" + ROUTE_LEFT + ""
+            + "\n"
+            + "\n" + ROUTE_MIDDLE + ""
             + "\n"
             + "\n" + ROUTE_RIGHT;
     private String pathToFile = "";
