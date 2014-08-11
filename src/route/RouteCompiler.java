@@ -174,14 +174,14 @@ public class RouteCompiler
                     if (route.getFirstObject() != null && route.getFirstObject().getObjectType() == CommandType.CARTESIAN)
                     {
                         CommandCartesian orcc = (CommandCartesian) route.getFirstObject();
-                        pitch = String.valueOf(orcc.getPitch());
-                        yaw = String.valueOf(orcc.getYaw());
-                        roll = String.valueOf(orcc.getRoll());
+                        pitch = String.valueOf(orcc.getCartesian().getPitch());
+                        yaw = String.valueOf(orcc.getCartesian().getYaw());
+                        roll = String.valueOf(orcc.getCartesian().getRoll());
                     }
                     pieces[0] = Utils.xyInToMmStr(pieces[0]);
                     pieces[1] = Utils.xyInToMmStr(pieces[1]);
                     pieces[2] = Utils.xyInToMmStr(pieces[2]);
-                    route.add(new CommandCartesian(pieces[0], pieces[1], pieces[2], pitch, yaw, roll, routeProperties.getRouteName(), route.size() + 1));
+                    route.add(new CommandCartesian(new Cartesian(pieces[0], pieces[1], pieces[2], pitch, yaw, roll), routeProperties.getRouteName(), route.size() + 1));
                 }
                 else if (pieces.length == 6)//x,y,z,pitch,yaw,roll
                 {
@@ -213,7 +213,7 @@ public class RouteCompiler
                     pieces[0] = Utils.xyInToMmStr(pieces[0]);
                     pieces[1] = Utils.xyInToMmStr(pieces[1]);
                     pieces[2] = Utils.xyInToMmStr(pieces[2]);
-                    route.add(new CommandCartesian(pieces[0], pieces[1], pieces[2], pitch, yaw, roll, routeProperties.getRouteName(), route.size() + 1));
+                    route.add(new CommandCartesian(new Cartesian(pieces[0], pieces[1], pieces[2], pitch, yaw, roll), routeProperties.getRouteName(), route.size() + 1));
                 }
                 else//error in format of info
                 {

@@ -11,37 +11,19 @@ package route;
  */
 public class CommandCartesian implements CommandInterface
 {
-
-    private int x;
-    private int y;
-    private int z;
-    private int pitch;
-    private int yaw;
-    private int roll;
-    private String pitchStr;
-    private String yawStr;
-    private String rollStr;
-
+    private Cartesian coord;
     private String routeName;
     private int line;
 
-    public CommandCartesian(String x, String y, String z, String pitch, String yaw, String roll, String routeName, int line)
+    public CommandCartesian(Cartesian coord, String routeName, int line)
     {
-        //turn 300.0 to 3000
-        x = x.replace(".", "");
-        y = y.replace(".", "");
-        z = z.replace(".", "");
-        this.x = Integer.parseInt(x);
-        this.y = Integer.parseInt(y);
-        this.z = Integer.parseInt(z);
-        this.pitchStr = pitch;
-        this.yawStr = yaw;
-        this.rollStr = roll;
-//        this.pitch = Integer.parseInt(pitch);
-//        this.yaw = Integer.parseInt(yaw);
-//        this.roll = Integer.parseInt(roll);
+        this.coord = coord;
         this.routeName = routeName;
         this.line = line;     
+    }
+    
+    public Cartesian getCartesian() {
+        return this.coord;
     }
     
     @Override
@@ -54,37 +36,7 @@ public class CommandCartesian implements CommandInterface
     public String toString()
     {        
         return "LEARN\r"
-                + "DECIMAL " + rollStr + " " + yawStr + " " + pitchStr + " " + z + " " + y + " " + x + " " + routeName + " " + line + " DLD\r";
-    }
-
-    public int getX()
-    {
-        return x;
-    }
-
-    public int getY()
-    {
-        return y;
-    }
-
-    public int getZ()
-    {
-        return z;
-    }
-
-    public int getPitch()
-    {
-        return pitch;
-    }
-
-    public int getYaw()
-    {
-        return yaw;
-    }
-
-    public int getRoll()
-    {
-        return roll;
+                + "DECIMAL " + coord.getRollStr() + " " + coord.getYawStr() + " " + coord.getPitchStr() + " " + coord.getZ() + " " + coord.getY() + " " + coord.getX() + " " + routeName + " " + line + " DLD\r";
     }
 
     @Override
