@@ -33,6 +33,8 @@ public class CommandProcessor
         cmdq = CommandQueueWrapper.getInstance();
         ao = ArmOperations.getInstance();
     }
+    
+    //hello world
     /*
     The goal of the Command Processor is to take the first item from the Command
     Queue and process it into chuncks - "Clear Desktop 1" becomes RoboForth to 
