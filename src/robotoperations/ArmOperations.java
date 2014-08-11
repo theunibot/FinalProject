@@ -143,7 +143,32 @@ public class ArmOperations
         return true;
     }
     
+    // TEMPORARY UNTIL REFACTOR COMPLETE
     
+    private boolean runCommand(String commandString)
+    {
+        r12o.write(commandString);
+        ResponseObject response = r12o.getResponse(commandString);
+
+        if (!response.isSuccessful())
+        {
+            System.err.println("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+            return false;
+        }
+        return true;
+    }
+
+    public boolean learnRoute(Route route) {
+        //gets and executes each command in the route
+        ArrayList<String> commands = route.getRoboforthCommands();
+        for (String commandString : commands)
+        {
+            System.out.println(commandString);
+            if (!runCommand(commandString))
+                return false;
+        }        
+        return true;
+    }
 }
 /*
 System.out.println("running");

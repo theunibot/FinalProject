@@ -7,7 +7,7 @@ package route;
 
 import route.Route;
 import robotoperations.ResponseObject;
-import robotoperations.R12Operations;
+import robotoperations.ArmOperations;
 import utils.FileUtils;
 import route.CommandType;
 import route.CommandCartesian;
@@ -22,7 +22,6 @@ public class RouteCompiler
 {
 
     private static RouteCompiler routeCompiler = null;
-    private R12Operations r12o = R12Operations.getInstance();   
     private RouteHolder rh = RouteHolder.getInstance();
 
     //String consts
@@ -103,33 +102,15 @@ public class RouteCompiler
                 //adds routes to the route holder
                 rh.addRoute(route);
                 
-                //gets and executes each command in the route
-                ArrayList<String> commands = route.getRoboforthCommands();
-                for (String commandString : commands)
-                {
-                    System.out.println(commandString);
-                    if (!runCommand(commandString))//if command not successul
-                    {
-                        success = false;
-                    }
-                }
+                ArmOperations ao = ArmOperations.getInstance();
+                success = ao.learnRoute(route);
+                if (!success)
+                    break;
             }
         }
         return success;
     }
 
-    private boolean runCommand(String commandString)
-    {
-        r12o.write(commandString);
-        ResponseObject response = r12o.getResponse(commandString);
-
-        if (!response.isSuccessful())
-        {
-            System.err.println("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-            return false;
-        }
-        return true;
-    }
 
     private ArrayList<Route> parseLines(ArrayList<String> lines, String prefix)
     {
