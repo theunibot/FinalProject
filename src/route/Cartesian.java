@@ -35,6 +35,11 @@ public class Cartesian {
         this.rollStr = roll;
     }
     
+    public String getRoboforth(){
+        String robo = getX() + " X ! " + getY() + " Y ! " + getZ() + " Z ! " + getPitch() + " PITCH ! " + getYaw() + " YAW ! " + getRoll() + " ROLL !";
+        return robo;
+    }
+    
     public int getX()
     {
         return x;
