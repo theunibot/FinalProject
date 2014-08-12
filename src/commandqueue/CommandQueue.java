@@ -26,10 +26,7 @@ public class CommandQueue
      */
     public void clear()
     {
-        synchronized (queue)
-        {
-            queue.clear();
-        }
+        queue.clear();
     }
     
     /**
@@ -38,9 +35,7 @@ public class CommandQueue
      * @param cmd - command interface to add 
      */
     public void add(CommandInterface cmd) {
-        synchronized (queue) {
-            queue.add(cmd);
-        }
+        queue.add(cmd);
     }
 
     /**
@@ -50,15 +45,13 @@ public class CommandQueue
      */
     public CommandInterface pop()
     {
-        synchronized (queue)
+        if (queue.size() > 0)
         {
-            if (queue.size() > 0)
-            {
-                CommandInterface cmd = queue.get(0);
-                queue.remove(cmd);
-            }
-            return null;
+            CommandInterface cmd = queue.get(0);                
+            queue.remove(cmd);
+            return cmd;
         }
+        return null;
     }
 
     /**
@@ -67,9 +60,7 @@ public class CommandQueue
      * @param cmd Command to add to the queue head
      */
     public void push(CommandInterface cmd) {
-        synchronized (queue) {
-            queue.add(0, cmd);
-        }
+        queue.add(0, cmd);
     }
 
     /**
@@ -80,17 +71,17 @@ public class CommandQueue
      */
     public CommandInterface getById(long id)
     {
-        synchronized (queue)
+        for (CommandInterface q : queue)
         {
-            for (CommandInterface q : queue)
+            if(q.getId() == id)
             {
-                if(q.getId() == id)
-                {
-                    return q;
-                }
+                return q;
             }
         }
         return null;
     }
 
+    public void remove(CommandInterface cmd) {
+        queue.remove(cmd);
+    }
 }

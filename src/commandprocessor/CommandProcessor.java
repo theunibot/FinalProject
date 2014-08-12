@@ -5,7 +5,7 @@
  */
 package commandprocessor;
 
-import commandqueue.CommandQueueWrapper;
+import commandqueue.CommandQueues;
 import commands.CommandInterface;
 import enums.CommandCompletion;
 import enums.CommandStatus;
@@ -19,9 +19,14 @@ public class CommandProcessor
 {
 
     private CommandProcessor cp = null;
-    private CommandQueueWrapper cmdq = null;
+    private CommandQueues cmdq = null;
     private ArmOperations ao = null;
 
+    /**
+     * Returns a singleton instead of this CommandProcessor
+     * 
+     * @return CommandProcessor single instance
+     */
     public CommandProcessor getInstance()
     {
         if (cp == null)
@@ -31,20 +36,29 @@ public class CommandProcessor
         return cp;
     }
 
+    /**
+     * Constructor sets up the command processor
+     */
     public CommandProcessor()
     {
-        cmdq = CommandQueueWrapper.getInstance();
+        cmdq = CommandQueues.getInstance();
         ao = ArmOperations.getInstance();
     }
     
+    /**
+     * Main command processor thread - blocks and executes command until terminated with kill
+     */
     public void processCommands() {
         System.out.println("Command processor started");
         while (true) 
         {
             CommandInterface cmd = cmdq.pop();
             if (cmd == null) {
-                System.out.println("Received kill in processCommands; terminating");
-                break;
+                if (cmdq.killed()) {
+                    System.out.println("Received kill in processCommands; terminating");
+                    break;
+                }
+                continue;
             }
             // process the command
             System.out.println("Processing command " + cmd.details());
@@ -68,9 +82,10 @@ public class CommandProcessor
         // done - terminate
     }
     
+    /**
+     * Instructs the main processing thread to do a clean shutdown
+     */
     public void kill() {
         cmdq.kill();
     }
-    
-
 }

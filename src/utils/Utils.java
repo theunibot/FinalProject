@@ -56,6 +56,20 @@ public class Utils
         return Double.parseDouble(s);
     }
     
+    /**
+     * Convert string to integer without throwing errors
+     * 
+     * @param s string to convert
+     * @return converted integer, or -1 if unable to convert
+     */
+    public static Integer strToInt(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+    
     public static String zInToMmStr(String z)
     {
         
@@ -110,6 +124,8 @@ public class Utils
     
     public static EffectType effectStringToEffectType(String s)
     {
+        if (s == null)
+            return null;
         if (s.equals("fancy"))
         {
             return EffectType.FANCY;

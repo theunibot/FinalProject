@@ -5,7 +5,7 @@
  */
 package server;
 
-import commandqueue.CommandQueueWrapper;
+import commandqueue.CommandQueues;
 import commands.*;
 import enums.CommandStatus;
 import enums.EffectType;
@@ -28,7 +28,7 @@ public class ServerHooks
     //used in get/set vars calls
     private static Map<String, String> vars = Collections.synchronizedMap(new LinkedHashMap<String, String>());
 
-    private CommandQueueWrapper cmdq = CommandQueueWrapper.getInstance();
+    private CommandQueues cmdq = CommandQueues.getInstance();
 
     //used in JSON response
     ArrayList<KVObj> response = new ArrayList<KVObj>();
@@ -53,16 +53,16 @@ public class ServerHooks
         
         // decode all possible parameters
         String queue = params.get("queue");
-        Integer queueInt = Integer.parseInt(queue);
+        Integer queueInt = Utils.strToInt(queue);
         String status = params.get("status");
-        Boolean statusBool = (Integer.parseInt(status) == 1);
+        Boolean statusBool = (Utils.strToInt(status) == 1);
 
         String layer = params.get("layer");
-        Integer layerInt = Integer.parseInt(layer);
+        Integer layerInt = Utils.strToInt(layer);
         String shelf = params.get("shelf");
-        Integer shelfInt = Integer.parseInt(shelf);
+        Integer shelfInt = Utils.strToInt(shelf);
         String desktop = params.get("desktop");
-        Integer desktopInt = Integer.parseInt(desktop);
+        Integer desktopInt = Utils.strToInt(desktop);
         String effect = params.get("effect");
         EffectType effectEnum = Utils.effectStringToEffectType(effect);
         
@@ -80,7 +80,7 @@ public class ServerHooks
         
         // now decode the command and build up the queue item
         command = command.toLowerCase();    //convert the command to lowercase, case doesn't matter
-        System.out.println("Executing command: " + command);
+        System.out.println("Enqueing command: " + command);
         switch (command) {
             case "mount-layer":
             case "replace-layer":
@@ -175,7 +175,7 @@ public class ServerHooks
     {
         response.clear();
         String strVal = null;
-        if ((strVal = params.get(CLEAR_QUEUE_ID_KEY)) == null)
+        if ((strVal = params.get(CLEAR_QUEUE_ID_KEY)) != null)
         {
             int intVal = -1;
             try
@@ -184,13 +184,15 @@ public class ServerHooks
             }
             catch (NumberFormatException ignored)
             {
+                System.out.println("Clear queue failed - invalid number " + strVal);
             }
             //if value is legit
             if (intVal != -1)
             {
                 cmdq.clear(intVal);
             }
-        }
+        } else
+            System.out.println("Clear queue failed - no parameter found");
         return "{}";//returns nothing
     }
 
