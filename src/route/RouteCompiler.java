@@ -5,14 +5,11 @@
  */
 package route;
 
-import enums.RouteSide;
 import enums.RouteType;
-import route.Route;
-import robotoperations.ResponseObject;
 import robotoperations.ArmOperations;
 import utils.FileUtils;
-import route.CommandCartesian;
 import java.util.ArrayList;
+import java.util.List;
 import utils.Utils;
 
 /**
@@ -91,7 +88,7 @@ public class RouteCompiler
     public boolean init()
     {
         boolean success = true;
-        
+
         ArrayList<String> lines = FileUtils.readCommandFileOrGenEmpty(ROUTE_FILE_BASENAME, ROUTE_COMPILER_FILE_CONTENTS);
         System.out.println("Read " + lines.size() + " line(s) from route compiler file.");
         ArrayList<Route> routes = parseLines(lines);
@@ -121,18 +118,14 @@ public class RouteCompiler
         int lineCount = 1;//used in error tracking
         for (String line : lines)
         {
-            if (line.startsWith(FileUtils.COMMAND_FILE_METADATA_PREFIX))
+            if (line.startsWith(FileUtils.COMMAND_FILE_METADATA_PREFIX))//new Route
             {
                 String[] chunks = line.replaceFirst(FileUtils.COMMAND_FILE_METADATA_PREFIX, "").split(" ");
-                
-                parseForMetadata(chunks);                                
-            }
-            else if (line.startsWith(ROUTE_DEFINE_PREFIX)) //new Route
-            {
-//                String routeName = prefix + line.replace(ROUTE_DEFINE_PREFIX, "").trim();
-//                routeProperties.setRouteName(routeName);//sets the name of the route for use
+                routeProperties = parseForMetadata(chunks);
+                routeProperties.setRouteName(nameRoute(routeProperties));
                 route = new Route(routeProperties);
                 listOfRoutes.add(route);
+
             }
             else if (route != null)//not defining a new command, so a cartesian command
             {
@@ -198,16 +191,28 @@ public class RouteCompiler
 
         return listOfRoutes;
     }
-    
+
+    private String nameRoute(RouteProperties rp)
+    {
+        String to = "", from = "", effect = "";
+        to = getRouteCabinetPositionString(rp.getTo());
+        from = getRouteCabinetPositionString(rp.getFrom());
+        effect = getRouteEffectTypeString(rp.getEffect());
+        List<Route> sameRoutes = rh.getRoutes(rp);
+        return from + "_" + to + "_" + effect + ((int)(sameRoutes.size() + 1));
+
+    }
+
     /**
      * Takes in the array of Metadata pieces and parses out info.
+     *
      * @param array of pieces
      * @return properties found.
      */
     private RouteProperties parseForMetadata(String[] array)
     {
         RouteProperties props = new RouteProperties("");
-        if(array.length < 3)
+        if (array.length < 3)
         {
             System.err.println("Not enough metadata for this route");
             return null;
@@ -218,38 +223,39 @@ public class RouteCompiler
             return null;
         }
         //exactly 3 pieces, from "X" to "Y" with "Z" effect
-        
+
         String from = array[0];
         String to = array[1];
         String effect = array[2];
-        
+
         props.setFrom(getRouteCabinetPosition(from));
-        props.setTo(getRouteCabinetPosition(to));        
+        props.setTo(getRouteCabinetPosition(to));
         props.setEffect(getRouteEffectType(effect));
-        
+
         return props;
     }
-    
+
     /**
      * Converts a string to a RouteEffectType object
+     *
      * @param s String to convert
      * @return Converted String value
      */
     private RouteEffectType getRouteEffectType(String s)
-    {        
-        if(s.equalsIgnoreCase("efficient"))
+    {
+        if (s.equalsIgnoreCase("efficient"))
         {
             return RouteEffectType.EFFICIENT;
         }
-        else if(s.equalsIgnoreCase("fancy"))
+        else if (s.equalsIgnoreCase("fancy"))
         {
             return RouteEffectType.FANCY;
         }
-        else if(s.equalsIgnoreCase("pick"))
+        else if (s.equalsIgnoreCase("pick"))
         {
             return RouteEffectType.PICK;
         }
-        else if(s.equalsIgnoreCase("place"))
+        else if (s.equalsIgnoreCase("place"))
         {
             return RouteEffectType.PLACE;
         }
@@ -258,37 +264,94 @@ public class RouteCompiler
             return null;
         }
     }
-    
+
+    private String getRouteEffectTypeString(RouteEffectType ret)
+    {
+        if (ret == RouteEffectType.EFFICIENT)
+        {
+            return "EFFICIENT";
+        }
+        else if (ret == RouteEffectType.FANCY)
+        {
+            return "FANCY";
+        }
+        else if (ret == RouteEffectType.PICK)
+        {
+            return "PICK";
+        }
+        else if (ret == RouteEffectType.PLACE)
+        {
+            return "PLACE";
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     /**
      * Converts the given string to a RouteCabinetPosition
+     *
      * @param s String to convert
      * @return Converted String value
      */
     private RouteCabinetPosition getRouteCabinetPosition(String s)
     {
-        if(s.equalsIgnoreCase("d1"))
+        if (s.equalsIgnoreCase("d1"))
         {
             return RouteCabinetPosition.D1;
         }
-        else if(s.equalsIgnoreCase("d2"))
+        else if (s.equalsIgnoreCase("d2"))
         {
             return RouteCabinetPosition.D2;
         }
-        else if(s.equalsIgnoreCase("home"))
+        else if (s.equalsIgnoreCase("home"))
         {
             return RouteCabinetPosition.HOME;
         }
-        else if(s.equalsIgnoreCase("cpl"))
+        else if (s.equalsIgnoreCase("cpl"))
         {
             return RouteCabinetPosition.CPL;
         }
-        else if(s.equalsIgnoreCase("cpr"))
+        else if (s.equalsIgnoreCase("cpr"))
         {
             return RouteCabinetPosition.CPR;
         }
-        else if(s.equalsIgnoreCase("cpc"))
+        else if (s.equalsIgnoreCase("cpc"))
         {
             return RouteCabinetPosition.CPC;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    private String getRouteCabinetPositionString(RouteCabinetPosition rcp)
+    {
+        if (rcp == RouteCabinetPosition.CPC)
+        {
+            return "CPC";
+        }
+        else if (rcp == RouteCabinetPosition.CPL)
+        {
+            return "CPL";
+        }
+        else if (rcp == RouteCabinetPosition.CPR)
+        {
+            return "CPR";
+        }
+        else if (rcp == RouteCabinetPosition.D1)
+        {
+            return "D1";
+        }
+        else if (rcp == RouteCabinetPosition.D2)
+        {
+            return "D2";
+        }
+        else if (rcp == RouteCabinetPosition.HOME)
+        {
+            return "HOME";
         }
         else
         {
@@ -314,5 +377,5 @@ public class RouteCompiler
         {
             return null;
         }
-    }        
+    }
 }
