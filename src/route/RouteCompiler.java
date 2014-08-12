@@ -195,7 +195,7 @@ public class RouteCompiler
         String to = "", from = "", effect = "";
         to = rp.getTo().toString();
         from = rp.getFrom().toString();
-        effect = getRouteEffectTypeString(rp.getEffect());
+        effect = rp.getEffect().toString();
         List<Route> sameRoutes = rh.getRoutes(rp);
         return from + "_" + to + "_" + effect + ((int)(sameRoutes.size() + 1));
 
@@ -249,9 +249,13 @@ public class RouteCompiler
         {
             return RouteEffectType.FANCY;
         }
-        else if (s.equalsIgnoreCase("pick"))
+        else if (s.equalsIgnoreCase("gripper_in"))
         {
-            return RouteEffectType.PICK;
+            return RouteEffectType.GRIPPER_IN2;
+        }
+        else if (s.equalsIgnoreCase("gripper_out"))
+        {
+            return RouteEffectType.GRIPPER_OUT2;
         }
         else if (s.equalsIgnoreCase("place"))
         {
@@ -262,30 +266,7 @@ public class RouteCompiler
             return null;
         }
     }
-
-    private String getRouteEffectTypeString(RouteEffectType ret)
-    {
-        if (ret == RouteEffectType.EFFICIENT)
-        {
-            return "EFFICIENT";
-        }
-        else if (ret == RouteEffectType.FANCY)
-        {
-            return "FANCY";
-        }
-        else if (ret == RouteEffectType.PICK)
-        {
-            return "PICK";
-        }
-        else if (ret == RouteEffectType.PLACE)
-        {
-            return "PLACE";
-        }
-        else
-        {
-            return null;
-        }
-    }
+   
 
     /**
      * Converts the given string to a CabinetType

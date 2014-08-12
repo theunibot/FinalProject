@@ -172,11 +172,57 @@ public class ArmOperations
     {
         //unit is used to define angle to the unit
         //stack pos only relevant if CP, used to pick route for depth
-        
-        //Syntax: P1 GOTO PATH1 START-HERE ADJUST CONTINUOUS RUN 
-//        rh;
-        Route route = rh.getRoute(unit, unit, RouteEffectType.PICK);
-        r12o.write(cartesian.getName() + " GOTO PATH1 START-HERE ADJUST CONTINUOUS RUN");
+
+        RouteEffectType retIn = RouteEffectType.GRIPPER_IN2;
+        RouteEffectType retOut = RouteEffectType.GRIPPER_OUT2;
+        if (unit == CabinetType.CPL || unit == CabinetType.CPM || unit == CabinetType.CPR)
+        {
+
+            if (stackPosition == 1)
+            {
+                retIn = RouteEffectType.GRIPPER_IN1;
+                retOut = RouteEffectType.GRIPPER_OUT1;
+            }
+        }
+        Route routeIn = rh.getRoute(unit, unit, retIn);
+        Route routeOut = rh.getRoute(unit, unit, retOut);
+
+        if (routeIn == null || routeOut == null)
+        {
+            return new Result("Gripper Route for " + unit.toString() + " not found.");
+        }
+
+        //stuff not null
+        String commandString = cartesian.getName() + " GOTO " + routeIn.getRouteProperties().getRouteName() + " START-HERE ADJUST CONTINUOUS RUN";
+        r12o.write(commandString);
+        ResponseObject response = r12o.getResponse(commandString);
+
+        if (!response.isSuccessful())
+        {
+            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+        }
+        //get to position successful
+
+        commandString = "GRIP";
+        r12o.write(commandString);
+        response = r12o.getResponse(commandString);
+
+        if (!response.isSuccessful())
+        {
+            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+        }
+
+        //grip successful
+        commandString = cartesian.getName() + " " + routeIn.getRouteProperties().getRouteName() + " END-THERE ADJUST CONTINUOUS RUN";
+        r12o.write(commandString);
+        response = r12o.getResponse(commandString);
+
+        if (!response.isSuccessful())
+        {
+            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+        }
+
+        //move back to start pos succesful.
         return new Result();
     }
 
@@ -194,7 +240,56 @@ public class ArmOperations
     {
         //unit is used to define angle to the unit
         //stack pos only relevant if CP, used to pick route for depth
+        RouteEffectType retIn = RouteEffectType.GRIPPER_IN2;
+        RouteEffectType retOut = RouteEffectType.GRIPPER_OUT2;
+        if (unit == CabinetType.CPL || unit == CabinetType.CPM || unit == CabinetType.CPR)
+        {
 
+            if (stackPosition == 1)
+            {
+                retIn = RouteEffectType.GRIPPER_IN1;
+                retOut = RouteEffectType.GRIPPER_OUT1;
+            }
+        }
+        Route routeIn = rh.getRoute(unit, unit, retIn);
+        Route routeOut = rh.getRoute(unit, unit, retOut);
+
+        if (routeIn == null || routeOut == null)
+        {
+            return new Result("Gripper Route for " + unit.toString() + " not found.");
+        }
+
+        //stuff not null
+        String commandString = cartesian.getName() + " GOTO " + routeIn.getRouteProperties().getRouteName() + " START-HERE ADJUST CONTINUOUS RUN";
+        r12o.write(commandString);
+        ResponseObject response = r12o.getResponse(commandString);
+
+        if (!response.isSuccessful())
+        {
+            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+        }
+        //get to position successful
+
+        commandString = "UNGRIP";
+        r12o.write(commandString);
+        response = r12o.getResponse(commandString);
+
+        if (!response.isSuccessful())
+        {
+            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+        }
+
+        //grip successful
+        commandString = cartesian.getName() + " " + routeIn.getRouteProperties().getRouteName() + " END-THERE ADJUST CONTINUOUS RUN";
+        r12o.write(commandString);
+        response = r12o.getResponse(commandString);
+
+        if (!response.isSuccessful())
+        {
+            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+        }
+
+        //move back to start pos succesful.
         return new Result();
     }
 
@@ -226,7 +321,7 @@ public class ArmOperations
      */
     public Result home()
     {
-        String commandString = "SAFEHOME RUN";
+        String commandString = "HOME";
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);
 
