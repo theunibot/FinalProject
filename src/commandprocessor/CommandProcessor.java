@@ -7,6 +7,8 @@ package commandprocessor;
 
 import commandqueue.CommandQueueWrapper;
 import commands.CommandInterface;
+import enums.CommandCompletion;
+import enums.CommandStatus;
 import robotoperations.ArmOperations;
 
 /**
@@ -39,13 +41,29 @@ public class CommandProcessor
         System.out.println("Command processor started");
         while (true) 
         {
-            CommandInterface cmd = cmdq.getItem();
+            CommandInterface cmd = cmdq.pop();
             if (cmd == null) {
                 System.out.println("Received kill in processCommands; terminating");
                 break;
             }
             // process the command
             System.out.println("Processing command " + cmd.details());
+            cmd.setStatus(CommandStatus.EXECUTING);
+            CommandCompletion completion = cmd.execute();
+            switch (completion) {
+                case error:
+                    System.out.println("Command failed");
+                    cmd.setStatus(CommandStatus.ERROR);
+                    break;
+                case complete:
+                    System.out.println("Command completed successfully");
+                    cmd.setStatus(CommandStatus.COMPLETE);
+                    break;
+                case incomplete:
+                    System.out.println("Command incomplete; queueing for another run");
+                    cmdq.push(cmd);
+                    break;                    
+            }
         }
         // done - terminate
     }

@@ -63,6 +63,7 @@ public class CommandQueueWrapper
      */
     public void add(int queueIndex, CommandInterface cmd, boolean checkable)
     {
+        cmd.setQueueIndex(queueIndex);
         queues[queueIndex].add(cmd);
         if (checkable) {
             statusQueue.add(new StatusObject(cmd.getId(), CommandStatus.PENDING));
@@ -72,12 +73,12 @@ public class CommandQueueWrapper
     }
 
     /**
-     * Gets the next command in the list (blocking until command available)
+     * Gets the next command in the list (blocking until command available); leaves item on queue (see pop)
      *
      * @return Next CommandInterface from the queues, following priority rules.  Returns
           null if the thread should be killed
      */
-    public CommandInterface getItem()
+    public CommandInterface pop()
     {
         // safety valve ... don't sleep if we know a kill is waiting
         if (killThread)
@@ -93,15 +94,17 @@ public class CommandQueueWrapper
             return null;
         // check if anything in the high priority queue
         CommandInterface cmd;
-        cmd = queues[0].getFirst();
+        cmd = queues[0].pop();
         if (cmd != null)
             return cmd;
+
         // now try the next queue based on round-robin
         for (int scan = 0; scan < 2; ++scan) {
             // switch robin
             roundRobin++;
             // does this one have something for us?
-            cmd = queues[roundRobin % 2 + 1].getFirst();
+            Integer queueIndex = roundRobin % 2 + 1;
+            cmd = queues[queueIndex].pop();
             if (cmd != null)
                 return cmd;
         }
@@ -110,6 +113,15 @@ public class CommandQueueWrapper
         return null;
     }
 
+    /**
+     * Pushes the specified command to the head of the queue; used to re-enqueue an item when it has not completed
+     */
+    public void push(CommandInterface cmd) {
+        queues[cmd.getQueueIndex()].add(cmd);
+        // signal that we have something to do
+        queueSemaphore.release();
+    }
+    
     /**
      * Gets status of the specific queued element; removes from list when complete
      * 
@@ -123,7 +135,7 @@ public class CommandQueueWrapper
     }
     
     /**
-     * Sends a kill message back to the controlling thread, via the getItem call
+     * Sends a kill message back to the controlling thread, via the pop call
      */
     public void kill() 
     {

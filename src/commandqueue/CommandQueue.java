@@ -48,15 +48,27 @@ public class CommandQueue
      *
      * @return First command in list or null if none found
      */
-    public CommandInterface getFirst()
+    public CommandInterface pop()
     {
         synchronized (queue)
         {
             if (queue.size() > 0)
             {
-                return queue.get(0);
+                CommandInterface cmd = queue.get(0);
+                queue.remove(cmd);
             }
             return null;
+        }
+    }
+
+    /**
+     * Pushes an item onto the head of the queue, making it the next one to execute
+     * 
+     * @param cmd Command to add to the queue head
+     */
+    public void push(CommandInterface cmd) {
+        synchronized (queue) {
+            queue.add(0, cmd);
         }
     }
 

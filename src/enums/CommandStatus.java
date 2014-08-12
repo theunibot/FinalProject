@@ -12,5 +12,5 @@ package enums;
  */
 public enum CommandStatus
 {
-    PENDING, EXECUTING, COMPLETE, UNKNOWN
+    PENDING, EXECUTING, COMPLETE, ERROR, UNKNOWN
 }
