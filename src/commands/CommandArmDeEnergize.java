@@ -7,6 +7,7 @@
 package commands;
 
 import enums.*;
+import robotoperations.ArmOperations;
 
 /**
  *
@@ -18,7 +19,8 @@ public class CommandArmDeEnergize extends CommandInterface {
     }
     
     public Boolean execute() {
-        return false;
+        ArmOperations ao = ArmOperations.getInstance();
+        return ao.deEnergize();
     }
     
     public String details() {

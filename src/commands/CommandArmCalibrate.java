@@ -7,6 +7,7 @@
 package commands;
 
 import enums.*;
+import robotoperations.ArmOperations;
 
 /**
  *
@@ -14,11 +15,11 @@ import enums.*;
  */
 public class CommandArmCalibrate extends CommandInterface {
     public CommandArmCalibrate() {
-        
     }
     
     public Boolean execute() {
-        return false;
+        ArmOperations ao = ArmOperations.getInstance();
+        return ao.calibrate();
     }
     
     public String details() {
