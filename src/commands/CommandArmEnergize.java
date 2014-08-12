@@ -28,4 +28,15 @@ public class CommandArmEnergize extends CommandInterface {
     public String details() {
         return "Energize()";
     }
+    
+    /**
+     * This command should be allowed to run, even if we have outstanding robot errors
+     * 
+     * @return true to indicate we should run even during errors
+     */
+    public boolean ignoreErrors() {
+        return true;
+    }
+    
+
 }

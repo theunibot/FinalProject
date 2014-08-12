@@ -27,4 +27,22 @@ public class CommandArmCalibrate extends CommandInterface {
     public String details() {
         return "Calibrate()";
     }
+
+    /**
+     * This command should be allowed to run, even if we have outstanding robot errors
+     * 
+     * @return true to indicate we should run even during errors
+     */
+    public boolean ignoreErrors() {
+        return true;
+    }
+    
+    /**
+     * The calibrate command, if successful, should clear errors and let life continue normally...
+     * 
+     * @return true to specify errors should be cleared 
+     */
+    public boolean successClearsError() {
+        return true;
+    }
 }

@@ -45,4 +45,14 @@ public class CommandArmHome extends CommandInterface {
     public String details() {
         return "Home()";
     }
+
+    /**
+     * This command should be allowed to run, even if we have outstanding robot errors
+     * 
+     * @return true to indicate we should run even during errors
+     */
+    public boolean ignoreErrors() {
+        return true;
+    }    
+
 }

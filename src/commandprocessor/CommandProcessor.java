@@ -54,6 +54,7 @@ public class CommandProcessor
      */
     public void processCommands() {
         System.out.println("Command processor started");
+        boolean activeError = false;
         
         // set up our command arguments to track the arm position
         PositionLookupTable plt = PositionLookupTable.getInstance();
@@ -71,6 +72,11 @@ public class CommandProcessor
                 }
                 continue;
             }
+            // do we have an error pending?
+            if (activeError && !cmd.ignoreErrors()) {
+                System.out.println("Ignoring command " + cmd.details() + " (due to outstanding error)");
+                continue;
+            }
             // process the command
             System.out.println("Processing command " + cmd.details());
             cmd.setStatus(CommandStatus.EXECUTING);
@@ -79,10 +85,16 @@ public class CommandProcessor
                 case ERROR:
                     System.out.println("Command failed");
                     cmd.setStatus(CommandStatus.ERROR);
+                    activeError = true;
                     break;
                 case COMPLETE:
                     System.out.println("Command completed successfully");
                     cmd.setStatus(CommandStatus.COMPLETE);
+                    // can this clear the error flag?
+                    if (activeError && cmd.successClearsError()) {
+                        System.out.println("Command has cleared error flag; operations to continue normally");
+                        activeError = false;
+                    }
                     break;
                 case INCOMPLETE:
                     System.out.println("Command incomplete; queueing for another run");

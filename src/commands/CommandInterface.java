@@ -62,6 +62,29 @@ public abstract class CommandInterface
         this.status = status;
     }
     
+    
+    /**
+     * By default, commands will not execute if there is an error outstanding.  If a command
+     * should execute even when there are errors, if should override this method and return
+     * true.
+     * 
+     * @return false if errors should not be ignored, true if they should
+     */
+    public boolean ignoreErrors() {
+        return false;
+    }
+    
+    /**
+     * By default, once an error occurs it will remain set even if some commands (those that override ignoreErrors)
+     * are successful.  Only commands that support successClearsError (overrides it and returns true) will actually
+     * clear the error.  Likely, this will only be used by Calibrate.
+     * 
+     * @return false if errors should not be cleared, true if they should
+     */
+    public boolean successClearsError() {
+        return false;
+    }
+    
     /**
      * Set the queue index for this command; used to track which queue this command is executing in
      * 
