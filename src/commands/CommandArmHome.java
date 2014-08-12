@@ -18,9 +18,9 @@ public class CommandArmHome extends CommandInterface {
         
     }
     
-    public Boolean execute() {
+    public CommandCompletion execute() {
         ArmOperations ao = ArmOperations.getInstance();
-        return ao.home();
+        return (ao.home() ? CommandCompletion.complete : CommandCompletion.error);
     }
     
     public String details() {

@@ -5,9 +5,7 @@
  */
 package commands;
 
-import enums.EffectType;
-import enums.ShelfType;
-import enums.CommandType;
+import enums.*;
 
 /**
  * Base interface class for all robot commands 
@@ -27,7 +25,7 @@ public abstract class CommandInterface
      * 
      * @return success (true), or failure (false) 
      */
-    public abstract Boolean execute();
+    public abstract CommandCompletion execute();
     
     /**
      * Provide a debugging string of details about this command

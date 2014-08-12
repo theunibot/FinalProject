@@ -18,9 +18,9 @@ public class CommandArmDeEnergize extends CommandInterface {
         
     }
     
-    public Boolean execute() {
+    public CommandCompletion execute() {
         ArmOperations ao = ArmOperations.getInstance();
-        return ao.deEnergize();
+        return (ao.deEnergize() ? CommandCompletion.complete : CommandCompletion.error);
     }
     
     public String details() {

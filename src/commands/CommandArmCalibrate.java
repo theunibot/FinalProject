@@ -17,9 +17,9 @@ public class CommandArmCalibrate extends CommandInterface {
     public CommandArmCalibrate() {
     }
     
-    public Boolean execute() {
+    public CommandCompletion execute() {
         ArmOperations ao = ArmOperations.getInstance();
-        return ao.calibrate();
+        return (ao.calibrate() ? CommandCompletion.complete : CommandCompletion.error);
     }
     
     public String details() {

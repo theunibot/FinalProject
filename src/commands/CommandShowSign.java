@@ -21,8 +21,8 @@ public class CommandShowSign extends CommandInterface {
         this.effect = effect;
     }
     
-    public Boolean execute() {
-        return false;
+    public CommandCompletion execute() {
+        return CommandCompletion.error;
     }
     
     public String details() {
