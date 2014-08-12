@@ -105,7 +105,7 @@ public class Inventory
         {
             return d2;
         }
-        else if (su == CabinetType.CP)
+        else if ( (su == CabinetType.CPL) || (su == CabinetType.CPM) || (su == CabinetType.CPR) )
         {
             return cachePoint;
         }        

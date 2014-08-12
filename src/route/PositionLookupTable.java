@@ -98,7 +98,7 @@ public class PositionLookupTable
                 return null;
             }
         }
-        else if (su == CabinetType.CP)
+        else if ( (su == CabinetType.CPL) || (su == CabinetType.CPR) || (su == CabinetType.CPM) )
         {
             if (index > 0 && index < cpPos.size())
             {
@@ -145,9 +145,17 @@ public class PositionLookupTable
                         {
                             su = CabinetType.D2;
                         }
-                        else if (Utils.stringToEnumShelfType(piece) == CabinetType.CP)
+                        else if (Utils.stringToEnumShelfType(piece) == CabinetType.CPL)
                         {
-                            su = CabinetType.CP;
+                            su = CabinetType.CPL;
+                        }
+                        else if (Utils.stringToEnumShelfType(piece) == CabinetType.CPM)
+                        {
+                            su = CabinetType.CPM;
+                        }
+                        else if (Utils.stringToEnumShelfType(piece) == CabinetType.CPR)
+                        {
+                            su = CabinetType.CPR;
                         }
                     }
                 }
@@ -158,7 +166,7 @@ public class PositionLookupTable
                         if (su != null)
                         {
                             Cartesian prevCart;
-                            if (su == CabinetType.CP)
+                            if ( (su == CabinetType.CPL) || (su == CabinetType.CPM) || (su == CabinetType.CPR) )
                             {
                                 if ((prevCart = getLastPoint(cpPos)) != null)
                                 {
@@ -206,7 +214,7 @@ public class PositionLookupTable
                     {
                         if (su != null)
                         {
-                            if (su == CabinetType.CP)
+                            if ( (su == CabinetType.CPL) || (su == CabinetType.CPM) || (su == CabinetType.CPR) )
                             {
                                 cpPos.add(new Cartesian(pieces[0], pieces[1], pieces[2], pieces[3], pieces[4], pieces[5]));
                             }
