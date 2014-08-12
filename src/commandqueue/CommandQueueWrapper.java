@@ -23,7 +23,7 @@ public class CommandQueueWrapper
     private CommandQueue[] queues = new CommandQueue[3];
     private StatusQueue statusQueue = new StatusQueue();
     private Semaphore queueSemaphore = new Semaphore(0);
-    private Boolean killThread = false;
+    private boolean killThread = false;
     private int roundRobin = 1;
 
     public static CommandQueueWrapper getInstance()
