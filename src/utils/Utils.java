@@ -193,73 +193,16 @@ public class Utils
         return b.toString();
     }
     
-    public static int slotToIndex(int slot)
-    {
+    public static int slotToIndex(int slot){
         int ret = slot;
         if (slot < 10)
-        {
             ret = slot;
-        }
-        else if (slot == 10)
-        {
-            ret = 5;
-        }
-        else if (slot == 11)
-        {
-            ret = 6;
-        }
-        else if (slot == 12)
-        {
-            ret = 7;
-        }
-        else if (slot == 13)
-        {
-            ret = 8;
-        }
-        else if (slot == 14)
-        {
-            ret = 9;
-        }
-        else if (slot == 20)
-        {
-            ret = 10;
-        }
-        else if (slot == 21)
-        {
-            ret = 11;
-        }
-        else if (slot == 22)
-        {
-            ret = 12;
-        }
-        else if (slot == 23)
-        {
-            ret = 13;
-        }
-        else if (slot == 24)
-        {
-            ret = 14;
-        }
-        else if (slot == 30)
-        {
-            ret = 15;
-        }
-        else if (slot == 31)
-        {
-            ret = 16;
-        }
-        else if (slot == 32)
-        {
-            ret = 17;
-        }
-        else if (slot == 33)
-        {
-            ret = 18;
-        }
-        else if (slot == 34)
-        {
-            ret = 19;
-        }
+        else if (slot < 15)
+            ret = (slot-5);
+        else if (slot < 25)
+            ret = (slot-10);
+        else if (slot < 35)
+            ret = (slot-15);
         return (ret);
     }
 
