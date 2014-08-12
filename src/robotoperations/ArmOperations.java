@@ -245,7 +245,7 @@ public class ArmOperations
      *
      * @return success (true) or failure (false)
      */
-    public boolean deEnergize()
+     public boolean deEnergize()
     {
         String commandString = "DE-ENERGIZE";
         r12o.write(commandString);

@@ -5,9 +5,6 @@
  */
 package route;
 
-import enums.RouteSide;
-import enums.RouteType;
-
 /**
  *
  * @author kyle
@@ -15,20 +12,22 @@ import enums.RouteType;
 public class RouteProperties
 {
 
+    private RouteCabinetPosition from = null;
+    private RouteCabinetPosition to = null;    
+    private RouteEffectType effect = null;
+    
     private String routeName;
-    private RouteType routeType = null;
-    private RouteSide routeSide = null;
 
     public RouteProperties(String routeName)
     {
         this.routeName = routeName;
     }
 
-    public RouteProperties(String routeName, RouteType routeType, RouteSide routeSide)
+    public RouteProperties(String routeName, RouteCabinetPosition from, RouteCabinetPosition to)
     {
-        this.routeName = routeName;
-        this.routeType = routeType;
-        this.routeSide = routeSide;
+        this.routeName = routeName;        
+        this.from = from;
+        this.to = to;
     }
        
     public String getRouteName()
@@ -40,24 +39,36 @@ public class RouteProperties
     {
         this.routeName = routeName;
     }    
+
+    public RouteCabinetPosition getTo()
+    {
+        return to;
+    }
+
+    public RouteCabinetPosition getFrom()
+    {
+        return from;
+    }
+
+    public RouteEffectType getEffect()
+    {
+        return effect;
+    }
+
+    public void setTo(RouteCabinetPosition to)
+    {
+        this.to = to;
+    }
+
+    public void setFrom(RouteCabinetPosition from)
+    {
+        this.from = from;
+    }
+
+    public void setEffect(RouteEffectType effect)
+    {
+        this.effect = effect;
+    }
     
-    public RouteSide getRouteSide()
-    {
-        return routeSide;
-    }
-
-    public RouteType getRouteType()
-    {
-        return routeType;
-    }
-
-    public void setRouteSide(RouteSide routeSide)
-    {
-        this.routeSide = routeSide;
-    }
-
-    public void setRouteType(RouteType routeType)
-    {
-        this.routeType = routeType;
-    }
+    
 }
