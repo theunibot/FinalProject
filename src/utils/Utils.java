@@ -28,17 +28,17 @@ public class Utils
      * @return 64 bit ID
      */
     /*
-    public static long getID()
-    {
-        if (idItr == Long.MAX_VALUE - 1)//roll over instead of overflow
-        {
-            idItr = 0;
-        }
-        idItr++;
-        return idItr - 1;
-    }
-    */
-    
+     public static long getID()
+     {
+     if (idItr == Long.MAX_VALUE - 1)//roll over instead of overflow
+     {
+     idItr = 0;
+     }
+     idItr++;
+     return idItr - 1;
+     }
+     */        
+
     public static void sleep(long time)
     {
         try
@@ -50,29 +50,33 @@ public class Utils
             Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public static double strToDbl(String s)
     {
         return Double.parseDouble(s);
     }
-    
+
     /**
      * Convert string to integer without throwing errors
-     * 
+     *
      * @param s string to convert
      * @return converted integer, or -1 if unable to convert
      */
-    public static int strToInt(String s) {
-        try {
+    public static int strToInt(String s)
+    {
+        try
+        {
             return Integer.parseInt(s);
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e)
+        {
             return -1;
         }
     }
-    
+
     public static String zInToMmStr(String z)
     {
-        
+
         return formatDouble((double) (inToMm(strToDbl(z)) - 303.0d));
     }
 
@@ -121,11 +125,13 @@ public class Utils
             return null;
         }
     }
-    
+
     public static EffectType effectStringToEffectType(String s)
     {
         if (s == null)
+        {
             return null;
+        }
         if (s.equals("fancy"))
         {
             return EffectType.FANCY;
@@ -142,18 +148,17 @@ public class Utils
 
     public static CabinetType stringToEnumShelfType(String s)
     {
-        if(s.trim().equals("1"))
+        if (s.trim().equals("1"))
         {
             return CabinetType.D1;
         }
-        else if(s.trim().equals("2"))
+        else if (s.trim().equals("2"))
         {
             return CabinetType.D2;
         }
         return null;
     }
-    
-    
+
     private static ArrayList<KVObj> response;
 
     public static String genericEnqueueFail()
@@ -192,17 +197,26 @@ public class Utils
         b.append(kvObj.getKey() + ":" + kvObj.getValue() + "}");
         return b.toString();
     }
-    
-    public static int shelfToIndex(int shelf){
+
+    public static int shelfToIndex(int shelf)
+    {
         int ret = shelf;
         if (shelf < 10)
+        {
             ret = shelf;
+        }
         else if (shelf < 15)
-            ret = (shelf-5);
+        {
+            ret = (shelf - 5);
+        }
         else if (shelf < 25)
-            ret = (shelf-10);
+        {
+            ret = (shelf - 10);
+        }
         else if (shelf < 35)
-            ret = (shelf-15);
+        {
+            ret = (shelf - 15);
+        }
         return (ret);
     }
 

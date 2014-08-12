@@ -3,14 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package route;
+
+import utils.Utils;
 
 /**
  * Define a cartesian coordinate
- * 
+ *
  */
-public class Cartesian {
+public class Cartesian
+{
+
     private int x;
     private int y;
     private int z;
@@ -20,6 +23,7 @@ public class Cartesian {
     private String pitchStr;
     private String yawStr;
     private String rollStr;
+    private String name = null;
 
     public Cartesian(String x, String y, String z, String pitch, String yaw, String roll)
     {
@@ -32,14 +36,14 @@ public class Cartesian {
         this.z = Integer.parseInt(z);
         this.pitchStr = pitch;
         this.yawStr = yaw;
-        this.rollStr = roll;
+        this.rollStr = roll;        
+    }   
+
+    public String getRoboforth()
+    {
+        return getX() + " X ! " + getY() + " Y ! " + getZ() + " Z ! " + getPitch() + " PITCH ! " + getYaw() + " YAW ! " + getRoll() + " ROLL ! POINT " + getName();
     }
-    
-    public String getRoboforth(){
-        String robo = getX() + " X ! " + getY() + " Y ! " + getZ() + " Z ! " + getPitch() + " PITCH ! " + getYaw() + " YAW ! " + getRoll() + " ROLL !";
-        return robo;
-    }
-    
+
     public int getX()
     {
         return x;
@@ -84,4 +88,16 @@ public class Cartesian {
     {
         return rollStr;
     }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+    
+    
 }
