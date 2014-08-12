@@ -15,6 +15,10 @@ import enums.RouteType;
 public class RouteProperties
 {
 
+    private RouteCabinetPosition from = null;
+    private RouteCabinetPosition to = null;
+    
+    
     private String routeName;
     private RouteType routeType = null;
     private RouteSide routeSide = null;

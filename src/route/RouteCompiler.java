@@ -124,21 +124,8 @@ public class RouteCompiler
             if (line.startsWith(FileUtils.COMMAND_FILE_METADATA_PREFIX))
             {
                 String[] chunks = line.replaceFirst(FileUtils.COMMAND_FILE_METADATA_PREFIX, "").split(" ");
-                for (String chunk : chunks)
-                {
-                    if (chunk.equals(ROUTE_LEFT))
-                    {
-                        routeProperties.setRouteSide(RouteSide.LEFT);
-                    }
-                    else if (chunk.equals(ROUTE_RIGHT))
-                    {
-                        routeProperties.setRouteSide(RouteSide.MIDDLE);
-                    }
-                    else if (chunk.equals(ROUTE_RIGHT))
-                    {
-                        routeProperties.setRouteSide(RouteSide.RIGHT);
-                    }
-                }
+                
+                parseForMetadata(chunks);                                
             }
             else if (line.startsWith(ROUTE_DEFINE_PREFIX)) //new Route
             {
@@ -211,6 +198,72 @@ public class RouteCompiler
 
         return listOfRoutes;
     }
+    
+    /**
+     * Takes in the array of Metadata pieces and parses out info.
+     * @param array of pieces
+     * @return properties found.
+     */
+    private RouteProperties parseForMetadata(String[] array)
+    {
+        RouteProperties props = new RouteProperties("");
+        if(array.length < 3)
+        {
+            System.err.println("Not enough metadata for this route");
+            return null;
+        }
+        else if (array.length > 3)
+        {
+            System.err.println("Too much metadata for this route");
+            return null;
+        }
+        //exactly 3 pieces, from "X" to "Y" with "Z" data
+        
+        String from = array[0];
+        String to = array[1];
+        String effect = array[2];
+        
+        getRouteCabinetPosition(from);
+        
+        return props;
+    }
+    
+    /**
+     * Converts the given string to a RouteCabinetPosition
+     * @param s String to convert
+     * @return Converted String value
+     */
+    private RouteCabinetPosition getRouteCabinetPosition(String s)
+    {
+        if(s.equalsIgnoreCase("d1"))
+        {
+            return RouteCabinetPosition.D1;
+        }
+        else if(s.equalsIgnoreCase("d2"))
+        {
+            return RouteCabinetPosition.D2;
+        }
+        else if(s.equalsIgnoreCase("home"))
+        {
+            return RouteCabinetPosition.HOME;
+        }
+        else if(s.equalsIgnoreCase("cpl"))
+        {
+            return RouteCabinetPosition.CPL;
+        }
+        else if(s.equalsIgnoreCase("cpr"))
+        {
+            return RouteCabinetPosition.CPR;
+        }
+        else if(s.equalsIgnoreCase("cpc"))
+        {
+            return RouteCabinetPosition.CPC;
+        }
+        else
+        {
+            return null;
+        }
+    }
 
     private RouteType getRouteType(String prefix)
     {
@@ -230,5 +283,5 @@ public class RouteCompiler
         {
             return null;
         }
-    }
+    }        
 }
