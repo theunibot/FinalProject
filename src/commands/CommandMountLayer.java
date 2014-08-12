@@ -43,8 +43,7 @@ public class CommandMountLayer extends CommandInterface {
         /*********************/
         
         // determine which cabinet we are moving towards
-        CabinetType newCabinet = CabinetType.HOME; //utils.Utils.shelfToCabinet(this.layer);
-        /********* FIX THE ABOVE ********/
+        CabinetType newCabinet = utils.Utils.shelfToCabinet(this.layer);
         
         // move from our current cabinet to the desired cabinet (if not already there)
         if (args.cabinet != newCabinet) {

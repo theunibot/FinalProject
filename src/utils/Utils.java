@@ -198,6 +198,22 @@ public class Utils
         b.append(kvObj.getKey() + ":" + kvObj.getValue() + "}");
         return b.toString();
     }
+    
+    public static CabinetType shelfToCabinet(int shelf) {
+        // 00 = lower left, 30 = upper left
+        // so second digit is cabinet...
+        switch (shelf % 10) {
+            case 0:
+            case 1:
+                return CabinetType.CPL;
+            case 2:
+                return CabinetType.CPM;
+            case 3:
+            case 4:
+                return CabinetType.CPR;
+        }
+        return CabinetType.UNKNOWN;
+    }
 
     public static int shelfToIndex(int shelf)
     {
