@@ -8,6 +8,7 @@ package route;
 import enums.CabinetType;
 import java.util.ArrayList;
 import utils.FileUtils;
+import utils.Result;
 import utils.Utils;
 
 /**
@@ -53,6 +54,11 @@ public class PositionLookupTable
 
     private PositionLookupTable()
     {
+
+    }
+
+    public Result init()
+    {
         d1Pos = new ArrayList<>();
         d2Pos = new ArrayList<>();
         cpPos = new ArrayList<>();
@@ -61,6 +67,8 @@ public class PositionLookupTable
         {
             System.out.println("Position Lookup Table Initialized.");
         }
+        //TODO: Program the robot with the commands
+        return new Result();
     }
 
     /**
@@ -133,13 +141,13 @@ public class PositionLookupTable
         ArrayList<String> lines = FileUtils.readCommandFileOrGenEmpty(FileUtils.getFilesFolderString() + FILE_NAME, FILE_CONTENTS);
         if (lines != null)
         {
-            CabinetType su = null;
+            CabinetType ct = null;
             for (String line : lines)
             {
-                String[] pieces = line.split(" ");
+                String[] splitLinePieces = line.split(" ");
                 if (line.startsWith(FileUtils.COMMAND_FILE_METADATA_PREFIX))//metadata
                 {
-                    for (String piece : pieces)
+                    for (String piece : splitLinePieces)
                     {
                         //remove any comment piece
                         if (piece.startsWith(FileUtils.COMMAND_FILE_METADATA_PREFIX))
@@ -149,65 +157,75 @@ public class PositionLookupTable
 
                         if (Utils.stringToEnumShelfType(piece) == CabinetType.D1)
                         {
-                            su = CabinetType.D1;
+                            ct = CabinetType.D1;
                         }
                         else if (Utils.stringToEnumShelfType(piece) == CabinetType.D2)
                         {
-                            su = CabinetType.D2;
+                            ct = CabinetType.D2;
                         }
                         else if (Utils.stringToEnumShelfType(piece) == CabinetType.CPL)
                         {
-                            su = CabinetType.CPL;
+                            ct = CabinetType.CPL;
                         }
                         else if (Utils.stringToEnumShelfType(piece) == CabinetType.CPM)
                         {
-                            su = CabinetType.CPM;
+                            ct = CabinetType.CPM;
                         }
                         else if (Utils.stringToEnumShelfType(piece) == CabinetType.CPR)
                         {
-                            su = CabinetType.CPR;
+                            ct = CabinetType.CPR;
                         }
                     }
                 }
                 else//type is position X,Y,Z,Pitch,Yaw,Roll
                 {
-                    if (pieces.length == 3)//line num, XYZ
+                    if (splitLinePieces.length == 3)//line num, XYZ
                     {
-                        if (su != null)
+                        if (ct != null)
                         {
                             Cartesian prevCart;
-                            if ((su == CabinetType.CPL) || (su == CabinetType.CPM) || (su == CabinetType.CPR))
+                            Cartesian nextCart;
+                            if ((ct == CabinetType.CPL) || (ct == CabinetType.CPM) || (ct == CabinetType.CPR))
                             {
+
                                 if ((prevCart = getLastPoint(cpPos)) != null)
                                 {
-                                    cpPos.add(new Cartesian(pieces[0], pieces[1], pieces[2], prevCart.getPitchStr(), prevCart.getYawStr(), prevCart.getRollStr()));
+                                    nextCart = new Cartesian(splitLinePieces[0], splitLinePieces[1], splitLinePieces[2], prevCart.getPitchStr(), prevCart.getYawStr(), prevCart.getRollStr());
                                 }
                                 else
                                 {
-                                    cpPos.add(new Cartesian(pieces[0], pieces[1], pieces[2], "0", "0", "0"));
+                                    nextCart = new Cartesian(splitLinePieces[0], splitLinePieces[1], splitLinePieces[2], "0", "0", "0");
+
                                 }
+                                nextCart.setName(ct.toString() + cpPos.size());
+                                cpPos.add(nextCart);
                             }
-                            else if (su == CabinetType.D1)
+                            else if (ct == CabinetType.D1)
                             {
                                 if ((prevCart = getLastPoint(d1Pos)) != null)
                                 {
-                                    d1Pos.add(new Cartesian(pieces[0], pieces[1], pieces[2], prevCart.getPitchStr(), prevCart.getYawStr(), prevCart.getRollStr()));
+                                    nextCart = (new Cartesian(splitLinePieces[0], splitLinePieces[1], splitLinePieces[2], prevCart.getPitchStr(), prevCart.getYawStr(), prevCart.getRollStr()));
                                 }
                                 else
                                 {
-                                    d1Pos.add(new Cartesian(pieces[0], pieces[1], pieces[2], "0", "0", "0"));
+                                    nextCart = (new Cartesian(splitLinePieces[0], splitLinePieces[1], splitLinePieces[2], "0", "0", "0"));
                                 }
+                                
+                                nextCart.setName(ct.toString() + d1Pos.size());
+                                d1Pos.add(nextCart);
                             }
-                            else if (su == CabinetType.D2)
+                            else if (ct == CabinetType.D2)
                             {
                                 if ((prevCart = getLastPoint(d2Pos)) != null)
                                 {
-                                    d2Pos.add(new Cartesian(pieces[0], pieces[1], pieces[2], prevCart.getPitchStr(), prevCart.getYawStr(), prevCart.getRollStr()));
+                                    nextCart = (new Cartesian(splitLinePieces[0], splitLinePieces[1], splitLinePieces[2], prevCart.getPitchStr(), prevCart.getYawStr(), prevCart.getRollStr()));
                                 }
                                 else
                                 {
-                                    d2Pos.add(new Cartesian(pieces[0], pieces[1], pieces[2], "0", "0", "0"));
+                                    nextCart = (new Cartesian(splitLinePieces[0], splitLinePieces[1], splitLinePieces[2], "0", "0", "0"));
                                 }
+                                nextCart.setName(ct.toString() + d2Pos.size());
+                                d2Pos.add(nextCart);
                             }
                             else
                             {
@@ -220,22 +238,34 @@ public class PositionLookupTable
                         }
 
                     }
-                    else if (pieces.length == 6)//line num, XYZPYR
+                    else if (splitLinePieces.length == 6)//line num, XYZPYR
                     {
-                        if (su != null)
+                        if (ct != null)
                         {
-                            if ((su == CabinetType.CPL) || (su == CabinetType.CPM) || (su == CabinetType.CPR))
+                            Cartesian nextCart;
+                            if ((ct == CabinetType.CPL) || (ct == CabinetType.CPM) || (ct == CabinetType.CPR))
                             {
-                                cpPos.add(new Cartesian(pieces[0], pieces[1], pieces[2], pieces[3], pieces[4], pieces[5]));
+                                nextCart = (new Cartesian(splitLinePieces[0], splitLinePieces[1], splitLinePieces[2], splitLinePieces[3], splitLinePieces[4], splitLinePieces[5]));
+                                nextCart.setName(ct.toString() + cpPos.size());
+                                cpPos.add(nextCart);
                             }
-                            else if (su == CabinetType.D1)
+                            else if (ct == CabinetType.D1)
                             {
-                                d1Pos.add(new Cartesian(pieces[0], pieces[1], pieces[2], pieces[3], pieces[4], pieces[5]));
+                                nextCart = (new Cartesian(splitLinePieces[0], splitLinePieces[1], splitLinePieces[2], splitLinePieces[3], splitLinePieces[4], splitLinePieces[5]));
+                                nextCart.setName(ct.toString() + d1Pos.size());
+                                d1Pos.add(nextCart);
                             }
-                            else if (su == CabinetType.D2)
+                            else if (ct == CabinetType.D2)
                             {
-                                d2Pos.add(new Cartesian(pieces[0], pieces[1], pieces[2], pieces[3], pieces[4], pieces[5]));
+                                nextCart = (new Cartesian(splitLinePieces[0], splitLinePieces[1], splitLinePieces[2], splitLinePieces[3], splitLinePieces[4], splitLinePieces[5]));
+                                nextCart.setName(ct.toString() + d2Pos.size());
+                                d2Pos.add(nextCart);
                             }
+                            else
+                            {
+                                System.err.println(ct.toString() + " is not recognized.");
+                            }
+                            
                         }
                         else
                         {
@@ -248,6 +278,10 @@ public class PositionLookupTable
                     }
                 }
             }
+        }
+        else
+        {
+
         }
     }
 
