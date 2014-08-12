@@ -15,7 +15,7 @@ public abstract class CommandInterface
     private static long uniqueId = 1;
     private long id = uniqueId++;
     private CommandStatus status = CommandStatus.PENDING;
-    private Integer queueIndex = -1;
+    private int queueIndex = -1;
     
     /**
      * Returns the unique ID of the command
@@ -73,7 +73,7 @@ public abstract class CommandInterface
      * 
      * @return Integer with queue index (0=priority; 1/2 = desktop queues)
      */
-    public Integer getQueueIndex() {
+    public int getQueueIndex() {
         return this.queueIndex;
     }
     

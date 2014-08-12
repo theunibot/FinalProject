@@ -13,10 +13,10 @@ import enums.*;
  * @author cmidgley
  */
 public class CommandShowSign extends CommandInterface {
-    Integer layer;
+    int layer;
     EffectType effect;
     
-    public CommandShowSign(Integer layer, EffectType effect) {
+    public CommandShowSign(int layer, EffectType effect) {
         this.layer = layer;
         this.effect = effect;
     }
