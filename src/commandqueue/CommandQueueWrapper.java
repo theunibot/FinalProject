@@ -103,7 +103,7 @@ public class CommandQueueWrapper
             // switch robin
             roundRobin++;
             // does this one have something for us?
-            Integer queueIndex = roundRobin % 2 + 1;
+            int queueIndex = roundRobin % 2 + 1;
             cmd = queues[queueIndex].pop();
             if (cmd != null)
                 return cmd;
