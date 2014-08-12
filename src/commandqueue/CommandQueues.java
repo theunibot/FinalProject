@@ -23,7 +23,7 @@ public class CommandQueues
     private CommandQueue[] queues = new CommandQueue[3];
     private CommandQueue statusQueue = new CommandQueue();
     private Semaphore queueSemaphore = new Semaphore(0);
-    private Boolean killThread = false;
+    private boolean killThread = false;
     private int roundRobin = 1;
 
     public static CommandQueues getInstance()
@@ -187,7 +187,7 @@ public class CommandQueues
      * 
      * @return true if killed, false if not
      */
-    public Boolean killed() {
+    public boolean killed() {
         return killThread;
     }
 }
