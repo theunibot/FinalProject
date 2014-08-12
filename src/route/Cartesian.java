@@ -49,7 +49,7 @@ public class Cartesian {
     {
         return y;
     }
-
+ 
     public int getZ()
     {
         return z;
