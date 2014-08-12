@@ -36,8 +36,7 @@ public class Cartesian
         this.z = Integer.parseInt(z);
         this.pitchStr = pitch;
         this.yawStr = yaw;
-        this.rollStr = roll;
-        this.setName(Utils.genPointName());
+        this.rollStr = roll;        
     }   
 
     public String getRoboforth()

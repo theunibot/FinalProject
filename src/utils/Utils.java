@@ -21,7 +21,6 @@ public class Utils
 {
 
     private static long idItr = 0;
-    private static int pointItr = 0;
 
     /**
      * Get 64 bit ID
@@ -38,17 +37,7 @@ public class Utils
      idItr++;
      return idItr - 1;
      }
-     */
-    
-    /**
-     * Generates the name for each new point
-     * @return String starting with "P" followed by a unique ID.
-     */
-    public static String genPointName()
-    {
-        pointItr++;
-        return "P" + (pointItr - 1);
-    }
+     */        
 
     public static void sleep(long time)
     {
