@@ -18,7 +18,7 @@ import robotoperations.ArmOperations;
 public class CommandProcessor
 {
 
-    private CommandProcessor cp = null;
+    private static CommandProcessor cp = null;
     private CommandQueues cmdq = null;
     private ArmOperations ao = null;
 
@@ -27,7 +27,7 @@ public class CommandProcessor
      * 
      * @return CommandProcessor single instance
      */
-    public CommandProcessor getInstance()
+    public static CommandProcessor getInstance()
     {
         if (cp == null)
         {

@@ -27,7 +27,7 @@ public class ThreadCommand extends Thread
         {
             System.out.println("All Arm Inits successful");
             // now bring up the command processor
-            cp = new CommandProcessor();
+            cp = CommandProcessor.getInstance();
             cp.processCommands();
         }
         System.out.println("CommandProcess thread terminating");
