@@ -96,7 +96,7 @@ public class ArmOperations
      * @param end the ending coordinate to use on the route
      * @return success (true) or failure (false)
      */
-    public Boolean runRoute(Route route, Cartesian start, Cartesian end) {
+    public boolean runRoute(Route route, Cartesian start, Cartesian end) {
         return true;
     }
     
@@ -108,7 +108,7 @@ public class ArmOperations
      * @param stackPosition stack position (when CP) - where 1 is bottom disc, and 2 is top disc)
      * @return success (true) or failure (false)
      */
-    public Boolean pick(ShelfType unit, int stackPosition) {
+    public boolean pick(ShelfType unit, int stackPosition) {
         return true;
     }
     
@@ -120,7 +120,7 @@ public class ArmOperations
      * @param stackPosition stack position (when CP) - where 1 is bottom disc, and 2 is top disc)
      * @return success (true) or failure (false)
      */
-    public Boolean drop(ShelfType unit, int stackPosition) {
+    public boolean drop(ShelfType unit, int stackPosition) {
         return true;
     }
     
@@ -130,7 +130,7 @@ public class ArmOperations
      * 
      * @return success (true) or failure (false)
      */
-    public Boolean calibrate() {
+    public boolean calibrate() {
         return true;
     }
 
@@ -139,7 +139,7 @@ public class ArmOperations
      * 
      * @return success (true) or failure (false)
      */
-    public Boolean home() {
+    public boolean home() {
         return true;
     }
     
@@ -148,7 +148,7 @@ public class ArmOperations
      * 
      * @return success (true) or failure (false)
      */
-    public Boolean energize() {
+    public boolean energize() {
         return true;
     }
     
@@ -157,7 +157,7 @@ public class ArmOperations
      * 
      * @return success (true) or failure (false)
      */
-    public Boolean deEnergize() {
+    public boolean deEnergize() {
         return true;
     }
     
