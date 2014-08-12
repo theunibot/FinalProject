@@ -217,15 +217,46 @@ public class RouteCompiler
             System.err.println("Too much metadata for this route");
             return null;
         }
-        //exactly 3 pieces, from "X" to "Y" with "Z" data
+        //exactly 3 pieces, from "X" to "Y" with "Z" effect
         
         String from = array[0];
         String to = array[1];
         String effect = array[2];
         
-        getRouteCabinetPosition(from);
+        props.setFrom(getRouteCabinetPosition(from));
+        props.setTo(getRouteCabinetPosition(to));        
+        props.setEffect(getRouteEffectType(effect));
         
         return props;
+    }
+    
+    /**
+     * Converts a string to a RouteEffectType object
+     * @param s String to convert
+     * @return Converted String value
+     */
+    private RouteEffectType getRouteEffectType(String s)
+    {        
+        if(s.equalsIgnoreCase("efficient"))
+        {
+            return RouteEffectType.EFFICIENT;
+        }
+        else if(s.equalsIgnoreCase("fancy"))
+        {
+            return RouteEffectType.FANCY;
+        }
+        else if(s.equalsIgnoreCase("pick"))
+        {
+            return RouteEffectType.PICK;
+        }
+        else if(s.equalsIgnoreCase("place"))
+        {
+            return RouteEffectType.PLACE;
+        }
+        else
+        {
+            return null;
+        }
     }
     
     /**

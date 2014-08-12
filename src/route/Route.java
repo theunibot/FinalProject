@@ -20,8 +20,14 @@ public class Route
 
     public Route(RouteProperties routeProperties)
     {
-        this.routeProperties.setRouteSide(routeProperties.getRouteSide());
-        this.routeProperties.setRouteType(routeProperties.getRouteType());
+        setRouteProperties(routeProperties);
+    }
+    
+    public void setRouteProperties(RouteProperties routeProperties)
+    {
+        this.routeProperties.setEffect(routeProperties.getEffect());
+        this.routeProperties.setFrom(routeProperties.getFrom());
+        this.routeProperties.setTo(routeProperties.getTo());
         this.routeProperties.setRouteName(routeProperties.getRouteName());
     }
 
