@@ -5,6 +5,7 @@
  */
 package route;
 
+import enums.CabinetType;
 import enums.RouteType;
 import robotoperations.ArmOperations;
 import utils.FileUtils;
@@ -192,8 +193,8 @@ public class RouteCompiler
     private String nameRoute(RouteProperties rp)
     {
         String to = "", from = "", effect = "";
-        to = getRouteCabinetPositionString(rp.getTo());
-        from = getRouteCabinetPositionString(rp.getFrom());
+        to = rp.getTo().toString();
+        from = rp.getFrom().toString();
         effect = getRouteEffectTypeString(rp.getEffect());
         List<Route> sameRoutes = rh.getRoutes(rp);
         return from + "_" + to + "_" + effect + ((int)(sameRoutes.size() + 1));
@@ -225,8 +226,8 @@ public class RouteCompiler
         String to = array[1];
         String effect = array[2];
 
-        props.setFrom(getRouteCabinetPosition(from));
-        props.setTo(getRouteCabinetPosition(to));
+        props.setFrom(getCabinetType(from));
+        props.setTo(getCabinetType(to));
         props.setEffect(getRouteEffectType(effect));
 
         return props;
@@ -287,74 +288,43 @@ public class RouteCompiler
     }
 
     /**
-     * Converts the given string to a RouteCabinetPosition
+     * Converts the given string to a CabinetType
      *
      * @param s String to convert
      * @return Converted String value
      */
-    private RouteCabinetPosition getRouteCabinetPosition(String s)
+    private CabinetType getCabinetType(String s)
     {
         if (s.equalsIgnoreCase("d1"))
         {
-            return RouteCabinetPosition.D1;
+            return CabinetType.D1;
         }
         else if (s.equalsIgnoreCase("d2"))
         {
-            return RouteCabinetPosition.D2;
+            return CabinetType.D2;
         }
         else if (s.equalsIgnoreCase("home"))
         {
-            return RouteCabinetPosition.HOME;
+            return CabinetType.HOME;
         }
         else if (s.equalsIgnoreCase("cpl"))
         {
-            return RouteCabinetPosition.CPL;
+            return CabinetType.CPL;
         }
         else if (s.equalsIgnoreCase("cpr"))
         {
-            return RouteCabinetPosition.CPR;
+            return CabinetType.CPR;
         }
         else if (s.equalsIgnoreCase("cpc"))
         {
-            return RouteCabinetPosition.CPC;
+            return CabinetType.CPM;
         }
         else
         {
             return null;
         }
     }
-
-    private String getRouteCabinetPositionString(RouteCabinetPosition rcp)
-    {
-        if (rcp == RouteCabinetPosition.CPC)
-        {
-            return "CPC";
-        }
-        else if (rcp == RouteCabinetPosition.CPL)
-        {
-            return "CPL";
-        }
-        else if (rcp == RouteCabinetPosition.CPR)
-        {
-            return "CPR";
-        }
-        else if (rcp == RouteCabinetPosition.D1)
-        {
-            return "D1";
-        }
-        else if (rcp == RouteCabinetPosition.D2)
-        {
-            return "D2";
-        }
-        else if (rcp == RouteCabinetPosition.HOME)
-        {
-            return "HOME";
-        }
-        else
-        {
-            return null;
-        }
-    }
+    
 
     private RouteType getRouteType(String prefix)
     {

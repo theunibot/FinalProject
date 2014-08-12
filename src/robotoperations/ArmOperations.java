@@ -8,8 +8,12 @@ package robotoperations;
 import enums.CabinetType;
 import java.util.ArrayList;
 import route.Cartesian;
+import route.PositionLookupTable;
 import route.Route;
+import route.RouteCabinetPosition;
 import route.RouteCompiler;
+import route.RouteEffectType;
+import route.RouteHolder;
 import utils.FileUtils;
 import utils.Result;
 
@@ -22,6 +26,8 @@ public class ArmOperations
 
     private R12Operations r12o = null;
     private RouteCompiler rc = null;
+    private PositionLookupTable plt = null;
+    private RouteHolder rh = null;
     private static ArmOperations armOperations = null;
 
     //Regular Objects
@@ -48,6 +54,8 @@ public class ArmOperations
     {
         r12o = R12Operations.getInstance();
         rc = RouteCompiler.getInstance();
+        plt = PositionLookupTable.getInstance();
+        rh = RouteHolder.getInstance();
         boolean success = false;
 //        rc.init();
         Result result = r12o.init();
@@ -164,8 +172,11 @@ public class ArmOperations
     {
         //unit is used to define angle to the unit
         //stack pos only relevant if CP, used to pick route for depth
-//        cartesian
         
+        //Syntax: P1 GOTO PATH1 START-HERE ADJUST CONTINUOUS RUN 
+//        rh;
+        Route route = rh.getRoute(unit, unit, RouteEffectType.PICK);
+        r12o.write(cartesian.getName() + " GOTO PATH1 START-HERE ADJUST CONTINUOUS RUN");
         return new Result();
     }
 

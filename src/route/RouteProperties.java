@@ -5,6 +5,8 @@
  */
 package route;
 
+import enums.CabinetType;
+
 /**
  *
  * @author kyle
@@ -12,8 +14,8 @@ package route;
 public class RouteProperties
 {
 
-    private RouteCabinetPosition from = null;
-    private RouteCabinetPosition to = null;    
+    private CabinetType from = null;
+    private CabinetType to = null;    
     private RouteEffectType effect = null;
     
     private String routeName;
@@ -23,7 +25,7 @@ public class RouteProperties
         this.routeName = routeName;
     }
 
-    public RouteProperties(String routeName, RouteCabinetPosition from, RouteCabinetPosition to)
+    public RouteProperties(String routeName, CabinetType from, CabinetType to)
     {
         this.routeName = routeName;        
         this.from = from;
@@ -40,12 +42,12 @@ public class RouteProperties
         this.routeName = routeName;
     }    
 
-    public RouteCabinetPosition getTo()
+    public CabinetType getTo()
     {
         return to;
     }
 
-    public RouteCabinetPosition getFrom()
+    public CabinetType getFrom()
     {
         return from;
     }
@@ -55,12 +57,12 @@ public class RouteProperties
         return effect;
     }
 
-    public void setTo(RouteCabinetPosition to)
+    public void setTo(CabinetType to)
     {
         this.to = to;
     }
 
-    public void setFrom(RouteCabinetPosition from)
+    public void setFrom(CabinetType from)
     {
         this.from = from;
     }

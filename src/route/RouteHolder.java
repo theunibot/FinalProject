@@ -5,9 +5,11 @@
  */
 package route;
 
+import enums.CabinetType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import utils.Utils;
 
 /**
  *
@@ -55,5 +57,34 @@ public class RouteHolder
             }
         }
         return routesToGive;
+    }
+
+    /**
+     * Gets a random Route matching the specified params. Error thrown if command not found.
+     * @param from
+     * @param to
+     * @param effect
+     * @return 
+     */
+    public Route getRoute(CabinetType from, CabinetType to, RouteEffectType effect)            
+    {
+        List<Route> routesToGive = new ArrayList<>();
+        for (Route r : routes)
+        {
+            RouteProperties props = r.getRouteProperties();
+            if(props.getEffect() == effect
+                    && props.getFrom() == from
+                    && props.getTo() == to)
+            {
+                routesToGive.add(r);
+            }
+        }
+        if(routesToGive.size() > 0)
+        {
+            return routesToGive.get(Utils.getRandInt(routesToGive.size()));
+        }
+        
+        System.err.println("ERROR, Route from " + from + " to " + to + " with effect " + effect + " not found!");
+        return null;
     }
 }

@@ -10,6 +10,7 @@ import enums.EffectType;
 import enums.CabinetType;
 import server.KVObj;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -218,6 +219,18 @@ public class Utils
             ret = (shelf - 15);
         }
         return (ret);
+    }
+    
+    static Random r = new Random(System.currentTimeMillis());
+    
+    /**
+     * Returns a rand int from zero (inclusive) to max (exclusive)
+     * @param max
+     * @return 
+     */
+    public static int getRandInt(int max)
+    {
+        return r.nextInt(max);
     }
 
 }
