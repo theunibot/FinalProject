@@ -135,7 +135,7 @@ public class CommandQueues
                     return cmd;
             }
             // we got nothing.  
-            System.out.println("CommandQueueWrapper.pop found nothing; maybe due to queue clear?");
+            System.out.println("WARNING: CommandQueueWrapper.pop found nothing; THIS SHOULD NEVER HAPPEN!");
             return null;
         }
     }
