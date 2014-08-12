@@ -7,6 +7,7 @@ package threads;
 
 import commandprocessor.CommandProcessor;
 import robotoperations.ArmOperations;
+import route.PositionLookupTable;
 import utils.Result;
 import utils.Utils;
 
@@ -27,9 +28,14 @@ public class ThreadCommand extends Thread
         if (result.success())
         {
             System.out.println("All Arm Inits successful");
-            // now bring up the command processor
-            cp = CommandProcessor.getInstance();
-            cp.processCommands();
+            // now initialize the positions
+            PositionLookupTable plt = PositionLookupTable.getInstance();
+            result = plt.init();
+            if (result.success()) {
+                // now bring up the command processor
+                cp = CommandProcessor.getInstance();
+                cp.processCommands();
+            }
         }
         System.out.println("CommandProcess thread terminating");
         // indicate we are down
