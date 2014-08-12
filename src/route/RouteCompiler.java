@@ -102,16 +102,17 @@ public class RouteCompiler
             {
                 //adds routes to the route holder
                 rh.addRoute(route);
-                
+
                 ArmOperations ao = ArmOperations.getInstance();
                 success = ao.learnRoute(route);
                 if (!success)
+                {
                     break;
+                }
             }
         }
         return success;
     }
-
 
     private ArrayList<Route> parseLines(ArrayList<String> lines, String prefix)
     {
@@ -122,17 +123,23 @@ public class RouteCompiler
         int lineCount = 1;//used in error tracking
         for (String line : lines)
         {
-            if (line.startsWith("#"))
+            if (line.startsWith(FileUtils.COMMAND_FILE_METADATA))
             {
-                String[] chunks = line.split(" ");
+                String[] chunks = line.replaceFirst(FileUtils.COMMAND_FILE_METADATA, "").split(" ");
                 for (String chunk : chunks)
                 {
                     if (chunk.equals(ROUTE_LEFT))
+                    {
                         routeProperties.setRouteSide(RouteSide.LEFT);
+                    }
                     else if (chunk.equals(ROUTE_RIGHT))
+                    {
                         routeProperties.setRouteSide(RouteSide.MIDDLE);
+                    }
                     else if (chunk.equals(ROUTE_RIGHT))
+                    {
                         routeProperties.setRouteSide(RouteSide.RIGHT);
+                    }
                 }
             }
             else if (line.startsWith(ROUTE_PREFIX)) //new Route
