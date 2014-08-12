@@ -7,6 +7,8 @@
 package commands;
 
 import enums.*;
+import route.Cartesian;
+import utils.Result;
 
 /**
  *
@@ -23,8 +25,8 @@ public class CommandShowLayer extends CommandInterface {
         this.effect = effect;
     }
     
-    public CommandCompletion execute() {
-        return CommandCompletion.error;
+    public Result execute(CommandArguments args) {
+        return new Result("ShowLayer not implemented");
     }
     
     public String details() {

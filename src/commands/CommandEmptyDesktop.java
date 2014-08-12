@@ -7,6 +7,8 @@
 package commands;
 
 import enums.*;
+import route.Cartesian;
+import utils.Result;
 
 /**
  *
@@ -19,8 +21,8 @@ public class CommandEmptyDesktop extends CommandInterface {
         this.desktop = desktop;
     }
     
-    public CommandCompletion execute() {
-        return CommandCompletion.error;
+    public Result execute(CommandArguments args) {
+        return new Result("Empty desktop not implemented");
     }
     
     public String details() {

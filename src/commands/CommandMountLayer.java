@@ -7,6 +7,8 @@
 package commands;
 
 import enums.*;
+import route.Cartesian;
+import utils.Result;
 
 /**
  *
@@ -25,8 +27,8 @@ public class CommandMountLayer extends CommandInterface {
         this.effect = effect;
     }
     
-    public CommandCompletion execute() {
-         return CommandCompletion.error;
+    public Result execute(CommandArguments args) {
+         return new Result("MountLayer not implemented");
    }
     
     public String details() {

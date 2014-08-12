@@ -5,8 +5,9 @@
  */
 package robotoperations;
 
-import utils.FileUtils;
 import java.util.Map;
+import utils.FileUtils;
+import utils.Result;
 
 /**
  *
@@ -37,17 +38,16 @@ public class R12Operations
     /**
      * initializes object's dependencies
      *
-     * @return boolean of success
+     * @return Result with success/fail info
      */
-    public boolean init(){
+    public Result init(){
         if(Simulated){
-            return true;
+            return new Result();
         }
         else{
             r12i = R12Interface.getInstance();
             loadInfoFromFile();
-            boolean success = r12i.init(address, port);
-            return success;
+            return r12i.init(address, port);
         }
     }
     

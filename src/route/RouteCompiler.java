@@ -11,6 +11,7 @@ import utils.FileUtils;
 import java.util.ArrayList;
 import java.util.List;
 import utils.Utils;
+import utils.Result;
 
 /**
  *
@@ -83,12 +84,10 @@ public class RouteCompiler
     /**
      * Reads the files to generate the start routes.
      *
-     * @return success
+     * @return Result with success/fail info
      */
-    public boolean init()
+    public Result init()
     {
-        boolean success = true;
-
         ArrayList<String> lines = FileUtils.readCommandFileOrGenEmpty(ROUTE_FILE_BASENAME, ROUTE_COMPILER_FILE_CONTENTS);
         System.out.println("Read " + lines.size() + " line(s) from route compiler file.");
         ArrayList<Route> routes = parseLines(lines);
@@ -99,14 +98,12 @@ public class RouteCompiler
             rh.addRoute(route);
 
             ArmOperations ao = ArmOperations.getInstance();
-            success = ao.learnRoute(route);
-            if (!success)
-            {
-                break;
-            }
+            Result result = ao.learnRoute(route);
+            if (!result.success())
+                return result;
         }
 
-        return success;
+        return new Result();
     }
 
     private ArrayList<Route> parseLines(ArrayList<String> lines)

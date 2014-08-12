@@ -6,6 +6,8 @@
 package commands;
 
 import enums.*;
+import route.Cartesian;
+import utils.Result;
 
 /**
  * Base interface class for all robot commands 
@@ -16,7 +18,7 @@ public abstract class CommandInterface
     private long id = uniqueId++;
     private CommandStatus status = CommandStatus.PENDING;
     private int queueIndex = -1;
-    
+
     /**
      * Returns the unique ID of the command
      * 
@@ -30,9 +32,10 @@ public abstract class CommandInterface
     /**
      * Executes the command to the robot arm
      * 
+     * @param cabinetType of cabinet at start; should be updated to reflect type at end
      * @return success (true), or failure (false) 
      */
-    public abstract CommandCompletion execute();
+    public abstract Result execute(CommandArguments args);
     
     /**
      * Provide a debugging string of details about this command

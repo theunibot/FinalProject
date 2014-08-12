@@ -17,6 +17,7 @@ import java.net.Socket;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import utils.Result;
 
 /**
  *
@@ -44,9 +45,8 @@ public class R12Interface
      *
      * @return boolean - true success, false failure
      */
-    public boolean init(String address, int port)
+    public Result init(String address, int port)
     {
-        boolean success = false;
         
         System.out.println("Opening Socket...");
 
@@ -65,16 +65,15 @@ public class R12Interface
             inputStream = socket.getInputStream();
             inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
             outToServer = new DataOutputStream(socket.getOutputStream());
-            success = true;
             System.out.println("Socket Opened Succesfully");
         }
         catch (IOException ex)
         {
             Logger.getLogger(R12Interface.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println("Setup of socket to address " + address + " on port " + port + " failed.");
+            return new Result("Setup of socket to address " + address + " on port " + port + " failed.");
         }
 
-        return success;
+        return new Result();
     }
 
     /**

@@ -8,6 +8,8 @@ package commands;
 
 import enums.*;
 import robotoperations.ArmOperations;
+import route.Cartesian;
+import utils.Result;
 
 /**
  *
@@ -18,9 +20,9 @@ public class CommandArmDeEnergize extends CommandInterface {
         
     }
     
-    public CommandCompletion execute() {
+    public Result execute(CommandArguments args) {
         ArmOperations ao = ArmOperations.getInstance();
-        return (ao.deEnergize() ? CommandCompletion.complete : CommandCompletion.error);
+        return ao.deEnergize();
     }
     
     public String details() {

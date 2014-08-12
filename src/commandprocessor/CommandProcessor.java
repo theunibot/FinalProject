@@ -6,6 +6,7 @@
 package commandprocessor;
 
 import commandqueue.CommandQueues;
+import commands.CommandArguments;
 import commands.CommandInterface;
 import enums.CabinetType;
 import enums.CommandCompletion;
@@ -13,6 +14,7 @@ import enums.CommandStatus;
 import robotoperations.ArmOperations;
 import route.Cartesian;
 import route.PositionLookupTable;
+import utils.Result;
 
 /**
  *
@@ -23,11 +25,6 @@ public class CommandProcessor
     private static CommandProcessor cp = null;
     private CommandQueues cmdq = null;
     private ArmOperations ao = null;
-    private PositionLookupTable plt = PositionLookupTable.getInstance();
-
-    // the following are used to track where the arm is currently located in 3D space
-    private CabinetType currentCabinet = CabinetType.HOME;
-    private Cartesian currentCartesian = plt.shelfToCartesian(CabinetType.HOME, 0);
     
     /**
      * Returns a singleton instead of this CommandProcessor
@@ -57,6 +54,13 @@ public class CommandProcessor
      */
     public void processCommands() {
         System.out.println("Command processor started");
+        
+        // set up our command arguments to track the arm position
+        PositionLookupTable plt = PositionLookupTable.getInstance();
+        CommandArguments commandArgs = new CommandArguments();
+        commandArgs.cabinet = CabinetType.HOME;
+        commandArgs.coordinates = plt.shelfToCartesian(CabinetType.HOME, 0);
+        
         while (true) 
         {
             CommandInterface cmd = cmdq.pop();
@@ -70,17 +74,17 @@ public class CommandProcessor
             // process the command
             System.out.println("Processing command " + cmd.details());
             cmd.setStatus(CommandStatus.EXECUTING);
-            CommandCompletion completion = cmd.execute();
-            switch (completion) {
-                case error:
+            Result result = cmd.execute(commandArgs);
+            switch (result.completion) {
+                case ERROR:
                     System.out.println("Command failed");
                     cmd.setStatus(CommandStatus.ERROR);
                     break;
-                case complete:
+                case COMPLETE:
                     System.out.println("Command completed successfully");
                     cmd.setStatus(CommandStatus.COMPLETE);
                     break;
-                case incomplete:
+                case INCOMPLETE:
                     System.out.println("Command incomplete; queueing for another run");
                     cmdq.push(cmd);
                     break;                    
@@ -95,41 +99,4 @@ public class CommandProcessor
     public void kill() {
         cmdq.kill();
     }
-    
-    /**
-     * Returns the cabinet that the robot arm is closest to
-     * 
-     * @return CabinetType
-     */
-    public CabinetType getCabinet() {
-        return currentCabinet;
-    } 
-    
-    /**
-     * Sets the cabinet that the robot arm is currently resting near
-     * 
-     * @param cabinet that the arm is near
-     */
-    public void setCabinet(CabinetType cabinet) {
-        this.currentCabinet = cabinet;
-    }
-    
-    /**
-     * Gets the point in space that the arm is currently nearest
-     * 
-     * @return Cartesian with the coordinates of the arm
-     */
-    public Cartesian getCartesian() {
-        return currentCartesian;
-    }
-    
-    /**
-     * Sets the point in space that the arm is currently nearest
-     * 
-     * @param coord with the coordinates of the arm
-     */
-    public void setCartesian(Cartesian coord) {
-        this.currentCartesian = coord;
-    }
-    
 }

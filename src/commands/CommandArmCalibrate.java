@@ -8,6 +8,8 @@ package commands;
 
 import enums.*;
 import robotoperations.ArmOperations;
+import route.Cartesian;
+import utils.Result;
 
 /**
  *
@@ -17,9 +19,9 @@ public class CommandArmCalibrate extends CommandInterface {
     public CommandArmCalibrate() {
     }
     
-    public CommandCompletion execute() {
+    public Result execute(CommandArguments args) {
         ArmOperations ao = ArmOperations.getInstance();
-        return (ao.calibrate() ? CommandCompletion.complete : CommandCompletion.error);
+        return ao.calibrate();
     }
     
     public String details() {

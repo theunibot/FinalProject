@@ -5,12 +5,13 @@
  */
 package robotoperations;
 
+import enums.CabinetType;
+import java.util.ArrayList;
+import route.Cartesian;
+import route.Route;
 import route.RouteCompiler;
 import utils.FileUtils;
-import java.util.ArrayList;
-import route.Route;
-import route.Cartesian;
-import enums.CabinetType;
+import utils.Result;
 
 /**
  *
@@ -21,7 +22,7 @@ public class ArmOperations
 
     private R12Operations r12o = null;
     private RouteCompiler rc = null;
-    private static ArmOperations armOprations = null;
+    private static ArmOperations armOperations = null;
 
     //Regular Objects
     private ArrayList<String> initCommands = null;
@@ -43,20 +44,23 @@ public class ArmOperations
 
     }
 
-    public boolean init()
+    public Result init()
     {
         r12o = R12Operations.getInstance();
         rc = RouteCompiler.getInstance();
         boolean success = false;
 //        rc.init();
-        if (r12o.init() && runInitCommands() && rc.init())
-        {
-            success = true;
-        }
-        return success;
+        Result result = r12o.init();
+        if (!result.success())
+            return result;
+        result = runInitCommands();
+        if (!result.success())
+            return result;
+        result = rc.init();
+        return result;
     }
 
-    private boolean runInitCommands()
+    private Result runInitCommands()
     {
 
         //if init command file exists, read all the commands and write them out to the 
@@ -76,16 +80,16 @@ public class ArmOperations
 //                    return false;
             }
         }
-        return true;
+        return new Result();
     }
 
     public static ArmOperations getInstance()
     {
-        if (armOprations == null)
+        if (armOperations == null)
         {
-            armOprations = new ArmOperations();
+            armOperations = new ArmOperations();
         }
-        return armOprations;
+        return armOperations;
     }
 
     /**
@@ -94,9 +98,9 @@ public class ArmOperations
      * @param route the route to run
      * @param start the starting coordinate to use on the route
      * @param end the ending coordinate to use on the route
-     * @return success (true) or failure (false)
+     * @return Result with success of failure information)
      */
-    public boolean runRoute(Route route, Cartesian start, Cartesian end)
+    public Result runRoute(Route route, Cartesian start, Cartesian end)
     {
         ResponseObject response;
         if (route.size() >= 2)//must have start and end pos to modify
@@ -109,20 +113,14 @@ public class ArmOperations
             response = r12o.getResponse(modStart);
 
             if (!response.isSuccessful())
-            {
-                System.err.println("Command Failed! Cmd: " + modStart + " Response Msg: " + response.getMsg());
-                return false;
-            }
+                return new Result("Command Failed! Cmd: " + modStart + " Response Msg: " + response.getMsg());
 
             //run the modify end command
             r12o.write(modEnd);
             response = r12o.getResponse(modEnd);
 
             if (!response.isSuccessful())
-            {
-                System.err.println("Command Failed! Cmd: " + modEnd + " Response Msg: " + response.getMsg());
-                return false;
-            }
+                return new Result("Command Failed! Cmd: " + modEnd + " Response Msg: " + response.getMsg());
             
             //if reached here, route modified correctly
             String runRoute = "CONTINUOUS ADJUST " + route.getRouteProperties().getRouteName() + " RUN";
@@ -132,18 +130,12 @@ public class ArmOperations
             response = r12o.getResponse(runRoute);
 
             if (!response.isSuccessful())
-            {
-                System.err.println("Command Failed! Cmd: " + runRoute + " Response Msg: " + response.getMsg());
-                return false;
-            }
+                return new Result("Command Failed! Cmd: " + runRoute + " Response Msg: " + response.getMsg());
             
-            return true;
+            return new Result();
         }
         else //not enough pos to modify start and end routes
-        {
-            System.err.println("Route has no commands in it");
-            return false;
-        }
+            return new Result("Route has no commands in it");
     }
 
     /**
@@ -153,14 +145,14 @@ public class ArmOperations
      * @param unit if this is a CP or a desktop
      * @param stackPosition stack position (when CP) - where 1 is bottom disc,
      * and 2 is top disc)
-     * @return success (true) or failure (false)
+     * @return Result with success/failure info
      */
-    public boolean pick(CabinetType unit, int stackPosition)
+    public Result pick(CabinetType unit, int stackPosition)
     {
         //unit is used to define angle to the unit
         //stack pos only relevant if CP, used to pick route for depth
         
-        return true;
+        return new Result();
     }
 
     /**
@@ -170,14 +162,14 @@ public class ArmOperations
      * @param unit if this is a CP or a desktop
      * @param stackPosition stack position (when CP) - where 1 is bottom disc,
      * and 2 is top disc)
-     * @return success (true) or failure (false)
+     * @return Result with success/fail info
      */
-    public boolean drop(CabinetType unit, int stackPosition)
+    public Result drop(CabinetType unit, int stackPosition)
     {
         //unit is used to define angle to the unit
         //stack pos only relevant if CP, used to pick route for depth
         
-        return true;
+        return new Result();
     }
 
     /**
@@ -185,118 +177,102 @@ public class ArmOperations
      * HOME and safe/ready for this command to be successful and not damage the
      * table/arm.
      *
-     * @return success (true) or failure (false)
+     * @return Result with success/fail info
      */
-    public boolean calibrate()
+    public Result calibrate()
     {
         String commandString = "CALIBRATE";
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);
 
         if (!response.isSuccessful())
-        {
-            System.err.println("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-            return false;
-        }
-        return true;
+            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+        return new Result();
     }
 
     /**
      * Move the robot to the HOME position, using a safe route that will not hit
      * any objects
      *
-     * @return success (true) or failure (false)
+     * @return Result with success/fail info
      */
-    public boolean home()
+    public Result home()
     {
         String commandString = "SAFEHOME RUN";
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);
 
         if (!response.isSuccessful())
-        {
-            System.err.println("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-            return false;
-        }
-        return true;
+            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+        return new Result();
     }
 
     /**
      * Tell the robot to energize the arm
      *
-     * @return success (true) or failure (false)
+     * @return Result with success/fail info
      */
-    public boolean energize()
+    public Result energize()
     {
         String commandString = "ENERGIZE";
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);
 
         if (!response.isSuccessful())
-        {
-            System.err.println("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-            return false;
-        }
-        return true;
+            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+        return new Result();
     }
 
     /**
      * Tell the robot to de-energize
      *
-     * @return success (true) or failure (false)
+     * @return Result with success/fail info
      */
-     public boolean deEnergize()
+     public Result deEnergize()
     {
         String commandString = "DE-ENERGIZE";
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);
 
         if (!response.isSuccessful())
-        {
-            System.err.println("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-            return false;
-        }
-        return true;
+            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+        return new Result();
     }
 
     /**
      * Program a route into the robot controller
      *
      * @param route route to add to the controller
-     * @return success (true) or failure (false)
+     * @return Result with success/fail info
      */
-    public boolean learnRoute(Route route)
+    public Result learnRoute(Route route)
     {
         //gets and executes each command in the route
         ArrayList<String> commands = route.getRoboforthCommands();
         for (String commandString : commands)
         {
             System.out.println(commandString);
-            if (!runRouteCommand(commandString))
-            {
-                return false;
-            }
+            Result result = runRouteCommand(commandString);
+            if (!result.success())
+                return result;
         }
-        return true;
+        return new Result();
     }
 
     /**
      * Sends an individual route command to robot and looks for errors
      *
      * @param commandString command to execute
-     * @return success (true) or failure (false)
+     * @return Result with success/fail info
      */
-    private boolean runRouteCommand(String commandString)
+    private Result runRouteCommand(String commandString)
     {
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);
 
         if (!response.isSuccessful())
-        {
-            System.err.println("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-            return false;
-        }
-        return true;
+            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+        return new Result();
     }
 
     /**

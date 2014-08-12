@@ -116,6 +116,15 @@ public class PositionLookupTable
             return null;
         }
     }
+    
+    /**
+     * Helper method to return the HOME position in cartesian coordinates
+     * 
+     * @return Cartesian with the HOME position 
+     */
+    public static Cartesian homeCartesian() {
+        return PositionLookupTable.getInstance().shelfToCartesian(CabinetType.HOME, 0);
+    }
 
     //<editor-fold defaultstate="collapsed" desc="Parse File Stuff">
     private void parseFile()

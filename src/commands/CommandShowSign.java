@@ -6,6 +6,8 @@
 package commands;
 
 import enums.*;
+import route.Cartesian;
+import utils.Result;
 
 /**
  *
@@ -23,9 +25,9 @@ public class CommandShowSign extends CommandInterface
         this.effect = effect;
     }
 
-    public CommandCompletion execute()
+    public Result execute(CommandArguments args)
     {
-        return CommandCompletion.error;
+        return new Result("ShowSign not implemented");
     }
 
     public String details()

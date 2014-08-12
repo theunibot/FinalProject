@@ -8,10 +8,9 @@ package enums;
 
 /**
  *
- * @author cmidgley
  */
 public enum CommandCompletion {
-    complete,
-    incomplete,
-    error
+    COMPLETE,
+    INCOMPLETE,
+    ERROR
 }

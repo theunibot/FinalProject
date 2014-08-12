@@ -1,0 +1,14 @@
+//This is the position lookup table file.
+//Inside this file, the XYZ position of each shelf on the CachePoint
+//and Desktops are defined.
+//
+//Use "//" at the beginning of any comment. Each comment must be
+//on its own line.
+//
+//Format:
+//X Y Z
+//X Y Z P Y R
+//
+#D1
+#D2
+#CP

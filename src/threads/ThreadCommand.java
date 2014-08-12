@@ -5,8 +5,9 @@
  */
 package threads;
 
-import robotoperations.ArmOperations;
 import commandprocessor.CommandProcessor;
+import robotoperations.ArmOperations;
+import utils.Result;
 import utils.Utils;
 
 /**
@@ -22,8 +23,8 @@ public class ThreadCommand extends Thread
     public void run()
     {
         ao = ArmOperations.getInstance();
-        boolean success = ao.init();
-        if (success)
+        Result result = ao.init();
+        if (result.success())
         {
             System.out.println("All Arm Inits successful");
             // now bring up the command processor
