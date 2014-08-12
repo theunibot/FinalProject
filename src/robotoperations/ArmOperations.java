@@ -86,60 +86,109 @@ public class ArmOperations
             armOprations = new ArmOperations();
         }
         return armOprations;
-    }    
-    
+    }
+
     /**
      * Run a route, with a modified starting and ending Cartesian coordinates
-     * 
+     *
      * @param route the route to run
      * @param start the starting coordinate to use on the route
      * @param end the ending coordinate to use on the route
      * @return success (true) or failure (false)
      */
-    public boolean runRoute(Route route, Cartesian start, Cartesian end) {
-//        String commandString = "";
-//        r12o.write(commandString);
-//        ResponseObject response = r12o.getResponse(commandString);
-//
-//        if (!response.isSuccessful())
-//        {
-//            System.err.println("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-//            return false;
-//        }        
-        return true;
+    public boolean runRoute(Route route, Cartesian start, Cartesian end)
+    {
+        ResponseObject response;
+        if (route.size() >= 2)//must have start and end pos to modify
+        {
+            String modStart = cartesianCommandToRouteModifyString(start, route.getRouteProperties().getRouteName(), 0);
+            String modEnd = cartesianCommandToRouteModifyString(start, route.getRouteProperties().getRouteName(), route.size() - 1);
+
+            //run the modify start command
+            r12o.write(modStart);
+            response = r12o.getResponse(modStart);
+
+            if (!response.isSuccessful())
+            {
+                System.err.println("Command Failed! Cmd: " + modStart + " Response Msg: " + response.getMsg());
+                return false;
+            }
+
+            //run the modify end command
+            r12o.write(modEnd);
+            response = r12o.getResponse(modEnd);
+
+            if (!response.isSuccessful())
+            {
+                System.err.println("Command Failed! Cmd: " + modEnd + " Response Msg: " + response.getMsg());
+                return false;
+            }
+            
+            //if reached here, route modified correctly
+            String runRoute = "CONTINUOUS ADJUST " + route.getRouteProperties().getRouteName() + " RUN";
+            
+            //run the route
+            r12o.write(runRoute);
+            response = r12o.getResponse(runRoute);
+
+            if (!response.isSuccessful())
+            {
+                System.err.println("Command Failed! Cmd: " + runRoute + " Response Msg: " + response.getMsg());
+                return false;
+            }
+            
+            return true;
+        }
+        else //not enough pos to modify start and end routes
+        {
+            System.err.println("Route has no commands in it");
+            return false;
+        }
     }
-    
+
     /**
-     * Pickup a disc from a slot.  Assumes that the robot is already at the safe pickup location
-     * for the specified disc, and is not already holding one
-     * 
+     * Pickup a disc from a slot. Assumes that the robot is already at the safe
+     * pickup location for the specified disc, and is not already holding one
+     *
      * @param unit if this is a CP or a desktop
-     * @param stackPosition stack position (when CP) - where 1 is bottom disc, and 2 is top disc)
+     * @param stackPosition stack position (when CP) - where 1 is bottom disc,
+     * and 2 is top disc)
      * @return success (true) or failure (false)
      */
-    public boolean pick(ShelfType unit, int stackPosition) {
+    public boolean pick(ShelfType unit, int stackPosition)
+    {
+        //unit is used to define angle to the unit
+        //stack pos only relevant if CP, used to pick route for depth
+        
         return true;
     }
-    
+
     /**
-     * Drop off a disc to a slot.  Assumes that the robot is already at the safe dropoff location
-     * for the specified disc, and is currently holding a disc
-     * 
+     * Drop off a disc to a slot. Assumes that the robot is already at the safe
+     * dropoff location for the specified disc, and is currently holding a disc
+     *
      * @param unit if this is a CP or a desktop
-     * @param stackPosition stack position (when CP) - where 1 is bottom disc, and 2 is top disc)
+     * @param stackPosition stack position (when CP) - where 1 is bottom disc,
+     * and 2 is top disc)
      * @return success (true) or failure (false)
      */
-    public boolean drop(ShelfType unit, int stackPosition) {
+    public boolean drop(ShelfType unit, int stackPosition)
+    {
+        //unit is used to define angle to the unit
+        //stack pos only relevant if CP, used to pick route for depth
+        
         return true;
     }
-    
+
     /**
-     * Execute the robot calibrate command.  WARNING: The robot arm MUST be in HOME and safe/ready for this
-     * command to be successful and not damage the table/arm.
-     * 
+     * Execute the robot calibrate command. WARNING: The robot arm MUST be in
+     * HOME and safe/ready for this command to be successful and not damage the
+     * table/arm.
+     *
      * @return success (true) or failure (false)
      */
-    public boolean calibrate() {        
+    public boolean calibrate()
+    {
         String commandString = "CALIBRATE";
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);
@@ -148,16 +197,18 @@ public class ArmOperations
         {
             System.err.println("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
             return false;
-        }        
+        }
         return true;
     }
 
     /**
-     * Move the robot to the HOME position, using a safe route that will not hit any objects
-     * 
+     * Move the robot to the HOME position, using a safe route that will not hit
+     * any objects
+     *
      * @return success (true) or failure (false)
      */
-    public boolean home() {
+    public boolean home()
+    {
         String commandString = "SAFEHOME RUN";
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);
@@ -166,16 +217,17 @@ public class ArmOperations
         {
             System.err.println("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
             return false;
-        }        
+        }
         return true;
     }
-    
+
     /**
      * Tell the robot to energize the arm
-     * 
+     *
      * @return success (true) or failure (false)
      */
-    public boolean energize() {
+    public boolean energize()
+    {
         String commandString = "ENERGIZE";
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);
@@ -184,16 +236,17 @@ public class ArmOperations
         {
             System.err.println("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
             return false;
-        }        
+        }
         return true;
     }
-    
+
     /**
      * Tell the robot to de-energize
-     * 
+     *
      * @return success (true) or failure (false)
      */
-    public boolean deEnergize() {
+    public boolean deEnergize()
+    {
         String commandString = "DE-ENERGIZE";
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);
@@ -202,31 +255,34 @@ public class ArmOperations
         {
             System.err.println("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
             return false;
-        }        
+        }
         return true;
     }
-    
+
     /**
      * Program a route into the robot controller
-     * 
+     *
      * @param route route to add to the controller
      * @return success (true) or failure (false)
      */
-    public boolean learnRoute(Route route) {
+    public boolean learnRoute(Route route)
+    {
         //gets and executes each command in the route
         ArrayList<String> commands = route.getRoboforthCommands();
         for (String commandString : commands)
         {
             System.out.println(commandString);
             if (!runRouteCommand(commandString))
+            {
                 return false;
-        }        
+            }
+        }
         return true;
     }
 
     /**
      * Sends an individual route command to robot and looks for errors
-     * 
+     *
      * @param commandString command to execute
      * @return success (true) or failure (false)
      */
@@ -241,6 +297,20 @@ public class ArmOperations
             return false;
         }
         return true;
+    }
+
+    /**
+     * Converts the Cartesian object into a RoboForth String to modify the given
+     * route at the given position.
+     *
+     * @param c Cartesian point
+     * @param routeName Name of the Route to modify
+     * @param pos Position in the route to modify
+     * @return RoboForth String to modify the given route at the given position
+     */
+    private String cartesianCommandToRouteModifyString(Cartesian c, String routeName, int pos)
+    {
+        return "DECIMAL " + c.getRollStr() + " " + c.getYawStr() + " " + c.getPitchStr() + " " + c.getZ() + " " + c.getY() + " " + c.getX() + " " + routeName + " " + pos + " LINE DLD";
     }
 
 }

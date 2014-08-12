@@ -26,8 +26,9 @@ public class RouteCompiler
     private RouteHolder rh = RouteHolder.getInstance();
 
     //String consts
-    public static final String ROUTE_PREFIX = "route ";
-    public static final String ROUTE_FILE_BASENAME = "routes";
+    public static final String ROUTE_FILE_BASENAME = FileUtils.getFilesFolderString() + "allRoutes.txt";
+//    pathToFile = FileUtils.getFilesFolderString() + prefix + ROUTE_FILE_BASENAME + ".txt";
+    public static final String ROUTE_DEFINE_PREFIX = "route ";
     public static final String ROUTE_LEFT = "left";
     public static final String ROUTE_MIDDLE = "middle";
     public static final String ROUTE_RIGHT = "right";
@@ -67,7 +68,6 @@ public class RouteCompiler
             + "\n" + ROUTE_MIDDLE + ""
             + "\n"
             + "\n" + ROUTE_RIGHT;
-    private String pathToFile = "";
 
     /**
      * Gets the uniform instance of RouteCompiler
@@ -91,41 +91,39 @@ public class RouteCompiler
     public boolean init()
     {
         boolean success = true;
-        for (String prefix : ROUTE_FILE_PREFIXS)
+        
+        ArrayList<String> lines = FileUtils.readCommandFileOrGenEmpty(ROUTE_FILE_BASENAME, ROUTE_COMPILER_FILE_CONTENTS);
+        System.out.println("Read " + lines.size() + " line(s) from route compiler file.");
+        ArrayList<Route> routes = parseLines(lines);
+
+        for (Route route : routes)
         {
-            pathToFile = FileUtils.getFilesFolderString() + prefix + ROUTE_FILE_BASENAME + ".txt";
-            ArrayList<String> lines = FileUtils.readCommandFileOrGenEmpty(pathToFile, ROUTE_COMPILER_FILE_CONTENTS);
-            System.out.println("Read " + lines.size() + " line(s) from route compiler file.");
-            ArrayList<Route> routes = parseLines(lines, prefix);
+            //adds routes to the route holder
+            rh.addRoute(route);
 
-            for (Route route : routes)
+            ArmOperations ao = ArmOperations.getInstance();
+            success = ao.learnRoute(route);
+            if (!success)
             {
-                //adds routes to the route holder
-                rh.addRoute(route);
-
-                ArmOperations ao = ArmOperations.getInstance();
-                success = ao.learnRoute(route);
-                if (!success)
-                {
-                    break;
-                }
+                break;
             }
         }
+
         return success;
     }
 
-    private ArrayList<Route> parseLines(ArrayList<String> lines, String prefix)
+    private ArrayList<Route> parseLines(ArrayList<String> lines)
     {
         RouteProperties routeProperties = new RouteProperties(null);
         ArrayList<Route> listOfRoutes = new ArrayList<Route>();
         Route route = null;        //set route type, D1, D2, etc
-        routeProperties.setRouteType(getRouteType(prefix));
+//        routeProperties.setRouteType(getRouteType(prefix));
         int lineCount = 1;//used in error tracking
         for (String line : lines)
         {
-            if (line.startsWith(FileUtils.COMMAND_FILE_METADATA))
+            if (line.startsWith(FileUtils.COMMAND_FILE_METADATA_PREFIX))
             {
-                String[] chunks = line.replaceFirst(FileUtils.COMMAND_FILE_METADATA, "").split(" ");
+                String[] chunks = line.replaceFirst(FileUtils.COMMAND_FILE_METADATA_PREFIX, "").split(" ");
                 for (String chunk : chunks)
                 {
                     if (chunk.equals(ROUTE_LEFT))
@@ -142,10 +140,10 @@ public class RouteCompiler
                     }
                 }
             }
-            else if (line.startsWith(ROUTE_PREFIX)) //new Route
+            else if (line.startsWith(ROUTE_DEFINE_PREFIX)) //new Route
             {
-                String routeName = prefix + line.replace(ROUTE_PREFIX, "").trim();
-                routeProperties.setRouteName(routeName);//sets the name of the route for use
+//                String routeName = prefix + line.replace(ROUTE_DEFINE_PREFIX, "").trim();
+//                routeProperties.setRouteName(routeName);//sets the name of the route for use
                 route = new Route(routeProperties);
                 listOfRoutes.add(route);
             }

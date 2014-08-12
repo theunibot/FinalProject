@@ -27,7 +27,7 @@ public class FileUtils
 {
 
     public static final String COMMAND_FILE_COMMENT = "//";
-    public static final String COMMAND_FILE_METADATA = "#";
+    public static final String COMMAND_FILE_METADATA_PREFIX = "#";
     /**
      * Reads an INI file and parses out each value, placing it in the Map. Generates a file if none is found.
      * @param pathToFile path the the INI file to read

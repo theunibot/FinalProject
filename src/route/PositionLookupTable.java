@@ -127,14 +127,14 @@ public class PositionLookupTable
             for (String line : lines)
             {
                 String[] pieces = line.split(" ");
-                if (line.startsWith(FileUtils.COMMAND_FILE_METADATA))//metadata
+                if (line.startsWith(FileUtils.COMMAND_FILE_METADATA_PREFIX))//metadata
                 {
                     for (String piece : pieces)
                     {
                         //remove any comment piece
-                        if (piece.startsWith(FileUtils.COMMAND_FILE_METADATA))
+                        if (piece.startsWith(FileUtils.COMMAND_FILE_METADATA_PREFIX))
                         {
-                            piece = piece.replace(FileUtils.COMMAND_FILE_METADATA, "");
+                            piece = piece.replace(FileUtils.COMMAND_FILE_METADATA_PREFIX, "");
                         }
 
                         if (Utils.stringToEnumShelfType(piece) == ShelfType.D1)
