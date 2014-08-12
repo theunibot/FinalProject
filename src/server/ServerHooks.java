@@ -56,6 +56,7 @@ public class ServerHooks
         Integer queueInt = Utils.strToInt(queue);
         String status = params.get("status");
         Boolean statusBool = (Utils.strToInt(status) == 1);
+
         String layer = params.get("layer");
         Integer layerInt = Utils.strToInt(layer);
         String shelf = params.get("shelf");
