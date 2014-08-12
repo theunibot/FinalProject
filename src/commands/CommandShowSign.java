@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package commands;
 
 import enums.*;
@@ -12,20 +11,25 @@ import enums.*;
  *
  * @author cmidgley
  */
-public class CommandShowSign extends CommandInterface {
+public class CommandShowSign extends CommandInterface
+{
+
     int layer;
     EffectType effect;
-    
-    public CommandShowSign(int layer, EffectType effect) {
+
+    public CommandShowSign(int layer, EffectType effect)
+    {
         this.layer = layer;
         this.effect = effect;
     }
-    
-    public CommandCompletion execute() {
+
+    public CommandCompletion execute()
+    {
         return CommandCompletion.error;
     }
-    
-    public String details() {
+
+    public String details()
+    {
         return "ShowSign(" + layer + ", " + effect.toString() + ")";
     }
 }

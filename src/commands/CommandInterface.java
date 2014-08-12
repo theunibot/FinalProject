@@ -64,14 +64,14 @@ public abstract class CommandInterface
      * 
      * @param queueIndex Index of the queue (0=priority, 1/2 = desktop queues)
      */
-    public void setQueueIndex(Integer queueIndex) {
+    public void setQueueIndex(int queueIndex) {
         this.queueIndex = queueIndex;
     }
     
     /**
      * Returns the queue index used by this command
      * 
-     * @return Integer with queue index (0=priority; 1/2 = desktop queues)
+     * @return int with queue index (0=priority; 1/2 = desktop queues)
      */
     public int getQueueIndex() {
         return this.queueIndex;

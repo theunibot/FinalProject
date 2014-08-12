@@ -15,7 +15,7 @@ import enums.*;
 public class CommandEmptyDesktop extends CommandInterface {
     private int desktop;
     
-    public CommandEmptyDesktop(Integer desktop) {
+    public CommandEmptyDesktop(int desktop) {
         this.desktop = desktop;
     }
     

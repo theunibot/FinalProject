@@ -53,16 +53,16 @@ public class ServerHooks
         
         // decode all possible parameters
         String queue = params.get("queue");
-        Integer queueInt = Utils.strToInt(queue);
+        int queueInt = Utils.strToInt(queue);
         String status = params.get("status");
         Boolean statusBool = (Utils.strToInt(status) == 1);
 
         String layer = params.get("layer");
-        Integer layerInt = Utils.strToInt(layer);
+        int layerInt = Utils.strToInt(layer);
         String shelf = params.get("shelf");
-        Integer shelfInt = Utils.strToInt(shelf);
+        int shelfInt = Utils.strToInt(shelf);
         String desktop = params.get("desktop");
-        Integer desktopInt = Utils.strToInt(desktop);
+        int desktopInt = Utils.strToInt(desktop);
         String effect = params.get("effect");
         EffectType effectEnum = Utils.effectStringToEffectType(effect);
         

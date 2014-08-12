@@ -62,7 +62,7 @@ public class Utils
      * @param s string to convert
      * @return converted integer, or -1 if unable to convert
      */
-    public static Integer strToInt(String s) {
+    public static int strToInt(String s) {
         try {
             return Integer.parseInt(s);
         } catch (NumberFormatException e) {
