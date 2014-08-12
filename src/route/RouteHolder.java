@@ -46,8 +46,10 @@ public class RouteHolder
         List<Route> routesToGive = new ArrayList<>();
         for (Route r : routes)
         {
-            if (r.getRouteProperties().getRouteSide() == rp.getRouteSide()
-                    && r.getRouteProperties().getRouteType() == rp.getRouteType())
+            RouteProperties props = r.getRouteProperties();
+            if(props.getEffect() == rp.getEffect()
+                    && props.getFrom() == rp.getFrom()
+                    && props.getTo() == rp.getTo())
             {
                 routesToGive.add(r);
             }
