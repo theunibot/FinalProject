@@ -6,7 +6,7 @@
 
 package route;
 
-import enums.ShelfType;
+import enums.CabinetType;
 import java.util.ArrayList;
 import utils.FileUtils;
 import utils.Utils;
@@ -27,7 +27,7 @@ public class PositionLookupTable
 
     private String FILE_CONTENTS = ""
             + "//This is the position lookup table file."
-            + "\n//Inside this file, the XYZ position of each slot on the CachePoint"
+            + "\n//Inside this file, the XYZ position of each shelf on the CachePoint"
             + "\n//and Desktops are defined."
             + "\n//"
             + "\n//Use \"//\" at the beginning of any comment. Each comment must be"
@@ -65,15 +65,15 @@ public class PositionLookupTable
     }
 
     /**
-     * Converts the given slot and shelf unit to a Cartesian coord.
+     * Converts the given cabinet and shelf to a Cartesian coord.
      * @param su
-     * @param slot
+     * @param shelf
      * @return 
      */
-    public Cartesian slotToCartesian(ShelfType su, int slot)
+    public Cartesian shelfToCartesian(CabinetType su, int shelf)
     {
-        int index = Utils.slotToIndex(slot);
-        if (su == ShelfType.D1)
+        int index = Utils.shelfToIndex(shelf);
+        if (su == CabinetType.D1)
         {
             if (index > 0 && index < d1Pos.size())
             {
@@ -81,11 +81,11 @@ public class PositionLookupTable
             }
             else
             {
-                System.err.println("Slot " + index + " not in D1");
+                System.err.println("Shelf " + index + " not in D1");
                 return null;
             }
         }
-        else if (su == ShelfType.D2)
+        else if (su == CabinetType.D2)
         {
 
             if (index > 0 && index < d2Pos.size())
@@ -94,11 +94,11 @@ public class PositionLookupTable
             }
             else
             {
-                System.err.println("Slot " + index + " not in D2");
+                System.err.println("Shelf " + index + " not in D2");
                 return null;
             }
         }
-        else if (su == ShelfType.CP)
+        else if (su == CabinetType.CP)
         {
             if (index > 0 && index < cpPos.size())
             {
@@ -106,7 +106,7 @@ public class PositionLookupTable
             }
             else
             {
-                System.err.println("Slot " + index + " not in CP");
+                System.err.println("Shelf " + index + " not in CP");
                 return null;
             }
         }
@@ -123,7 +123,7 @@ public class PositionLookupTable
         ArrayList<String> lines = FileUtils.readCommandFileOrGenEmpty(FileUtils.getFilesFolderString() + FILE_NAME, FILE_CONTENTS);
         if (lines != null)
         {
-            ShelfType su = null;
+            CabinetType su = null;
             for (String line : lines)
             {
                 String[] pieces = line.split(" ");
@@ -137,28 +137,28 @@ public class PositionLookupTable
                             piece = piece.replace(FileUtils.COMMAND_FILE_METADATA_PREFIX, "");
                         }
 
-                        if (Utils.stringToEnumShelfType(piece) == ShelfType.D1)
+                        if (Utils.stringToEnumShelfType(piece) == CabinetType.D1)
                         {
-                            su = ShelfType.D1;
+                            su = CabinetType.D1;
                         }
-                        else if (Utils.stringToEnumShelfType(piece) == ShelfType.D2)
+                        else if (Utils.stringToEnumShelfType(piece) == CabinetType.D2)
                         {
-                            su = ShelfType.D2;
+                            su = CabinetType.D2;
                         }
-                        else if (Utils.stringToEnumShelfType(piece) == ShelfType.CP)
+                        else if (Utils.stringToEnumShelfType(piece) == CabinetType.CP)
                         {
-                            su = ShelfType.CP;
+                            su = CabinetType.CP;
                         }
                     }
                 }
                 else//type is position X,Y,Z,Pitch,Yaw,Roll
-                {
+                                {
                     if (pieces.length == 3)//line num, XYZ
                     {
                         if (su != null)
                         {
                             Cartesian prevCart;
-                            if (su == ShelfType.CP)
+                            if (su == CabinetType.CP)
                             {
                                 if ((prevCart = getLastPoint(cpPos)) != null)
                                 {
@@ -169,7 +169,7 @@ public class PositionLookupTable
                                     cpPos.add(new Cartesian(pieces[0], pieces[1], pieces[2], "0", "0", "0"));
                                 }
                             }
-                            else if (su == ShelfType.D1)
+                            else if (su == CabinetType.D1)
                             {
                                 if ((prevCart = getLastPoint(d1Pos)) != null)
                                 {
@@ -180,7 +180,7 @@ public class PositionLookupTable
                                     d1Pos.add(new Cartesian(pieces[0], pieces[1], pieces[2], "0", "0", "0"));
                                 }
                             }
-                            else if (su == ShelfType.D2)
+                            else if (su == CabinetType.D2)
                             {
                                 if ((prevCart = getLastPoint(d2Pos)) != null)
                                 {
@@ -206,15 +206,15 @@ public class PositionLookupTable
                     {
                         if (su != null)
                         {
-                            if (su == ShelfType.CP)
+                            if (su == CabinetType.CP)
                             {
                                 cpPos.add(new Cartesian(pieces[0], pieces[1], pieces[2], pieces[3], pieces[4], pieces[5]));
                             }
-                            else if (su == ShelfType.D1)
+                            else if (su == CabinetType.D1)
                             {
                                 d1Pos.add(new Cartesian(pieces[0], pieces[1], pieces[2], pieces[3], pieces[4], pieces[5]));
                             }
-                            else if (su == ShelfType.D2)
+                            else if (su == CabinetType.D2)
                             {
                                 d2Pos.add(new Cartesian(pieces[0], pieces[1], pieces[2], pieces[3], pieces[4], pieces[5]));
                             }

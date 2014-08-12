@@ -10,7 +10,7 @@ package enums;
  *
  * @author kyle
  */
-public enum ShelfType
+public enum CabinetType
 {
     D1, D2, CP
 }

@@ -7,7 +7,7 @@ package utils;
 
 import enums.CommandStatus;
 import enums.EffectType;
-import enums.ShelfType;
+import enums.CabinetType;
 import server.KVObj;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -140,15 +140,15 @@ public class Utils
         }
     }
 
-    public static ShelfType stringToEnumShelfType(String s)
+    public static CabinetType stringToEnumShelfType(String s)
     {
         if(s.trim().equals("1"))
         {
-            return ShelfType.D1;
+            return CabinetType.D1;
         }
         else if(s.trim().equals("2"))
         {
-            return ShelfType.D2;
+            return CabinetType.D2;
         }
         return null;
     }
@@ -193,16 +193,16 @@ public class Utils
         return b.toString();
     }
     
-    public static int slotToIndex(int slot){
-        int ret = slot;
-        if (slot < 10)
-            ret = slot;
-        else if (slot < 15)
-            ret = (slot-5);
-        else if (slot < 25)
-            ret = (slot-10);
-        else if (slot < 35)
-            ret = (slot-15);
+    public static int shelfToIndex(int shelf){
+        int ret = shelf;
+        if (shelf < 10)
+            ret = shelf;
+        else if (shelf < 15)
+            ret = (shelf-5);
+        else if (shelf < 25)
+            ret = (shelf-10);
+        else if (shelf < 35)
+            ret = (shelf-15);
         return (ret);
     }
 

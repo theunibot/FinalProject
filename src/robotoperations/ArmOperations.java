@@ -10,7 +10,7 @@ import utils.FileUtils;
 import java.util.ArrayList;
 import route.Route;
 import route.Cartesian;
-import enums.ShelfType;
+import enums.CabinetType;
 
 /**
  *
@@ -147,7 +147,7 @@ public class ArmOperations
     }
 
     /**
-     * Pickup a disc from a slot. Assumes that the robot is already at the safe
+     * Pickup a disc from a shelf. Assumes that the robot is already at the safe
      * pickup location for the specified disc, and is not already holding one
      *
      * @param unit if this is a CP or a desktop
@@ -155,7 +155,7 @@ public class ArmOperations
      * and 2 is top disc)
      * @return success (true) or failure (false)
      */
-    public boolean pick(ShelfType unit, int stackPosition)
+    public boolean pick(CabinetType unit, int stackPosition)
     {
         //unit is used to define angle to the unit
         //stack pos only relevant if CP, used to pick route for depth
@@ -164,7 +164,7 @@ public class ArmOperations
     }
 
     /**
-     * Drop off a disc to a slot. Assumes that the robot is already at the safe
+     * Drop off a disc to a shelf. Assumes that the robot is already at the safe
      * dropoff location for the specified disc, and is currently holding a disc
      *
      * @param unit if this is a CP or a desktop
@@ -172,7 +172,7 @@ public class ArmOperations
      * and 2 is top disc)
      * @return success (true) or failure (false)
      */
-    public boolean drop(ShelfType unit, int stackPosition)
+    public boolean drop(CabinetType unit, int stackPosition)
     {
         //unit is used to define angle to the unit
         //stack pos only relevant if CP, used to pick route for depth

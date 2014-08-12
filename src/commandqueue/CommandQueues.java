@@ -8,7 +8,7 @@ package commandqueue;
 import enums.CommandStatus;
 import commands.CommandInterface;
 import enums.EffectType;
-import enums.ShelfType;
+import enums.CabinetType;
 import java.util.concurrent.Semaphore;
 
 /**
