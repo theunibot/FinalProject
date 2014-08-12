@@ -52,10 +52,14 @@ public class ArmOperations
 //        rc.init();
         Result result = r12o.init();
         if (!result.success())
+        {
             return result;
+        }
         result = runInitCommands();
         if (!result.success())
+        {
             return result;
+        }
         result = rc.init();
         return result;
     }
@@ -113,29 +117,37 @@ public class ArmOperations
             response = r12o.getResponse(modStart);
 
             if (!response.isSuccessful())
+            {
                 return new Result("Command Failed! Cmd: " + modStart + " Response Msg: " + response.getMsg());
+            }
 
             //run the modify end command
             r12o.write(modEnd);
             response = r12o.getResponse(modEnd);
 
             if (!response.isSuccessful())
+            {
                 return new Result("Command Failed! Cmd: " + modEnd + " Response Msg: " + response.getMsg());
-            
+            }
+
             //if reached here, route modified correctly
             String runRoute = "CONTINUOUS ADJUST " + route.getRouteProperties().getRouteName() + " RUN";
-            
+
             //run the route
             r12o.write(runRoute);
             response = r12o.getResponse(runRoute);
 
             if (!response.isSuccessful())
+            {
                 return new Result("Command Failed! Cmd: " + runRoute + " Response Msg: " + response.getMsg());
-            
+            }
+
             return new Result();
         }
         else //not enough pos to modify start and end routes
+        {
             return new Result("Route has no commands in it");
+        }
     }
 
     /**
@@ -145,12 +157,14 @@ public class ArmOperations
      * @param unit if this is a CP or a desktop
      * @param stackPosition stack position (when CP) - where 1 is bottom disc,
      * and 2 is top disc)
+     * @param cartesian point off of which the relative route is run
      * @return Result with success/failure info
      */
-    public Result pick(CabinetType unit, int stackPosition)
+    public Result pick(CabinetType unit, int stackPosition, Cartesian cartesian)
     {
         //unit is used to define angle to the unit
         //stack pos only relevant if CP, used to pick route for depth
+//        cartesian
         
         return new Result();
     }
@@ -162,13 +176,14 @@ public class ArmOperations
      * @param unit if this is a CP or a desktop
      * @param stackPosition stack position (when CP) - where 1 is bottom disc,
      * and 2 is top disc)
+     * @param cartesian point off of which the relative route is run
      * @return Result with success/fail info
      */
-    public Result drop(CabinetType unit, int stackPosition)
+    public Result drop(CabinetType unit, int stackPosition, Cartesian cartesian)
     {
         //unit is used to define angle to the unit
         //stack pos only relevant if CP, used to pick route for depth
-        
+
         return new Result();
     }
 
@@ -186,7 +201,9 @@ public class ArmOperations
         ResponseObject response = r12o.getResponse(commandString);
 
         if (!response.isSuccessful())
+        {
             return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+        }
         return new Result();
     }
 
@@ -203,7 +220,9 @@ public class ArmOperations
         ResponseObject response = r12o.getResponse(commandString);
 
         if (!response.isSuccessful())
+        {
             return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+        }
         return new Result();
     }
 
@@ -219,7 +238,9 @@ public class ArmOperations
         ResponseObject response = r12o.getResponse(commandString);
 
         if (!response.isSuccessful())
+        {
             return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+        }
         return new Result();
     }
 
@@ -228,14 +249,16 @@ public class ArmOperations
      *
      * @return Result with success/fail info
      */
-     public Result deEnergize()
+    public Result deEnergize()
     {
         String commandString = "DE-ENERGIZE";
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);
 
         if (!response.isSuccessful())
+        {
             return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+        }
         return new Result();
     }
 
@@ -254,7 +277,9 @@ public class ArmOperations
             System.out.println(commandString);
             Result result = runRouteCommand(commandString);
             if (!result.success())
+            {
                 return result;
+            }
         }
         return new Result();
     }
@@ -271,7 +296,9 @@ public class ArmOperations
         ResponseObject response = r12o.getResponse(commandString);
 
         if (!response.isSuccessful())
+        {
             return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+        }
         return new Result();
     }
 

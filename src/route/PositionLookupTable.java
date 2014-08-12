@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package route;
 
 import enums.CabinetType;
@@ -66,9 +65,10 @@ public class PositionLookupTable
 
     /**
      * Converts the given cabinet and shelf to a Cartesian coord.
+     *
      * @param su
      * @param shelf
-     * @return 
+     * @return
      */
     public Cartesian shelfToCartesian(CabinetType su, int shelf)
     {
@@ -98,7 +98,7 @@ public class PositionLookupTable
                 return null;
             }
         }
-        else if ( (su == CabinetType.CPL) || (su == CabinetType.CPR) || (su == CabinetType.CPM) )
+        else if ((su == CabinetType.CPL) || (su == CabinetType.CPR) || (su == CabinetType.CPM))
         {
             if (index > 0 && index < cpPos.size())
             {
@@ -116,13 +116,14 @@ public class PositionLookupTable
             return null;
         }
     }
-    
+
     /**
      * Helper method to return the HOME position in cartesian coordinates
-     * 
-     * @return Cartesian with the HOME position 
+     *
+     * @return Cartesian with the HOME position
      */
-    public static Cartesian homeCartesian() {
+    public static Cartesian homeCartesian()
+    {
         return PositionLookupTable.getInstance().shelfToCartesian(CabinetType.HOME, 0);
     }
 
@@ -169,13 +170,13 @@ public class PositionLookupTable
                     }
                 }
                 else//type is position X,Y,Z,Pitch,Yaw,Roll
-                                {
+                {
                     if (pieces.length == 3)//line num, XYZ
                     {
                         if (su != null)
                         {
                             Cartesian prevCart;
-                            if ( (su == CabinetType.CPL) || (su == CabinetType.CPM) || (su == CabinetType.CPR) )
+                            if ((su == CabinetType.CPL) || (su == CabinetType.CPM) || (su == CabinetType.CPR))
                             {
                                 if ((prevCart = getLastPoint(cpPos)) != null)
                                 {
@@ -223,7 +224,7 @@ public class PositionLookupTable
                     {
                         if (su != null)
                         {
-                            if ( (su == CabinetType.CPL) || (su == CabinetType.CPM) || (su == CabinetType.CPR) )
+                            if ((su == CabinetType.CPL) || (su == CabinetType.CPM) || (su == CabinetType.CPR))
                             {
                                 cpPos.add(new Cartesian(pieces[0], pieces[1], pieces[2], pieces[3], pieces[4], pieces[5]));
                             }
