@@ -16,4 +16,12 @@ public class CommandArmCalibrate extends CommandInterface {
     public CommandArmCalibrate() {
         
     }
+    
+    public Boolean execute() {
+        return false;
+    }
+    
+    public String details() {
+        return "Calibrate()";
+    }
 }

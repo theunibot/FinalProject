@@ -13,7 +13,17 @@ import enums.*;
  * @author cmidgley
  */
 public class CommandEmptyDesktop extends CommandInterface {
+    private Integer desktop;
+    
     public CommandEmptyDesktop(Integer desktop) {
-        
+        this.desktop = desktop;
+    }
+    
+    public Boolean execute() {
+        return false;
+    }
+    
+    public String details() {
+        return "EmptyDesktop(" + this.desktop + ")";
     }
 }

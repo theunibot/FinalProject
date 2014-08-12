@@ -13,7 +13,21 @@ import enums.*;
  * @author cmidgley
  */
 public class CommandShowLayer extends CommandInterface {
+    Integer shelf;
+    Integer desktop;
+    EffectType effect;
+    
     public CommandShowLayer(Integer shelf, Integer desktop, EffectType effect) {
-        
+        this.shelf = shelf;
+        this.desktop = desktop;
+        this.effect = effect;
+    }
+    
+    public Boolean execute() {
+        return false;
+    }
+    
+    public String details() {
+        return "ShowLayer(" + shelf + ", " + desktop + ", " + effect.toString() + ")";
     }
 }

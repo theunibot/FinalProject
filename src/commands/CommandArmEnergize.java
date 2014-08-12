@@ -16,4 +16,12 @@ public class CommandArmEnergize extends CommandInterface {
     public CommandArmEnergize() {
         
     }
+    
+    public Boolean execute() {
+        return false;
+    }
+    
+    public String details() {
+        return "Energize()";
+    }
 }

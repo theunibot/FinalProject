@@ -45,7 +45,7 @@ public class CommandProcessor
                 break;
             }
             // process the command
-            System.out.println("Processing command " + cmd.toString());
+            System.out.println("Processing command " + cmd.details());
         }
         // done - terminate
     }

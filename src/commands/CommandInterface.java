@@ -12,7 +12,7 @@ import enums.CommandType;
 /**
  * Base interface class for all robot commands 
  */
-public class CommandInterface
+public abstract class CommandInterface
 {
     private static long uniqueId = 1;
     private long id = uniqueId++;
@@ -22,11 +22,17 @@ public class CommandInterface
         return id;
     }
     
-    @Override public String toString() {
-        StringBuilder result = new StringBuilder();
-        
-        result.append("Command Unknown (base CommandInterface implementation)");
-        
-        return result.toString();
-    }
+    /**
+     * Executes the command to the robot arm
+     * 
+     * @return success (true), or failure (false) 
+     */
+    public abstract Boolean execute();
+    
+    /**
+     * Provide a debugging string of details about this command
+     * 
+     * @return String with the summary
+     */
+    public abstract String details();
 }

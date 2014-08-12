@@ -13,7 +13,23 @@ import enums.*;
  * @author cmidgley
  */
 public class CommandMountLayer extends CommandInterface {
+    Integer layer;
+    Integer shelf;
+    Integer desktop;
+    EffectType effect;
+    
     public CommandMountLayer(Integer layer, Integer shelf, Integer desktop, EffectType effect) {
-        
+        this.layer = layer;
+        this.shelf = shelf;
+        this.desktop = desktop;
+        this.effect = effect;
+    }
+    
+    public Boolean execute() {
+        return false;
+    }
+    
+    public String details() {
+        return "MountLayer(" + layer + ", " + shelf + ", " + desktop + ", " + effect.toString() + ")";
     }
 }

@@ -16,4 +16,12 @@ public class CommandArmHome extends CommandInterface {
     public CommandArmHome() {
         
     }
+    
+    public Boolean execute() {
+        return false;
+    }
+    
+    public String details() {
+        return "Home()";
+    }
 }
