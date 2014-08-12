@@ -97,6 +97,15 @@ public class ArmOperations
      * @return success (true) or failure (false)
      */
     public boolean runRoute(Route route, Cartesian start, Cartesian end) {
+//        String commandString = "";
+//        r12o.write(commandString);
+//        ResponseObject response = r12o.getResponse(commandString);
+//
+//        if (!response.isSuccessful())
+//        {
+//            System.err.println("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+//            return false;
+//        }        
         return true;
     }
     
@@ -130,7 +139,16 @@ public class ArmOperations
      * 
      * @return success (true) or failure (false)
      */
-    public boolean calibrate() {
+    public boolean calibrate() {        
+        String commandString = "CALIBRATE";
+        r12o.write(commandString);
+        ResponseObject response = r12o.getResponse(commandString);
+
+        if (!response.isSuccessful())
+        {
+            System.err.println("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+            return false;
+        }        
         return true;
     }
 
@@ -140,6 +158,15 @@ public class ArmOperations
      * @return success (true) or failure (false)
      */
     public boolean home() {
+        String commandString = "SAFEHOME RUN";
+        r12o.write(commandString);
+        ResponseObject response = r12o.getResponse(commandString);
+
+        if (!response.isSuccessful())
+        {
+            System.err.println("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+            return false;
+        }        
         return true;
     }
     
@@ -149,6 +176,15 @@ public class ArmOperations
      * @return success (true) or failure (false)
      */
     public boolean energize() {
+        String commandString = "ENERGIZE";
+        r12o.write(commandString);
+        ResponseObject response = r12o.getResponse(commandString);
+
+        if (!response.isSuccessful())
+        {
+            System.err.println("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+            return false;
+        }        
         return true;
     }
     
@@ -158,6 +194,15 @@ public class ArmOperations
      * @return success (true) or failure (false)
      */
     public boolean deEnergize() {
+        String commandString = "DE-ENERGIZE";
+        r12o.write(commandString);
+        ResponseObject response = r12o.getResponse(commandString);
+
+        if (!response.isSuccessful())
+        {
+            System.err.println("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+            return false;
+        }        
         return true;
     }
     
