@@ -38,7 +38,7 @@ public class CommandShowLayer extends CommandInterface {
     }
     
     public Result execute(CommandArguments args) {
-        return new Result("ShowLayer not implemented");
+        return new Result();
     }
     
     public String details() {

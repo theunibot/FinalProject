@@ -39,7 +39,7 @@ public class CommandShowSign extends CommandInterface
 
     public Result execute(CommandArguments args)
     {
-        return new Result("ShowSign not implemented");
+        return new Result();
     }
 
     public String details()
