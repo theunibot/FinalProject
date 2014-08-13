@@ -248,28 +248,9 @@ public class RouteCompiler
      */
     private RouteEffectType getRouteEffectType(String s)
     {
-        if (s.equalsIgnoreCase("efficient"))
-        {
-            return RouteEffectType.EFFICIENT;
-        }
-        else if (s.equalsIgnoreCase("fancy"))
-        {
-            return RouteEffectType.FANCY;
-        }
-        else if (s.equalsIgnoreCase("gripper_in"))
-        {
-            return RouteEffectType.GRIPPER_IN2;
-        }
-        else if (s.equalsIgnoreCase("gripper_out"))
-        {
-            return RouteEffectType.GRIPPER_OUT2;
-        }
-        else if (s.equalsIgnoreCase("place"))
-        {
-            return RouteEffectType.PLACE;
-        }
-        else
-        {
+        try {
+            return RouteEffectType.valueOf(s.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
             return null;
         }
     }
@@ -283,53 +264,18 @@ public class RouteCompiler
      */
     private CabinetType getCabinetType(String s)
     {
-        if (s.equalsIgnoreCase("d1"))
-        {
-            return CabinetType.D1;
-        }
-        else if (s.equalsIgnoreCase("d2"))
-        {
-            return CabinetType.D2;
-        }
-        else if (s.equalsIgnoreCase("home"))
-        {
-            return CabinetType.HOME;
-        }
-        else if (s.equalsIgnoreCase("cpl"))
-        {
-            return CabinetType.CPL;
-        }
-        else if (s.equalsIgnoreCase("cpr"))
-        {
-            return CabinetType.CPR;
-        }
-        else if (s.equalsIgnoreCase("cpm"))
-        {
-            return CabinetType.CPM;
-        }
-        else
-        {
-            return null;
+        try {
+            return CabinetType.valueOf(s.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return CabinetType.UNKNOWN;
         }
     }
-    
 
     private RouteType getRouteType(String prefix)
     {
-        if (prefix.equals(ROUTE_FILE_PREFIXS[0]))//D1
-        {
-            return RouteType.D1;
-        }
-        else if (prefix.equals(ROUTE_FILE_PREFIXS[1]))//D2
-        {
-            return RouteType.D2;
-        }
-        else if (prefix.equals(ROUTE_FILE_PREFIXS[2]))//S
-        {
-            return RouteType.S;
-        }
-        else
-        {
+        try {
+            return RouteType.valueOf(prefix.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
             return null;
         }
     }
