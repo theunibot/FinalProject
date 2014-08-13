@@ -27,11 +27,11 @@ import utils.*;
  * Command that executes the actual MountLayer feature (also ReplaceLayer)
  */
 public class CommandMountLayer extends CommandInterface {
-    int cpShelf;
-    int desktopShelf;
-    int desktop;
-    CabinetType desktopCabinet;
-    EffectType effect;
+    private int cpShelf;
+    private int desktopShelf;
+    private int desktop;
+    private CabinetType desktopCabinet;
+    private EffectType effect;
     
     /**
      * Constructor initializes the parameters for the mount layer command
@@ -46,9 +46,9 @@ public class CommandMountLayer extends CommandInterface {
         this.desktopShelf = desktopShelf;
         this.desktop = desktop;
         if (this.desktop == 1)
-            desktopCabinet = CabinetType.D1;
+            this.desktopCabinet = CabinetType.D1;
         else
-            desktopCabinet = CabinetType.D2;
+            this.desktopCabinet = CabinetType.D2;
         this.effect = effect;
     }
     
