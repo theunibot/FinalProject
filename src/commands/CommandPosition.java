@@ -16,35 +16,39 @@
 
     Copyright (c) 2014 Unidesk Corporation
  */
-package route;
+
+package commands;
+
+import enums.*;
+import robotoperations.ArmOperations;
+import route.Position;
+import utils.Result;
 
 /**
  *
  */
-public class CommandPosition 
-{
-    private Position coord;
-    private String routeName;
-    private int line;
+public class CommandPosition extends CommandInterface {
+    private Position position;
+    
+    public CommandPosition(Position position) {
+        this.position = position;
+    }
+    
+    public Result execute(CommandArguments args) {
+        ArmOperations ao = ArmOperations.getInstance();
+        return ao.moveTo(position);
+    }
+    
+    public String details() {
+        return "Position(" + position.getName() + ")";
+    }
 
-    public CommandPosition(Position coord, String routeName, int line)
-    {
-        this.coord = coord;
-        this.routeName = routeName;
-        this.line = line;     
-    }
-    
-    public Position getPosition() {
-        return this.coord;
-    }
-    
-    public boolean isRouteDefine()
-    {
-        return false;
-    }
-    
-    public String toString()
-    {        
-        return "DECIMAL " + coord.getRoll() + " " + coord.getYaw() + " " + coord.getPitch() + " " + coord.getZ() + " " + coord.getY() + " " + coord.getX() + " " + routeName + " " + line + " LINE DLD\r";
-    }
+    /**
+     * This command should be allowed to run, even if we have outstanding robot errors
+     * 
+     * @return true to indicate we should run even during errors
+     */
+    public boolean ignoreErrors() {
+        return true;
+    }    
 }

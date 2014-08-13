@@ -27,7 +27,7 @@ import utils.Result;
  */
 public class R12Operations
 {
-    private final boolean Simulated = true;
+    private final boolean Simulated = false;
     //Command Objects
     private R12Interface r12i = null;
     private static R12Operations r12Operations = null;
@@ -166,9 +166,8 @@ public class R12Operations
      * @param s command to send, no return needed
      */
     public void write(String s){
-        if(Simulated)
-            System.out.println("ROBOFORTH: " + s);
-        else
+        System.out.println("ROBOFORTH: " + s);
+        if (!Simulated)
             r12i.write(s + "\r");
     }
 

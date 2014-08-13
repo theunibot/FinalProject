@@ -20,8 +20,6 @@ package server;
 
 import commandqueue.CommandQueues;
 import commands.*;
-import enums.CommandStatus;
-import enums.RouteEffectType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -29,6 +27,9 @@ import java.util.Map;
 import utils.Utils;
 import utils.Result;
 import inventory.*;
+import enums.*;
+import route.Position;
+import route.PositionLookup;
 
 /**
  *
@@ -56,8 +57,6 @@ public class ServerHooks
         return s;
     }
 
-    private volatile boolean errorState = false;
-
     public String enqueue(Map<String, String> params)
     {
         CommandInterface cmd = null;
@@ -70,7 +69,6 @@ public class ServerHooks
         int queueInt = Utils.strToInt(queue);
         String status = params.get("status");
         boolean statusBool = (Utils.strToInt(status) == 1);
-
         String layer = params.get("layer");
         int layerInt = Utils.strToInt(layer);
         String shelf = params.get("shelf");
@@ -79,16 +77,16 @@ public class ServerHooks
         int desktopInt = Utils.strToInt(desktop);
         String effect = params.get("effect");
         RouteEffectType effectEnum = Utils.effectStringToEffectType(effect);
-        
+                
         // process the command ... start by making sure it actually is a "command"...
         if ((command = params.get("command")) == null) {
             // failed to get a valid command
-            System.out.println("Enqueue with missing 'command' tag");
+            System.err.println("Enqueue with missing 'command' tag");
             return Utils.genericEnqueueFail();
         }
         // also make sure the queue and status flags were provided    
         if ( (queue == null) || (status == null) ) {
-            System.out.println("Request failure: missing required parameter");
+            System.err.println("Request failure: missing required parameter");
             return Utils.genericEnqueueFail();
         }
         
@@ -98,40 +96,32 @@ public class ServerHooks
         switch (command) {
             case "mount-layer":
             case "replace-layer":
-                if (!errorState) {
-                    if ( (layer == null) || (shelf == null) || (desktop == null) || (effect == null) ) {
-                        System.out.println("Request failure: missing required parameter");
-                        return Utils.genericEnqueueFail();
-                    }
-                    cmd = new CommandMountLayer(layerInt, shelfInt, desktopInt, effectEnum);
+                if ( (layer == null) || (shelf == null) || (desktop == null) || (effect == null) ) {
+                    System.err.println("Request failure: missing required parameter");
+                    return Utils.genericEnqueueFail();
                 }
+                cmd = new CommandMountLayer(layerInt, shelfInt, desktopInt, effectEnum);
                 break;
             case "show-layer":
-                if (!errorState) {
-                    if ( (shelf == null) || (desktop == null) || (effect == null) ) {
-                        System.out.println("Request failure: missing required parameter");
-                        return Utils.genericEnqueueFail();
-                    }
-                    cmd = new CommandShowLayer(shelfInt, desktopInt, effectEnum);
+                if ( (shelf == null) || (desktop == null) || (effect == null) ) {
+                    System.err.println("Request failure: missing required parameter");
+                    return Utils.genericEnqueueFail();
                 }
+                cmd = new CommandShowLayer(shelfInt, desktopInt, effectEnum);
                 break;
             case "empty-desktop":
-                if (!errorState) {
-                    if ( (desktop == null) ) {
-                        System.out.println("Request failure: missing required parameter");
-                        return Utils.genericEnqueueFail();
-                    }
-                    cmd = new CommandEmptyDesktop(desktopInt);
+                if ( (desktop == null) ) {
+                    System.err.println("Request failure: missing required parameter");
+                    return Utils.genericEnqueueFail();
                 }
+                cmd = new CommandEmptyDesktop(desktopInt);
                 break;
             case "show-sign":
-                if (!errorState) {
-                    if ( (layer == null) || (effect == null) ) {
-                        System.out.println("Request failure: missing required parameter");
-                        return Utils.genericEnqueueFail();
-                    }
-                    cmd = new CommandShowSign(layerInt, effectEnum);
+                if ( (layer == null) || (effect == null) ) {
+                    System.err.println("Request failure: missing required parameter");
+                    return Utils.genericEnqueueFail();
                 }
+                cmd = new CommandShowSign(layerInt, effectEnum);
                 break;
             case "arm-home":
                 cmd = new CommandArmHome();
@@ -144,6 +134,67 @@ public class ServerHooks
                 break;
             case "arm-de-energize":
                 cmd = new CommandArmDeEnergize();
+                break;
+            case "position":
+                String cabinetStr = params.get("cabinet");
+                if ( (cabinetStr == null) || (shelf == null) ) {
+                    System.err.println("Position command missing required parameter");
+                    return Utils.genericEnqueueFail();
+                }
+
+                CabinetType cabinet;
+                try {
+                    cabinet = CabinetType.valueOf(cabinetStr.trim().toUpperCase());
+                } catch (Exception e) {
+                    System.err.println("Position command mismatch on CabinetType");
+                    return Utils.genericEnqueueFail();
+                }
+                
+                PositionLookup pl = PositionLookup.getInstance();
+
+                Position position  = pl.shelfToPosition(cabinet, shelfInt);
+                if (position == null) {
+                    System.err.println("Unable to locate position on cabinet " + cabinet.toString() + " shelf " + shelfInt);
+                    return Utils.genericEnqueueFail();
+                }
+                cmd = new CommandPosition(position);
+                break;
+            case "route":
+                String fromCabinetStr = params.get("fromcabinet");
+                String toCabinetStr = params.get("tocabinet");
+                String effectStr = params.get("effect");
+                String fromShelfStr = params.get("fromshelf");
+                int fromShelf = Integer.valueOf(fromShelfStr);
+                String toShelfStr = params.get("toshelf");
+                int toShelf = Integer.valueOf(toShelfStr);
+                
+                if ( (fromCabinetStr == null) || (toCabinetStr == null) || (effectStr == null) ||
+                        (fromShelfStr == null) || (toShelfStr == null) ) {
+                    System.err.println("Route command missing required parameter");
+                    return Utils.genericEnqueueFail();
+                }
+                CabinetType fromCabinet, toCabinet;
+                try {
+                    fromCabinet = CabinetType.valueOf(fromCabinetStr.trim().toUpperCase());
+                    toCabinet = CabinetType.valueOf(toCabinetStr.trim().toUpperCase());
+                } catch (Exception e) {
+                    System.err.println("Route command mismatch on CabinetType or RouteEffectType");
+                    return Utils.genericEnqueueFail();
+                }
+                
+                pl = PositionLookup.getInstance();
+
+                Position fromPosition = pl.shelfToPosition(fromCabinet, fromShelf);
+                if (fromPosition == null) {
+                    System.err.println("From position not found");
+                    return Utils.genericEnqueueFail();
+                }
+                Position toPosition = pl.shelfToPosition(toCabinet, toShelf);
+                if (toPosition == null) {
+                    System.err.println("To position not found");
+                    return Utils.genericEnqueueFail();
+                }
+                cmd = new CommandRoute(fromCabinet, fromPosition, toCabinet, toPosition, effectEnum);
                 break;
         }
         // did we build a command?
@@ -176,10 +227,10 @@ public class ServerHooks
             // item from the list if it has encountered success/error
             Result result = cmdq.getResult(id);
             status = cmdq.getStatus(id);
-            response.add(new KVObj(STATUS_RETURN_STATUS_KEY, Utils.commandQueueStatusEnumToString(status)));
+            response.add(new KVObj(STATUS_RETURN_STATUS_KEY, status.toString()));
             if (status == CommandStatus.ERROR) {
                 if (result != null)
-                    response.add(new KVObj(STATUS_ERROR_KEY, result.errorMessage));
+                    response.add(new KVObj(STATUS_ERROR_KEY, "\"" + result.errorMessage + "\""));
             }
         }
         else

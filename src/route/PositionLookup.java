@@ -128,7 +128,7 @@ public class PositionLookup
         {
             System.out.println("Read " + lines.size() + " line(s) from position file.");
 
-            Position prevPosition = new Position("0", "0", "0", "0", "0", "0");
+            Position prevPosition = new Position("None", "0", "0", "0", "0", "0", "0");
             
             CabinetType ct = null;
             for (String line : lines)
@@ -144,27 +144,13 @@ public class PositionLookup
                         return new Result("PositionLookupTable file has unknown CabinetType of " + line.trim().toUpperCase());
                     }
                     // reset our last known position
-                    prevPosition = new Position("0", "0", "0", "0", "0", "0");
+                    prevPosition = new Position("None", "0", "0", "0", "0", "0", "0");
                 } else {
                     // decode the position (Shelf X Y Z Pitch Yaw Roll, or just Shelf X Y Z)
 
                     // break up the line into multiple pieces split on spaces
                     String[] splitLinePieces = line.trim().split(" ");
-                    
-                    // is this three (Shelf, X,Y,Z) or does it include yaw,pitch,roll?
-                    Position pos;
-                    if (splitLinePieces.length == 4)
-                        pos = new Position(splitLinePieces[1], splitLinePieces[2], splitLinePieces[3],
-                            prevPosition.getPitchStr(), prevPosition.getYawStr(), prevPosition.getRollStr());
-                    else if (splitLinePieces.length == 7)
-                        pos = new Position(splitLinePieces[1], splitLinePieces[2], splitLinePieces[3],
-                            splitLinePieces[4], splitLinePieces[5], splitLinePieces[6]);
-                    else
-                        return new Result("PositionLookupTable invalid syntax: " + line);
-                    
-                    // save this away for later reference to get default values
-                    prevPosition = pos;
-                    
+
                     // get the shelf id
                     int shelf;
                     try {
@@ -172,6 +158,23 @@ public class PositionLookup
                     } catch (IllegalArgumentException e) {
                         return new Result("Invalid shelf ID " + splitLinePieces[0] + " in PositionLookupTable");
                     }
+                    
+                    // build up a name of this position
+                    String name = "P_" + ct.name() + "_" + shelf;
+                    
+                    // is this three (Shelf, X,Y,Z) or does it include yaw,pitch,roll?
+                    Position pos;
+                    if (splitLinePieces.length == 4)
+                        pos = new Position(name, splitLinePieces[1], splitLinePieces[2], splitLinePieces[3],
+                            String.valueOf(prevPosition.getPitch()), String.valueOf(prevPosition.getYaw()), String.valueOf(prevPosition.getRoll()));
+                    else if (splitLinePieces.length == 7)
+                        pos = new Position(name, splitLinePieces[1], splitLinePieces[2], splitLinePieces[3],
+                            splitLinePieces[4], splitLinePieces[5], splitLinePieces[6]);
+                    else
+                        return new Result("PositionLookupTable invalid syntax: " + line);
+                    
+                    // save this away for later reference to get default values
+                    prevPosition = pos;
                     
                     // make sure we know the cabinet type...
                     if (ct == null)

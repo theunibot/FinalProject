@@ -34,7 +34,7 @@ import utils.Result;
  */
 public class ArmOperations
 {
-    private final boolean Simulated = true;
+    private final boolean Simulated = false;
     private R12Operations r12o = null;
     private RouteCompiler rc = null;
     private PositionLookup plt = null;
@@ -96,12 +96,8 @@ public class ArmOperations
             r12o.write(command);
             ResponseObject response = r12o.getResponse(command);
 
-//            System.out.println(response.getMsg());
             if (!response.isSuccessful())
-            {
-                System.err.println("Command Failed! Cmd: " + command + " Response Msg: " + response.getMsg());
-//                    return false;
-            }
+                return new Result("Command Failed! Cmd: " + command + " Response Msg: " + response.getMsg());
         }
         return new Result();
     }
@@ -317,7 +313,7 @@ public class ArmOperations
         //move back to start pos succesful.
         return new Result();
     }
-
+        
     /**
      * Execute the robot calibrate command. WARNING: The robot arm MUST be in
      * HOME and safe/ready for this command to be successful and not damage the
@@ -410,6 +406,30 @@ public class ArmOperations
     }
 
     /**
+     * move the robot arm to a specific position
+     * 
+     * @param position position to move to
+     * 
+     * @return Result with success/fail info
+     */
+    public Result moveTo(Position position) {
+         if (Simulated) {
+            System.out.println("ArmOperations: position to " + position.getName());
+            return new Result();
+        }
+        String commandString = position.getX() + " " + position.getY() + " " + position.getZ() + " " +
+                position.getPitch() + " " + position.getYaw() + " " + position.getRoll() + " MOVETO";
+        r12o.write(commandString);
+        ResponseObject response = r12o.getResponse(commandString);
+
+        if (!response.isSuccessful())
+        {
+            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+        }
+        return new Result();
+   }
+
+    /**
      * Program a route into the robot controller
      *
      * @param route route to add to the controller
@@ -423,14 +443,10 @@ public class ArmOperations
         }
         //gets and executes each command in the route
         ArrayList<String> commands = route.getRoboforthCommands();
-        for (String commandString : commands)
-        {
-            System.out.println(commandString);
+        for (String commandString : commands) {
             Result result = runRouteCommand(commandString);
             if (!result.success())
-            {
                 return result;
-            }
         }
         return new Result();
     }
@@ -464,7 +480,7 @@ public class ArmOperations
      */
     private String positionCommandToRouteModifyString(Position c, String routeName, int pos)
     {
-        return "DECIMAL " + c.getRollStr() + " " + c.getYawStr() + " " + c.getPitchStr() + " " + c.getZ() + " " + c.getY() + " " + c.getX() + " " + routeName + " " + pos + " LINE DLD";
+        return "DECIMAL " + c.getRoll() + " " + c.getYaw() + " " + c.getPitch() + " " + c.getZ() + " " + c.getY() + " " + c.getX() + " " + routeName + " " + pos + " LINE DLD";
     }
 
 }
