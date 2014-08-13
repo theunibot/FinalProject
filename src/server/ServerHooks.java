@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import utils.Utils;
+import utils.Result;
 
 /**
  *
@@ -157,15 +158,20 @@ public class ServerHooks
         CommandStatus status = CommandStatus.UNKNOWN;
 
         
-        if ((id = params.get(STATUS_ID_KEY)) != null)
-        {
+        if ((id = params.get(STATUS_ID_KEY)) != null) {
+            // note: we must call getResult before getStatus, because getStatus may remove the
+            // item from the list if it has encountered success/error
+            Result result = cmdq.getResult(id);
             status = cmdq.getStatus(id);
             response.add(new KVObj(STATUS_RETURN_STATUS_KEY, Utils.commandQueueStatusEnumToString(status)));
+            if (status == CommandStatus.ERROR) {
+                if (result != null)
+                    response.add(new KVObj(STATUS_ERROR_KEY, result.errorMessage));
+            }
         }
         else
-        {
-            response.add(new KVObj(STATUS_ERROR_KEY, "error TBD"));
-        }
+            response.add(new KVObj(STATUS_ERROR_KEY, "Missing id value for status request"));
+
         return Utils.buildJSON(response);
     }
 

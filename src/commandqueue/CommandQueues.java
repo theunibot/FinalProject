@@ -5,11 +5,12 @@
  */
 package commandqueue;
 
-import enums.CommandStatus;
 import commands.CommandInterface;
-import enums.EffectType;
 import enums.CabinetType;
+import enums.CommandStatus;
+import enums.EffectType;
 import java.util.concurrent.Semaphore;
+import utils.Result;
 
 /**
  *
@@ -196,11 +197,27 @@ public class CommandQueues
             }
             CommandStatus status = cmd.getStatus();
             // if complete, remove it from memory
-            if (status == CommandStatus.COMPLETE)
-            {
+            if ( (status == CommandStatus.COMPLETE) || (status == CommandStatus.ERROR) )
                 statusQueue.remove(cmd);
-            }
             return cmd.getStatus();
+        }
+    }
+
+    /**
+     * Gets result of the specific queued element
+     *
+     * @param id Id of the queued item to check
+     * @return Status of the command
+     */
+    public Result getResult(String id)
+    {
+        synchronized (this)
+        {
+            long l = Long.parseLong(id);
+            CommandInterface cmd = statusQueue.getById(l);
+            if (cmd == null)
+                return null;
+            return cmd.getResult();
         }
     }
 

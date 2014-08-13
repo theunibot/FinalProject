@@ -22,6 +22,7 @@ public abstract class CommandInterface
     private static long uniqueId = 1;
     private long id = uniqueId++;
     private CommandStatus status = CommandStatus.PENDING;
+    private Result result = new Result();
     private int queueIndex = -1;
 
     /**
@@ -48,25 +49,6 @@ public abstract class CommandInterface
      * @return String with the summary
      */
     public abstract String details();
-
-    /**
-     * Get the current status of this command
-     * 
-     * @return CommandStatus with the current status
-     */
-    public CommandStatus getStatus() {
-        return this.status;
-    }
-    
-    /**
-     * Set the current status of this command
-     * 
-     * @param status Current status of this command; set by CommandProcessor
-     */
-    public void setStatus(CommandStatus status) {
-        this.status = status;
-    }
-    
     
     /**
      * By default, commands will not execute if there is an error outstanding.  If a command
@@ -108,6 +90,41 @@ public abstract class CommandInterface
         return this.queueIndex;
     }
     
+    /**
+     * Gets the command current result value
+     * 
+     * @return Result with status and error information 
+     */
+    public Result getResult() {
+        return this.result;
+    }
+    
+    /**
+     * Sets an result associated with this commands execution
+     * 
+     * @param result Result object with status/error information
+     */
+    public void setResult(Result result) {
+        this.result = result;
+    }
+
+    /**
+     * Gets the command current status value
+     * 
+     * @return Status of the command
+     */
+    public CommandStatus getStatus() {
+        return this.status;
+    }
+    
+    /**
+     * Sets a status associated with this commands execution
+     * 
+     * @param Status to save with this command
+     */
+    public void setStatus(CommandStatus status) {
+        this.status = status;
+    }
 
     /**
      * Internal function to execute the entire move operation of a layer

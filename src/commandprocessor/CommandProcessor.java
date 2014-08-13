@@ -54,7 +54,7 @@ public class CommandProcessor
      */
     public void processCommands() {
         System.out.println("Command processor started");
-        boolean activeError = false;
+        Result activeError = new Result();
         
         // set up our command arguments to track the arm position
         PositionLookupTable plt = PositionLookupTable.getInstance();
@@ -73,8 +73,10 @@ public class CommandProcessor
                 continue;
             }
             // do we have an error pending?
-            if (activeError && !cmd.ignoreErrors()) {
+            if (!activeError.success() && !cmd.ignoreErrors()) {
                 System.out.println("Ignoring command " + cmd.details() + " (due to outstanding error)");
+                cmd.setResult(activeError);
+                cmd.setStatus(CommandStatus.ERROR);
                 continue;
             }
             // process the command
@@ -84,20 +86,22 @@ public class CommandProcessor
             switch (result.completion) {
                 case ERROR:
                     System.out.println("Command failed");
+                    cmd.setResult(result);
                     cmd.setStatus(CommandStatus.ERROR);
-                    activeError = true;
+                    activeError = result;
                     break;
                 case COMPLETE:
                     System.out.println("Command completed successfully");
                     cmd.setStatus(CommandStatus.COMPLETE);
                     // can this clear the error flag?
-                    if (activeError && cmd.successClearsError()) {
+                    if (!activeError.success() && cmd.successClearsError()) {
                         System.out.println("Command has cleared error flag; operations to continue normally");
-                        activeError = false;
+                        activeError = new Result();
                     }
                     break;
                 case INCOMPLETE:
                     System.out.println("Command incomplete; queueing for another run");
+                    cmd.setStatus(CommandStatus.PENDING);
                     cmdq.push(cmd);
                     break;                    
             }
