@@ -21,8 +21,8 @@ package commands;
 import enums.*;
 import inventory.Inventory;
 import robotoperations.ArmOperations;
-import route.Cartesian;
-import route.PositionLookupTable;
+import route.Position;
+import route.PositionLookup;
 import route.Route;
 import route.RouteHolder;
 import utils.Result;
@@ -154,7 +154,7 @@ public abstract class CommandInterface
     protected Result moveLayer(CommandArguments args, CabinetType fromCabinet, int fromShelf, CabinetType toCabinet, int toShelf, RouteEffectType effect) {
         ArmOperations ao = ArmOperations.getInstance();
         RouteHolder rh = RouteHolder.getInstance();
-        PositionLookupTable plt = PositionLookupTable.getInstance();
+        PositionLookup plt = PositionLookup.getInstance();
         Inventory inventory = Inventory.getInstance();
         Route route;
         Result result;
@@ -166,7 +166,7 @@ public abstract class CommandInterface
             if (route == null)
                 return new Result("Unable to locate route from " + args.cabinet.toString() + " to " + fromCabinet.toString() + " (effect default)");
             // and determine the final coordinate we must reset at
-            Cartesian endCoordinates = plt.shelfToCartesian(fromCabinet, fromShelf);
+            Position endCoordinates = plt.shelfToPosition(fromCabinet, fromShelf);
             // move the arm to the new cabinet
             result = ao.runRoute(route, args.coordinates, endCoordinates);
             if (!result.success())
@@ -182,7 +182,7 @@ public abstract class CommandInterface
         int depth = inventory.depth(fromCabinet, fromShelf);
         if (depth < 0)
             return new Result("Cabinet " + fromCabinet.toString() + " shelf " + fromShelf + " is empty; unable to retreive a disc");
-        result = ao.pick(fromCabinet, depth, plt.shelfToCartesian(fromCabinet, fromShelf));
+        result = ao.pick(fromCabinet, depth, plt.shelfToPosition(fromCabinet, fromShelf));
         if (!result.success())
             return result;
         
@@ -190,19 +190,19 @@ public abstract class CommandInterface
         route = rh.getRoute(fromCabinet, toCabinet, effect);
         if (route == null)
             return new Result("Unable to locate route from " + fromCabinet.toString() + " to " + toCabinet.toString() + " (effect " + effect + ")");
-        result = ao.runRoute(route, plt.shelfToCartesian(fromCabinet, fromShelf), plt.shelfToCartesian(toCabinet, toShelf));
+        result = ao.runRoute(route, plt.shelfToPosition(fromCabinet, fromShelf), plt.shelfToPosition(toCabinet, toShelf));
         if (!result.success())
             return result;
         
         // and finally run the drop operation
         depth = inventory.depth(toCabinet, toShelf);
-        result = ao.drop(toCabinet, depth + 1, plt.shelfToCartesian(toCabinet, toShelf));
+        result = ao.drop(toCabinet, depth + 1, plt.shelfToPosition(toCabinet, toShelf));
         if (!result.success())
             return result;
 
         // update args to reflect our new position
         args.cabinet = toCabinet;
-        args.coordinates = plt.shelfToCartesian(toCabinet, toShelf);
+        args.coordinates = plt.shelfToPosition(toCabinet, toShelf);
         
         // update inventory to reflect this change
         result = inventory.moveDisc(fromCabinet, fromShelf, toCabinet, toShelf);

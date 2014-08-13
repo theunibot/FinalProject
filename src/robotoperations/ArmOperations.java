@@ -20,8 +20,8 @@ package robotoperations;
 
 import enums.CabinetType;
 import java.util.ArrayList;
-import route.Cartesian;
-import route.PositionLookupTable;
+import route.Position;
+import route.PositionLookup;
 import route.Route;
 import route.RouteCompiler;
 import enums.RouteEffectType;
@@ -37,7 +37,7 @@ public class ArmOperations
     private final boolean Simulated = true;
     private R12Operations r12o = null;
     private RouteCompiler rc = null;
-    private PositionLookupTable plt = null;
+    private PositionLookup plt = null;
     private RouteHolder rh = null;
     private static ArmOperations armOperations = null;
 
@@ -65,7 +65,7 @@ public class ArmOperations
     {
         r12o = R12Operations.getInstance();
         rc = RouteCompiler.getInstance();
-        plt = PositionLookupTable.getInstance();
+        plt = PositionLookup.getInstance();
         rh = RouteHolder.getInstance();
         boolean success = false;
 //        rc.init();
@@ -116,14 +116,14 @@ public class ArmOperations
     }
 
     /**
-     * Run a route, with a modified starting and ending Cartesian coordinates
+     * Run a route, with a modified starting and ending Position coordinates
      *
      * @param route the route to run
      * @param start the starting coordinate to use on the route
      * @param end the ending coordinate to use on the route
      * @return Result with success of failure information)
      */
-    public Result runRoute(Route route, Cartesian start, Cartesian end)
+    public Result runRoute(Route route, Position start, Position end)
     {
         if (Simulated) {
             System.out.println("ArmOperations: runRoute " + route.getRouteProperties().getRouteName() +
@@ -134,8 +134,8 @@ public class ArmOperations
         ResponseObject response;
         if (route.size() >= 2)//must have start and end pos to modify
         {
-            String modStart = cartesianCommandToRouteModifyString(start, route.getRouteProperties().getRouteName(), 0);
-            String modEnd = cartesianCommandToRouteModifyString(start, route.getRouteProperties().getRouteName(), route.size() - 1);
+            String modStart = positionCommandToRouteModifyString(start, route.getRouteProperties().getRouteName(), 0);
+            String modEnd = positionCommandToRouteModifyString(start, route.getRouteProperties().getRouteName(), route.size() - 1);
 
             //run the modify start command
             r12o.write(modStart);
@@ -182,13 +182,13 @@ public class ArmOperations
      * @param unit if this is a CP or a desktop
      * @param stackPosition stack position (when CP) - where 1 is bottom disc,
      * and 2 is top disc)
-     * @param cartesian point off of which the relative route is run
+     * @param position off of which the relative route is run
      * @return Result with success/failure info
      */
-    public Result pick(CabinetType unit, int stackPosition, Cartesian cartesian)
+    public Result pick(CabinetType unit, int stackPosition, Position position)
     {
         if (Simulated) {
-            System.out.println("ArmOperations: pick from " + unit.toString() + " position " + stackPosition + " starting at " + cartesian.getName());
+            System.out.println("ArmOperations: pick from " + unit.toString() + " position " + stackPosition + " starting at " + position.getName());
             return new Result();
         }
         //unit is used to define angle to the unit
@@ -214,7 +214,7 @@ public class ArmOperations
         }
 
         //stuff not null
-        String commandString = cartesian.getName() + " GOTO " + routeIn.getRouteProperties().getRouteName() + " START-HERE ADJUST CONTINUOUS RUN";
+        String commandString = position.getName() + " GOTO " + routeIn.getRouteProperties().getRouteName() + " START-HERE ADJUST CONTINUOUS RUN";
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);
 
@@ -234,7 +234,7 @@ public class ArmOperations
         }
 
         //grip successful
-        commandString = cartesian.getName() + " " + routeIn.getRouteProperties().getRouteName() + " END-THERE ADJUST CONTINUOUS RUN";
+        commandString = position.getName() + " " + routeIn.getRouteProperties().getRouteName() + " END-THERE ADJUST CONTINUOUS RUN";
         r12o.write(commandString);
         response = r12o.getResponse(commandString);
 
@@ -254,13 +254,13 @@ public class ArmOperations
      * @param unit if this is a CP or a desktop
      * @param stackPosition stack position (when CP) - where 1 is bottom disc,
      * and 2 is top disc)
-     * @param cartesian point off of which the relative route is run
+     * @param position off of which the relative route is run
      * @return Result with success/fail info
      */
-    public Result drop(CabinetType unit, int stackPosition, Cartesian cartesian)
+    public Result drop(CabinetType unit, int stackPosition, Position positon)
     {
         if (Simulated) {
-            System.out.println("ArmOperations: drop at " + unit.toString() + " position " + stackPosition + " starting at " + cartesian.getName());
+            System.out.println("ArmOperations: drop at " + unit.toString() + " position " + stackPosition + " starting at " + positon.getName());
             return new Result();
         }
         //unit is used to define angle to the unit
@@ -285,7 +285,7 @@ public class ArmOperations
         }
 
         //stuff not null
-        String commandString = cartesian.getName() + " GOTO " + routeIn.getRouteProperties().getRouteName() + " START-HERE ADJUST CONTINUOUS RUN";
+        String commandString = positon.getName() + " GOTO " + routeIn.getRouteProperties().getRouteName() + " START-HERE ADJUST CONTINUOUS RUN";
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);
 
@@ -305,7 +305,7 @@ public class ArmOperations
         }
 
         //grip successful
-        commandString = cartesian.getName() + " " + routeIn.getRouteProperties().getRouteName() + " END-THERE ADJUST CONTINUOUS RUN";
+        commandString = positon.getName() + " " + routeIn.getRouteProperties().getRouteName() + " END-THERE ADJUST CONTINUOUS RUN";
         r12o.write(commandString);
         response = r12o.getResponse(commandString);
 
@@ -454,15 +454,15 @@ public class ArmOperations
     }
 
     /**
-     * Converts the Cartesian object into a RoboForth String to modify the given
-     * route at the given position.
+     * Converts the Position object into a RoboForth String to modify the given
+ route at the given position.
      *
-     * @param c Cartesian point
+     * @param c Position point
      * @param routeName Name of the Route to modify
      * @param pos Position in the route to modify
      * @return RoboForth String to modify the given route at the given position
      */
-    private String cartesianCommandToRouteModifyString(Cartesian c, String routeName, int pos)
+    private String positionCommandToRouteModifyString(Position c, String routeName, int pos)
     {
         return "DECIMAL " + c.getRollStr() + " " + c.getYawStr() + " " + c.getPitchStr() + " " + c.getZ() + " " + c.getY() + " " + c.getX() + " " + routeName + " " + pos + " LINE DLD";
     }

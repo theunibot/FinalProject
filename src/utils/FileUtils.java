@@ -103,7 +103,6 @@ public class FileUtils
      */
     public static ArrayList<String> readCommandFileOrGenEmpty(String filePath, String contents)
     {
-
         if (FileUtils.fileExists(filePath))
         {
 
@@ -143,7 +142,7 @@ public class FileUtils
         while (i < arrayList.size())
         {
             String s = arrayList.get(i);
-            if (s.startsWith(COMMAND_FILE_COMMENT))
+            if ( (s.startsWith(COMMAND_FILE_COMMENT)) || (s.trim().length() == 0) )
             {
                 arrayList.remove(i);
             }

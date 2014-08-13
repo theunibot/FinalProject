@@ -20,7 +20,7 @@ package commands;
 
 import enums.*;
 import robotoperations.ArmOperations;
-import route.Cartesian;
+import route.Position;
 import utils.Result;
 
 /**

@@ -26,7 +26,7 @@ import java.util.ArrayList;
 public class Route
 {
 
-    ArrayList<CommandCartesian> commands = new ArrayList<>();
+    ArrayList<CommandPosition> commands = new ArrayList<>();
 
     private RouteProperties routeProperties = new RouteProperties(null);
 
@@ -48,12 +48,12 @@ public class Route
         return commands.size();
     }
 
-    public void add(CommandCartesian o)
+    public void add(CommandPosition o)
     {
         commands.add(o);
     }
 
-    public CommandCartesian getLastObject()
+    public CommandPosition getLastObject()
     {
         if(commands.size() > 0)
         {
@@ -73,7 +73,7 @@ public class Route
         commandStrings = new ArrayList<>();
         commandStrings.add("ROUTE " + this.routeProperties.getRouteName());
         commandStrings.add(commands.size() + " RESERVE");
-        for (CommandCartesian o : commands)
+        for (CommandPosition o : commands)
         {
             commandStrings.add("LEARN");
             commandStrings.add(o.toString());

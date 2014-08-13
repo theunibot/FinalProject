@@ -20,12 +20,12 @@
 package commands;
 
 import enums.CabinetType;
-import route.Cartesian;
+import route.Position;
 
 /**
  *
  */
 public class CommandArguments {
-    public Cartesian coordinates;              // coordinates of the arm
+    public Position coordinates;              // coordinates of the arm
     public CabinetType cabinet;                // cabinet that the arm is closest to
 }

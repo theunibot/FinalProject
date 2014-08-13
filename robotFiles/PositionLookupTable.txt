@@ -1,18 +1,22 @@
-//This is the position lookup table file.
-//Inside this file, the XYZ position of each shelf on the CachePoint
-//and Desktops are defined.
 //
-//Use "//" at the beginning of any comment. Each comment must be
-//on its own line.
+// This file defines all known positions in front of each shelf
 //
-//Format:
-//#<CabinetType>
-//<coordinates for bottom shelf>
-//<coordinates for second shelf>
-//<etc>
+// Each cabinet is defined with a '#CABINET_NAME' line, followed
+// by a series of shelf positions.  A shelf position starts with
+// the shelf id, following by three or six numbers.  The first three
+// numbers identify the X Y and Z coordinates.  The following three
+// numbers identify the PITCH YAW and ROLL.  If these last three are
+// not specified, they will default to the last used value for the cabinet,
+// or 0 0 0 if no prior value used.
+//
+#HOME
+0 0.0 0.0 0.0 0.0 0.0 0.0
+
 #D1
-200.0 200.0 200.0
+0 200.0 200.0 200.0
+
 #D2
+
 #CPL
 00 -11.0 6.25 6.25 90.0 60.4 90.0
 10 -11.0 6.25 10.75 90.0 60.4 90.0
@@ -22,11 +26,13 @@
 11 -5.5 6.25 10.75 90.0 41.3 90.0
 21 -5.5 6.25 15.25 90.0 41.3 90.0
 31 -5.5 6.25 19.75 90.0 41.3 90.0
+
 #CPM
 02 0.0 6.25 6.25 90.0 -0.0 90.0
 12 0.0 6.25 10.75 90.0 -0.0 90.0
 22 0.0 6.25 15.25 90.0 -0.0 90.0
 32 0.0 6.25 19.75 90.0 -0.0 90.0
+
 #CPR
 03 5.5 6.25 6.25 90.0 -41.3 90.0
 13 5.5 6.25 10.75 90.0 -41.3 90.0

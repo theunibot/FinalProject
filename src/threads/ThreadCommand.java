@@ -20,7 +20,7 @@ package threads;
 
 import commandprocessor.CommandProcessor;
 import robotoperations.ArmOperations;
-import route.PositionLookupTable;
+import route.PositionLookup;
 import utils.Result;
 import utils.Utils;
 
@@ -41,7 +41,7 @@ public class ThreadCommand extends Thread
         {
             System.out.println("All Arm Inits successful");
             // now initialize the positions
-            PositionLookupTable plt = PositionLookupTable.getInstance();
+            PositionLookup plt = PositionLookup.getInstance();
             result = plt.init();
             if (result.success()) {
                 // now bring up the command processor

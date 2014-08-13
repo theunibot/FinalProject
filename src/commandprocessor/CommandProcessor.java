@@ -26,8 +26,8 @@ import enums.CommandCompletion;
 import enums.CommandStatus;
 import inventory.Inventory;
 import robotoperations.ArmOperations;
-import route.Cartesian;
-import route.PositionLookupTable;
+import route.Position;
+import route.PositionLookup;
 import utils.Result;
 
 /**
@@ -71,10 +71,10 @@ public class CommandProcessor
         Result activeError = new Result();
         
         // set up our command arguments to track the arm position
-        PositionLookupTable plt = PositionLookupTable.getInstance();
+        PositionLookup plt = PositionLookup.getInstance();
         CommandArguments commandArgs = new CommandArguments();
         commandArgs.cabinet = CabinetType.HOME;
-        commandArgs.coordinates = plt.shelfToCartesian(CabinetType.HOME, 0);
+        commandArgs.coordinates = plt.shelfToPosition(CabinetType.HOME, 0);
         
         while (true) 
         {

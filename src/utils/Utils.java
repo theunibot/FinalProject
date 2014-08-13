@@ -210,63 +210,21 @@ public class Utils
         return b.toString();
     }
     
-    /**
-     * Determines the index and cabinet given a cabinet and shelf.  When passed a desktop, this method doesn't do
-     * much, as a desktop shelf and a desktop shelfIndex are the same.  When passed a CachePoint shelf, it converts
-     * the 00-34 numbering scheme (for a full CP) into a CPL/CPM/CPR index (0-7 for CPL/CPR, 0-3 for CPM).
-     * 
-     * @param cabinet Cabinet type being looked at (if UNKNOWN it will determine the CP type)
-     * @param shelf shelf to be converted
-     * @return ShelfLocation with cabinet, shelf and index
-     */
-    public static ShelfLocation shelfToShelfLocation(CabinetType cabinet, int shelf) {
-        Object x = new Object();
-        Integer y = new Integer(3);
-        ShelfLocation sl = new ShelfLocation();
-        sl.shelf = shelf;
-        
-        // if we don't know the cabinet type, assume it is a CP and go figure it out from the shelf number
-        if (cabinet == CabinetType.UNKNOWN) {
-            // 00 = lower left, 30 = upper left
-            // so second digit is cabinet...
-            switch (shelf % 10) {
-                case 0:
-                case 1:
-                    sl.cabinet = CabinetType.CPL;
-                    break;
-                case 2:
-                    sl.cabinet = CabinetType.CPM;
-                    break;
-                case 3:
-                case 4:
-                    sl.cabinet = CabinetType.CPR;
-                    break;
-                default:
-                    sl.cabinet = CabinetType.UNKNOWN;
-                    break;
-            }
-        } else 
-            sl.cabinet = cabinet;
-        
-        switch (sl.cabinet) {
-            case CPL:
-                // CPL is 00-30 and 01-31, which will be index 0-3 and 4-7
-                sl.shelfIndex = (shelf / 10) + ((shelf % 10) * 4);
-                break;
-            case CPM:
-                // CPM is 02-32
-                sl.shelfIndex = (shelf / 10);
-                break;
-            case CPR:
-                // CPR is 03-33 and 04-34
-                sl.shelfIndex = (shelf / 10) + (((shelf % 10) - 3) * 4);
-                break;
+    public static CabinetType shelfToCPCabinet(int shelf) {
+        // 00 = lower left, 30 = upper left
+        // so second digit is cabinet...
+        switch (shelf % 10) {
+            case 0:
+            case 1:
+                return CabinetType.CPL;
+            case 2:
+                return CabinetType.CPM;
+            case 3:
+            case 4:
+                return CabinetType.CPR;
             default:
-                sl.shelfIndex = shelf;
-                break;
+                return CabinetType.UNKNOWN;
         }
-
-        return sl;
     }
 
 

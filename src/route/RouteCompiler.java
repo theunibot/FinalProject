@@ -132,7 +132,7 @@ public class RouteCompiler
                 listOfRoutes.add(route);
 
             }
-            else if (route != null)//not defining a new command, so a cartesian command
+            else if (route != null)//not defining a new command, so a cartesian position command
             {
 
                 String[] pieces = line.split(" ");//splits the line to pieces
@@ -143,15 +143,15 @@ public class RouteCompiler
                     //grab the pitch,yaw,roll from the last cartesian command
                     if (route.getLastObject() != null)
                     {
-                        CommandCartesian orcc = route.getLastObject();
-                        pitch = String.valueOf(orcc.getCartesian().getPitch());
-                        yaw = String.valueOf(orcc.getCartesian().getYaw());
-                        roll = String.valueOf(orcc.getCartesian().getRoll());
+                        CommandPosition orcc = route.getLastObject();
+                        pitch = String.valueOf(orcc.getPosition().getPitch());
+                        yaw = String.valueOf(orcc.getPosition().getYaw());
+                        roll = String.valueOf(orcc.getPosition().getRoll());
                     }
                     pieces[0] = Utils.xyInToMmStr(pieces[0]);
                     pieces[1] = Utils.xyInToMmStr(pieces[1]);
                     pieces[2] = Utils.xyInToMmStr(pieces[2]);
-                    route.add(new CommandCartesian(new Cartesian(pieces[0], pieces[1], pieces[2], pitch, yaw, roll), routeProperties.getRouteName(), route.size() + 1));
+                    route.add(new CommandPosition(new Position(pieces[0], pieces[1], pieces[2], pitch, yaw, roll), routeProperties.getRouteName(), route.size() + 1));
                 }
                 else if (pieces.length == 6)//x,y,z,pitch,yaw,roll
                 {
@@ -183,11 +183,11 @@ public class RouteCompiler
                     pieces[0] = Utils.xyInToMmStr(pieces[0]);
                     pieces[1] = Utils.xyInToMmStr(pieces[1]);
                     pieces[2] = Utils.xyInToMmStr(pieces[2]);
-                    route.add(new CommandCartesian(new Cartesian(pieces[0], pieces[1], pieces[2], pitch, yaw, roll), routeProperties.getRouteName(), route.size() + 1));
+                    route.add(new CommandPosition(new Position(pieces[0], pieces[1], pieces[2], pitch, yaw, roll), routeProperties.getRouteName(), route.size() + 1));
                 }
                 else//error in format of info
                 {
-                    System.err.println("Format of line " + lineCount + " wrong. The line: " + line);
+                    System.err.println("Format of route line " + lineCount + " wrong. The line: \"" + line + "\"");
                     //ignore line
                 }
             }
@@ -303,7 +303,7 @@ public class RouteCompiler
         {
             return CabinetType.CPR;
         }
-        else if (s.equalsIgnoreCase("cpc"))
+        else if (s.equalsIgnoreCase("cpm"))
         {
             return CabinetType.CPM;
         }

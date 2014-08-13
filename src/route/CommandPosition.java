@@ -21,20 +21,20 @@ package route;
 /**
  *
  */
-public class CommandCartesian 
+public class CommandPosition 
 {
-    private Cartesian coord;
+    private Position coord;
     private String routeName;
     private int line;
 
-    public CommandCartesian(Cartesian coord, String routeName, int line)
+    public CommandPosition(Position coord, String routeName, int line)
     {
         this.coord = coord;
         this.routeName = routeName;
         this.line = line;     
     }
     
-    public Cartesian getCartesian() {
+    public Position getPosition() {
         return this.coord;
     }
     

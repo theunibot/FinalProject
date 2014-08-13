@@ -21,10 +21,10 @@ package route;
 import utils.Utils;
 
 /**
- * Define a cartesian coordinate
+ * Define a position in space as a cartesian coordinate
  *
  */
-public class Cartesian
+public class Position
 {
 
     private int x;
@@ -38,7 +38,7 @@ public class Cartesian
     private String rollStr;
     private String name = null;
 
-    public Cartesian(String x, String y, String z, String pitch, String yaw, String roll)
+    public Position(String x, String y, String z, String pitch, String yaw, String roll)
     {
         //turn 300.0 to 3000
         x = x.replace(".", "");

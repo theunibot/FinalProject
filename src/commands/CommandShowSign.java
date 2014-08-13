@@ -20,7 +20,6 @@ package commands;
 
 import enums.*;
 import utils.Result;
-import utils.ShelfLocation;
 
 /**
  * Command to show a sign
@@ -51,9 +50,9 @@ public class CommandShowSign extends CommandInterface
      */
     public Result execute(CommandArguments args)
     {
-        ShelfLocation loc = utils.Utils.shelfToShelfLocation(CabinetType.UNKNOWN, this.layer);
+        CabinetType cpCabinet = utils.Utils.shelfToCPCabinet(this.layer);
 
-        Result result = this.moveLayer(args, loc.cabinet, layer, loc.cabinet, layer, effect);
+        Result result = this.moveLayer(args, cpCabinet, layer, cpCabinet, layer, effect);
         return result;
     }
 

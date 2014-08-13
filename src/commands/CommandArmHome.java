@@ -21,8 +21,8 @@ package commands;
 
 import enums.*;
 import robotoperations.ArmOperations;
-import route.Cartesian;
-import route.PositionLookupTable;
+import route.Position;
+import route.PositionLookup;
 import route.Route;
 import route.RouteHolder;
 import utils.Result;
@@ -42,7 +42,7 @@ public class CommandArmHome extends CommandInterface {
         if (homeRoute == null)
             return new Result("Unable to locate route from " + args.cabinet.toString() + " to HOME (for SAFEHOME)");
         // go run the route
-        Result result = ao.runRoute(homeRoute, args.coordinates, PositionLookupTable.homeCartesian());
+        Result result = ao.runRoute(homeRoute, args.coordinates, PositionLookup.homePosition());
         if (!result.success())
             return result;
         result = ao.home();
@@ -50,7 +50,7 @@ public class CommandArmHome extends CommandInterface {
             return result;
         // sucess - record our new known position
         args.cabinet = CabinetType.HOME;
-        args.coordinates = PositionLookupTable.homeCartesian();
+        args.coordinates = PositionLookup.homePosition();
         return new Result();
     }
     
