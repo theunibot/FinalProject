@@ -1,20 +1,20 @@
 /*
-    This file is part of theunibot.
+ This file is part of theunibot.
 
-    theunibot is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ theunibot is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    theunibot is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ theunibot is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with theunibot.  If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU General Public License
+ along with theunibot.  If not, see <http://www.gnu.org/licenses/>.
 
-    Copyright (c) 2014 Unidesk Corporation
+ Copyright (c) 2014 Unidesk Corporation
  */
 package robotoperations;
 
@@ -26,6 +26,7 @@ import route.Route;
 import route.RouteCompiler;
 import enums.RouteEffectType;
 import route.RouteHolder;
+import route.RouteProperties;
 import utils.FileUtils;
 import utils.Result;
 
@@ -34,6 +35,7 @@ import utils.Result;
  */
 public class ArmOperations
 {
+
     private final boolean Simulated = false;
     private R12Operations r12o = null;
     private RouteCompiler rc = null;
@@ -97,7 +99,9 @@ public class ArmOperations
             ResponseObject response = r12o.getResponse(command);
 
             if (!response.isSuccessful())
+            {
                 return new Result("Command Failed! Cmd: " + command + " Response Msg: " + response.getMsg());
+            }
         }
         return new Result();
     }
@@ -121,17 +125,18 @@ public class ArmOperations
      */
     public Result runRoute(Route route, Position start, Position end)
     {
-        if (Simulated) {
-            System.out.println("ArmOperations: runRoute " + route.getRouteProperties().getRouteName() +
-                    " from " + start.getName() + " to " + end.getName());
+        if (Simulated)
+        {
+            System.out.println("ArmOperations: runRoute " + route.getRouteProperties().getRouteFriendlyName()
+                    + " from " + start.getName() + " to " + end.getName());
             return new Result();
         }
 
         ResponseObject response;
         if (route.size() >= 2)//must have start and end pos to modify
         {
-            String modStart = positionCommandToRouteModifyString(start, route.getRouteProperties().getRouteName(), 0);
-            String modEnd = positionCommandToRouteModifyString(start, route.getRouteProperties().getRouteName(), route.size() - 1);
+            String modStart = positionCommandToRouteModifyString(start, route.getRouteProperties().getRouteFriendlyName(), 0);
+            String modEnd = positionCommandToRouteModifyString(start, route.getRouteProperties().getRouteFriendlyName(), route.size() - 1);
 
             //run the modify start command
             r12o.write(modStart);
@@ -152,7 +157,7 @@ public class ArmOperations
             }
 
             //if reached here, route modified correctly
-            String runRoute = "CONTINUOUS ADJUST " + route.getRouteProperties().getRouteName() + " RUN";
+            String runRoute = "CONTINUOUS ADJUST " + route.getRouteProperties().getRouteFriendlyName() + " RUN";
 
             //run the route
             r12o.write(runRoute);
@@ -183,7 +188,8 @@ public class ArmOperations
      */
     public Result pick(CabinetType unit, int stackPosition, Position position)
     {
-        if (Simulated) {
+        if (Simulated)
+        {
             System.out.println("ArmOperations: pick from " + unit.toString() + " position " + stackPosition + " starting at " + position.getName());
             return new Result();
         }
@@ -210,7 +216,7 @@ public class ArmOperations
         }
 
         //stuff not null
-        String commandString = position.getName() + " GOTO " + routeIn.getRouteProperties().getRouteName() + " START-HERE ADJUST CONTINUOUS RUN";
+        String commandString = position.getName() + " GOTO " + routeIn.getRouteProperties().getRouteFriendlyName() + " START-HERE ADJUST CONTINUOUS RUN";
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);
 
@@ -230,7 +236,7 @@ public class ArmOperations
         }
 
         //grip successful
-        commandString = position.getName() + " " + routeIn.getRouteProperties().getRouteName() + " END-THERE ADJUST CONTINUOUS RUN";
+        commandString = position.getName() + " " + routeIn.getRouteProperties().getRouteFriendlyName() + " END-THERE ADJUST CONTINUOUS RUN";
         r12o.write(commandString);
         response = r12o.getResponse(commandString);
 
@@ -255,7 +261,8 @@ public class ArmOperations
      */
     public Result drop(CabinetType unit, int stackPosition, Position positon)
     {
-        if (Simulated) {
+        if (Simulated)
+        {
             System.out.println("ArmOperations: drop at " + unit.toString() + " position " + stackPosition + " starting at " + positon.getName());
             return new Result();
         }
@@ -281,7 +288,7 @@ public class ArmOperations
         }
 
         //stuff not null
-        String commandString = positon.getName() + " GOTO " + routeIn.getRouteProperties().getRouteName() + " START-HERE ADJUST CONTINUOUS RUN";
+        String commandString = positon.getName() + " GOTO " + routeIn.getRouteProperties().getRouteFriendlyName() + " START-HERE ADJUST CONTINUOUS RUN";
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);
 
@@ -301,7 +308,7 @@ public class ArmOperations
         }
 
         //grip successful
-        commandString = positon.getName() + " " + routeIn.getRouteProperties().getRouteName() + " END-THERE ADJUST CONTINUOUS RUN";
+        commandString = positon.getName() + " " + routeIn.getRouteProperties().getRouteFriendlyName() + " END-THERE ADJUST CONTINUOUS RUN";
         r12o.write(commandString);
         response = r12o.getResponse(commandString);
 
@@ -313,7 +320,7 @@ public class ArmOperations
         //move back to start pos succesful.
         return new Result();
     }
-        
+
     /**
      * Execute the robot calibrate command. WARNING: The robot arm MUST be in
      * HOME and safe/ready for this command to be successful and not damage the
@@ -323,7 +330,8 @@ public class ArmOperations
      */
     public Result calibrate()
     {
-        if (Simulated) {
+        if (Simulated)
+        {
             System.out.println("ArmOperations: calibrate");
             return new Result();
         }
@@ -346,7 +354,8 @@ public class ArmOperations
      */
     public Result home()
     {
-        if (Simulated) {
+        if (Simulated)
+        {
             System.out.println("ArmOperations: home");
             return new Result();
         }
@@ -368,7 +377,8 @@ public class ArmOperations
      */
     public Result energize()
     {
-        if (Simulated) {
+        if (Simulated)
+        {
             System.out.println("ArmOperations: energize");
             return new Result();
         }
@@ -390,7 +400,8 @@ public class ArmOperations
      */
     public Result deEnergize()
     {
-        if (Simulated) {
+        if (Simulated)
+        {
             System.out.println("ArmOperations: de-energize");
             return new Result();
         }
@@ -407,13 +418,15 @@ public class ArmOperations
 
     /**
      * move the robot arm to a specific position
-     * 
+     *
      * @param position position to move to
-     * 
+     *
      * @return Result with success/fail info
      */
-    public Result moveTo(Position position) {
-         if (Simulated) {
+    public Result moveTo(Position position)
+    {
+        if (Simulated)
+        {
             System.out.println("ArmOperations: position to " + position.getName());
             return new Result();
         }
@@ -427,7 +440,7 @@ public class ArmOperations
             return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
         }
         return new Result();
-   }
+    }
 
     /**
      * Program a route into the robot controller
@@ -436,29 +449,39 @@ public class ArmOperations
      * @return Result with success/fail info
      */
     public Result learnRoute(Route route)
-    {
-        if (Simulated) {
-            System.out.println("ArmOperations: learnRoute " + route.getRouteProperties().getRouteName());
+    {        
+
+        
+        if (Simulated)
+        {
+            System.out.println("ArmOperations: learnRoute " + route.getRouteProperties().getRouteFriendlyName());
             return new Result();
         }
-        //gets and executes each command in the route
-        ArrayList<String> commands = route.getRoboforthCommands();
-        for (String commandString : commands) {
+        
+        ArrayList<String> routeCommands = route.getRoboforthCommands();
+
+        //input the Fwd commands
+        for (String commandString : routeCommands)
+        {
             Result result = runRobotCommand(commandString);
             if (!result.success())
+            {
                 return result;
+            }
         }
         return new Result();
     }
-    
+
     /**
      * Learn an individual point on the robot
-     * 
+     *
      * @param position Point to learn
      * @return Result with success/failure
      */
-    public Result learnPoint(Position position) {
-        if (Simulated) {
+    public Result learnPoint(Position position)
+    {
+        if (Simulated)
+        {
             System.out.println("ArmOperations: learnPoint " + position.getName());
             return new Result();
         }
@@ -485,7 +508,7 @@ public class ArmOperations
 
     /**
      * Converts the Position object into a RoboForth String to modify the given
- route at the given position.
+     * route at the given position.
      *
      * @param c Position point
      * @param routeName Name of the Route to modify

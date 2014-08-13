@@ -1,20 +1,20 @@
 /*
-    This file is part of theunibot.
+ This file is part of theunibot.
 
-    theunibot is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ theunibot is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    theunibot is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ theunibot is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with theunibot.  If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU General Public License
+ along with theunibot.  If not, see <http://www.gnu.org/licenses/>.
 
-    Copyright (c) 2014 Unidesk Corporation
+ Copyright (c) 2014 Unidesk Corporation
  */
 package route;
 
@@ -40,7 +40,7 @@ public class RouteCompiler
     //String consts
     public static final String ROUTE_FILE_BASENAME = FileUtils.getFilesFolderString() + "allRoutes.txt";
 //    pathToFile = FileUtils.getFilesFolderString() + prefix + ROUTE_FILE_BASENAME + ".txt";
-    public static final String ROUTE_DEFINE_PREFIX = "route ";    
+    public static final String ROUTE_DEFINE_PREFIX = "route ";
 
     public static final String[] ROUTE_FILE_PREFIXS =
     {
@@ -73,7 +73,6 @@ public class RouteCompiler
             + "//the route is added to a usable list for the program"
             + "\n"
             + "\n#POS1 POS2 EFFECT";
-            
 
     /**
      * Gets the uniform instance of RouteCompiler
@@ -103,12 +102,24 @@ public class RouteCompiler
         for (Route route : routes)
         {
             //adds routes to the route holder
+            Route routeRev = route.getReverseRoute();
             rh.addRoute(route);
+            rh.addRoute(routeRev);
 
             ArmOperations ao = ArmOperations.getInstance();
+            
+            //run fwd route
             Result result = ao.learnRoute(route);
             if (!result.success())
+            {
                 return result;
+            }
+            //run rev route
+            result = ao.learnRoute(routeRev);
+            if (!result.success())
+            {
+                return result;
+            }
         }
 
         return new Result();
@@ -116,9 +127,9 @@ public class RouteCompiler
 
     private ArrayList<Route> parseLines(ArrayList<String> lines)
     {
-        RouteProperties routeProperties = new RouteProperties(null);
+        RouteProperties routeProperties = new RouteProperties();
         ArrayList<Route> listOfRoutes = new ArrayList<Route>();
-        Route route = null;        //set route type, D1, D2, etc
+        Route route = null;       //set route type, D1, D2, etc
 //        routeProperties.setRouteType(getRouteType(prefix));
         int lineCount = 1;//used in error tracking
         for (String line : lines)
@@ -127,7 +138,6 @@ public class RouteCompiler
             {
                 String[] chunks = line.replaceFirst(FileUtils.COMMAND_FILE_METADATA_PREFIX, "").split(" ");
                 routeProperties = parseForMetadata(chunks);
-                routeProperties.setRouteName(nameRoute(routeProperties));
                 route = new Route(routeProperties);
                 listOfRoutes.add(route);
 
@@ -151,7 +161,7 @@ public class RouteCompiler
                     pieces[0] = Utils.xyInToMmStr(pieces[0]);
                     pieces[1] = Utils.xyInToMmStr(pieces[1]);
                     pieces[2] = Utils.xyInToMmStr(pieces[2]);
-                    route.add(new CommandPosition(new Position(null, pieces[0], pieces[1], pieces[2], pitch, yaw, roll), routeProperties.getRouteName(), route.size() + 1));
+                    route.add(new CommandPosition(new Position(null, pieces[0], pieces[1], pieces[2], pitch, yaw, roll), routeProperties.getRouteFriendlyName(), route.size() + 1));
                 }
                 else if (pieces.length == 6)//x,y,z,pitch,yaw,roll
                 {
@@ -183,7 +193,7 @@ public class RouteCompiler
                     pieces[0] = Utils.xyInToMmStr(pieces[0]);
                     pieces[1] = Utils.xyInToMmStr(pieces[1]);
                     pieces[2] = Utils.xyInToMmStr(pieces[2]);
-                    route.add(new CommandPosition(new Position(null, pieces[0], pieces[1], pieces[2], pitch, yaw, roll), routeProperties.getRouteName(), route.size() + 1));
+                    route.add(new CommandPosition(new Position(null, pieces[0], pieces[1], pieces[2], pitch, yaw, roll), routeProperties.getRouteFriendlyName(), route.size() + 1));
                 }
                 else//error in format of info
                 {
@@ -197,16 +207,7 @@ public class RouteCompiler
         return listOfRoutes;
     }
 
-    private String nameRoute(RouteProperties rp)
-    {
-        String to = "", from = "", effect = "";
-        to = rp.getTo().toString();
-        from = rp.getFrom().toString();
-        effect = rp.getEffect().toString();
-        List<Route> sameRoutes = rh.getRoutes(rp);
-        return from + "_" + to + "_" + effect + ((int)(sameRoutes.size() + 1));
-
-    }
+    
 
     /**
      * Takes in the array of Metadata pieces and parses out info.
@@ -216,7 +217,7 @@ public class RouteCompiler
      */
     private RouteProperties parseForMetadata(String[] array)
     {
-        RouteProperties props = new RouteProperties("");
+        RouteProperties props = new RouteProperties();
         if (array.length < 3)
         {
             System.err.println("Not enough metadata for this route");
@@ -248,13 +249,15 @@ public class RouteCompiler
      */
     private RouteEffectType getRouteEffectType(String s)
     {
-        try {
+        try
+        {
             return RouteEffectType.valueOf(s.trim().toUpperCase());
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e)
+        {
             return null;
         }
     }
-   
 
     /**
      * Converts the given string to a CabinetType
@@ -264,18 +267,24 @@ public class RouteCompiler
      */
     private CabinetType getCabinetType(String s)
     {
-        try {
+        try
+        {
             return CabinetType.valueOf(s.trim().toUpperCase());
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e)
+        {
             return CabinetType.UNKNOWN;
         }
     }
 
     private RouteType getRouteType(String prefix)
     {
-        try {
+        try
+        {
             return RouteType.valueOf(prefix.trim().toUpperCase());
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e)
+        {
             return null;
         }
     }
