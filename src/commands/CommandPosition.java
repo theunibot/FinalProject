@@ -22,6 +22,7 @@ package commands;
 import enums.*;
 import robotoperations.ArmOperations;
 import route.Position;
+import route.PositionLookup;
 import utils.Result;
 
 /**
@@ -37,6 +38,30 @@ public class CommandPosition extends CommandInterface {
     public Result execute(CommandArguments args) {
         ArmOperations ao = ArmOperations.getInstance();
         return ao.moveTo(position);
+/*
+        PositionLookup pl = PositionLookup.getInstance();
+        ao.moveTo(pl.shelfToPosition(CabinetType.CPL, 00));
+        ao.moveTo(pl.shelfToPosition(CabinetType.CPL, 30));
+        ao.moveTo(pl.shelfToPosition(CabinetType.CPM, 22));
+        ao.moveTo(pl.shelfToPosition(CabinetType.CPR, 33));
+        ao.moveTo(pl.shelfToPosition(CabinetType.CPL, 31));
+        ao.moveTo(pl.shelfToPosition(CabinetType.CPL, 10));
+        ao.moveTo(pl.shelfToPosition(CabinetType.CPR, 23));
+        ao.moveTo(pl.shelfToPosition(CabinetType.CPR, 04));
+        ao.moveTo(pl.shelfToPosition(CabinetType.CPL, 01));
+        ao.moveTo(pl.shelfToPosition(CabinetType.CPM, 12));
+        ao.moveTo(pl.shelfToPosition(CabinetType.CPR, 03));
+        ao.moveTo(pl.shelfToPosition(CabinetType.CPL, 11));
+        ao.moveTo(pl.shelfToPosition(CabinetType.CPL, 20));
+        ao.moveTo(pl.shelfToPosition(CabinetType.CPR, 13));
+        ao.moveTo(pl.shelfToPosition(CabinetType.CPL, 21));
+        ao.moveTo(pl.shelfToPosition(CabinetType.CPR, 14));
+        ao.moveTo(pl.shelfToPosition(CabinetType.CPM, 02));
+        ao.moveTo(pl.shelfToPosition(CabinetType.CPR, 24));
+        ao.moveTo(pl.shelfToPosition(CabinetType.CPM, 32));
+        ao.moveTo(pl.shelfToPosition(CabinetType.CPR, 34));
+        return ao.home();
+*/
     }
     
     public String details() {
