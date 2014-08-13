@@ -169,6 +169,10 @@ public abstract class CommandInterface
         result = ao.drop(toCabinet, depth + 1, plt.shelfToCartesian(toCabinet, toShelf));
         if (!result.success())
             return result;
+
+        // update args to reflect our new position
+        args.cabinet = toCabinet;
+        args.coordinates = plt.shelfToCartesian(toCabinet, toShelf);
         
         // update inventory to reflect this change
         result = inventory.moveDisc(fromCabinet, fromShelf, toCabinet, toShelf);

@@ -11,8 +11,7 @@ import inventory.Inventory;
 import utils.*;
 
 /**
- *
- * @author cmidgley
+ * Command that executes the actual MountLayer feature (also ReplaceLayer)
  */
 public class CommandMountLayer extends CommandInterface {
     int cpShelf;
@@ -21,6 +20,14 @@ public class CommandMountLayer extends CommandInterface {
     CabinetType desktopCabinet;
     EffectType effect;
     
+    /**
+     * Constructor initializes the parameters for the mount layer command
+     * 
+     * @param cpShelf shelf on the CP to move layer from
+     * @param desktopShelf shelf on the desktop to move layer to
+     * @param desktop the desktop to move to (1 or 2)
+     * @param effect the route effect to use
+     */
     public CommandMountLayer(int cpShelf, int desktopShelf, int desktop, EffectType effect) {
         this.cpShelf = cpShelf;
         this.desktopShelf = desktopShelf;
@@ -32,6 +39,13 @@ public class CommandMountLayer extends CommandInterface {
         this.effect = effect;
     }
     
+    /**
+     * Execute the actual robot operations to move the layer
+     * 
+     * @param args Standard command args to track the arm location
+     * 
+     * @return Result with success/fail info
+     */
     public Result execute(CommandArguments args) {
         Inventory inventory = Inventory.getInstance();
         Result result;
@@ -53,6 +67,11 @@ public class CommandMountLayer extends CommandInterface {
         return result;
     }
     
+    /**
+     * Return details about this command
+     * 
+     * @return Human readable string that describes this command
+     */
     public String details() {
         return "MountLayer(" + cpShelf + ", " + desktopShelf + ", " + desktop + ", " + effect.toString() + ")";
     }
