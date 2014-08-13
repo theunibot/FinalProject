@@ -36,7 +36,7 @@ public class Result {
     public Result(String error) {
         this.completion = CommandCompletion.ERROR;
         this.errorMessage = error;
-        System.out.println("ERROR: " + error);
+        System.err.println("ERROR: " + error);
     }
     
     public Result(CommandCompletion completion) {
@@ -48,7 +48,7 @@ public class Result {
         this.completion = completion;
         this.errorMessage = error;
         if (completion == CommandCompletion.ERROR)
-            System.out.println("ERROR: " + error);
+            System.err.println("ERROR: " + error);
     }
     
     public boolean success() {

@@ -99,7 +99,7 @@ public class CommandProcessor
             Result result = cmd.execute(commandArgs);
             switch (result.completion) {
                 case ERROR:
-                    System.out.println("Command failed");
+                    System.err.println("Command failed");
                     cmd.setResult(result);
                     cmd.setStatus(CommandStatus.ERROR);
                     activeError = result;

@@ -96,7 +96,7 @@ public class ArmOperations
             r12o.write(command);
             ResponseObject response = r12o.getResponse(command);
 
-            System.out.println(response.getMsg());
+//            System.out.println(response.getMsg());
             if (!response.isSuccessful())
             {
                 System.err.println("Command Failed! Cmd: " + command + " Response Msg: " + response.getMsg());

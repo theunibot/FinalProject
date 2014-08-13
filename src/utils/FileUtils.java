@@ -169,7 +169,7 @@ public class FileUtils
         File f = new File(filePath);
         if (!f.exists())
         {
-            System.out.println("File not found!");
+            System.err.println("File not found!");
             return null;
         }
         try
