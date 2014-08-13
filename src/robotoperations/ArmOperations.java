@@ -35,7 +35,7 @@ import utils.Result;
  */
 public class ArmOperations
 {
-
+    private final boolean Simulated = true;
     private R12Operations r12o = null;
     private RouteCompiler rc = null;
     private PositionLookupTable plt = null;
@@ -126,6 +126,12 @@ public class ArmOperations
      */
     public Result runRoute(Route route, Cartesian start, Cartesian end)
     {
+        if (Simulated) {
+            System.out.println("ArmOperations: runRoute " + route.getRouteProperties().getRouteName() +
+                    " from " + start.getName() + " to " + end.getName());
+            return new Result();
+        }
+
         ResponseObject response;
         if (route.size() >= 2)//must have start and end pos to modify
         {
@@ -182,6 +188,10 @@ public class ArmOperations
      */
     public Result pick(CabinetType unit, int stackPosition, Cartesian cartesian)
     {
+        if (Simulated) {
+            System.out.println("ArmOperations: pick from " + unit.toString() + " position " + stackPosition + " starting at " + cartesian.getName());
+            return new Result();
+        }
         //unit is used to define angle to the unit
         //stack pos only relevant if CP, used to pick route for depth
 
@@ -250,6 +260,10 @@ public class ArmOperations
      */
     public Result drop(CabinetType unit, int stackPosition, Cartesian cartesian)
     {
+        if (Simulated) {
+            System.out.println("ArmOperations: drop at " + unit.toString() + " position " + stackPosition + " starting at " + cartesian.getName());
+            return new Result();
+        }
         //unit is used to define angle to the unit
         //stack pos only relevant if CP, used to pick route for depth
         RouteEffectType retIn = RouteEffectType.GRIPPER_IN2;
@@ -314,6 +328,10 @@ public class ArmOperations
      */
     public Result calibrate()
     {
+        if (Simulated) {
+            System.out.println("ArmOperations: calibrate");
+            return new Result();
+        }
         String commandString = "CALIBRATE";
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);
@@ -333,6 +351,10 @@ public class ArmOperations
      */
     public Result home()
     {
+        if (Simulated) {
+            System.out.println("ArmOperations: home");
+            return new Result();
+        }
         String commandString = "HOME";
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);
@@ -351,6 +373,10 @@ public class ArmOperations
      */
     public Result energize()
     {
+        if (Simulated) {
+            System.out.println("ArmOperations: energize");
+            return new Result();
+        }
         String commandString = "ENERGIZE";
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);
@@ -369,6 +395,10 @@ public class ArmOperations
      */
     public Result deEnergize()
     {
+        if (Simulated) {
+            System.out.println("ArmOperations: de-energize");
+            return new Result();
+        }
         String commandString = "DE-ENERGIZE";
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);
@@ -388,6 +418,10 @@ public class ArmOperations
      */
     public Result learnRoute(Route route)
     {
+        if (Simulated) {
+            System.out.println("ArmOperations: learnRoute " + route.getRouteProperties().getRouteName());
+            return new Result();
+        }
         //gets and executes each command in the route
         ArrayList<String> commands = route.getRoboforthCommands();
         for (String commandString : commands)
