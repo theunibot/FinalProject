@@ -22,6 +22,8 @@ import enums.CabinetType;
 import enums.CommandType;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
+import robotoperations.ArmOperations;
 import utils.FileUtils;
 import utils.Result;
 import utils.Utils;
@@ -90,7 +92,23 @@ public class PositionLookup
      * Program the array of positions into the robot
      */
     private Result initPositions() {
-        return new Result();
+        ArmOperations ao = ArmOperations.getInstance();
+        
+        // scan through all cabinets...
+        for (Entry<CabinetType, HashMap<Integer, Position>> cabEntry : positions.entrySet()) {
+            CabinetType cabinet = cabEntry.getKey();
+            HashMap<Integer, Position> posHash = cabEntry.getValue();
+            
+            // now scan all positions and program them up
+            for (Entry<Integer, Position> posEntry : posHash.entrySet()) {
+                Position pos = posEntry.getValue();
+                // program the point
+                Result result = ao.learnPoint(pos);
+                if (!result.success())
+                    return result;
+            }
+        }
+        return new Result();            
     }
 
     /**
