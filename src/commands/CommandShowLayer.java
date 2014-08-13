@@ -30,7 +30,7 @@ public class CommandShowLayer extends CommandInterface {
     int shelf;
     int desktop;
     private CabinetType desktopCabinet;
-    EffectType effect;
+    RouteEffectType effect;
     
     /**
      * Constructor initializes the command
@@ -39,7 +39,7 @@ public class CommandShowLayer extends CommandInterface {
      * @param desktop Desktop that has the shelf
      * @param effect Effect to run on the route when showing the shelf
      */
-    public CommandShowLayer(int shelf, int desktop, EffectType effect) {
+    public CommandShowLayer(int shelf, int desktop, RouteEffectType effect) {
         this.shelf = shelf;
         this.desktop = desktop;
         if (this.desktop == 1)
@@ -57,7 +57,7 @@ public class CommandShowLayer extends CommandInterface {
      * @return Result with success/failure information
      */
     public Result execute(CommandArguments args) {
-        Result result = this.moveLayer(args, desktopCabinet, shelf, desktopCabinet, shelf, effect.toString());
+        Result result = this.moveLayer(args, desktopCabinet, shelf, desktopCabinet, shelf, effect);
         return result;
     }
 

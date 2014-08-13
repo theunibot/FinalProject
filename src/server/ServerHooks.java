@@ -21,7 +21,7 @@ package server;
 import commandqueue.CommandQueues;
 import commands.*;
 import enums.CommandStatus;
-import enums.EffectType;
+import enums.RouteEffectType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -78,7 +78,7 @@ public class ServerHooks
         String desktop = params.get("desktop");
         int desktopInt = Utils.strToInt(desktop);
         String effect = params.get("effect");
-        EffectType effectEnum = Utils.effectStringToEffectType(effect);
+        RouteEffectType effectEnum = Utils.effectStringToEffectType(effect);
         
         // process the command ... start by making sure it actually is a "command"...
         if ((command = params.get("command")) == null) {

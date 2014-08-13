@@ -18,14 +18,14 @@
  */
 package utils;
 
-import enums.CommandStatus;
-import enums.EffectType;
 import enums.CabinetType;
-import server.KVObj;
+import enums.CommandStatus;
+import enums.RouteEffectType;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import server.KVObj;
 
 /**
  *
@@ -139,7 +139,7 @@ public class Utils
         }
     }
 
-    public static EffectType effectStringToEffectType(String s)
+    public static RouteEffectType effectStringToEffectType(String s)
     {
         if (s == null)
         {
@@ -147,11 +147,11 @@ public class Utils
         }
         if (s.equals("fancy"))
         {
-            return EffectType.FANCY;
+            return RouteEffectType.FANCY;
         }
         else if (s.equals("efficient"))
         {
-            return EffectType.EFFICIENT;
+            return RouteEffectType.EFFICIENT;
         }
         else
         {

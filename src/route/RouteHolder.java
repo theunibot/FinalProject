@@ -18,6 +18,7 @@
  */
 package route;
 
+import enums.RouteEffectType;
 import enums.CabinetType;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,10 +56,6 @@ public class RouteHolder
         }
     }
     
-    public Route getRoute(CabinetType fromCabinet, CabinetType toCabinet, String effect) {
-        return null;
-    }
-
     public List<Route> getRoutes(RouteProperties rp)
     {
         List<Route> routesToGive = new ArrayList<>();

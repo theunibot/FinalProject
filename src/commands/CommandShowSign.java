@@ -19,7 +19,6 @@
 package commands;
 
 import enums.*;
-import route.Cartesian;
 import utils.Result;
 
 /**
@@ -29,7 +28,7 @@ public class CommandShowSign extends CommandInterface
 {
 
     int layer;
-    EffectType effect;
+    RouteEffectType effect;
 
     /**
      * Constructor that sets up the command parameters
@@ -37,7 +36,7 @@ public class CommandShowSign extends CommandInterface
      * @param layer Layer shelf to show
      * @param effect effect to use
      */
-    public CommandShowSign(int layer, EffectType effect)
+    public CommandShowSign(int layer, RouteEffectType effect)
     {
         this.layer = layer;
         this.effect = effect;
@@ -53,7 +52,7 @@ public class CommandShowSign extends CommandInterface
     {
         CabinetType cabinet = utils.Utils.shelfToCabinet(layer);
 
-        Result result = this.moveLayer(args, cabinet, layer, cabinet, layer, effect.toString());
+        Result result = this.moveLayer(args, cabinet, layer, cabinet, layer, effect);
         return new Result();
     }
 

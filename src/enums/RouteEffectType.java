@@ -16,13 +16,12 @@
 
     Copyright (c) 2014 Unidesk Corporation
  */
-
 package enums;
 
 /**
  *
  */
-public enum EffectType
+public enum RouteEffectType
 {
-    FANCY, EFFICIENT
+    GRIPPER_IN2, GRIPPER_OUT2, GRIPPER_IN1, GRIPPER_OUT1, PLACE, EFFICIENT, FANCY
 }

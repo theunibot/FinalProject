@@ -18,6 +18,7 @@
  */
 package route;
 
+import enums.RouteEffectType;
 import enums.CabinetType;
 import enums.RouteType;
 import robotoperations.ArmOperations;

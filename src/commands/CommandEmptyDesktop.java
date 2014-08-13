@@ -60,7 +60,7 @@ public class CommandEmptyDesktop extends CommandInterface {
             if (returnShelf >= 0) {
                 // we need to return this item (move from desktopCabinet/nextDesktopShelf to returnShelf)
                 CabinetType cpCabinet = Utils.shelfToCabinet(returnShelf);
-                result = this.moveLayer(args, desktopCabinet, nextDesktopShelf, cpCabinet, returnShelf, "effect goes here");
+                result = this.moveLayer(args, desktopCabinet, nextDesktopShelf, cpCabinet, returnShelf, RouteEffectType.EFFICIENT);
                 if (!result.success())
                     return result;
                 

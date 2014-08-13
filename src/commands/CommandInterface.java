@@ -151,7 +151,7 @@ public abstract class CommandInterface
      * 
      * @return Result with success/fail info
      */
-    protected Result moveLayer(CommandArguments args, CabinetType fromCabinet, int fromShelf, CabinetType toCabinet, int toShelf, String effect) {
+    protected Result moveLayer(CommandArguments args, CabinetType fromCabinet, int fromShelf, CabinetType toCabinet, int toShelf, RouteEffectType effect) {
         ArmOperations ao = ArmOperations.getInstance();
         RouteHolder rh = RouteHolder.getInstance();
         PositionLookupTable plt = PositionLookupTable.getInstance();
@@ -162,7 +162,7 @@ public abstract class CommandInterface
        // move from our current cabinet to the desired start (from) cabinet (if not already there)
         if (args.cabinet != fromCabinet) {
             // locate a route between these cabinets
-            route = rh.getRoute(args.cabinet, fromCabinet, "default");
+            route = rh.getRoute(args.cabinet, fromCabinet, RouteEffectType.EFFICIENT);
             if (route == null)
                 return new Result("Unable to locate route from " + args.cabinet.toString() + " to " + fromCabinet.toString() + " (effect default)");
             // and determine the final coordinate we must reset at

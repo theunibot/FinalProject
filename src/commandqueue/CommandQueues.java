@@ -19,9 +19,7 @@
 package commandqueue;
 
 import commands.CommandInterface;
-import enums.CabinetType;
 import enums.CommandStatus;
-import enums.EffectType;
 import java.util.concurrent.Semaphore;
 import utils.Result;
 

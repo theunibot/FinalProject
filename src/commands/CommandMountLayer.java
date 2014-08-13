@@ -31,7 +31,7 @@ public class CommandMountLayer extends CommandInterface {
     private int desktopShelf;
     private int desktop;
     private CabinetType desktopCabinet;
-    private EffectType effect;
+    private RouteEffectType effect;
     
     /**
      * Constructor initializes the parameters for the mount layer command
@@ -41,7 +41,7 @@ public class CommandMountLayer extends CommandInterface {
      * @param desktop the desktop to move to (1 or 2)
      * @param effect the route effect to use
      */
-    public CommandMountLayer(int cpShelf, int desktopShelf, int desktop, EffectType effect) {
+    public CommandMountLayer(int cpShelf, int desktopShelf, int desktop, RouteEffectType effect) {
         this.cpShelf = cpShelf;
         this.desktopShelf = desktopShelf;
         this.desktop = desktop;
@@ -70,13 +70,13 @@ public class CommandMountLayer extends CommandInterface {
         int existingDesktopLayer = inventory.getDisc(this.desktopCabinet, this.desktopShelf);
         if (existingDesktopLayer >= 0) {
             // there is a disc in there that we need to remove.
-            result = moveLayer(args, this.desktopCabinet, this.desktopShelf, Utils.shelfToCabinet(existingDesktopLayer), existingDesktopLayer, "default");
+            result = moveLayer(args, this.desktopCabinet, this.desktopShelf, Utils.shelfToCabinet(existingDesktopLayer), existingDesktopLayer, RouteEffectType.EFFICIENT);
             if (!result.success())
                 return result;
         }
         
         // now do the real move cpShelf
-        result = moveLayer(args, Utils.shelfToCabinet(this.cpShelf), this.cpShelf, this.desktopCabinet, this.desktopShelf, "exciting");
+        result = moveLayer(args, Utils.shelfToCabinet(this.cpShelf), this.cpShelf, this.desktopCabinet, this.desktopShelf, RouteEffectType.FANCY);
         return result;
     }
     

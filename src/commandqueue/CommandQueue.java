@@ -19,8 +19,6 @@
 package commandqueue;
 
 import commands.CommandInterface;
-import enums.EffectType;
-import enums.CabinetType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
