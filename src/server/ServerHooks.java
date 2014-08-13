@@ -286,7 +286,6 @@ public class ServerHooks
     
     public String inventory(Map<String, String> params) {
         Inventory inventory = Inventory.getInstance();
-        inventory.dump();
-        return "{}";
+        return inventory.dump();
     }
 }
