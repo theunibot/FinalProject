@@ -166,7 +166,9 @@ public class R12Operations
      * @param s command to send, no return needed
      */
     public void write(String s){
-        if(!Simulated)
+        if(Simulated)
+            System.out.println("ROBOFORTH: " + s);
+        else
             r12i.write(s + "\r");
     }
 
