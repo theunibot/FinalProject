@@ -95,12 +95,17 @@ public class Inventory
      * @return Result indicating success/failure
      */
     public Result moveDisc(CabinetType fromType, int fromShelf, CabinetType toType, int toShelf) {
+        // make sure the fromType and toType are known
+        if (!inventory.containsKey(fromType))
+            return new Result("Unable to locate cabinet " + fromType.toString() + " in inventory");
+        if (!inventory.containsKey(toType))
+            return new Result("Unable to locate cabinet " + toType.toString() + " in inventory");
         // validate that this request is legit
         InventoryShelf fromInventory = inventory.get(fromType).get(fromShelf);
         if (fromInventory == null)
-            return new Result("Unable to locate shelf " + fromType.toString() + " shelf " + fromShelf + " in inventory");
+            return new Result("Unable to locate cabinet " + fromType.toString() + " shelf " + fromShelf + " in inventory");
         if (fromInventory.count == 0)
-            return new Result("Inventory found no discs in " + fromType.toString() + " shelf " + fromShelf);
+            return new Result("Inventory found no discs in cabinet " + fromType.toString() + " shelf " + fromShelf);
 
         InventoryShelf toInventory = inventory.get(toType).get(toShelf);
         if (toInventory == null)
@@ -127,6 +132,9 @@ public class Inventory
      * @return Count of the discs (-1 if unable to locate cabinet/shelf)
      */
     public int depth(CabinetType cabinet, int shelf) {
+        // make sure the cabinet is known
+        if (!inventory.containsKey(cabinet))
+            return -1;
         InventoryShelf inventoryShelf = inventory.get(cabinet).get(shelf);
         if (inventoryShelf == null)
             return -1;
@@ -142,6 +150,9 @@ public class Inventory
      * @return Shelf ID of disc in shelf, or -1 if no disc in shelf or shelf not found
      */
     public int getDisc(CabinetType cabinet, int shelf) {
+        // make sure the cabinet is known
+        if (!inventory.containsKey(cabinet))
+            return -1;
         InventoryShelf inventoryShelf = inventory.get(cabinet).get(shelf);
         if (inventoryShelf == null)
             return -1;
