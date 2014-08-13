@@ -7,71 +7,53 @@
 package commands;
 
 import enums.*;
-import robotoperations.ArmOperations;
-import route.Cartesian;
-import route.PositionLookupTable;
-import route.Route;
-import route.RouteHolder;
-import utils.Result;
+import inventory.Inventory;
+import utils.*;
 
 /**
  *
  * @author cmidgley
  */
 public class CommandMountLayer extends CommandInterface {
-    int layer;
-    int  shelf;
+    int cpShelf;
+    int desktopShelf;
     int desktop;
+    CabinetType desktopCabinet;
     EffectType effect;
     
-    public CommandMountLayer(int layer, int shelf, int desktop, EffectType effect) {
-        this.layer = layer;
-        this.shelf = shelf;
+    public CommandMountLayer(int cpShelf, int desktopShelf, int desktop, EffectType effect) {
+        this.cpShelf = cpShelf;
+        this.desktopShelf = desktopShelf;
         this.desktop = desktop;
+        if (this.desktop == 1)
+            desktopCabinet = CabinetType.D1;
+        else
+            desktopCabinet = CabinetType.D2;
         this.effect = effect;
     }
     
     public Result execute(CommandArguments args) {
-        ArmOperations ao = ArmOperations.getInstance();
-        RouteHolder rh = RouteHolder.getInstance();
-        PositionLookupTable plt = PositionLookupTable.getInstance();
+        Inventory inventory = Inventory.getInstance();
         Result result;
         
-        /*********************
-        /*********************   NEED TO ADD INVENTORY TO KNOW PICK POSITIONS AND CLEAR SLOT IF IN USE
-        /*********************
-        /*********************/
-        
         // determine which cabinet we are moving towards
-        CabinetType newCabinet = utils.Utils.shelfToCabinet(this.layer);
+        CabinetType newCabinet = utils.Utils.shelfToCabinet(this.cpShelf);
         
-        // move from our current cabinet to the desired cabinet (if not already there)
-        if (args.cabinet != newCabinet) {
-            // locate a route between these cabinets
-            Route route = null; //rh.getRoutes(args.cabinet, newCabinet, "normal");
-            if (route == null)
-                return new Result("Unable to locate route from " + args.cabinet.toString() + " to " + newCabinet.toString() + " (effect normal)");
-            // and determine the final coordinate we must reset at
-            Cartesian endCoordinates = plt.shelfToCartesian(newCabinet, this.shelf);
-            // move the arm to the new cabinet
-            result = ao.runRoute(route, args.coordinates, endCoordinates);
+        // check inventory to see if there is already a disc in the slot.  If so, return it to the cachepoint
+        int existingDesktopLayer = inventory.desktopShelf(this.desktopCabinet, this.desktopShelf);
+        if (existingDesktopLayer >= 0) {
+            // there is a disc in there that we need to remove.
+            result = moveLayer(args, this.desktopCabinet, this.desktopShelf, Utils.shelfToCabinet(existingDesktopLayer), existingDesktopLayer, "default");
             if (!result.success())
                 return result;
-            // save our new position
-            args.cabinet = newCabinet;
-            args.coordinates = endCoordinates;
         }
-        // now run the pick operation
         
-        // now find a route to the desktop
-        
-        // and finally run the drop operation
-        
-        // success!
-        return new Result();
-   }
+        // now do the real move cpShelf
+        result = moveLayer(args, Utils.shelfToCabinet(this.cpShelf), this.cpShelf, this.desktopCabinet, this.desktopShelf, "exciting");
+        return result;
+    }
     
     public String details() {
-        return "MountLayer(" + layer + ", " + shelf + ", " + desktop + ", " + effect.toString() + ")";
+        return "MountLayer(" + cpShelf + ", " + desktopShelf + ", " + desktop + ", " + effect.toString() + ")";
     }
 }

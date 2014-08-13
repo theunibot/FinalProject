@@ -42,6 +42,10 @@ public class RouteHolder
             routes.add(r);
         }
     }
+    
+    public Route getRoute(CabinetType fromCabinet, CabinetType toCabinet, String effect) {
+        return null;
+    }
 
     public List<Route> getRoutes(RouteProperties rp)
     {

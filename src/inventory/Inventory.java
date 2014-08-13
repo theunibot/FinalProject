@@ -5,11 +5,12 @@
  */
 package inventory;
 
-import enums.DiskType;
 import enums.CabinetType;
+import enums.DiskType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import utils.Result;
 
 /**
  *
@@ -17,15 +18,30 @@ import java.util.List;
  */
 public class Inventory
 {
-
     private static Inventory inventory = null;
 
     //ArrayLists
+    /*
     List<Shelf> d1 = Collections.synchronizedList(new ArrayList<Shelf>());
     List<Shelf> d2 = Collections.synchronizedList(new ArrayList<Shelf>());
     List<Shelf> cachePoint = Collections.synchronizedList(new ArrayList<Shelf>());
-//    List<Shelf> sign = Collections.synchronizedList(new ArrayList<Shelf>());
-
+    */
+    
+        
+    
+    public Result moveDisc(CabinetType fromType, int fromShelf, CabinetType toType, int toShelf) {
+        return new Result("moveDisc not implemented");
+    }
+    public int depth(CabinetType cabinet, int cpShelf) {
+        return 0;
+    }
+    public int desktopShelf(CabinetType desktopType, int desktopShelf) {
+        return -1;
+    }
+    public void dump() {
+        System.out.println("ADD CODE TO DUMP INVENTORY");
+    }
+    
     /**
      * Returns an instance Inventory
      *
@@ -43,6 +59,7 @@ public class Inventory
     /**
      * Private constructor
      */
+    /*
     private Inventory()
     {
         for (int i = 0; i < 6; i++)
@@ -121,7 +138,7 @@ public class Inventory
         return false;
 
     }
-
+*/
 }
 
 

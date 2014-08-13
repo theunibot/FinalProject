@@ -6,7 +6,12 @@
 package commands;
 
 import enums.*;
+import inventory.Inventory;
+import robotoperations.ArmOperations;
 import route.Cartesian;
+import route.PositionLookupTable;
+import route.Route;
+import route.RouteHolder;
 import utils.Result;
 
 /**
@@ -103,4 +108,75 @@ public abstract class CommandInterface
         return this.queueIndex;
     }
     
+
+    /**
+     * Internal function to execute the entire move operation of a layer
+     * 
+     * @param args Command arguments to track the position of the arm
+     * @param fromCabinet Cabinet to move the disc from
+     * @param fromShelf from Shelf within the cabinet
+     * @param toCabinet Cabinet to move the disc to
+     * @param toShelf to Shelf within the cabinet
+     * @param effect effect to use for the actual placement route
+     * 
+     * @return Result with success/fail info
+     */
+    protected Result moveLayer(CommandArguments args, CabinetType fromCabinet, int fromShelf, CabinetType toCabinet, int toShelf, String effect) {
+        ArmOperations ao = ArmOperations.getInstance();
+        RouteHolder rh = RouteHolder.getInstance();
+        PositionLookupTable plt = PositionLookupTable.getInstance();
+        Inventory inventory = Inventory.getInstance();
+        Route route;
+        Result result;
+        
+       // move from our current cabinet to the desired start (from) cabinet (if not already there)
+        if (args.cabinet != fromCabinet) {
+            // locate a route between these cabinets
+            route = rh.getRoute(args.cabinet, fromCabinet, "default");
+            if (route == null)
+                return new Result("Unable to locate route from " + args.cabinet.toString() + " to " + fromCabinet.toString() + " (effect default)");
+            // and determine the final coordinate we must reset at
+            Cartesian endCoordinates = plt.shelfToCartesian(fromCabinet, fromShelf);
+            // move the arm to the new cabinet
+            result = ao.runRoute(route, args.coordinates, endCoordinates);
+            if (!result.success())
+                return result;
+            
+            // save our new position
+            args.cabinet = fromCabinet;
+            args.coordinates = endCoordinates;
+            
+        }
+
+        // now run the pick operation
+        int depth = inventory.depth(fromCabinet, fromShelf);
+        if (depth < 0)
+            return new Result("Cabinet " + fromCabinet.toString() + " shelf " + fromShelf + " is empty; unable to retreive a disc");
+        result = ao.pick(fromCabinet, depth, plt.shelfToCartesian(fromCabinet, fromShelf));
+        if (!result.success())
+            return result;
+        
+        // now find a route to the desktop
+        route = rh.getRoute(fromCabinet, toCabinet, effect);
+        if (route == null)
+            return new Result("Unable to locate route from " + fromCabinet.toString() + " to " + toCabinet.toString() + " (effect " + effect + ")");
+        result = ao.runRoute(route, plt.shelfToCartesian(fromCabinet, fromShelf), plt.shelfToCartesian(toCabinet, toShelf));
+        if (!result.success())
+            return result;
+        
+        // and finally run the drop operation
+        depth = inventory.depth(toCabinet, toShelf);
+        result = ao.drop(toCabinet, depth + 1, plt.shelfToCartesian(toCabinet, toShelf));
+        if (!result.success())
+            return result;
+        
+        // update inventory to reflect this change
+        result = inventory.moveDisc(fromCabinet, fromShelf, toCabinet, toShelf);
+        if (!result.success())
+            return result;
+        
+        // success!
+        return new Result();
+   }
+        
 }
