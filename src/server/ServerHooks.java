@@ -28,6 +28,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import utils.Utils;
 import utils.Result;
+import inventory.*;
 
 /**
  *
@@ -281,5 +282,11 @@ public class ServerHooks
         }
 
         return "{}";//returns nothing
+    }
+    
+    public String inventory(Map<String, String> params) {
+        Inventory inventory = Inventory.getInstance();
+        inventory.dump();
+        return "{}";
     }
 }

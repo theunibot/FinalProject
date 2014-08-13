@@ -20,6 +20,7 @@ package inventory;
 
 import enums.CabinetType;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import utils.Result;
 
 /**
@@ -143,4 +144,24 @@ public class Inventory
             return -1;
         return inventoryShelf.originalShelf;
     }    
+    
+    /**
+     * Dump all inventory information to the console
+     */
+    public void dump() {
+        // loop through all possible entires in inventory
+        for(Entry<CabinetType, HashMap<Integer, InventoryShelf>> entry : inventory.entrySet()) {
+            CabinetType cabinet = entry.getKey();
+            HashMap<Integer, InventoryShelf> shelves = entry.getValue();
+
+            System.out.println("Inventory on cabinet " + cabinet.toString());
+            
+            for (Entry<Integer, InventoryShelf> shelf : shelves.entrySet()) {
+                Integer shelfId = shelf.getKey();
+                InventoryShelf is = shelf.getValue();
+                
+                System.out.println("* " + shelfId + ": " + is.count + " units of " + is.originalShelf);
+            }
+        }
+    }
 }
