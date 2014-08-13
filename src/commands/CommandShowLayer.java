@@ -24,23 +24,48 @@ import route.Cartesian;
 import utils.Result;
 
 /**
- *
+ * Command that shows a layer being repaired (personalization layer)
  */
 public class CommandShowLayer extends CommandInterface {
     int shelf;
     int desktop;
+    private CabinetType desktopCabinet;
     EffectType effect;
     
+    /**
+     * Constructor initializes the command
+     * 
+     * @param shelf Shelf to show/shake
+     * @param desktop Desktop that has the shelf
+     * @param effect Effect to run on the route when showing the shelf
+     */
     public CommandShowLayer(int shelf, int desktop, EffectType effect) {
         this.shelf = shelf;
         this.desktop = desktop;
+        if (this.desktop == 1)
+            this.desktopCabinet = CabinetType.D1;
+        else
+            this.desktopCabinet = CabinetType.D2;
         this.effect = effect;
     }
     
+    /**
+     * Executes the robot commands to show the layer
+     * 
+     * @param args Arm position information
+     * 
+     * @return Result with success/failure information
+     */
     public Result execute(CommandArguments args) {
-        return new Result();
+        Result result = this.moveLayer(args, desktopCabinet, shelf, desktopCabinet, shelf, effect.toString());
+        return result;
     }
-    
+
+    /**
+     * Return details about this command
+     * 
+     * @return Human readable string that describes this command
+     */
     public String details() {
         return "ShowLayer(" + shelf + ", " + desktop + ", " + effect.toString() + ")";
     }

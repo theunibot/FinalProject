@@ -23,7 +23,7 @@ import route.Cartesian;
 import utils.Result;
 
 /**
- *
+ * Command to show a sign
  */
 public class CommandShowSign extends CommandInterface
 {
@@ -31,16 +31,37 @@ public class CommandShowSign extends CommandInterface
     int layer;
     EffectType effect;
 
+    /**
+     * Constructor that sets up the command parameters
+     * 
+     * @param layer Layer shelf to show
+     * @param effect effect to use
+     */
     public CommandShowSign(int layer, EffectType effect)
     {
         this.layer = layer;
         this.effect = effect;
     }
 
+    /**
+     * Executes the robot commands for showing the sign
+     * 
+     * @param args Robot positional information
+     * @return Result with success/fail information
+     */
     public Result execute(CommandArguments args)
     {
+        CabinetType cabinet = utils.Utils.shelfToCabinet(layer);
+
+        Result result = this.moveLayer(args, cabinet, layer, cabinet, layer, effect.toString());
         return new Result();
     }
+
+    /**
+     * Return details about this command
+     * 
+     * @return Human readable string that describes this command
+     */
 
     public String details()
     {
