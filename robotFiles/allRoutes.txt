@@ -6,8 +6,8 @@
 //To Be Implemented: To declare a route to be available for use the syntax "include: <name of route>" to ensure
 //the route is added to a usable list for the program
 
-left
+#left
 
-middle
+#middle
 
-right
+#right

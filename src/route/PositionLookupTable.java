@@ -132,7 +132,7 @@ public class PositionLookupTable
         }
         else
         {
-            System.err.println("Shelf Unit unknown");
+            System.err.println("Cabinet type " + su.toString() + " unknown in shelfToCartesian");
             return null;
         }
     }
