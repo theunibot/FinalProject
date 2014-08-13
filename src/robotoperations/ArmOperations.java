@@ -167,7 +167,7 @@ public class ArmOperations
         }
         else //not enough pos to modify start and end routes
         {
-            return new Result("Route has no commands in it");
+            return new Result("Route has " + route.size() + " coordinate; must have at least two (start and end)");
         }
     }
 
@@ -417,8 +417,8 @@ public class ArmOperations
             System.out.println("ArmOperations: position to " + position.getName());
             return new Result();
         }
-        String commandString = position.getX() + " " + position.getY() + " " + position.getZ() + " " +
-                position.getPitch() + " " + position.getYaw() + " " + position.getRoll() + " MOVETO";
+//        String commandString = position.getX() + " " + position.getY() + " " + position.getZ() + " MOVETO";
+        String commandString = position.getName() + " GOTO";
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);
 
@@ -444,20 +444,34 @@ public class ArmOperations
         //gets and executes each command in the route
         ArrayList<String> commands = route.getRoboforthCommands();
         for (String commandString : commands) {
-            Result result = runRouteCommand(commandString);
+            Result result = runRobotCommand(commandString);
             if (!result.success())
                 return result;
         }
         return new Result();
     }
+    
+    /**
+     * Learn an individual point on the robot
+     * 
+     * @param position Point to learn
+     * @return Result with success/failure
+     */
+    public Result learnPoint(Position position) {
+        if (Simulated) {
+            System.out.println("ArmOperations: learnPoint " + position.getName());
+            return new Result();
+        }
+        return runRobotCommand(position.getRoboforth());
+    }
 
     /**
-     * Sends an individual route command to robot and looks for errors
+     * Sends an individual command to robot and looks for errors
      *
      * @param commandString command to execute
      * @return Result with success/fail info
      */
-    private Result runRouteCommand(String commandString)
+    private Result runRobotCommand(String commandString)
     {
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);

@@ -27,7 +27,7 @@ import utils.Result;
  */
 public class R12Operations
 {
-    private final boolean Simulated = false;
+    private final boolean Simulated = true;
     //Command Objects
     private R12Interface r12i = null;
     private static R12Operations r12Operations = null;

@@ -116,44 +116,14 @@ public class Utils
      */
     public static String commandQueueStatusEnumToString(CommandStatus enm)
     {
-        if (enm == CommandStatus.COMPLETE)
-        {
-            return "complete";
-        }
-        else if (enm == CommandStatus.EXECUTING)
-        {
-            return "executing";
-        }
-        else if (enm == CommandStatus.PENDING)
-        {
-            return "pending";
-        }
-        else if (enm == CommandStatus.UNKNOWN)
-        {
-            return "unknown";
-        }
-        else
-        {
-            return null;
-        }
+        return enm.toString();
     }
 
     public static RouteEffectType effectStringToEffectType(String s)
     {
-        if (s == null)
-        {
-            return null;
-        }
-        if (s.equals("fancy"))
-        {
-            return RouteEffectType.FANCY;
-        }
-        else if (s.equals("efficient"))
-        {
-            return RouteEffectType.EFFICIENT;
-        }
-        else
-        {
+        try {
+            return RouteEffectType.valueOf(s.trim().toUpperCase());
+        } catch (Exception e) {
             return null;
         }
     }
@@ -175,7 +145,7 @@ public class Utils
 
     public static String genericEnqueueFail()
     {
-        return Utils.genericEnqueueFail("Generic Enqueue Fail");
+        return Utils.genericEnqueueFail("\"Generic Enqueue Fail\"");
     }
 
     public static String genericEnqueueFail(String error)
