@@ -34,7 +34,7 @@ public class RouteProperties
 
     private static RouteHolder rh = RouteHolder.getInstance();
 
-    private String routeName = null;
+    private String routeFriendlyName = null;
     private String routeIDName = null;
     private static int routeIDVar = 0;
     private int routeID = -1;
@@ -49,14 +49,14 @@ public class RouteProperties
         this.from = from;
         this.to = to;
         this.effect = effect;
-        this.routeName = genRouteName();
+        this.routeFriendlyName = genRouteFriendlyName();
         routeID = routeIDVar++;//gets the next id from the static var
         this.routeIDName = "R" + routeID;//gens a route ID
     }
 
     public String getRouteFriendlyName()
     {
-        return routeName;
+        return routeFriendlyName;
     }
     
     public String getRouteIDName()
@@ -64,7 +64,7 @@ public class RouteProperties
         return routeIDName;
     }
 
-    private String genRouteName()
+    private String genRouteFriendlyName()
     {
         String to = "", from = "", effect = "";
         to = this.to.toString();
