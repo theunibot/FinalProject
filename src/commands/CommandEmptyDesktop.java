@@ -59,8 +59,8 @@ public class CommandEmptyDesktop extends CommandInterface {
             int returnShelf = inventory.getDisc(this.desktopCabinet, this.nextDesktopShelf);
             if (returnShelf >= 0) {
                 // we need to return this item (move from desktopCabinet/nextDesktopShelf to returnShelf)
-                CabinetType cpCabinet = Utils.shelfToCabinet(returnShelf);
-                result = this.moveLayer(args, desktopCabinet, nextDesktopShelf, cpCabinet, returnShelf, RouteEffectType.EFFICIENT);
+                ShelfLocation loc = Utils.shelfToShelfLocation(this.desktopCabinet, returnShelf);
+                result = this.moveLayer(args, desktopCabinet, nextDesktopShelf, loc.cabinet, returnShelf, RouteEffectType.EFFICIENT);
                 if (!result.success())
                     return result;
                 

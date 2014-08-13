@@ -64,19 +64,20 @@ public class CommandMountLayer extends CommandInterface {
         Result result;
         
         // determine which cabinet we are moving towards
-        CabinetType newCabinet = utils.Utils.shelfToCabinet(this.cpShelf);
+        ShelfLocation cpLoc = utils.Utils.shelfToShelfLocation(CabinetType.UNKNOWN, this.cpShelf);
         
         // check inventory to see if there is already a disc in the slot.  If so, return it to the cachepoint
         int existingDesktopLayer = inventory.getDisc(this.desktopCabinet, this.desktopShelf);
         if (existingDesktopLayer >= 0) {
             // there is a disc in there that we need to remove.
-            result = moveLayer(args, this.desktopCabinet, this.desktopShelf, Utils.shelfToCabinet(existingDesktopLayer), existingDesktopLayer, RouteEffectType.EFFICIENT);
+            ShelfLocation dLoc = utils.Utils.shelfToShelfLocation(this.desktopCabinet, existingDesktopLayer);
+            result = moveLayer(args, this.desktopCabinet, this.desktopShelf, dLoc.cabinet, existingDesktopLayer, RouteEffectType.EFFICIENT);
             if (!result.success())
                 return result;
         }
         
         // now do the real move cpShelf
-        result = moveLayer(args, Utils.shelfToCabinet(this.cpShelf), this.cpShelf, this.desktopCabinet, this.desktopShelf, RouteEffectType.FANCY);
+        result = moveLayer(args, cpLoc.cabinet, this.cpShelf, this.desktopCabinet, this.desktopShelf, RouteEffectType.FANCY);
         return result;
     }
     

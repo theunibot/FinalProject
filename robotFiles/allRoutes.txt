@@ -6,8 +6,36 @@
 //To Be Implemented: To declare a route to be available for use the syntax "include: <name of route>" to ensure
 //the route is added to a usable list for the program
 
-#left
+#CPL D1 EFFICIENT
+200.0 200.0 200.0
 
-#middle
+#CPL D2 EFFICIENT
+200.0 200.0 200.0
 
-#right
+#CPL HOME EFFICIENT
+200.0 200.0 200.0
+
+#CPM D1 EFFICIENT
+200.0 200.0 200.0
+
+#CPM D2 EFFICIENT
+200.0 200.0 200.0
+
+#CPM HOME EFFICIENT
+200.0 200.0 200.0
+
+#CPR D1 EFFICIENT
+200.0 200.0 200.0
+
+#CPR D2 EFFICIENT
+200.0 200.0 200.0
+
+#CPM HOME EFFICIENT
+200.0 200.0 200.0
+
+#D1 D1 EFFICIENT
+200.0 200.0 200.0
+
+#D2 D2 EFFICIENT
+200.0 200.0 200.0
+

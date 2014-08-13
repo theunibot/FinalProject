@@ -6,9 +6,13 @@
 //on its own line.
 //
 //Format:
-//X Y Z
-//X Y Z P Y R
-//
+//#<CabinetType>
+//<coordinates for bottom shelf>
+//<coordinates for second shelf>
+//<etc>
 #D1
+200.0 200.0 200.0
 #D2
-#CP
+#CPL
+#CPM
+#CPR

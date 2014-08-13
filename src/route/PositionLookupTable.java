@@ -22,6 +22,7 @@ import enums.CabinetType;
 import java.util.ArrayList;
 import utils.FileUtils;
 import utils.Result;
+import utils.ShelfLocation;
 import utils.Utils;
 
 /**
@@ -97,7 +98,8 @@ public class PositionLookupTable
      */
     public Cartesian shelfToCartesian(CabinetType su, int shelf)
     {
-        int index = Utils.shelfToIndex(shelf);
+        ShelfLocation loc = utils.Utils.shelfToShelfLocation(su, shelf);
+        int index = loc.shelfIndex;
         if (su == CabinetType.D1)
         {
             if (index > 0 && index < d1Pos.size())
