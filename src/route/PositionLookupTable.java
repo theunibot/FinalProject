@@ -1,20 +1,20 @@
 /*
-    This file is part of theunibot.
+ This file is part of theunibot.
 
-    theunibot is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ theunibot is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    theunibot is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ theunibot is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with theunibot.  If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU General Public License
+ along with theunibot.  If not, see <http://www.gnu.org/licenses/>.
 
-    Copyright (c) 2014 Unidesk Corporation
+ Copyright (c) 2014 Unidesk Corporation
  */
 package route;
 
@@ -33,7 +33,9 @@ public class PositionLookupTable
     private final String FILE_NAME = "PositionLookupTable.txt";
     private ArrayList<Cartesian> d1Pos = null;
     private ArrayList<Cartesian> d2Pos = null;
-    private ArrayList<Cartesian> cpPos = null;
+    private ArrayList<Cartesian> cplPos = null;
+    private ArrayList<Cartesian> cpmPos = null;
+    private ArrayList<Cartesian> cprPos = null;
 
     private boolean USE_LINE_NUMS = true;
 
@@ -73,7 +75,10 @@ public class PositionLookupTable
     {
         d1Pos = new ArrayList<>();
         d2Pos = new ArrayList<>();
-        cpPos = new ArrayList<>();
+        cprPos = new ArrayList<>();
+        cpmPos = new ArrayList<>();
+        cplPos = new ArrayList<>();
+
         parseFile();
         if (main.Main.DEBUG)
         {
@@ -118,15 +123,39 @@ public class PositionLookupTable
                 return null;
             }
         }
-        else if ((su == CabinetType.CPL) || (su == CabinetType.CPR) || (su == CabinetType.CPM))
+        else if ((su == CabinetType.CPL))
         {
-            if (index > 0 && index < cpPos.size())
+            if (index > 0 && index < cplPos.size())
             {
-                return cpPos.get(index);
+                return cplPos.get(index);
             }
             else
             {
-                System.err.println("Shelf " + index + " not in CP");
+                System.err.println("Shelf " + index + " not in CPL");
+                return null;
+            }
+        }
+        else if ((su == CabinetType.CPR))
+        {
+            if (index > 0 && index < cprPos.size())
+            {
+                return cprPos.get(index);
+            }
+            else
+            {
+                System.err.println("Shelf " + index + " not in CPR");
+                return null;
+            }
+        }
+        else if (su == CabinetType.CPM)
+        {
+            if (index > 0 && index < cpmPos.size())
+            {
+                return cpmPos.get(index);
+            }
+            else
+            {
+                System.err.println("Shelf " + index + " not in CPM");
                 return null;
             }
         }
@@ -197,10 +226,10 @@ public class PositionLookupTable
                         {
                             Cartesian prevCart;
                             Cartesian nextCart;
-                            if ((ct == CabinetType.CPL) || (ct == CabinetType.CPM) || (ct == CabinetType.CPR))
+                            if ((ct == CabinetType.CPL))
                             {
 
-                                if ((prevCart = getLastPoint(cpPos)) != null)
+                                if ((prevCart = getLastPoint(cplPos)) != null)
                                 {
                                     nextCart = new Cartesian(splitLinePieces[0], splitLinePieces[1], splitLinePieces[2], prevCart.getPitchStr(), prevCart.getYawStr(), prevCart.getRollStr());
                                 }
@@ -209,8 +238,36 @@ public class PositionLookupTable
                                     nextCart = new Cartesian(splitLinePieces[0], splitLinePieces[1], splitLinePieces[2], "0", "0", "0");
 
                                 }
-                                nextCart.setName(ct.toString() + cpPos.size());
-                                cpPos.add(nextCart);
+                                nextCart.setName(ct.toString() + cplPos.size());
+                                cplPos.add(nextCart);
+                            }
+                            else if ((ct == CabinetType.CPM))
+                            {
+                                if ((prevCart = getLastPoint(cpmPos)) != null)
+                                {
+                                    nextCart = new Cartesian(splitLinePieces[0], splitLinePieces[1], splitLinePieces[2], prevCart.getPitchStr(), prevCart.getYawStr(), prevCart.getRollStr());
+                                }
+                                else
+                                {
+                                    nextCart = new Cartesian(splitLinePieces[0], splitLinePieces[1], splitLinePieces[2], "0", "0", "0");
+
+                                }
+                                nextCart.setName(ct.toString() + cpmPos.size());
+                                cpmPos.add(nextCart);
+                            }
+                            else if (ct == CabinetType.CPR)
+                            {
+                                if ((prevCart = getLastPoint(cprPos)) != null)
+                                {
+                                    nextCart = new Cartesian(splitLinePieces[0], splitLinePieces[1], splitLinePieces[2], prevCart.getPitchStr(), prevCart.getYawStr(), prevCart.getRollStr());
+                                }
+                                else
+                                {
+                                    nextCart = new Cartesian(splitLinePieces[0], splitLinePieces[1], splitLinePieces[2], "0", "0", "0");
+
+                                }
+                                nextCart.setName(ct.toString() + cprPos.size());
+                                cprPos.add(nextCart);
                             }
                             else if (ct == CabinetType.D1)
                             {
@@ -222,7 +279,7 @@ public class PositionLookupTable
                                 {
                                     nextCart = (new Cartesian(splitLinePieces[0], splitLinePieces[1], splitLinePieces[2], "0", "0", "0"));
                                 }
-                                
+
                                 nextCart.setName(ct.toString() + d1Pos.size());
                                 d1Pos.add(nextCart);
                             }
@@ -255,11 +312,23 @@ public class PositionLookupTable
                         if (ct != null)
                         {
                             Cartesian nextCart;
-                            if ((ct == CabinetType.CPL) || (ct == CabinetType.CPM) || (ct == CabinetType.CPR))
+                            if ((ct == CabinetType.CPL))
                             {
                                 nextCart = (new Cartesian(splitLinePieces[0], splitLinePieces[1], splitLinePieces[2], splitLinePieces[3], splitLinePieces[4], splitLinePieces[5]));
-                                nextCart.setName(ct.toString() + cpPos.size());
-                                cpPos.add(nextCart);
+                                nextCart.setName(ct.toString() + cplPos.size());
+                                cplPos.add(nextCart);
+                            }
+                            else if ((ct == CabinetType.CPM))
+                            {
+                                nextCart = (new Cartesian(splitLinePieces[0], splitLinePieces[1], splitLinePieces[2], splitLinePieces[3], splitLinePieces[4], splitLinePieces[5]));
+                                nextCart.setName(ct.toString() + cpmPos.size());
+                                cpmPos.add(nextCart);
+                            }
+                            else if (ct == CabinetType.CPR)
+                            {
+                                nextCart = (new Cartesian(splitLinePieces[0], splitLinePieces[1], splitLinePieces[2], splitLinePieces[3], splitLinePieces[4], splitLinePieces[5]));
+                                nextCart.setName(ct.toString() + cprPos.size());
+                                cprPos.add(nextCart);
                             }
                             else if (ct == CabinetType.D1)
                             {
@@ -277,7 +346,7 @@ public class PositionLookupTable
                             {
                                 System.err.println(ct.toString() + " is not recognized.");
                             }
-                            
+
                         }
                         else
                         {

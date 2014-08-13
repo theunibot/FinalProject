@@ -40,10 +40,7 @@ public class RouteCompiler
     //String consts
     public static final String ROUTE_FILE_BASENAME = FileUtils.getFilesFolderString() + "allRoutes.txt";
 //    pathToFile = FileUtils.getFilesFolderString() + prefix + ROUTE_FILE_BASENAME + ".txt";
-    public static final String ROUTE_DEFINE_PREFIX = "route ";
-    public static final String ROUTE_LEFT = "left";
-    public static final String ROUTE_MIDDLE = "middle";
-    public static final String ROUTE_RIGHT = "right";
+    public static final String ROUTE_DEFINE_PREFIX = "route ";    
 
     public static final String[] ROUTE_FILE_PREFIXS =
     {
@@ -75,11 +72,8 @@ public class RouteCompiler
             + "//To Be Implemented: To declare a route to be available for use the syntax \"include: <name of route>\" to ensure\n"
             + "//the route is added to a usable list for the program"
             + "\n"
-            + "\n" + ROUTE_LEFT + ""
-            + "\n"
-            + "\n" + ROUTE_MIDDLE + ""
-            + "\n"
-            + "\n" + ROUTE_RIGHT;
+            + "\n#POS1 POS2 EFFECT";
+            
 
     /**
      * Gets the uniform instance of RouteCompiler
