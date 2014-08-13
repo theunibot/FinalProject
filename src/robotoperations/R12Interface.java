@@ -39,6 +39,12 @@ public class R12Interface
     private volatile boolean isRunning = true;
 
     /**
+     * Constructor made private, since this is a singleton interface
+     */
+    private R12Interface() {    
+    }
+    
+    /**
      * Init the R12 interface. Sets up the socket, return success or failure.
      * Pulls its values from an INI file. If one does not exist, one is
      * generated automatically.

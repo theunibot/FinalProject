@@ -22,8 +22,14 @@ public class Inventory
     /**
      * Initialize inventory with desktops empty and CachePoint having two layers in every slot
      */
-    private Inventory()
-    {
+    private Inventory() {
+        resetInventory();
+    }
+    
+    /**
+     * Resets inventory to the starting values
+     */
+    public void resetInventory() {    
         // build the base inventory object
         inventory = new HashMap<>();
         // now add the desktops

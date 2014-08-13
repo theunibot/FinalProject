@@ -35,6 +35,12 @@ public class R12Operations
             + INI_FILE_ADDRESS_KEY + "=" + address + "\n"
             + INI_FILE_PORT_KEY + "=" + port;
 
+    
+    /**
+     * Constructor made private since this is a singleton interface
+     */
+    private R12Operations() {
+    }
     /**
      * initializes object's dependencies
      *

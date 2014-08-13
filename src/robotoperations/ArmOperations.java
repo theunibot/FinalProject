@@ -45,7 +45,7 @@ public class ArmOperations
             + "\n//Each command should be seperated by a carriage return."
             + "\n//All comments must be on their own line and start with \"//\"";
 
-    public ArmOperations()
+    private ArmOperations()
     {
 
     }

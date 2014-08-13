@@ -11,6 +11,7 @@ import commands.CommandInterface;
 import enums.CabinetType;
 import enums.CommandCompletion;
 import enums.CommandStatus;
+import inventory.Inventory;
 import robotoperations.ArmOperations;
 import route.Cartesian;
 import route.PositionLookupTable;
@@ -43,7 +44,7 @@ public class CommandProcessor
     /**
      * Constructor sets up the command processor
      */
-    public CommandProcessor()
+    private CommandProcessor()
     {
         cmdq = CommandQueues.getInstance();
         ao = ArmOperations.getInstance();
@@ -95,7 +96,8 @@ public class CommandProcessor
                     cmd.setStatus(CommandStatus.COMPLETE);
                     // can this clear the error flag?
                     if (!activeError.success() && cmd.successClearsError()) {
-                        System.out.println("Command has cleared error flag; operations to continue normally");
+                        Inventory.getInstance().resetInventory();
+                        System.out.println("Command has cleared error flag; inventory reset and operations to continue normally");
                         activeError = new Result();
                     }
                     break;
