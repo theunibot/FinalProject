@@ -185,16 +185,16 @@ public class PositionLookup
                     }
                     
                     // build up a name of this position
-                    String name = "P_" + ct.name() + "_" + shelf;
+                    String name = ct.name() + shelf;
                     
                     // is this three (Shelf, X,Y,Z) or does it include yaw,pitch,roll?
                     Position pos;
 
                     if (splitLinePieces.length == 4)
-                        pos = new Position(name, Utils.xyInToMmStr(splitLinePieces[1]), Utils.xyInToMmStr(splitLinePieces[2]), Utils.xyInToMmStr(splitLinePieces[3]),
+                        pos = new Position(name, Utils.xyInToMmStr(splitLinePieces[1]), Utils.xyInToMmStr(splitLinePieces[2]), Utils.zInToMmStr(splitLinePieces[3]),
                             String.valueOf(prevPosition.getPitch()), String.valueOf(prevPosition.getYaw()), String.valueOf(prevPosition.getRoll()));
                     else if (splitLinePieces.length == 7)
-                        pos = new Position(name, Utils.xyInToMmStr(splitLinePieces[1]), Utils.xyInToMmStr(splitLinePieces[2]), Utils.xyInToMmStr(splitLinePieces[3]),
+                        pos = new Position(name, Utils.xyInToMmStr(splitLinePieces[1]), Utils.xyInToMmStr(splitLinePieces[2]), Utils.zInToMmStr(splitLinePieces[3]),
                             splitLinePieces[4], splitLinePieces[5], splitLinePieces[6]);
                     else
                         return new Result("PositionLookupTable invalid syntax: " + line);

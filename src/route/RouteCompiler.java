@@ -150,7 +150,7 @@ public class RouteCompiler
                     }
                     pieces[0] = Utils.xyInToMmStr(pieces[0]);
                     pieces[1] = Utils.xyInToMmStr(pieces[1]);
-                    pieces[2] = Utils.xyInToMmStr(pieces[2]);
+                    pieces[2] = Utils.zInToMmStr(pieces[2]);
                     route.add(new CommandPosition(new Position(null, pieces[0], pieces[1], pieces[2], pitch, yaw, roll), routeProperties.getRouteName(), route.size() + 1));
                 }
                 else if (pieces.length == 6)//x,y,z,pitch,yaw,roll
@@ -182,7 +182,7 @@ public class RouteCompiler
                     }
                     pieces[0] = Utils.xyInToMmStr(pieces[0]);
                     pieces[1] = Utils.xyInToMmStr(pieces[1]);
-                    pieces[2] = Utils.xyInToMmStr(pieces[2]);
+                    pieces[2] = Utils.zInToMmStr(pieces[2]);
                     route.add(new CommandPosition(new Position(null, pieces[0], pieces[1], pieces[2], pitch, yaw, roll), routeProperties.getRouteName(), route.size() + 1));
                 }
                 else//error in format of info
