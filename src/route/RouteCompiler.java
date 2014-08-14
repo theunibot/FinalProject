@@ -136,7 +136,7 @@ public class RouteCompiler
                     if ((routeProperties = parseForMetadata(chunks)) != null)
                     {
                         route = new Route(routeProperties);
-                        rh.addRoute(route);                        
+                        rh.addRoute(route);
                     }
                     else
                     {
@@ -145,29 +145,38 @@ public class RouteCompiler
                 }
                 else if (chunks.length == 7)//clone command
                 {
-                    Route routeToClone = rh.getRoute(CabinetType.valueOf(chunks[0]), CabinetType.valueOf(chunks[1]), RouteEffectType.valueOf(chunks[2]));
-                    RouteProperties cloneProps = new RouteProperties(CabinetType.valueOf(chunks[4]), CabinetType.valueOf(chunks[5]), RouteEffectType.valueOf(chunks[6]));
-                    Route clone = new Route(cloneProps);
-                    if (chunks[3].equals(ROUTE_CLONE_FWD))
+                    System.out.println("Line " + line + " is a clone command.");
+                    
+                    Route routeToClone = null;
+                    if ((routeToClone = rh.getRoute(CabinetType.valueOf(chunks[0]), CabinetType.valueOf(chunks[1]), RouteEffectType.valueOf(chunks[2]))) != null)
                     {
-                        for (int i = 0; i < routeToClone.size(); i++)
+                        RouteProperties cloneProps = new RouteProperties(CabinetType.valueOf(chunks[4]), CabinetType.valueOf(chunks[5]), RouteEffectType.valueOf(chunks[6]));
+                        Route clone = new Route(cloneProps);
+                        if (chunks[3].equals(ROUTE_CLONE_FWD))
                         {
-                            clone.add(routeToClone.get(i));
+                            System.out.println("From " + chunks[0] + " to " + chunks[1] + " effect " + chunks[2]);
+                            for (int i = 0; i < routeToClone.size(); i++)
+                            {
+                                clone.add(routeToClone.get(i));
+                            }
                         }
-                    }
-                    else if (chunks[3].equals(ROUTE_CLONE_REV))
-                    {
-                        for (int i = routeToClone.size() - 1; i >= 0; i--)
+                        else if (chunks[3].equals(ROUTE_CLONE_REV))
                         {
-                            clone.add(routeToClone.get(i));
-                        }                        
+                            for (int i = routeToClone.size() - 1; i >= 0; i--)
+                            {
+                                clone.add(routeToClone.get(i));
+                            }
+                        }
+                        else
+                        {
+                            System.err.println("In chunks == 7, Format of the command of line " + lineCount + " wrong. The line: \"" + line + "\"");
+                        }
+                        rh.addRoute(clone);
                     }
                     else
-                    {                        
-                        System.err.println("In chunks == 7, Format of the command of line " + lineCount + " wrong. The line: \"" + line + "\"");
+                    {
+                        System.err.println("Route not found.");
                     }
-                    rh.addRoute(clone);
-
                 }
                 else
                 {
