@@ -96,14 +96,14 @@ public class ServerHooks
         switch (command) {
             case "mount-layer":
             case "replace-layer":
-                if ( (layer == null) || (shelf == null) || (desktop == null) || (effect == null) ) {
+                if ( (layer == null) || (shelf == null) || (desktop == null) || (effectEnum == null) ) {
                     System.err.println("Request failure: missing required parameter");
                     return Utils.genericEnqueueFail();
                 }
                 cmd = new CommandMountLayer(layerInt, shelfInt, desktopInt, effectEnum);
                 break;
             case "show-layer":
-                if ( (shelf == null) || (desktop == null) || (effect == null) ) {
+                if ( (shelf == null) || (desktop == null) || (effectEnum == null) ) {
                     System.err.println("Request failure: missing required parameter");
                     return Utils.genericEnqueueFail();
                 }
@@ -117,7 +117,7 @@ public class ServerHooks
                 cmd = new CommandEmptyDesktop(desktopInt);
                 break;
             case "show-sign":
-                if ( (layer == null) || (effect == null) ) {
+                if ( (layer == null) || (effectEnum == null) ) {
                     System.err.println("Request failure: missing required parameter");
                     return Utils.genericEnqueueFail();
                 }
@@ -135,6 +135,8 @@ public class ServerHooks
             case "arm-de-energize":
                 cmd = new CommandArmDeEnergize();
                 break;
+                
+                
             case "position":
                 String cabinetStr = params.get("cabinet");
                 if ( (cabinetStr == null) || (shelf == null) ) {

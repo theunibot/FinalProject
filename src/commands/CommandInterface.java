@@ -170,9 +170,12 @@ public abstract class CommandInterface
                 return new Result("Unable to locate route from " + args.cabinet.toString() + " to " + fromCabinet.toString() + " (effect default)");
 
             // and determine the final coordinate we must reset at
-            Position endCoordinates = plt.shelfToPosition(fromCabinet, fromShelf);
-            if (endCoordinates == null)
-                return new Result("Unable to locate point for " + fromCabinet.toString() + " shelf " + fromShelf);
+            Position endCoordinates = null;
+            if (fromShelf != -1) {
+                endCoordinates = plt.shelfToPosition(fromCabinet, fromShelf);
+                if (endCoordinates == null)
+                    return new Result("Unable to locate point for " + fromCabinet.toString() + " shelf " + fromShelf);
+            }
             
             // move the arm to the new cabinet
             result = ao.runRoute(route, args.coordinates, endCoordinates);
@@ -186,42 +189,53 @@ public abstract class CommandInterface
         }
 
         // now run the pick operation
-        int depth = inventory.depth(fromCabinet, fromShelf);
-        if (depth < 0)
-            return new Result("Cabinet " + fromCabinet.toString() + " shelf " + fromShelf + " is empty; unable to retreive a disc");
-        Position fromCoordinates = plt.shelfToPosition(fromCabinet, fromShelf);
-        if (fromCoordinates == null)
-            return new Result("Unable to locate point for " + fromCabinet.toString() + " shelf " + fromShelf);
-        result = ao.pick(fromCabinet, depth, fromCoordinates);
-        if (!result.success())
-            return result;
+        Position fromCoordinates = null;
+        if (fromShelf != -1) {
+            int depth = inventory.depth(fromCabinet, fromShelf);
+            if (depth < 0)
+                return new Result("Cabinet " + fromCabinet.toString() + " shelf " + fromShelf + " is empty; unable to retreive a disc");
+            fromCoordinates = plt.shelfToPosition(fromCabinet, fromShelf);
+            if (fromCoordinates == null)
+                return new Result("Unable to locate point for " + fromCabinet.toString() + " shelf " + fromShelf);
+            result = ao.pick(fromCabinet, depth, fromCoordinates);
+            if (!result.success())
+                return result;
+        }
         
         // now find a route to the desktop
         route = rh.getRoute(fromCabinet, toCabinet, effect);
         if (route == null)
             return new Result("Unable to locate route from " + fromCabinet.toString() + " to " + toCabinet.toString() + " (effect " + effect + ")");
-        Position toCoordinates = plt.shelfToPosition(toCabinet, toShelf);
-        if (toCoordinates == null)
-            return new Result("Unable to locate point for " + toCabinet.toString() + " shelf " + toShelf);
+        Position toCoordinates = null;
+        if (toShelf != -1) {
+            toCoordinates = plt.shelfToPosition(toCabinet, toShelf);
+            if (toCoordinates == null)
+                return new Result("Unable to locate point for " + toCabinet.toString() + " shelf " + toShelf);
+        }
         result = ao.runRoute(route, fromCoordinates, toCoordinates);
         if (!result.success())
             return result;
         
         // and finally run the drop operation
-        depth = inventory.depth(toCabinet, toShelf);
-        result = ao.drop(toCabinet, depth + 1, plt.shelfToPosition(toCabinet, toShelf));
-        if (!result.success())
-            return result;
+        if (toShelf != -1) {
+            int depth = inventory.depth(toCabinet, toShelf);
+            result = ao.drop(toCabinet, depth + 1, plt.shelfToPosition(toCabinet, toShelf));
+            if (!result.success())
+                return result;
+        }
 
         // update args to reflect our new position
-        args.cabinet = toCabinet;
-        args.coordinates = plt.shelfToPosition(toCabinet, toShelf);
+        if (toShelf != -1) {
+            args.cabinet = toCabinet;
+            args.coordinates = plt.shelfToPosition(toCabinet, toShelf);
+        }
         
         // update inventory to reflect this change
-        result = inventory.moveDisc(fromCabinet, fromShelf, toCabinet, toShelf);
-        if (!result.success())
-            return result;
-        
+        if ( (fromShelf != -1) && (toShelf != -1) ) {
+            result = inventory.moveDisc(fromCabinet, fromShelf, toCabinet, toShelf);
+            if (!result.success())
+                return result;
+        }
         // success!
         return new Result();
    }

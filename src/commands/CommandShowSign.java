@@ -54,13 +54,15 @@ public class CommandShowSign extends CommandInterface
     {
         CabinetType cpCabinet = utils.Utils.shelfToCPCabinet(this.layer);
         
+        /*********** NEED TO MODIFY moveLayer TO SPECIFY IF START POS/END POS SHOULD BE OVERRIDDEN OR NOT **********/
+        
         // are we doing a continuous sign?
         if (effect == RouteEffectType.CONTINUOUS) {
             // is this our first entry?
             if (!signRunning) {
                 signRunning = true;
                 // bring up the initial sign
-                Result result = this.moveLayer(args, cpCabinet, layer, cpCabinet, layer, RouteEffectType.CONTINUOUS_START);
+                Result result = this.moveLayer(args, cpCabinet, layer, cpCabinet, -1, RouteEffectType.CONTINUOUS_START);
                 if (!result.success())
                     return result;
                 return new Result(CommandCompletion.INCOMPLETE);
@@ -69,13 +71,13 @@ public class CommandShowSign extends CommandInterface
                 CommandQueues cmdq = CommandQueues.getInstance();
                 if (cmdq.queueDepth() == 0) {
                     // nope, keep running the sign
-                    Result result = this.moveLayer(args, cpCabinet, layer, cpCabinet, layer, RouteEffectType.CONTINUOUS);
+                    Result result = this.moveLayer(args, cpCabinet, -1, cpCabinet, -1, RouteEffectType.CONTINUOUS);
                     if (!result.success())
                         return result;
                     return new Result(CommandCompletion.INCOMPLETE);
                 } else {
                     // yep, put it away
-                    Result result = this.moveLayer(args, cpCabinet, layer, cpCabinet, layer, RouteEffectType.CONTINUOUS_END);
+                    Result result = this.moveLayer(args, cpCabinet, -1, cpCabinet, layer, RouteEffectType.CONTINUOUS_END);
                     return result;
                 }
             }
