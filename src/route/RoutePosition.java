@@ -40,6 +40,12 @@ public class RoutePosition
         this.line = pos.getLine();
     }
     
+    public RoutePosition(RoutePosition pos, String routeName, int line) {
+        this.coord = pos.getPosition();
+        this.routeName = routeName;
+        this.line = line;
+    }
+    
     public Position getPosition() {
         return this.coord;
     }
