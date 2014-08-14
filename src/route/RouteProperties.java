@@ -48,9 +48,9 @@ public class RouteProperties
     {
         this.from = from;
         this.to = to;
-        this.effect = effect;
-        this.routeFriendlyName = genRouteFriendlyName();
+        this.effect = effect;        
         routeID = routeIDVar++;//gets the next id from the static var
+        this.routeFriendlyName = genRouteFriendlyName();
         this.routeIDName = "R" + routeID;//gens a route ID
     }
 

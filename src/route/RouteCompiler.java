@@ -35,12 +35,16 @@ public class RouteCompiler
 {
 
     private static RouteCompiler routeCompiler = null;
-    private RouteHolder rh = RouteHolder.getInstance();
+    private RouteHolder rh = null;
+    private ArmOperations ao = null;
 
     //String consts
     public static final String ROUTE_FILE_BASENAME = FileUtils.getFilesFolderString() + "allRoutes.txt";
 //    pathToFile = FileUtils.getFilesFolderString() + prefix + ROUTE_FILE_BASENAME + ".txt";
     public static final String ROUTE_DEFINE_PREFIX = "route ";
+
+    private final String ROUTE_CLONE_FWD = "F";
+    private final String ROUTE_CLONE_REV = "R";
 
     public static final String[] ROUTE_FILE_PREFIXS =
     {
@@ -95,6 +99,8 @@ public class RouteCompiler
      */
     public Result init()
     {
+        rh = RouteHolder.getInstance();
+        ao = ArmOperations.getInstance();
         ArrayList<String> lines = FileUtils.readCommandFileOrGenEmpty(ROUTE_FILE_BASENAME, ROUTE_COMPILER_FILE_CONTENTS);
         System.out.println("Read " + lines.size() + " line(s) from route compiler file.");
         ArrayList<Route> routes = parseLines(lines);
@@ -102,20 +108,10 @@ public class RouteCompiler
         for (Route route : routes)
         {
             //adds routes to the route holder
-            Route routeRev = route.getReverseRoute();
             rh.addRoute(route);
-            rh.addRoute(routeRev);
 
-            ArmOperations ao = ArmOperations.getInstance();
-            
             //run fwd route
             Result result = ao.learnRoute(route);
-            if (!result.success())
-            {
-                return result;
-            }
-            //run rev route
-            result = ao.learnRoute(routeRev);
             if (!result.success())
             {
                 return result;
@@ -195,6 +191,26 @@ public class RouteCompiler
                     route.add(new CommandPosition(new Position(null, pieces[0], pieces[1], pieces[2], pitch, yaw, roll), routeProperties.getRouteFriendlyName(), route.size() + 1));
                     pieces[2] = Utils.zInToMmStr(pieces[2]);
                 }
+                else if (pieces.length == 7)//clone command
+                {
+                    Route routeToClone = rh.getRoute(CabinetType.valueOf(pieces[0]), CabinetType.valueOf(pieces[1]), RouteEffectType.valueOf(pieces[2]));
+                    RouteProperties cloneProps = new RouteProperties(CabinetType.valueOf(pieces[4]), CabinetType.valueOf(pieces[5]), RouteEffectType.valueOf(pieces[6]));
+                    Route clone = new Route(cloneProps);
+                    if (pieces[4].equals(ROUTE_CLONE_FWD))
+                    {
+                        routeToClone.cloneFwdRoute(clone);
+                    }
+                    else if (pieces[4].equals(ROUTE_CLONE_REV))
+                    {
+                        routeToClone.cloneRevRoute(clone);
+                    }
+                    else
+                    {
+                        System.err.println("Format of the middle command of line " + lineCount + " wrong. The line: \"" + line + "\"");
+                    }
+                    listOfRoutes.add(clone);
+
+                }
                 else//error in format of info
                 {
                     System.err.println("Format of route line " + lineCount + " wrong. The line: \"" + line + "\"");
@@ -206,8 +222,6 @@ public class RouteCompiler
 
         return listOfRoutes;
     }
-
-    
 
     /**
      * Takes in the array of Metadata pieces and parses out info.
