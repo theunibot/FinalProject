@@ -128,52 +128,44 @@ public class ArmOperations
         if (Simulated)
         {
             System.out.println("ArmOperations: runRoute " + route.getRouteProperties().getRouteFriendlyName()
-                    + " from " + start.getName() + " to " + end.getName());
+                    + " from " + ((start != null) ? start.getName() : "undefined") + " to " + 
+                    ((end != null) ? end.getName() : "undefined"));
             return new Result();
         }
 
         ResponseObject response;
         if (route.size() >= 2)//must have start and end pos to modify
         {
-            String modStart = positionCommandToRouteModifyString(start, route.getRouteProperties().getRouteIDName(), 0);
-            String modEnd = positionCommandToRouteModifyString(start, route.getRouteProperties().getRouteIDName(), route.size() - 1);
+            if (start != null) {
+                //run the modify start command
+                String modStart = positionCommandToRouteModifyString(start, route.getRouteProperties().getRouteIDName(), 0);
+                r12o.write(modStart);
+                response = r12o.getResponse(modStart);
+                if (!response.isSuccessful())
+                    return new Result("Command Failed! Cmd: " + modStart + " Response Msg: " + response.getMsg());
+            }
+            if (end != null) {
+                //run the modify end command
+                String modEnd = positionCommandToRouteModifyString(start, route.getRouteProperties().getRouteIDName(), route.size() - 1);
+                r12o.write(modEnd);
+                response = r12o.getResponse(modEnd);
 
-            //run the modify start command
-            r12o.write(modStart);
-            response = r12o.getResponse(modStart);
-
-            if (!response.isSuccessful())
-            {
-                return new Result("Command Failed! Cmd: " + modStart + " Response Msg: " + response.getMsg());
+                if (!response.isSuccessful())
+                    return new Result("Command Failed! Cmd: " + modEnd + " Response Msg: " + response.getMsg());
             }
 
-            //run the modify end command
-            r12o.write(modEnd);
-            response = r12o.getResponse(modEnd);
-
-            if (!response.isSuccessful())
-            {
-                return new Result("Command Failed! Cmd: " + modEnd + " Response Msg: " + response.getMsg());
-            }
-
-            //if reached here, route modified correctly
+            // run the route
             String runRoute = "CONTINUOUS ADJUST " + route.getRouteProperties().getRouteIDName() + " RUN";
-
-            //run the route
             r12o.write(runRoute);
             response = r12o.getResponse(runRoute);
-
             if (!response.isSuccessful())
-            {
                 return new Result("Command Failed! Cmd: " + runRoute + " Response Msg: " + response.getMsg());
-            }
 
             return new Result();
         }
-        else //not enough pos to modify start and end routes
-        {
+        else
+            //not enough pos to modify start and end routes
             return new Result("Route named " + route.getRouteProperties().getRouteFriendlyName() + " has " + route.size() + " coordinates; must have at least two (start and end)");
-        }
     }
 
     /**
@@ -332,9 +324,7 @@ public class ArmOperations
     {
         Result result = grip();
         if (!result.success())
-        {
             return (result);
-        }
 
         if (Simulated)
         {
@@ -457,10 +447,8 @@ public class ArmOperations
      *
      * @return Result with success/fail info
      */
-    public Result grip()
-    {
-        if (Simulated)
-        {
+    public Result grip() {
+        if (Simulated) {
             System.out.println("ArmOperations: grip");
             return new Result();
         }
@@ -472,10 +460,8 @@ public class ArmOperations
      *
      * @return Result with success/fail info
      */
-    public Result ungrip()
-    {
-        if (Simulated)
-        {
+    public Result ungrip() {
+        if (Simulated) {
             System.out.println("ArmOperations: ungrip");
             return new Result();
         }
