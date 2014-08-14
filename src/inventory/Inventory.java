@@ -98,11 +98,16 @@ public class Inventory
         System.out.println("Inventory: moveDisc " + fromType.toString() + " shelf " + fromShelf + " to " + 
                 toType.toString() + " shelf " + toShelf);
         
+        // if move from/to is the same, just return success
+        if ( (fromType == toType) && (fromShelf == toShelf) )
+            return new Result();
+        
         // make sure the fromType and toType are known
         if (!inventory.containsKey(fromType))
             return new Result("Unable to locate cabinet " + fromType.toString() + " in inventory");
         if (!inventory.containsKey(toType))
             return new Result("Unable to locate cabinet " + toType.toString() + " in inventory");
+        
         // validate that this request is legit
         InventoryShelf fromInventory = inventory.get(fromType).get(fromShelf);
         if (fromInventory == null)
