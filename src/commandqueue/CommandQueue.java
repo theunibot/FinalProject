@@ -47,6 +47,15 @@ public class CommandQueue
     public void add(CommandInterface cmd) {
         queue.add(cmd);
     }
+    
+    /**
+     * Returns number of items waiting in this queue
+     * 
+     * @return count of items waiting
+     */
+    public int queueDepth() {
+        return queue.size();
+    }
 
     /**
      * Gets the first command in the list

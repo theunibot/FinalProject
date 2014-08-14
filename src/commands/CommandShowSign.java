@@ -18,6 +18,7 @@
  */
 package commands;
 
+import commandqueue.CommandQueues;
 import enums.*;
 import utils.Result;
 
@@ -29,6 +30,7 @@ public class CommandShowSign extends CommandInterface
 
     int layer;
     RouteEffectType effect;
+    boolean signRunning = false;
 
     /**
      * Constructor that sets up the command parameters
@@ -51,9 +53,37 @@ public class CommandShowSign extends CommandInterface
     public Result execute(CommandArguments args)
     {
         CabinetType cpCabinet = utils.Utils.shelfToCPCabinet(this.layer);
-
-        Result result = this.moveLayer(args, cpCabinet, layer, cpCabinet, layer, effect);
-        return result;
+        
+        // are we doing a continuous sign?
+        if (effect == RouteEffectType.CONTINUOUS) {
+            // is this our first entry?
+            if (!signRunning) {
+                signRunning = true;
+                // bring up the initial sign
+                Result result = this.moveLayer(args, cpCabinet, layer, cpCabinet, layer, RouteEffectType.CONTINUOUS_START);
+                if (!result.success())
+                    return result;
+                return new Result(CommandCompletion.INCOMPLETE);
+            } else {
+                // should we put the sign away?
+                CommandQueues cmdq = CommandQueues.getInstance();
+                if (cmdq.queueDepth() == 0) {
+                    // nope, keep running the sign
+                    Result result = this.moveLayer(args, cpCabinet, layer, cpCabinet, layer, RouteEffectType.CONTINUOUS);
+                    if (!result.success())
+                        return result;
+                    return new Result(CommandCompletion.INCOMPLETE);
+                } else {
+                    // yep, put it away
+                    Result result = this.moveLayer(args, cpCabinet, layer, cpCabinet, layer, RouteEffectType.CONTINUOUS_END);
+                    return result;
+                }
+            }
+        } else {
+            // show the sign
+            Result result = this.moveLayer(args, cpCabinet, layer, cpCabinet, layer, effect);
+            return result;
+        }
     }
 
     /**

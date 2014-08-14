@@ -121,7 +121,7 @@ public class CommandProcessor
                     break;                    
             }
         }
-        // done - terminate
+        // done - terminate the thread
     }
     
     /**
