@@ -163,10 +163,9 @@ public class ArmOperations
 
             return new Result();
         }
-        else { 
+        else
             //not enough pos to modify start and end routes
-            return new Result("Route has " + route.size() + " coordinate; must have at least two (start and end)");
-        }
+            return new Result("Route named " + route.getRouteProperties().getRouteFriendlyName() + " has " + route.size() + " coordinates; must have at least two (start and end)");
     }
 
     /**
@@ -326,7 +325,7 @@ public class ArmOperations
         Result result = grip();
         if (!result.success())
             return (result);
-        
+
         if (Simulated)
         {
             System.out.println("ArmOperations: calibrate");
@@ -405,15 +404,14 @@ public class ArmOperations
      * @return Result with success/fail info
      */
     public Result learnRoute(Route route)
-    {        
+    {
 
-        
         if (Simulated)
         {
             System.out.println("ArmOperations: learnRoute " + route.getRouteProperties().getRouteFriendlyName());
             return new Result();
         }
-        
+
         ArrayList<String> routeCommands = route.getRoboforthCommands();
 
         //input the Fwd commands
@@ -443,10 +441,10 @@ public class ArmOperations
         }
         return runRobotCommand(position.getRoboforth());
     }
-    
+
     /**
      * Cause the gripper to close
-     * 
+     *
      * @return Result with success/fail info
      */
     public Result grip() {
@@ -456,10 +454,10 @@ public class ArmOperations
         }
         return runRobotCommand("GRIP");
     }
-    
+
     /**
      * Cause the gripper to open
-     * 
+     *
      * @return Result with success/fail info
      */
     public Result ungrip() {

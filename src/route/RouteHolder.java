@@ -56,8 +56,14 @@ public class RouteHolder
         }
     }
     
+    public List<Route> getAllRoutes()
+    {
+        return routes;
+    }
+    
     public List<Route> getRoutes(RouteProperties rp)
     {
+        System.out.println("GETTING a list of Routes of from " + rp.getFrom() + " to " + rp.getTo() + " with effect " + rp.getEffect());
         List<Route> routesToGive = new ArrayList<>();
         for (Route r : routes)
         {
@@ -81,6 +87,7 @@ public class RouteHolder
      */
     public Route getRoute(CabinetType from, CabinetType to, RouteEffectType effect)            
     {
+        System.out.println("GETTING a route of from " + from + " to " + to + " with effect " + effect);
         List<Route> routesToGive = new ArrayList<>();
         for (Route r : routes)
         {

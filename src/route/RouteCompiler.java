@@ -103,12 +103,10 @@ public class RouteCompiler
         ao = ArmOperations.getInstance();
         ArrayList<String> lines = FileUtils.readCommandFileOrGenEmpty(ROUTE_FILE_BASENAME, ROUTE_COMPILER_FILE_CONTENTS);
         System.out.println("Read " + lines.size() + " line(s) from route compiler file.");
-        ArrayList<Route> routes = parseLines(lines);
+        parseLines(lines);
 
-        for (Route route : routes)
+        for (Route route : rh.getAllRoutes())
         {
-            //adds routes to the route holder
-            rh.addRoute(route);
 
             //run fwd route
             Result result = ao.learnRoute(route);
@@ -121,10 +119,10 @@ public class RouteCompiler
         return new Result();
     }
 
-    private ArrayList<Route> parseLines(ArrayList<String> lines)
+    private void parseLines(ArrayList<String> lines)
     {
         RouteProperties routeProperties = new RouteProperties();
-        ArrayList<Route> listOfRoutes = new ArrayList<Route>();
+//        ArrayList<Route> listOfRoutes = new ArrayList<Route>();
         Route route = null;       //set route type, D1, D2, etc
 //        routeProperties.setRouteType(getRouteType(prefix));
         int lineCount = 1;//used in error tracking
@@ -133,9 +131,48 @@ public class RouteCompiler
             if (line.startsWith(FileUtils.COMMAND_FILE_METADATA_PREFIX))//new Route
             {
                 String[] chunks = line.replaceFirst(FileUtils.COMMAND_FILE_METADATA_PREFIX, "").split(" ");
-                routeProperties = parseForMetadata(chunks);
-                route = new Route(routeProperties);
-                listOfRoutes.add(route);
+                if (chunks.length == 3)
+                {
+                    if ((routeProperties = parseForMetadata(chunks)) != null)
+                    {
+                        route = new Route(routeProperties);
+                        rh.addRoute(route);                        
+                    }
+                    else
+                    {
+                        System.err.println("Format of the command of line " + lineCount + " wrong. The line: \"" + line + "\"");
+                    }
+                }
+                else if (chunks.length == 7)//clone command
+                {
+                    Route routeToClone = rh.getRoute(CabinetType.valueOf(chunks[0]), CabinetType.valueOf(chunks[1]), RouteEffectType.valueOf(chunks[2]));
+                    RouteProperties cloneProps = new RouteProperties(CabinetType.valueOf(chunks[4]), CabinetType.valueOf(chunks[5]), RouteEffectType.valueOf(chunks[6]));
+                    Route clone = new Route(cloneProps);
+                    if (chunks[3].equals(ROUTE_CLONE_FWD))
+                    {
+                        for (int i = 0; i < routeToClone.size(); i++)
+                        {
+                            clone.add(routeToClone.get(i));
+                        }
+                    }
+                    else if (chunks[3].equals(ROUTE_CLONE_REV))
+                    {
+                        for (int i = routeToClone.size() - 1; i >= 0; i--)
+                        {
+                            clone.add(routeToClone.get(i));
+                        }                        
+                    }
+                    else
+                    {                        
+                        System.err.println("In chunks == 7, Format of the command of line " + lineCount + " wrong. The line: \"" + line + "\"");
+                    }
+                    rh.addRoute(clone);
+
+                }
+                else
+                {
+                    System.err.println("Format of the metadata command of line " + lineCount + " wrong. The line: \"" + line + "\"");
+                }
 
             }
             else if (route != null)//not defining a new command, so a cartesian position command
@@ -191,26 +228,6 @@ public class RouteCompiler
                     route.add(new CommandPosition(new Position(null, pieces[0], pieces[1], pieces[2], pitch, yaw, roll), routeProperties.getRouteFriendlyName(), route.size() + 1));
                     pieces[2] = Utils.zInToMmStr(pieces[2]);
                 }
-                else if (pieces.length == 7)//clone command
-                {
-                    Route routeToClone = rh.getRoute(CabinetType.valueOf(pieces[0]), CabinetType.valueOf(pieces[1]), RouteEffectType.valueOf(pieces[2]));
-                    RouteProperties cloneProps = new RouteProperties(CabinetType.valueOf(pieces[4]), CabinetType.valueOf(pieces[5]), RouteEffectType.valueOf(pieces[6]));
-                    Route clone = new Route(cloneProps);
-                    if (pieces[4].equals(ROUTE_CLONE_FWD))
-                    {
-                        routeToClone.cloneFwdRoute(clone);
-                    }
-                    else if (pieces[4].equals(ROUTE_CLONE_REV))
-                    {
-                        routeToClone.cloneRevRoute(clone);
-                    }
-                    else
-                    {
-                        System.err.println("Format of the middle command of line " + lineCount + " wrong. The line: \"" + line + "\"");
-                    }
-                    listOfRoutes.add(clone);
-
-                }
                 else//error in format of info
                 {
                     System.err.println("Format of route line " + lineCount + " wrong. The line: \"" + line + "\"");
@@ -219,8 +236,6 @@ public class RouteCompiler
             }
             lineCount++;
         }
-
-        return listOfRoutes;
     }
 
     /**

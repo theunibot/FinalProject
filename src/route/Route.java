@@ -51,6 +51,26 @@ public class Route
         commands.add(o);
     }
 
+    public void set(int index, CommandPosition cp)
+    {
+        if (index >= 0 && index < this.size())
+        {
+            commands.set(index, cp);
+        }
+    }
+
+    public CommandPosition get(int index)
+    {
+        if (index >= 0 && index < this.size())
+        {
+            return commands.get(index);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     public CommandPosition getLastObject()
     {
         if (commands.size() > 0)
@@ -63,22 +83,6 @@ public class Route
     public RouteProperties getRouteProperties()
     {
         return routeProperties;
-    }
-
-    public void cloneFwdRoute(Route r)
-    {
-        for (CommandPosition cmd : commands)
-        {
-            r.add(cmd);
-        }
-    }
-
-    public void cloneRevRoute(Route r)
-    {
-        for (int i = commands.size() - 1; i >= 0; i--)
-        {
-            r.add(commands.get(i));
-        }
     }
 
     public ArrayList<String> getRoboforthCommands()
