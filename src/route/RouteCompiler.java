@@ -103,7 +103,11 @@ public class RouteCompiler
         ao = ArmOperations.getInstance();
         ArrayList<String> lines = FileUtils.readCommandFileOrGenEmpty(ROUTE_FILE_BASENAME, ROUTE_COMPILER_FILE_CONTENTS);
         System.out.println("Read " + lines.size() + " line(s) from route compiler file.");
-        parseLines(lines);
+        Result parseResult = parseLines(lines);
+        if (!parseResult.success())
+        {
+            return parseResult;
+        }
 
         for (Route route : rh.getAllRoutes())
         {
@@ -119,7 +123,7 @@ public class RouteCompiler
         return new Result();
     }
 
-    private void parseLines(ArrayList<String> lines)
+    private Result parseLines(ArrayList<String> lines)
     {
         RouteProperties routeProperties = new RouteProperties();
 //        ArrayList<Route> listOfRoutes = new ArrayList<Route>();
@@ -146,7 +150,7 @@ public class RouteCompiler
                 else if (chunks.length == 7)//clone command
                 {
                     System.out.println("Line " + line + " is a clone command.");
-                    
+
                     Route routeToClone = null;
                     if ((routeToClone = rh.getRoute(CabinetType.valueOf(chunks[0]), CabinetType.valueOf(chunks[1]), RouteEffectType.valueOf(chunks[2]))) != null)
                     {
@@ -175,12 +179,14 @@ public class RouteCompiler
                     }
                     else
                     {
+
                         System.err.println("Route not found.");
+                        return new Result("Route not found");
                     }
                 }
                 else
                 {
-                    System.err.println("Format of the metadata command of line " + lineCount + " wrong. The line: \"" + line + "\"");
+                    return new Result("Format of the metadata command of line " + lineCount + " wrong. The line: \"" + line + "\"");
                 }
 
             }
@@ -243,8 +249,13 @@ public class RouteCompiler
                     //ignore line
                 }
             }
+            else
+            {
+                return new Result("Route definition failed");
+            }
             lineCount++;
         }
+        return new Result();
     }
 
     /**
