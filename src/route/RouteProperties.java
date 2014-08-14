@@ -69,9 +69,8 @@ public class RouteProperties
         String to = "", from = "", effect = "";
         to = this.to.toString();
         from = this.from.toString();
-        effect = this.effect.toString();
-        List<Route> sameRoutes = rh.getRoutes(this);
-        return from + "_" + to + "_" + effect + ((int) (sameRoutes.size() + 1));
+        effect = this.effect.toString();        
+        return from + "_" + to + "_" + effect + (this.routeID);
     }
 
     public CabinetType getTo()
