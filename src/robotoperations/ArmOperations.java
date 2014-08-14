@@ -146,7 +146,7 @@ public class ArmOperations
             }
             if (end != null) {
                 //run the modify end command
-                String modEnd = positionCommandToRouteModifyString(start, route.getRouteProperties().getRouteIDName(), route.size() - 1);
+                String modEnd = positionCommandToRouteModifyString(end, route.getRouteProperties().getRouteIDName(), route.size() - 1);
                 r12o.write(modEnd);
                 response = r12o.getResponse(modEnd);
 
