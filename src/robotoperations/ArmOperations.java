@@ -36,7 +36,7 @@ import utils.Result;
 public class ArmOperations
 {
 
-    private final boolean Simulated = true;
+    private final boolean Simulated = false;
     private R12Operations r12o = null;
     private RouteCompiler rc = null;
     private PositionLookup plt = null;
