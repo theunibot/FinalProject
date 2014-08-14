@@ -65,7 +65,6 @@ public class RouteCompiler
 //    {
 //        new KVPair("N", "0"), new KVPair("E", "10000"), new KVPair("S", "20000"), new KVPair("W", "30000")
 //    };
-
     private final String ROUTE_COMPILER_FILE_CONTENTS = ""
             + "//This is the R12 Robot Route Compiler file.\n"
             + "\n"
@@ -239,8 +238,8 @@ public class RouteCompiler
 //                    }
                     pieces[0] = Utils.xyInToMmStr(pieces[0]);
                     pieces[1] = Utils.xyInToMmStr(pieces[1]);
-                    route.add(new RoutePosition(new Position(null, pieces[0], pieces[1], pieces[2], pitch, yaw, roll), route.getRouteProperties().getRouteIDName(), route.size() + 1));
                     pieces[2] = Utils.zInToMmStr(pieces[2]);
+                    route.add(new RoutePosition(new Position(null, pieces[0], pieces[1], pieces[2], pitch, yaw, roll), route.getRouteProperties().getRouteIDName(), route.size() + 1));
                 }
                 else//error in format of info
                 {
@@ -274,8 +273,8 @@ public class RouteCompiler
         }
         else if (array.length > 3)
         {
-            
-            System.err.println("Too much metadata for this route");       
+
+            System.err.println("Too much metadata for this route");
             return null;
         }
         //exactly 3 pieces, from "X" to "Y" with "Z" effect
