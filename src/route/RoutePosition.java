@@ -47,6 +47,12 @@ public class RoutePosition
     public int getLine() {
         return line;
     }
+
+    public void setLine(int line)
+    {
+        this.line = line;
+    }
+    
     
     
     

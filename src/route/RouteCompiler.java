@@ -168,7 +168,9 @@ public class RouteCompiler
                         {
                             for (int i = routeToClone.size() - 1; i >= 0; i--)
                             {
-                                clone.add(new RoutePosition(routeToClone.get(i), clone.getRouteProperties().getRouteIDName()));
+                                RoutePosition rp = routeToClone.get(i);                                
+                                rp.setLine(routeToClone.size() - i);
+                                clone.add(new RoutePosition(rp, clone.getRouteProperties().getRouteIDName()));
                             }
                         }
                         else
