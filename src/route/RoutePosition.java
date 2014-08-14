@@ -34,9 +34,21 @@ public class RoutePosition
         this.line = line;     
     }
     
+    public RoutePosition(RoutePosition pos, String routeName) {
+        this.coord = pos.getPosition();
+        this.routeName = routeName;
+        this.line = pos.getLine();
+    }
+    
     public Position getPosition() {
         return this.coord;
     }
+
+    public int getLine() {
+        return line;
+    }
+    
+    
     
     public boolean isRouteDefine()
     {

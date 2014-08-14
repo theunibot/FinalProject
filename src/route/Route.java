@@ -38,7 +38,7 @@ public class Route
 
     public void setRouteProperties(RouteProperties rp)
     {
-        this.routeProperties = new RouteProperties(rp.getFrom(), rp.getTo(), rp.getEffect());
+        this.routeProperties = rp;
     }
 
     public int size()

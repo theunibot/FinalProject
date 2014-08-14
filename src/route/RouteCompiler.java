@@ -161,14 +161,14 @@ public class RouteCompiler
                             System.out.println("From " + chunks[0] + " to " + chunks[1] + " effect " + chunks[2]);
                             for (int i = 0; i < routeToClone.size(); i++)
                             {
-                                clone.add(routeToClone.get(i));
+                                clone.add(new RoutePosition(routeToClone.get(i), clone.getRouteProperties().getRouteIDName()));
                             }
                         }
                         else if (chunks[3].equals(ROUTE_CLONE_REV))
                         {
                             for (int i = routeToClone.size() - 1; i >= 0; i--)
                             {
-                                clone.add(routeToClone.get(i));
+                                clone.add(new RoutePosition(routeToClone.get(i), clone.getRouteProperties().getRouteIDName()));
                             }
                         }
                         else
