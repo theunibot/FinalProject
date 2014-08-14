@@ -33,6 +33,7 @@ import utils.Utils;
  */
 public class PositionLookup
 {
+
     private final String FILE_NAME = "PositionLookupTable.txt";
     private HashMap<CabinetType, HashMap<Integer, Position>> positions;
 
@@ -55,7 +56,7 @@ public class PositionLookup
 
     /**
      * Implement a singleton interface for this object
-     * 
+     *
      * @return instance of this object
      */
     public static PositionLookup getInstance()
@@ -75,40 +76,48 @@ public class PositionLookup
     public Result init()
     {
         positions = new HashMap<CabinetType, HashMap<Integer, Position>>();
-        
+
         Result result = parseFile();
         if (!result.success())
+        {
             return result;
-        
-        if (main.Main.DEBUG) {
+        }
+
+        if (main.Main.DEBUG)
+        {
             System.out.println("Position Lookup Table Initialized.");
         }
-        
+
         // and program the positions into the controller
         return initPositions();
     }
-    
+
     /**
      * Program the array of positions into the robot
      */
-    private Result initPositions() {
+    private Result initPositions()
+    {
         ArmOperations ao = ArmOperations.getInstance();
-        
+
         // scan through all cabinets...
-        for (Entry<CabinetType, HashMap<Integer, Position>> cabEntry : positions.entrySet()) {
+        for (Entry<CabinetType, HashMap<Integer, Position>> cabEntry : positions.entrySet())
+        {
             CabinetType cabinet = cabEntry.getKey();
             HashMap<Integer, Position> posHash = cabEntry.getValue();
-            
+
             // now scan all positions and program them up
-            for (Entry<Integer, Position> posEntry : posHash.entrySet()) {
+            for (Entry<Integer, Position> posEntry : posHash.entrySet())
+            {
                 Position pos = posEntry.getValue();
                 // program the point
                 Result result = ao.learnPoint(pos);
                 if (!result.success())
+                {
                     return result;
+                }
             }
         }
-        return new Result();            
+        return new Result();
     }
 
     /**
@@ -116,19 +125,22 @@ public class PositionLookup
      *
      * @param cabinet Cabinet that contains the shelf
      * @param shelf Shelf within the cabinet
-     * @return Position with the coordinates for the point in front of that shelf/cabinet
+     * @return Position with the coordinates for the point in front of that
+     * shelf/cabinet
      */
     public Position shelfToPosition(CabinetType cabinet, int shelf)
     {
         // first, find the cabinet
         HashMap<Integer, Position> cabinetPositions = positions.get(cabinet);
-        if (cabinetPositions == null) {
+        if (cabinetPositions == null)
+        {
             System.err.println("Unable to locate cabinet " + cabinet.toString() + " in position table");
             return null;
         }
         // now see if we can find the shelf
         Position pos = cabinetPositions.get(shelf);
-        if (pos == null) {
+        if (pos == null)
+        {
             System.err.println("Unable to locate shelf " + shelf + " in cabinet " + cabinet.toString() + " in position table");
             return null;
         }
@@ -154,23 +166,56 @@ public class PositionLookup
             System.out.println("Read " + lines.size() + " line(s) from position file.");
 
             Position prevPosition = new Position("None", "0", "0", "0", "0", "0", "0");
-            
+
+            double xOffset = 0;
+            double yOffset = 0;
+            double zOffset = 0;
+            double pitchOffset = 0;
+            double yawOffset = 0;
+            double rollOffset = 0;
+
             CabinetType ct = null;
             for (String line : lines)
-            {                
+            {
                 // if it starts with "#", we want to process the header (name of the cabinet)
-                if (line.startsWith(FileUtils.COMMAND_FILE_METADATA_PREFIX)) {
+                if (line.startsWith(FileUtils.COMMAND_FILE_METADATA_PREFIX))
+                {
                     // remove the "#" prefix
                     line = line.replace(FileUtils.COMMAND_FILE_METADATA_PREFIX, "");
-                    // take the remaining name as see if we can convert to a cabinet type
-                    try {
-                        ct = CabinetType.valueOf(line.trim().toUpperCase());
-                    } catch (IllegalArgumentException e) {
-                        return new Result("PositionLookupTable file has unknown CabinetType of " + line.trim().toUpperCase());
+                    String[] chunks = line.split(" ");
+                    if (chunks.length == 7)
+                    {
+
+                        // take the remaining name as see if we can convert to a cabinet type
+                        try
+                        {
+                            ct = CabinetType.valueOf(chunks[0].trim().toUpperCase());
+                        }
+                        catch (IllegalArgumentException e)
+                        {
+                            return new Result("PositionLookupTable file has unknown CabinetType of " + line.trim().toUpperCase());
+                        }
+
+                        // reset our last known position
+                        prevPosition = new Position("None", "0", "0", "0", "0", "0", "0");
+
+                        //update our offsets
+                        xOffset = Double.parseDouble(chunks[1]);
+                        yOffset = Double.parseDouble(chunks[2]);
+                        zOffset = Double.parseDouble(chunks[3]);
+                        pitchOffset = Double.parseDouble(chunks[4]);
+                        yawOffset = Double.parseDouble(chunks[5]);
+                        rollOffset = Double.parseDouble(chunks[6]);
+                        
+                        
                     }
-                    // reset our last known position
-                    prevPosition = new Position("None", "0", "0", "0", "0", "0", "0");
-                } else {
+                    else
+                    {
+                        return new Result("Position Lookup Line " + line + " missing data");
+                    }
+                }
+                else
+                {
                     // decode the position (Shelf X Y Z Pitch Yaw Roll, or just Shelf X Y Z)
 
                     // break up the line into multiple pieces split on spaces
@@ -178,55 +223,73 @@ public class PositionLookup
 
                     // get the shelf id
                     int shelf;
-                    try {
+                    try
+                    {
                         shelf = Integer.valueOf(splitLinePieces[0]);
-                    } catch (IllegalArgumentException e) {
+                    }
+                    catch (IllegalArgumentException e)
+                    {
                         return new Result("Invalid shelf ID " + splitLinePieces[0] + " in PositionLookupTable");
                     }
-                    
+
                     // build up a name of this position
                     String name;
-                    if ( (ct == CabinetType.D1) || (ct == CabinetType.D2) )
+                    if ((ct == CabinetType.D1) || (ct == CabinetType.D2))
+                    {
                         name = ct.toString() + "_" + shelf;
+                    }
                     else
+                    {
                         name = ct.toString() + shelf;
-                    
+                    }
+
                     // is this three (Shelf, X,Y,Z) or does it include yaw,pitch,roll?
                     Position pos;
 
                     if (splitLinePieces.length == 4)
-                        pos = new Position(name, Utils.xyInToMmStr(splitLinePieces[1]), Utils.xyInToMmStr(splitLinePieces[2]), Utils.zInToMmStr(splitLinePieces[3]),
-                            String.valueOf(prevPosition.getPitch()), String.valueOf(prevPosition.getYaw()), String.valueOf(prevPosition.getRoll()));
+                    {
+                        pos = new Position(name, Utils.xyInToMmStr(String.valueOf(Double.parseDouble(splitLinePieces[1]) + xOffset)), Utils.xyInToMmStr(String.valueOf(Double.parseDouble(splitLinePieces[2]) + yOffset)), Utils.zInToMmStr(String.valueOf(Double.parseDouble(splitLinePieces[3]) + zOffset)),
+                                String.valueOf(prevPosition.getPitch() + pitchOffset), String.valueOf(prevPosition.getYaw() + yawOffset), String.valueOf(prevPosition.getRoll() + rollOffset));
+                    }
                     else if (splitLinePieces.length == 7)
-                        pos = new Position(name, Utils.xyInToMmStr(splitLinePieces[1]), Utils.xyInToMmStr(splitLinePieces[2]), Utils.zInToMmStr(splitLinePieces[3]),
-                            splitLinePieces[4], splitLinePieces[5], splitLinePieces[6]);
+                    {
+                        pos = new Position(name, Utils.xyInToMmStr(String.valueOf(Double.parseDouble(splitLinePieces[1]) + xOffset)), Utils.xyInToMmStr(String.valueOf(Double.parseDouble(splitLinePieces[2]) + yOffset)), Utils.zInToMmStr(String.valueOf(Double.parseDouble(splitLinePieces[3]) + zOffset)),
+                                String.valueOf(Double.parseDouble(splitLinePieces[4]) + pitchOffset), String.valueOf(Double.parseDouble(splitLinePieces[5]) + yawOffset), String.valueOf(Double.parseDouble(splitLinePieces[6]) + rollOffset));
+                    }
                     else
+                    {
                         return new Result("PositionLookupTable invalid syntax: " + line);
-                    
+                    }
+
                     // save this away for later reference to get default values
                     prevPosition = pos;
-                    
+
                     // make sure we know the cabinet type...
                     if (ct == null)
+                    {
                         return new Result("Position found before CabinetType defined in PositionLookupTable (line " + line + ")");
+                    }
 
                     // and tuck it into the hashmap.  
                     // do we know the cabinet?
                     if (positions.get(ct) == null)
-                        // create the cabinet
+                    // create the cabinet
+                    {
                         positions.put(ct, new HashMap<Integer, Position>());
+                    }
                     // make sure we don't already know this id
                     if (positions.get(ct).get(shelf) != null)
+                    {
                         return new Result("Duplicate shelf in cabinet " + ct.toString() + " shelf " + shelf + " in PositionLookupTable");
+                    }
                     // now add the position
                     positions.get(ct).put(shelf, pos);
                 }
             }
         }
         // success!
-        return new Result();           
+        return new Result();
     }
 
     //</editor-fold>
-
 }
