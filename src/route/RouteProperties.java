@@ -40,18 +40,13 @@ public class RouteProperties
     private int routeID = -1;
     
 
-    public RouteProperties()
-    {
-    }
-
     public RouteProperties(CabinetType from, CabinetType to, RouteEffectType effect)
     {
         this.from = from;
         this.to = to;
         this.effect = effect;        
         routeID = routeIDVar++;//gets the next id from the static var
-        this.routeFriendlyName = genRouteFriendlyName();
-        this.routeIDName = "R" + routeID;//gens a route ID
+        this.routeFriendlyName = genRouteFriendlyName();        
     }
 
     public String getRouteFriendlyName()
@@ -61,7 +56,7 @@ public class RouteProperties
     
     public String getRouteIDName()
     {
-        return routeIDName;
+        return "R"+routeID;
     }
 
     private String genRouteFriendlyName()

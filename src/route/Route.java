@@ -27,9 +27,9 @@ import java.util.List;
 public class Route
 {
 
-    ArrayList<CommandPosition> commands = new ArrayList<>();
+    ArrayList<RoutePosition> commands = new ArrayList<>();
 
-    private RouteProperties routeProperties = new RouteProperties();
+    private RouteProperties routeProperties = null;
 
     public Route(RouteProperties routeProperties)
     {
@@ -46,12 +46,12 @@ public class Route
         return commands.size();
     }
 
-    public void add(CommandPosition o)
+    public void add(RoutePosition o)
     {
         commands.add(o);
     }
 
-    public void set(int index, CommandPosition cp)
+    public void set(int index, RoutePosition cp)
     {
         if (index >= 0 && index < this.size())
         {
@@ -59,7 +59,7 @@ public class Route
         }
     }
 
-    public CommandPosition get(int index)
+    public RoutePosition get(int index)
     {
         if (index >= 0 && index < this.size())
         {
@@ -71,7 +71,7 @@ public class Route
         }
     }
 
-    public CommandPosition getLastObject()
+    public RoutePosition getLastObject()
     {
         if (commands.size() > 0)
         {
@@ -91,7 +91,7 @@ public class Route
         commandStrings = new ArrayList<>();
         commandStrings.add("ROUTE " + this.routeProperties.getRouteIDName());
         commandStrings.add(commands.size() + " RESERVE");
-        for (CommandPosition o : commands)
+        for (RoutePosition o : commands)
         {
             commandStrings.add("LEARN");
             commandStrings.add(o.toString());

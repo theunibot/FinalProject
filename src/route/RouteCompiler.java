@@ -125,7 +125,7 @@ public class RouteCompiler
 
     private Result parseLines(ArrayList<String> lines)
     {
-        RouteProperties routeProperties = new RouteProperties();
+        RouteProperties routeProperties = null;
 //        ArrayList<Route> listOfRoutes = new ArrayList<Route>();
         Route route = null;       //set route type, D1, D2, etc
 //        routeProperties.setRouteType(getRouteType(prefix));
@@ -200,7 +200,7 @@ public class RouteCompiler
                     //grab the pitch,yaw,roll from the last cartesian command
                     if (route.getLastObject() != null)
                     {
-                        CommandPosition orcc = route.getLastObject();
+                        RoutePosition orcc = route.getLastObject();
                         pitch = String.valueOf(orcc.getPosition().getPitch());
                         yaw = String.valueOf(orcc.getPosition().getYaw());
                         roll = String.valueOf(orcc.getPosition().getRoll());
@@ -208,7 +208,7 @@ public class RouteCompiler
                     pieces[0] = Utils.xyInToMmStr(pieces[0]);
                     pieces[1] = Utils.xyInToMmStr(pieces[1]);
                     pieces[2] = Utils.zInToMmStr(pieces[2]);
-                    route.add(new CommandPosition(new Position(null, pieces[0], pieces[1], pieces[2], pitch, yaw, roll), routeProperties.getRouteFriendlyName(), route.size() + 1));
+                    route.add(new RoutePosition(new Position(null, pieces[0], pieces[1], pieces[2], pitch, yaw, roll), route.getRouteProperties().getRouteIDName(), route.size() + 1));
                 }
                 else if (pieces.length == 6)//x,y,z,pitch,yaw,roll
                 {
@@ -239,7 +239,7 @@ public class RouteCompiler
 //                    }
                     pieces[0] = Utils.xyInToMmStr(pieces[0]);
                     pieces[1] = Utils.xyInToMmStr(pieces[1]);
-                    route.add(new CommandPosition(new Position(null, pieces[0], pieces[1], pieces[2], pitch, yaw, roll), routeProperties.getRouteFriendlyName(), route.size() + 1));
+                    route.add(new RoutePosition(new Position(null, pieces[0], pieces[1], pieces[2], pitch, yaw, roll), route.getRouteProperties().getRouteIDName(), route.size() + 1));
                     pieces[2] = Utils.zInToMmStr(pieces[2]);
                 }
                 else//error in format of info
@@ -266,7 +266,7 @@ public class RouteCompiler
      */
     private RouteProperties parseForMetadata(String[] array)
     {
-        RouteProperties props = new RouteProperties();
+        RouteProperties props = null;
         if (array.length < 3)
         {
             System.err.println("Not enough metadata for this route");
@@ -283,10 +283,7 @@ public class RouteCompiler
         String from = array[0];
         String to = array[1];
         String effect = array[2];
-
-        props.setFrom(getCabinetType(from));
-        props.setTo(getCabinetType(to));
-        props.setEffect(getRouteEffectType(effect));
+        props = new RouteProperties(getCabinetType(from), getCabinetType(to), getRouteEffectType(effect));
 
         return props;
     }

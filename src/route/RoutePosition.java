@@ -21,13 +21,13 @@ package route;
 /**
  *
  */
-public class CommandPosition 
+public class RoutePosition 
 {
     private Position coord;
     private String routeName;
     private int line;
 
-    public CommandPosition(Position coord, String routeName, int line)
+    public RoutePosition(Position coord, String routeName, int line)
     {
         this.coord = coord;
         this.routeName = routeName;
