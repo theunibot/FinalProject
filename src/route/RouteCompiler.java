@@ -144,7 +144,7 @@ public class RouteCompiler
                     }
                     else
                     {
-                        System.err.println("Format of the command of line " + lineCount + " wrong. The line: \"" + line + "\"");
+                        return new Result("Format of the command of line " + lineCount + " wrong. The line: \"" + line + "\"");
                     }
                 }
                 else if (chunks.length == 7)//clone command
@@ -173,14 +173,13 @@ public class RouteCompiler
                         }
                         else
                         {
-                            System.err.println("In chunks == 7, Format of the command of line " + lineCount + " wrong. The line: \"" + line + "\"");
+                            return new Result("Format of the command of line " + lineCount + " wrong. The line: \"" + line + "\"");
                         }
                         rh.addRoute(clone);
                     }
                     else
                     {
 
-                        System.err.println("Route not found.");
                         return new Result("Route not found");
                     }
                 }
@@ -245,7 +244,8 @@ public class RouteCompiler
                 }
                 else//error in format of info
                 {
-                    System.err.println("Format of route line " + lineCount + " wrong. The line: \"" + line + "\"");
+                    return new Result("Format of the command of line " + lineCount + " wrong. The line: \"" + line + "\"");
+//                    System.err.println("Format of route line " + lineCount + " wrong. The line: \"" + line + "\"");
                     //ignore line
                 }
             }
@@ -274,7 +274,8 @@ public class RouteCompiler
         }
         else if (array.length > 3)
         {
-            System.err.println("Too much metadata for this route");
+            
+            System.err.println("Too much metadata for this route");       
             return null;
         }
         //exactly 3 pieces, from "X" to "Y" with "Z" effect
