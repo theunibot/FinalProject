@@ -46,25 +46,25 @@ public class RouteCompiler
     private final String ROUTE_CLONE_FWD = "F";
     private final String ROUTE_CLONE_REV = "R";
 
-    public static final String[] ROUTE_FILE_PREFIXS =
-    {
-        "D1_", "D2_", "S_"
-    };
-
-    public static final KVPair[] PITCH_ORIENTATION =
-    {
-        new KVPair("N", "0"), new KVPair("E", "10000"), new KVPair("S", "20000"), new KVPair("W", "30000")
-    };
-
-    public static final KVPair[] YAW_ORIENTATION =
-    {
-        new KVPair("N", "0"), new KVPair("E", "10000"), new KVPair("S", "20000"), new KVPair("W", "30000")
-    };
-
-    public static final KVPair[] ROLL_ORIENTATION =
-    {
-        new KVPair("N", "0"), new KVPair("E", "10000"), new KVPair("S", "20000"), new KVPair("W", "30000")
-    };
+//    public static final String[] ROUTE_FILE_PREFIXS =
+//    {
+//        "D1_", "D2_", "S_"
+//    };
+//
+//    public static final KVPair[] PITCH_ORIENTATION =
+//    {
+//        new KVPair("N", "0"), new KVPair("E", "10000"), new KVPair("S", "20000"), new KVPair("W", "30000")
+//    };
+//
+//    public static final KVPair[] YAW_ORIENTATION =
+//    {
+//        new KVPair("N", "0"), new KVPair("E", "10000"), new KVPair("S", "20000"), new KVPair("W", "30000")
+//    };
+//
+//    public static final KVPair[] ROLL_ORIENTATION =
+//    {
+//        new KVPair("N", "0"), new KVPair("E", "10000"), new KVPair("S", "20000"), new KVPair("W", "30000")
+//    };
 
     private final String ROUTE_COMPILER_FILE_CONTENTS = ""
             + "//This is the R12 Robot Route Compiler file.\n"
@@ -216,27 +216,27 @@ public class RouteCompiler
                     String yaw = pieces[4];
                     String roll = pieces[5];
 
-                    for (KVPair porint : PITCH_ORIENTATION)
-                    {
-                        if (pitch.equals(porint.key))
-                        {
-                            pitch = porint.value;
-                        }
-                    }
-                    for (KVPair yorint : YAW_ORIENTATION)
-                    {
-                        if (yaw.equals(yorint.key))
-                        {
-                            yaw = yorint.value;
-                        }
-                    }
-                    for (KVPair worint : ROLL_ORIENTATION)
-                    {
-                        if (roll.equals(worint.key))
-                        {
-                            roll = worint.value;
-                        }
-                    }
+//                    for (KVPair porint : PITCH_ORIENTATION)
+//                    {
+//                        if (pitch.equals(porint.key))
+//                        {
+//                            pitch = porint.value;
+//                        }
+//                    }
+//                    for (KVPair yorint : YAW_ORIENTATION)
+//                    {
+//                        if (yaw.equals(yorint.key))
+//                        {
+//                            yaw = yorint.value;
+//                        }
+//                    }
+//                    for (KVPair worint : ROLL_ORIENTATION)
+//                    {
+//                        if (roll.equals(worint.key))
+//                        {
+//                            roll = worint.value;
+//                        }
+//                    }
                     pieces[0] = Utils.xyInToMmStr(pieces[0]);
                     pieces[1] = Utils.xyInToMmStr(pieces[1]);
                     route.add(new CommandPosition(new Position(null, pieces[0], pieces[1], pieces[2], pitch, yaw, roll), routeProperties.getRouteFriendlyName(), route.size() + 1));
