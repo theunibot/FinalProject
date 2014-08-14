@@ -59,12 +59,12 @@ public class Inventory
         inventory.put(CabinetType.CPL, new HashMap<Integer, InventoryShelf>());
         inventory.put(CabinetType.CPM, new HashMap<Integer, InventoryShelf>());
         inventory.put(CabinetType.CPR, new HashMap<Integer, InventoryShelf>());
-        for (int i = 0; i < 5; i++) {
-            inventory.get(CabinetType.CPL).put(i, new InventoryShelf(2, i));
-            inventory.get(CabinetType.CPL).put(i + 10, new InventoryShelf(2, i + 10));
-            inventory.get(CabinetType.CPM).put(i + 20, new InventoryShelf(2, i + 20));
-            inventory.get(CabinetType.CPR).put(i + 30, new InventoryShelf(2, i + 30));
-            inventory.get(CabinetType.CPR).put(i + 40, new InventoryShelf(2, i + 40));
+        for (int i = 0; i < 4; i++) {
+            inventory.get(CabinetType.CPL).put(i * 10, new InventoryShelf(2, i * 10));
+            inventory.get(CabinetType.CPL).put(i * 10 + 1, new InventoryShelf(2, i * 10 + 1));
+            inventory.get(CabinetType.CPM).put(i * 10 + 2, new InventoryShelf(2, i * 10 + 2));
+            inventory.get(CabinetType.CPR).put(i * 10 + 3, new InventoryShelf(2, i * 10 + 3));
+            inventory.get(CabinetType.CPR).put(i * 10 + 4, new InventoryShelf(2, i * 10 + 4));
         }
     }
     
@@ -95,6 +95,9 @@ public class Inventory
      * @return Result indicating success/failure
      */
     public Result moveDisc(CabinetType fromType, int fromShelf, CabinetType toType, int toShelf) {
+        System.out.println("Inventory: moveDisc " + fromType.toString() + " shelf " + fromShelf + " to " + 
+                toType.toString() + " shelf " + toShelf);
+        
         // make sure the fromType and toType are known
         if (!inventory.containsKey(fromType))
             return new Result("Unable to locate cabinet " + fromType.toString() + " in inventory");
@@ -119,6 +122,9 @@ public class Inventory
         // if moving to a desktop, track the original shelf
         if ( (toType == CabinetType.D1) || (toType == CabinetType.D2) )
             toInventory.originalShelf = fromInventory.originalShelf;
+        // if moving from a desktop, clear the original shelf
+        if ( (fromType == CabinetType.D1) || (fromType == CabinetType.D2) )
+            fromInventory.originalShelf = -1;
  
         // done!
         return new Result();

@@ -22,6 +22,7 @@ package commands;
 import enums.*;
 import robotoperations.ArmOperations;
 import route.Position;
+import route.PositionLookup;
 import utils.Result;
 
 /**
@@ -33,6 +34,8 @@ public class CommandArmCalibrate extends CommandInterface {
     
     public Result execute(CommandArguments args) {
         ArmOperations ao = ArmOperations.getInstance();
+        args.cabinet = CabinetType.HOME;
+        args.coordinates = PositionLookup.getInstance().shelfToPosition(CabinetType.HOME, 0);
         return ao.calibrate();
     }
     

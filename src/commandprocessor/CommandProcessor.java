@@ -68,7 +68,7 @@ public class CommandProcessor
      */
     public void processCommands() {
         System.out.println("Command processor started");
-        Result activeError = new Result();
+        Result activeError = new Result("Startup - Calibration required");
         
         // set up our command arguments to track the arm position
         PositionLookup plt = PositionLookup.getInstance();

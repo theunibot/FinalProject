@@ -37,14 +37,19 @@ public class CommandArmHome extends CommandInterface {
     
     public Result execute(CommandArguments args) {
         ArmOperations ao = ArmOperations.getInstance();
-        // go get a route that is safe...
-        Route homeRoute = null; //RouteHolder.getInstance().getRoutes(args.cabinet, CabinetType.HOME, "SAFEHOME");
-        if (homeRoute == null)
-            return new Result("Unable to locate route from " + args.cabinet.toString() + " to HOME (for SAFEHOME)");
-        // go run the route
-        Result result = ao.runRoute(homeRoute, args.coordinates, PositionLookup.homePosition());
-        if (!result.success())
-            return result;
+        Result result;
+        
+        // do we need to find a safe route to get near home?
+        if (args.cabinet != CabinetType.HOME) {
+            // go get a route that is safe...
+            Route homeRoute = RouteHolder.getInstance().getRoute(args.cabinet, CabinetType.HOME, RouteEffectType.EFFICIENT);
+            if (homeRoute == null)
+                return new Result("Unable to locate route from " + args.cabinet.toString() + " to HOME");
+            // go run the route
+            result = ao.runRoute(homeRoute, args.coordinates, PositionLookup.homePosition());
+            if (!result.success())
+                return result;
+        }
         result = ao.home();
         if (!result.success())
             return result;

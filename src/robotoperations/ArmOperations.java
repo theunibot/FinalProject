@@ -330,20 +330,16 @@ public class ArmOperations
      */
     public Result calibrate()
     {
+        Result result = grip();
+        if (!result.success())
+            return (result);
+        
         if (Simulated)
         {
             System.out.println("ArmOperations: calibrate");
             return new Result();
         }
-        String commandString = "CALIBRATE";
-        r12o.write(commandString);
-        ResponseObject response = r12o.getResponse(commandString);
-
-        if (!response.isSuccessful())
-        {
-            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-        }
-        return new Result();
+        return runRobotCommand("CALIBRATE");
     }
 
     /**
@@ -359,15 +355,7 @@ public class ArmOperations
             System.out.println("ArmOperations: home");
             return new Result();
         }
-        String commandString = "HOME";
-        r12o.write(commandString);
-        ResponseObject response = r12o.getResponse(commandString);
-
-        if (!response.isSuccessful())
-        {
-            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-        }
-        return new Result();
+        return runRobotCommand("HOME");
     }
 
     /**
@@ -382,15 +370,7 @@ public class ArmOperations
             System.out.println("ArmOperations: energize");
             return new Result();
         }
-        String commandString = "ENERGIZE";
-        r12o.write(commandString);
-        ResponseObject response = r12o.getResponse(commandString);
-
-        if (!response.isSuccessful())
-        {
-            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-        }
-        return new Result();
+        return runRobotCommand("ENERGIZE");
     }
 
     /**
@@ -405,15 +385,7 @@ public class ArmOperations
             System.out.println("ArmOperations: de-energize");
             return new Result();
         }
-        String commandString = "DE-ENERGIZE";
-        r12o.write(commandString);
-        ResponseObject response = r12o.getResponse(commandString);
-
-        if (!response.isSuccessful())
-        {
-            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-        }
-        return new Result();
+        return runRobotCommand("DE-ENERGIZE");
     }
 
     /**
@@ -430,16 +402,7 @@ public class ArmOperations
             System.out.println("ArmOperations: position to " + position.getName());
             return new Result();
         }
-//        String commandString = position.getX() + " " + position.getY() + " " + position.getZ() + " MOVETO";
-        String commandString = position.getName() + " GOTO";
-        r12o.write(commandString);
-        ResponseObject response = r12o.getResponse(commandString);
-
-        if (!response.isSuccessful())
-        {
-            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-        }
-        return new Result();
+        return runRobotCommand(position.getName() + " GOTO");
     }
 
     /**
@@ -486,6 +449,32 @@ public class ArmOperations
             return new Result();
         }
         return runRobotCommand(position.getRoboforth());
+    }
+    
+    /**
+     * Cause the gripper to close
+     * 
+     * @return Result with success/fail info
+     */
+    public Result grip() {
+        if (Simulated) {
+            System.out.println("ArmOperations: grip");
+            return new Result();
+        }
+        return runRobotCommand("GRIP");
+    }
+    
+    /**
+     * Cause the gripper to open
+     * 
+     * @return Result with success/fail info
+     */
+    public Result ungrip() {
+        if (Simulated) {
+            System.out.println("ArmOperations: ungrip");
+            return new Result();
+        }
+        return runRobotCommand("UNGRIP");
     }
 
     /**

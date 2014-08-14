@@ -69,14 +69,16 @@ public class CommandMountLayer extends CommandInterface {
         // check inventory to see if there is already a disc in the slot.  If so, return it to the cachepoint
         int existingDesktopLayer = inventory.getDisc(this.desktopCabinet, this.desktopShelf);
         if (existingDesktopLayer >= 0) {
+            System.out.println("Remove existing disc before inserting new one");
             // there is a disc in there that we need to remove.
-            result = moveLayer(args, this.desktopCabinet, this.desktopShelf, this.desktopCabinet, existingDesktopLayer, RouteEffectType.EFFICIENT);
+            result = moveLayer(args, this.desktopCabinet, this.desktopShelf, utils.Utils.shelfToCPCabinet(existingDesktopLayer), existingDesktopLayer, RouteEffectType.EFFICIENT);
             if (!result.success())
                 return result;
         }
         
         // now do the real move cpShelf
-        result = moveLayer(args, cpCabinet, this.cpShelf, this.desktopCabinet, this.desktopShelf, RouteEffectType.FANCY);
+        System.out.println("Moving disc into position");
+        result = moveLayer(args, cpCabinet, this.cpShelf, this.desktopCabinet, this.desktopShelf, RouteEffectType.EFFICIENT);
         return result;
     }
     
