@@ -23,5 +23,12 @@ package enums;
  */
 public enum RouteEffectType
 {
-    GRIPPER_IN2, GRIPPER_OUT2, GRIPPER_IN1, GRIPPER_OUT1, PLACE, EFFICIENT, FANCY, SHAKE
+    // standard layer movements
+    EFFICIENT, FANCY, 
+    // desktop repair movement
+    SHAKE, 
+    // continuous sign movements
+    CONTINUOUS_START, CONTINUOUS, CONTINUOUS_END,
+    // pick/place movements
+    GRIPPER_IN2, GRIPPER_OUT2, GRIPPER_IN1, GRIPPER_OUT1
 }

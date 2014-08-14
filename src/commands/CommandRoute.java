@@ -53,7 +53,15 @@ public class CommandRoute extends CommandInterface {
         if (route == null)
             return new Result("Unable to locate route from " + fromCabinet.toString() + " to " + toCabinet.toString() + " for effect " + effect.toString());
         ArmOperations ao = ArmOperations.getInstance();
-        return ao.runRoute(route, fromPosition, toPosition);
+        Result result = ao.runRoute(route, fromPosition, toPosition);
+        if (!result.success())
+            return result;
+        
+        // update args to reflect our new position
+        args.cabinet = toCabinet;
+        args.coordinates = toPosition;
+        
+        return new Result();
     }
     
     public String details() {
