@@ -185,7 +185,11 @@ public class PositionLookup
                     }
                     
                     // build up a name of this position
-                    String name = ct.name() + shelf;
+                    String name;
+                    if ( (ct == CabinetType.D1) || (ct == CabinetType.D2) )
+                        name = ct.toString() + "_" + shelf;
+                    else
+                        name = ct.toString() + shelf;
                     
                     // is this three (Shelf, X,Y,Z) or does it include yaw,pitch,roll?
                     Position pos;

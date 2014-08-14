@@ -59,12 +59,12 @@ public class Inventory
         inventory.put(CabinetType.CPL, new HashMap<Integer, InventoryShelf>());
         inventory.put(CabinetType.CPM, new HashMap<Integer, InventoryShelf>());
         inventory.put(CabinetType.CPR, new HashMap<Integer, InventoryShelf>());
-        for (int i = 0; i < 5; i++) {
-            inventory.get(CabinetType.CPL).put(i, new InventoryShelf(2, i));
-            inventory.get(CabinetType.CPL).put(i + 10, new InventoryShelf(2, i + 10));
-            inventory.get(CabinetType.CPM).put(i + 20, new InventoryShelf(2, i + 20));
-            inventory.get(CabinetType.CPR).put(i + 30, new InventoryShelf(2, i + 30));
-            inventory.get(CabinetType.CPR).put(i + 40, new InventoryShelf(2, i + 40));
+        for (int i = 0; i < 4; i++) {
+            inventory.get(CabinetType.CPL).put(i * 10, new InventoryShelf(2, i * 10));
+            inventory.get(CabinetType.CPL).put(i * 10 + 1, new InventoryShelf(2, i * 10 + 1));
+            inventory.get(CabinetType.CPM).put(i * 10 + 2, new InventoryShelf(2, i * 10 + 2));
+            inventory.get(CabinetType.CPR).put(i * 10 + 3, new InventoryShelf(2, i * 10 + 3));
+            inventory.get(CabinetType.CPR).put(i * 10 + 4, new InventoryShelf(2, i * 10 + 4));
         }
     }
     
