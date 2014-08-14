@@ -89,7 +89,7 @@ public class Utils
     public static String zInToMmStr(String z)
     {
 
-        return formatDouble((double) (inToMm(strToDbl(z)) - 303.0d));
+        return formatDouble((double) (inToMm(strToDbl(z)) - 303.0d - 9.5d));
     }
 
     public static String xyInToMmStr(String in)
