@@ -65,6 +65,7 @@ public class CommandEmptyDesktop extends CommandInterface {
                     return result;
                 
                 // we did enough work -- let's free up the robot and come back around again
+                ++this.nextDesktopShelf;
                 return new Result(CommandCompletion.INCOMPLETE);
             }
             ++this.nextDesktopShelf;
@@ -80,6 +81,6 @@ public class CommandEmptyDesktop extends CommandInterface {
      * @return string with description text
      */
     public String details() {
-        return "EmptyDesktop(" + this.desktop + ")";
+        return "EmptyDesktop(" + this.desktop + "); next shelf " + this.nextDesktopShelf;
     }
 }

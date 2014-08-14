@@ -95,6 +95,9 @@ public class Inventory
      * @return Result indicating success/failure
      */
     public Result moveDisc(CabinetType fromType, int fromShelf, CabinetType toType, int toShelf) {
+        System.out.println("Inventory: moveDisc " + fromType.toString() + " shelf " + fromShelf + " to " + 
+                toType.toString() + " shelf " + toShelf);
+        
         // make sure the fromType and toType are known
         if (!inventory.containsKey(fromType))
             return new Result("Unable to locate cabinet " + fromType.toString() + " in inventory");
@@ -119,6 +122,9 @@ public class Inventory
         // if moving to a desktop, track the original shelf
         if ( (toType == CabinetType.D1) || (toType == CabinetType.D2) )
             toInventory.originalShelf = fromInventory.originalShelf;
+        // if moving from a desktop, clear the original shelf
+        if ( (fromType == CabinetType.D1) || (fromType == CabinetType.D2) )
+            fromInventory.originalShelf = -1;
  
         // done!
         return new Result();
