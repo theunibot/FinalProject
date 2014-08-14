@@ -135,8 +135,8 @@ public class ArmOperations
         ResponseObject response;
         if (route.size() >= 2)//must have start and end pos to modify
         {
-            String modStart = positionCommandToRouteModifyString(start, route.getRouteProperties().getRouteFriendlyName(), 0);
-            String modEnd = positionCommandToRouteModifyString(start, route.getRouteProperties().getRouteFriendlyName(), route.size() - 1);
+            String modStart = positionCommandToRouteModifyString(start, route.getRouteProperties().getRouteIDName(), 0);
+            String modEnd = positionCommandToRouteModifyString(start, route.getRouteProperties().getRouteIDName(), route.size() - 1);
 
             //run the modify start command
             r12o.write(modStart);
@@ -157,7 +157,7 @@ public class ArmOperations
             }
 
             //if reached here, route modified correctly
-            String runRoute = "CONTINUOUS ADJUST " + route.getRouteProperties().getRouteFriendlyName() + " RUN";
+            String runRoute = "CONTINUOUS ADJUST " + route.getRouteProperties().getRouteIDName() + " RUN";
 
             //run the route
             r12o.write(runRoute);
@@ -216,7 +216,7 @@ public class ArmOperations
         }
 
         //stuff not null
-        String commandString = position.getName() + " GOTO " + routeIn.getRouteProperties().getRouteFriendlyName() + " START-HERE ADJUST CONTINUOUS RUN";
+        String commandString = position.getName() + " GOTO " + routeIn.getRouteProperties().getRouteIDName() + " START-HERE ADJUST CONTINUOUS RUN";
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);
 
@@ -236,7 +236,7 @@ public class ArmOperations
         }
 
         //grip successful
-        commandString = position.getName() + " " + routeIn.getRouteProperties().getRouteFriendlyName() + " END-THERE ADJUST CONTINUOUS RUN";
+        commandString = position.getName() + " " + routeIn.getRouteProperties().getRouteIDName() + " END-THERE ADJUST CONTINUOUS RUN";
         r12o.write(commandString);
         response = r12o.getResponse(commandString);
 
@@ -288,7 +288,7 @@ public class ArmOperations
         }
 
         //stuff not null
-        String commandString = positon.getName() + " GOTO " + routeIn.getRouteProperties().getRouteFriendlyName() + " START-HERE ADJUST CONTINUOUS RUN";
+        String commandString = positon.getName() + " GOTO " + routeIn.getRouteProperties().getRouteIDName() + " START-HERE ADJUST CONTINUOUS RUN";
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);
 
@@ -308,7 +308,7 @@ public class ArmOperations
         }
 
         //grip successful
-        commandString = positon.getName() + " " + routeIn.getRouteProperties().getRouteFriendlyName() + " END-THERE ADJUST CONTINUOUS RUN";
+        commandString = positon.getName() + " " + routeIn.getRouteProperties().getRouteIDName() + " END-THERE ADJUST CONTINUOUS RUN";
         r12o.write(commandString);
         response = r12o.getResponse(commandString);
 

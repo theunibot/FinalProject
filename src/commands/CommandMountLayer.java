@@ -78,7 +78,7 @@ public class CommandMountLayer extends CommandInterface {
         
         // now do the real move cpShelf
         System.out.println("Moving disc into position");
-        result = moveLayer(args, cpCabinet, this.cpShelf, this.desktopCabinet, this.desktopShelf, RouteEffectType.EFFICIENT);
+        result = moveLayer(args, cpCabinet, this.cpShelf, this.desktopCabinet, this.desktopShelf, effect);
         return result;
     }
     
