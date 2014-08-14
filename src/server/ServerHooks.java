@@ -196,6 +196,9 @@ public class ServerHooks
                 }
                 cmd = new CommandRoute(fromCabinet, fromPosition, toCabinet, toPosition, effectEnum);
                 break;
+            default:
+                System.err.println("Unknown command " + command);
+                break;
         }
         // did we build a command?
         if (cmd != null) {
@@ -206,7 +209,7 @@ public class ServerHooks
         }
 
         // somehow we failed...
-        System.out.println("Failed to enqueue command");
+        System.err.println("Failed to enqueue command");
         return Utils.genericEnqueueFail();
     }
 

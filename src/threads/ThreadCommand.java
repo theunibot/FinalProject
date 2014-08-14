@@ -44,12 +44,15 @@ public class ThreadCommand extends Thread
             PositionLookup plt = PositionLookup.getInstance();
             result = plt.init();
             if (result.success()) {
+                System.out.println("All positions initialized successfully");
                 // now bring up the command processor
                 cp = CommandProcessor.getInstance();
                 cp.processCommands();
-            }
-        }
-        System.out.println("CommandProcess thread terminating");
+            } else
+                System.err.println("PositionLookup init failed");
+        } else
+            System.err.println("ArmOperations init failed");
+        System.err.println("CommandProcess thread terminating");
         // indicate we are down
         cp = null;
     }
