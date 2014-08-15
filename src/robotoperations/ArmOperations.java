@@ -225,7 +225,7 @@ public class ArmOperations
         //
         //MOVE DOWN
         //
-        commandString = "0 0 " + String.valueOf(deltaZ) + " MOVE";//moves DOWN set amount
+        commandString = "0 0 " + String.valueOf(Utils.formatDouble(deltaZ)) + " MOVE";//moves DOWN set amount
         r12o.write(commandString);
         response = r12o.getResponse(commandString);
 
