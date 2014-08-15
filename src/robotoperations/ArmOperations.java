@@ -399,6 +399,19 @@ public class ArmOperations
     }
 
     /**
+     * tell the robot to persist all settings into flash memory
+     *
+     * @return Result with success/fail info
+     */
+    public Result persist() {
+        if (Simulated) {
+            System.out.println("ArmOperations: persist");
+            return new Result();
+        }
+        return runRobotCommand("USAVE");
+    }
+
+    /**
      * Program a route into the robot controller
      *
      * @param route route to add to the controller

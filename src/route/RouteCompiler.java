@@ -99,26 +99,32 @@ public class RouteCompiler
     public Result init()
     {
         rh = RouteHolder.getInstance();
-        ao = ArmOperations.getInstance();
         ArrayList<String> lines = FileUtils.readCommandFileOrGenEmpty(ROUTE_FILE_BASENAME, ROUTE_COMPILER_FILE_CONTENTS);
         System.out.println("Read " + lines.size() + " line(s) from route compiler file.");
         Result parseResult = parseLines(lines);
         if (!parseResult.success())
-        {
             return parseResult;
-        }
 
-        for (Route route : rh.getAllRoutes())
-        {
-
-            //run fwd route
-            Result result = ao.learnRoute(route);
-            if (!result.success())
-            {
-                return result;
+        return new Result();
+    }
+    
+    public Result programRoutes(String name) {
+        rh = RouteHolder.getInstance();
+        ao = ArmOperations.getInstance();
+        
+        for (Route route : rh.getAllRoutes()) {
+            String fromCabinet = route.getRouteProperties().getFrom().toString();
+            String toCabinet = route.getRouteProperties().getTo().toString();
+            // is this the route we want to program?
+            if ( (name == null) || 
+                (name.equalsIgnoreCase(toCabinet)) ||
+                (name.equalsIgnoreCase(fromCabinet)) ||
+                (name.equalsIgnoreCase(fromCabinet + "_" + toCabinet)) ) {
+                Result result = ao.learnRoute(route);
+                if (!result.success())
+                    return result;
             }
         }
-
         return new Result();
     }
 
@@ -148,8 +154,6 @@ public class RouteCompiler
                 }
                 else if (chunks.length == 7)//clone command
                 {
-                    System.out.println("Line " + line + " is a clone command.");
-
                     Route routeToClone = null;
                     if ((routeToClone = rh.getRoute(CabinetType.valueOf(chunks[0]), CabinetType.valueOf(chunks[1]), RouteEffectType.valueOf(chunks[2]))) != null)
                     {

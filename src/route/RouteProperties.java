@@ -27,73 +27,53 @@ import java.util.List;
  */
 public class RouteProperties
 {
-
     private CabinetType from = null;
     private CabinetType to = null;
     private RouteEffectType effect = null;
+    private int uniqueId;
 
-    private static RouteHolder rh = RouteHolder.getInstance();
-
-    private String routeFriendlyName = null;
-    private String routeIDName = null;
-    private static int routeIDVar = 0;
-    private int routeID = routeIDVar++;
-    
-
-    public RouteProperties(CabinetType from, CabinetType to, RouteEffectType effect)
-    {
+    public RouteProperties(CabinetType from, CabinetType to, RouteEffectType effect) {
         this.from = from;
         this.to = to;
         this.effect = effect;        
-        this.routeFriendlyName = genRouteFriendlyName(); 
+       // determine how many other routes exist with this name, to give it a unique number
+        RouteHolder rh = RouteHolder.getInstance();
+        this.uniqueId = rh.countSimilarRoutes(getRouteFriendlyShortName());
     }
 
-    public String getRouteFriendlyName()
-    {
-        return routeFriendlyName;
+    public String getRouteFriendlyName() {
+        return getRouteFriendlyShortName() + "_" + (this.uniqueId + 1);
     }
     
-    public String getRouteIDName()
-    {
-        return "R" + routeID;
+    public String getRouteFriendlyShortName() {
+        return from.toString() + "_" + to.toString() + "_" + effect.toString();
+    }
+    
+    public String getRouteIDName() {
+        return utils.Utils.hash(getRouteFriendlyName(), 5);
     }
 
-    private String genRouteFriendlyName()
-    {
-        String to = "", from = "", effect = "";
-        to = this.to.toString();
-        from = this.from.toString();
-        effect = this.effect.toString();        
-        return from + "_" + to + "_" + effect + (this.routeID);
-    }
-
-    public CabinetType getTo()
-    {
+    public CabinetType getTo() {
         return to;
     }
 
-    public CabinetType getFrom()
-    {
+    public CabinetType getFrom() {
         return from;
     }
 
-    public RouteEffectType getEffect()
-    {
+    public RouteEffectType getEffect() {
         return effect;
     }
 
-    public void setTo(CabinetType to)
-    {
+    public void setTo(CabinetType to) {
         this.to = to;
     }
 
-    public void setFrom(CabinetType from)
-    {
+    public void setFrom(CabinetType from) {
         this.from = from;
     }
 
-    public void setEffect(RouteEffectType effect)
-    {
+    public void setEffect(RouteEffectType effect) {
         this.effect = effect;
     }
 

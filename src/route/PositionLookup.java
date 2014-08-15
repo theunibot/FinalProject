@@ -88,13 +88,13 @@ public class PositionLookup
         }
 
         // and program the positions into the controller
-        return initPositions();
+        return new Result(); 
     }
 
     /**
      * Program the array of positions into the robot
      */
-    private Result initPositions()
+    public Result programPositions(String name)
     {
         ArmOperations ao = ArmOperations.getInstance();
 
@@ -105,14 +105,14 @@ public class PositionLookup
             HashMap<Integer, Position> posHash = cabEntry.getValue();
 
             // now scan all positions and program them up
-            for (Entry<Integer, Position> posEntry : posHash.entrySet())
-            {
+            for (Entry<Integer, Position> posEntry : posHash.entrySet()) {
                 Position pos = posEntry.getValue();
-                // program the point
-                Result result = ao.learnPoint(pos);
-                if (!result.success())
-                {
-                    return result;
+                // is this name the one desired to be programmed?
+                if ( (name == null) || (pos.getName().toLowerCase().startsWith(name))) {
+                    // program the point
+                    Result result = ao.learnPoint(pos);
+                    if (!result.success())
+                        return result;
                 }
             }
         }
