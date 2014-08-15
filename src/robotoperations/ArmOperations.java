@@ -45,7 +45,7 @@ public class ArmOperations
     private static ArmOperations armOperations = null;
 
     private final double DELTA_Z_CP_BIG = -2.75 * 25.4;//in to mm
-    private final double DELTA_Z_CP_SMALL = -2.25 * 25.4;//
+    private final double DELTA_Z_CP_SMALL = -2.05 * 25.4;//
     private final double DELTA_Z_DT = -1.50 * 25.4;
     private final double DELTA_FORWARD = 5 * 25.4;
 
