@@ -47,6 +47,13 @@ public class RouteHolder
     private RouteHolder()
     {
     }
+    
+    /**
+     * Clears all routes from memory; used when reloading routes from disk file during runtime
+     */
+    public void clearRoutes() {
+        routes.clear();
+    }
 
     public void addRoute(Route r)
     {

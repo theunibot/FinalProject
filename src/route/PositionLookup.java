@@ -58,8 +58,7 @@ public class PositionLookup
      *
      * @return instance of this object
      */
-    public static PositionLookup getInstance()
-    {
+    public static PositionLookup getInstance() {
         if (plt == null)
         {
             plt = new PositionLookup();
@@ -67,25 +66,26 @@ public class PositionLookup
         return plt;
     }
 
-    private PositionLookup()
-    {
-
+    /**
+     * Private constructor limits instantiation to singleton getInstance
+     */
+    private PositionLookup() {
     }
 
-    public Result init()
-    {
+    /**
+     * Load the disk-based table into memory for all positions
+     * 
+     * @return Result with success/failure info
+     */
+    public Result init() {
         positions = new HashMap<CabinetType, HashMap<Integer, Position>>();
 
         Result result = parseFile();
         if (!result.success())
-        {
             return result;
-        }
 
         if (main.Main.DEBUG)
-        {
             System.out.println("Position Lookup Table Initialized.");
-        }
 
         // and program the positions into the controller
         return new Result(); 
@@ -94,13 +94,16 @@ public class PositionLookup
     /**
      * Program the array of positions into the robot
      */
-    public Result programPositions(String name)
-    {
+    public Result programPositions(String name) {
         ArmOperations ao = ArmOperations.getInstance();
 
+        // reload from the file
+        Result result = init();
+        if (!result.success())
+            return result;
+        
         // scan through all cabinets...
-        for (Entry<CabinetType, HashMap<Integer, Position>> cabEntry : positions.entrySet())
-        {
+        for (Entry<CabinetType, HashMap<Integer, Position>> cabEntry : positions.entrySet()) {
             CabinetType cabinet = cabEntry.getKey();
             HashMap<Integer, Position> posHash = cabEntry.getValue();
 
@@ -110,7 +113,7 @@ public class PositionLookup
                 // is this name the one desired to be programmed?
                 if ( (name == null) || (pos.getName().toLowerCase().startsWith(name))) {
                     // program the point
-                    Result result = ao.learnPoint(pos);
+                    result = ao.learnPoint(pos);
                     if (!result.success())
                         return result;
                 }
@@ -127,19 +130,16 @@ public class PositionLookup
      * @return Position with the coordinates for the point in front of that
      * shelf/cabinet
      */
-    public Position shelfToPosition(CabinetType cabinet, int shelf)
-    {
+    public Position shelfToPosition(CabinetType cabinet, int shelf) {
         // first, find the cabinet
         HashMap<Integer, Position> cabinetPositions = positions.get(cabinet);
-        if (cabinetPositions == null)
-        {
+        if (cabinetPositions == null) {
             System.err.println("Unable to locate cabinet " + cabinet.toString() + " in position table");
             return null;
         }
         // now see if we can find the shelf
         Position pos = cabinetPositions.get(shelf);
-        if (pos == null)
-        {
+        if (pos == null) {
             System.err.println("Unable to locate shelf " + shelf + " in cabinet " + cabinet.toString() + " in position table");
             return null;
         }
@@ -151,8 +151,7 @@ public class PositionLookup
      *
      * @return Position with the HOME position
      */
-    public static Position homePosition()
-    {
+    public static Position homePosition() {
         return PositionLookup.getInstance().shelfToPosition(CabinetType.HOME, 0);
     }
 
