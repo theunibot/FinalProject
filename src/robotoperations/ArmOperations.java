@@ -195,6 +195,7 @@ public class ArmOperations
      * @param position off of which the relative route is run
      * @return Result with success/failure info
      */
+    
     public Result pick(CabinetType unit, int stackPosition, Position position)
     {
         if (Simulated)
@@ -450,7 +451,7 @@ public class ArmOperations
         //
         //MOVE DOWN
         //
-        commandString = "0 0 " + String.valueOf(deltaZ) + " MOVE";//moves DOWN set amount
+        commandString = "0 0 " + String.valueOf(Utils.formatDouble(deltaZ)) + " MOVE";//moves DOWN set amount
         r12o.write(commandString);
         response = r12o.getResponse(commandString);
 
