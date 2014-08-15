@@ -260,6 +260,13 @@ public class ArmOperations
             deltaX = deltaAxis;
             yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) + 135;
         }
+        else if (unit == CabinetType.CPL || unit == CabinetType.CPM || unit == CabinetType.CPR)
+        {
+            absEndY = absStartY;
+            absEndX = absStartX + DELTA_FORWARD;
+            deltaX = DELTA_FORWARD;
+            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY));
+        }
         else
         {
             return new Result("Invalid CabinetType: " + unit.toString());
@@ -409,6 +416,13 @@ public class ArmOperations
             absEndX = absStartX + deltaAxis;
             deltaX = deltaAxis;
             yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) + 135;
+        }
+        else if (unit == CabinetType.CPL || unit == CabinetType.CPM || unit == CabinetType.CPR)
+        {
+            absEndY = absStartY;
+            absEndX = absStartX + DELTA_FORWARD;
+            deltaX = DELTA_FORWARD;
+            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY));
         }
         else
         {
