@@ -123,9 +123,8 @@ public class RouteCompiler
     private Result parseLines(ArrayList<String> lines)
     {
         RouteProperties routeProperties = null;
-//        ArrayList<Route> listOfRoutes = new ArrayList<Route>();
         Route route = null;       //set route type, D1, D2, etc
-//        routeProperties.setRouteType(getRouteType(prefix));
+
         int lineCount = 1;//used in error tracking
         for (String line : lines)
         {
@@ -170,6 +169,22 @@ public class RouteCompiler
                 else
                     return new Result("Format of the metadata command of line " + lineCount + " wrong. The line: \"" + line + "\"");
 
+            } else if (line.startsWith(FileUtils.COMMAND_FILE_REFERENCE_POINT)) {
+                // this is a reference to a point
+                String[] chunks = line.replaceFirst(FileUtils.COMMAND_FILE_REFERENCE_POINT, "").split(" ");
+                if (chunks.length == 2) {
+                    PositionLookup pl = PositionLookup.getInstance();
+                    CabinetType cabinet = CabinetType.valueOf(chunks[0]);
+                    if (cabinet == null)
+                        return new Result("Unknown cabinet at line " + lineCount + ": " + line);
+                    int shelf = Integer.valueOf(chunks[1]);
+                    Position reference = pl.shelfToPosition(cabinet, shelf);
+                    if (reference == null)
+                        return new Result("Unable to locate cabinet/shelf at line " + lineCount + ": " + line);
+                    // add the reference position
+                    route.add(new RoutePosition(reference, route.getRouteProperties().getRouteIDName(), route.size() + 1));
+                } else
+                  return new Result("Format of line " + lineCount + " is wrong: " + line); 
             }
             else if (route != null)//not defining a new command, so a cartesian position command
             {

@@ -483,6 +483,22 @@ public class ArmOperations
     }
 
     /**
+     * restart the controller, which resets all routes and points and starts fresh
+     * 
+     * @return Result with success/fail info
+     */
+    public Result restartController() {
+        if (Simulated) {
+            System.out.println("ArmOperations: restartController");
+            return new Result();
+        }
+        Result result = runRobotCommand("ROBOFORTH");
+        if (!result.success())
+            return result;
+        return runRobotCommand("START");
+    }
+    
+    /**
      * Sends an individual command to robot and looks for errors
      *
      * @param commandString command to execute

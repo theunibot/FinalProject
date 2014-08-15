@@ -6,16 +6,42 @@
 //To Be Implemented: To declare a route to be available for use the syntax "include: <name of route>" to ensure
 //the route is added to a usable list for the program
 
+// X Y Z P Y R
+
+#D1 D2 EFFICIENT
+>D1 3
+>SAFER 0
+>HOME 0
+>SAFEL 0
+>D2 3
+
+#D1 D2 EFFICIENT R D2 D1 EFFICIENT
+
+#CPL CPM EFFICIENT
+5.0 -5.0 15.0 90.0 45.0 90.0
+5.0 -5.0 15.0 90.0 45.0 90.0
+
+#CPL CPR EFFICIENT
+5.0 -5.0 15.0 90.0 45.0 90.0
+5.0 -5.0 15.0 90.0 45.0 90.0
+
+#CPM CPR EFFICIENT
+5.0 -5.0 15.0 90.0 45.0 90.0
+5.0 -5.0 15.0 90.0 45.0 90.0
+
+#CPL CPM EFFICIENT R CPM CPL EFFICIENT
+#CPL CPR EFFICIENT R CPR CPL EFFICIENT
+#CPM CPR EFFICIENT R CPR CPM EFFICIENT
 
 //
 // CachePoint to desktop
 //
 
 #CPL D1 EFFICIENT
--11.0 6.25 15.25 90.0 60.4 90.0
--8.0 2.0 24.0 90.0 55.0 90.0
-8.0 0.5 24.0 90.0 50.0 90.0
-11.8 -0.486 10.625 90.0 47.4 90.0
+-11.0 6.25 15.25 90.0 0.0 90.0
+-8.0 2.0 24.0 90.0 30.0 45.0
+8.0 0.5 24.0 90.0 90.0 135.0
+11.8 -0.486 10.625 90.0 135.0 90.0
 
 #CPL D1 EFFICIENT R D1 CPL EFFICIENT
 

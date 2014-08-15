@@ -35,16 +35,17 @@ public class ThreadCommand extends Thread
     @Override
     public void run()
     {
-        ao = ArmOperations.getInstance();
-        Result result = ao.init();
-        if (result.success())
-        {
+        // initialize the positions
+        PositionLookup plt = PositionLookup.getInstance();
+        Result result = plt.init();
+        if (result.success()) {
+            System.out.println("All positions initialized successfully");
+
+            ao = ArmOperations.getInstance();
+            result = ao.init();
+            if (result.success())
+            {
             System.out.println("All Arm Inits successful");
-            // now initialize the positions
-            PositionLookup plt = PositionLookup.getInstance();
-            result = plt.init();
-            if (result.success()) {
-                System.out.println("All positions initialized successfully");
                 // now bring up the command processor
                 cp = CommandProcessor.getInstance();
                 cp.processCommands();
