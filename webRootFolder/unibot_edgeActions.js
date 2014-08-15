@@ -16,21 +16,21 @@
 	      Symbol.bindElementAction(compId, symbolName, "document", "compositionReady", function(sym, e) {
 		// declare constants
 		window.welcomeSign = '00';
-		window.showInFiveSign = '10';
-		window.showNowSign = '30';
-		window.playWithMeSign = '40';
+		window.showInFiveSign = '01';
+		window.showNowSign = '03';
+		window.playWithMeSign = '04';
 		
-		window.os = { v1: '01', v2: '02' };
+		window.os = { v1: '10', v2: '20' };
 		
-		window.personalization = { u1: '41', u2: '42' };
+		window.personalization = { u1: '14', u2: '24' };
 		
 		window.app = { 
 			a1: { v1: '11', v2: '13' },
-			a2: { v1: '12', v2: '23' },
-			a3: { v1: '33', v2: '31' },
-			a4: { v1: '32' },
+			a2: { v1: '21', v2: '32' },
+			a3: { v1: '33', v2: '13' },
+			a4: { v1: '23' },
 			a5: { v1: '22' },
-			a6: { v1: '03' }
+			a6: { v1: '30' }
 		};
 		
 		// define a sequencing function to manage the order of the scenes
@@ -82,8 +82,6 @@
 					break;
 				case 'Intro':
 					next = 'AssignLayers';
-					// and clear out the queue to ensure we are ready to rock w/no conflicts
-					stage.unibot.clearQueue(stage.controller);
 					break;
 				case 'AssignLayers':
 					next = 'BuildDesktop';
@@ -134,8 +132,15 @@
 			if (stage.controller == 0) {
 				if ( (next != 'RobotError') && (next != 'Startup') && (next != 'Intro') )
 					next = 'Intro';
-		}
-		
+			} else {
+				// we are a real controller... if Intro make sure we are clear and ready
+				if (next == 'Intro') {
+					// and clear out the queue to ensure we are ready to rock w/no conflicts
+					stage.unibot.clearQueue(stage.controller);
+					stage.unibot.enqueue('EMPTY-DESKTOP', { queue: stage.controller, status: 0, desktop: stage.controller });
+				}
+			}
+			
 			// if getStage is defined, use it.  Otherwise go straight to symbol (when startup sym is in use)
 			var nextSym = null;
 			nextSym = stage.getSymbol(next);
@@ -228,15 +233,15 @@
 				autoRedirect = true;
 			if (sym.unibot.simulated) {
 				if (isNaN(sym.unibot.mounts[id]))
-					response = { status: "unknown" };
+					response = { status: "UNKNOWN" };
 				else {
 					--sym.unibot.mounts[id];
 					if (sym.unibot.mounts[id] > 10)
-						response = { status: "pending" };
+						response = { status: "PENDING" };
 					else if (sym.unibot.mounts[id] > 0)
-						response = { status: "executing" };
+						response = { status: "EXECUTING" };
 					else {
-						response = { status: "complete" }; 
+						response = { status: "COMPLETE" }; 
 						delete sym.unibot.mounts[id];
 					}
 				}
@@ -254,7 +259,7 @@
 			// in case we don't have a status value, go ahead and provide an error status.  This just
 			// simplifies error handling in other parts of the code
 			if (typeof(response.status) === 'undefined') {
-				response.status = 'error';
+				response.status = 'ERROR';
 				response.error = 'Missing status response on REST STATUS call';
 			}
 			return response;
@@ -513,7 +518,7 @@
 	
 	      Symbol.bindElementAction(compId, symbolName, "${_ClickSurface}", "click", function(sym, e) {
 	         var stage = sym.getComposition().getStage();
-	         stage.unibot.enqueue('SHOW-SIGN', { queue: 0, status: 0, layer: window.welcomeSign, effect: 'near-user-' + stage.controller });
+	         stage.unibot.enqueue('SHOW-SIGN', { queue: 0, status: 0, layer: window.welcomeSign, effect: 'FACE' + stage.controller });
 	         sym.play()
 	
 	      });
@@ -521,7 +526,7 @@
 	
 	      Symbol.bindElementAction(compId, symbolName, "${_ClickSurface}", "touchstart", function(sym, e) {
 	         var stage = sym.getComposition().getStage();
-	         stage.unibot.enqueue('SHOW-SIGN', { queue: 0, status: 0, layer: window.welcomeSign, effect: 'near-user-' + stage.controller });
+	         stage.unibot.enqueue('SHOW-SIGN', { queue: 0, status: 0, layer: window.welcomeSign, effect: 'FACE' + stage.controller });
 	         sym.play()
 	         
 	
@@ -590,7 +595,7 @@
 	         				break;
 	         			case 1:
 	         				var inquiry = stage.unibot.status(stage.signResponse.id, true);
-	         				if ( (inquiry.status == 'pending') || (inquiry.status == 'executing') )
+	         				if ( (inquiry.status == 'PENDING') || (inquiry.status == 'EXECUTING') )
 	         					// not done yet, decrement timer so we do it again
 	         					--stage.showTimer;
 	         				break;
@@ -600,7 +605,7 @@
 	         				break;
 	         			case 3:
 	         				var inquiry = stage.unibot.status(stage.homeResponse.id, true);
-	         				if ( (inquiry.status == 'pending') || (inquiry.status == 'executing') )
+	         				if ( (inquiry.status == 'PENDING') || (inquiry.status == 'EXECUTING') )
 	         					// not done yet, decrement timer so we do it again
 	         					--stage.showTimer;
 	         				break;
@@ -610,7 +615,7 @@
 	         				break;
 	         			case 5:
 	         				var inquiry = stage.unibot.status(stage.calibrateResponse.id, true);
-	         				if ( (inquiry.status == 'pending') || (inquiry.status == 'executing') )
+	         				if ( (inquiry.status == 'PENDING') || (inquiry.status == 'EXECUTING') )
 	         					// not done yet, decrement timer so we do it again
 	         					--stage.showTimer;
 	         				break;
@@ -709,13 +714,13 @@
 					} else {
 						inquiry = stage.unibot.status(stage.homeResponse.id, false);
 						switch (inquiry.status) {
-							case 'pending':
+							case 'PENDING':
 								return false;
-							case 'executing':
+							case 'EXECUTING':
 								return false;
-							case 'complete':
+							case 'COMPLETE':
 								return true;
-							case 'error':
+							case 'ERROR':
 								stage.updateButtons();
 								alert('Error: ' + inquiry.error);
 								break;
@@ -735,13 +740,13 @@
 					} else {
 						inquiry = stage.unibot.status(stage.calibrateResponse.id, false);
 						switch (inquiry.status) {
-							case 'pending':
+							case 'PENDING':
 								return false;
-							case 'executing':
+							case 'EXECUTING':
 								return false;
-							case 'complete':
+							case 'COMPLETE':
 								return true;
-							case 'error':
+							case 'ERROR':
 								stage.updateButtons();
 								alert('Error: ' + inquiry.error);
 								break;
@@ -761,13 +766,13 @@
 					} else {
 						inquiry = stage.unibot.status(stage.homeResponse.id, false);
 						switch (inquiry.status) {
-							case 'pending':
+							case 'PENDING':
 								return false;
-							case 'executing':
+							case 'EXECUTING':
 								return false;
-							case 'complete':
+							case 'COMPLETE':
 								return true;
-							case 'error':
+							case 'ERROR':
 								stage.updateButtons();
 								alert('Error: ' + inquiry.error);
 								break;
@@ -787,13 +792,13 @@
 					} else {
 						inquiry = stage.unibot.status(stage.calibrateResponse.id, false);
 						switch (inquiry.status) {
-							case 'pending':
+							case 'PENDING':
 								return false;
-							case 'executing':
+							case 'EXECUTING':
 								return false;
-							case 'complete':
+							case 'COMPLETE':
 								return true;
-							case 'error':
+							case 'ERROR':
 								stage.updateButtons();
 								alert('Error: ' + inquiry.error);
 								break;
@@ -813,13 +818,13 @@
 					} else {
 						inquiry = stage.unibot.status(stage.showInFiveResponse.id, false);
 						switch (inquiry.status) {
-							case 'pending':
+							case 'PENDING':
 								return false;
-							case 'executing':
+							case 'EXECUTING':
 								return false;
-							case 'complete':
+							case 'COMPLETE':
 								return true;
-							case 'error':
+							case 'ERROR':
 								stage.updateButtons();
 								alert('Error: ' + inquiry.error);
 								break;
@@ -1095,20 +1100,20 @@
 	         // execute the desktop commands to the robot
 	         for (desktop = 0; desktop < 1; ++desktop) {
 	         	var desktopId = stage.controller; // * 2 - 2 + desktop;
-	         	var response = stage.unibot.enqueue('MOUNT-LAYER', {queue: stage.controller, status: 1, layer: window.os.v1, shelf: 0, desktop: desktopId, effect: 'dramatic' });
+	         	var response = stage.unibot.enqueue('MOUNT-LAYER', {queue: stage.controller, status: 1, layer: window.os.v1, shelf: 0, desktop: desktopId, effect: 'fancy' });
 	         	var layerSym = sym.getSymbol('OS');
-	         	var construction = { 0: { layer: "Windows", id: response.id, status: "pending", symbol: layerSym } };
+	         	var construction = { 0: { layer: "Windows", id: response.id, status: "PENDING", symbol: layerSym } };
 	         	for (slotNum = 1; slotNum <= 4; ++slotNum) {
 	         		if (bom[slotNum] != 0) {
 	         			layerSym = sym.getSymbol('Layer' + slotNum);
 	         			var layerName = layerSym.$('Layername').html();
 	         			response = stage.unibot.enqueue('MOUNT-LAYER', {queue: stage.controller, status: 1, layer: window.app['a' + bom[slotNum]].v1, shelf: slotNum, desktop: desktopId, effect: 'efficient'}); 
-	         			construction[slotNum] = { layer: layerName, id: response.id, status: "pending", symbol: layerSym };
+	         			construction[slotNum] = { layer: layerName, id: response.id, status: "PENDING", symbol: layerSym };
 	         		}
 	         	}
-	         	response = stage.unibot.enqueue('MOUNT-LAYER', {queue: stage.controller, status: 1, layer: window.personalization['u' + stage.controller], shelf: 5, desktop: desktopId, effect: 'dramatic' });
+	         	response = stage.unibot.enqueue('MOUNT-LAYER', {queue: stage.controller, status: 1, layer: window.personalization['u' + stage.controller], shelf: 5, desktop: desktopId, effect: 'fancy' });
 	         	layerSym = sym.getSymbol('Personalization');
-	         	construction[5] = { layer: "Personalization", id: response.id, status: "pending", symbol: layerSym };
+	         	construction[5] = { layer: "Personalization", id: response.id, status: "PENDING", symbol: layerSym };
 	         
 	         	pending[desktop] = construction;
 	         }
@@ -1129,19 +1134,19 @@
 	         	// is something in that slot?
 	         	if (pending[0][index]) {
 	         		var disc = pending[0][index];
-	         		if (disc.status != 'complete') {
+	         		if (disc.status != 'COMPLETE') {
 	         			pendingRobot = true;
 	         			// get the status
 	         			var response = stage.unibot.status(disc.id);
 	         			if (response.status != disc.status) {
 	         				switch (response.status) {
-	         					case 'executing':
+	         					case 'EXECUTING':
 	         						disc.symbol.play('Executing');
 	         						break;
-	         					case 'complete':
+	         					case 'COMPLETE':
 	         						disc.symbol.play('Deployed');
 	         						break;
-	         					case 'error':
+	         					case 'ERROR':
 	         					console.log('found error in loop; returning');
 	
 	         						// give up - let the base controller handle this
@@ -1565,20 +1570,20 @@
 	         var stage = sym.getComposition().getStage();
 	         var response = stage.unibot.enqueue('SHOW-LAYER', {queue: stage.controller, status: 1, shelf: 5, desktop: stage.controller, effect: 'shake' });
 	         sym.actionId = response.id;
-	         sym.status = 'pending';
+	         sym.status = 'PENDING';
 	         
 	         sym.process = function(label) {
 	         	var response = stage.unibot.status(sym.actionId);
 	         	if (response.status != sym.status) {
 	         		console.log('status changed to ' + response.status);
 	         		switch (response.status) {
-	         			case 'executing':
+	         			case 'EXECUTING':
 	         				sym.play('Executing');
 	         				break;
-	         			case 'complete':
+	         			case 'COMPLETE':
 	         				sym.play('Finish');
 	         				break;
-	         			case 'error':
+	         			case 'ERROR':
 	         				// on error just stop processing, as the top level code will have moved us to the error page
 	         				return;
 	         			default:
@@ -1633,22 +1638,22 @@
 	         sym.getSymbolElement().show();
 	         // and tell the robot to do the OS upgrade
 	         var stage = sym.getComposition().getStage();
-	         var response = stage.unibot.enqueue('REPLACE-LAYER', {queue: stage.controller, status: 1, layer: window.os.v2, shelf: 0, desktop: stage.controller, effect: 'dramatic' });
+	         var response = stage.unibot.enqueue('REPLACE-LAYER', {queue: stage.controller, status: 1, layer: window.os.v2, shelf: 0, desktop: stage.controller, effect: 'fancy' });
 	         sym.actionId = response.id;
-	         sym.status = 'pending';
+	         sym.status = 'PENDING';
 	         
 	         sym.process = function(label) {
 	         	var response = stage.unibot.status(sym.actionId);
 	         	if (response.status != sym.status) {
 	         		console.log('status changed to ' + response.status);
 	         		switch (response.status) {
-	         			case 'executing':
+	         			case 'EXECUTING':
 	         				sym.play('Executing');
 	         				break;
-	         			case 'complete':
+	         			case 'COMPLETE':
 	         				sym.play('Finish');
 	         				break;
-	         			case 'error':
+	         			case 'ERROR':
 	         				return;
 	         			default:
 	         				// unknown answer - just let it finish
@@ -1677,7 +1682,7 @@
 	      //Edge binding end
 	
 	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 3065, function(sym, e) {
-	         sym.process('Executing');
+	         sym.process('EXECUTING');
 	
 	      });
 	      //Edge binding end
@@ -1702,9 +1707,9 @@
 	         sym.getSymbolElement().show();
 	         // and tell the robot to do the app upgrade
 	         var stage = sym.getComposition().getStage();
-	         var response = stage.unibot.enqueue('REPLACE-LAYER', {queue: stage.controller, status: 1, layer: window.app['a' + stage.upgradeLayer.layer].v2, shelf: stage.upgradeLayer.slot, desktop: stage.controller, effect: 'dramatic' });
+	         var response = stage.unibot.enqueue('REPLACE-LAYER', {queue: stage.controller, status: 1, layer: window.app['a' + stage.upgradeLayer.layer].v2, shelf: stage.upgradeLayer.slot, desktop: stage.controller, effect: 'fancy' });
 	         sym.actionId = response.id;
-	         sym.status = 'pending';
+	         sym.status = 'PENDING';
 	         sym.$('Title').html('Upgrade ' + stage.upgradeLayer.name);
 	         
 	         sym.process = function(label) {
@@ -1712,13 +1717,13 @@
 	         	if (response.status != sym.status) {
 	         		console.log('status changed to ' + response.status);
 	         		switch (response.status) {
-	         			case 'executing':
+	         			case 'EXECUTING':
 	         				sym.play('Executing');
 	         				break;
-	         			case 'complete':
+	         			case 'COMPLETE':
 	         				sym.play('Finish');
 	         				break;
-	         			case 'error':
+	         			case 'ERROR':
 	         				return;
 	         			default:
 	         				// unknown answer - just let it finish
