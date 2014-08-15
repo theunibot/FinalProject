@@ -138,7 +138,7 @@ public class ArmOperations
         {
             if (start != null) {
                 //run the modify start command
-                String modStart = positionCommandToRouteModifyString(start, route.getRouteProperties().getRouteIDName(), 0);
+                String modStart = positionCommandToRouteModifyString(start, route.getRouteProperties().getRouteIDName(), 1);
                 r12o.write(modStart);
                 response = r12o.getResponse(modStart);
                 if (!response.isSuccessful())
@@ -146,8 +146,9 @@ public class ArmOperations
             }
             if (end != null) {
                 //run the modify end command
-                String modEnd = positionCommandToRouteModifyString(end, route.getRouteProperties().getRouteIDName(), route.size() - 1);
+                String modEnd = positionCommandToRouteModifyString(end, route.getRouteProperties().getRouteIDName(), route.size());
                 r12o.write(modEnd);
+                
                 response = r12o.getResponse(modEnd);
 
                 if (!response.isSuccessful())
@@ -395,6 +396,19 @@ public class ArmOperations
             return new Result();
         }
         return runRobotCommand(position.getName() + " GOTO");
+    }
+
+    /**
+     * tell the robot to persist all settings into flash memory
+     *
+     * @return Result with success/fail info
+     */
+    public Result persist() {
+        if (Simulated) {
+            System.out.println("ArmOperations: persist");
+            return new Result();
+        }
+        return runRobotCommand("USAVE");
     }
 
     /**

@@ -135,8 +135,10 @@ public class ServerHooks
             case "arm-de-energize":
                 cmd = new CommandArmDeEnergize();
                 break;
-                
-                
+            case "program-controller":
+                String name = params.get("name");
+                cmd = new CommandProgramController((name != null) ? name.toLowerCase() : null);
+                break;                
             case "position":
                 String cabinetStr = params.get("cabinet");
                 if ( (cabinetStr == null) || (shelf == null) ) {

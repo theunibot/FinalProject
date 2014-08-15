@@ -21,6 +21,9 @@ package utils;
 import enums.CabinetType;
 import enums.CommandStatus;
 import enums.RouteEffectType;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
@@ -89,7 +92,7 @@ public class Utils
     public static String zInToMmStr(String z)
     {
 
-        return formatDouble((double) (inToMm(strToDbl(z)) - 303.0d));
+        return formatDouble((double) (inToMm(strToDbl(z)) - 303.0d - 9.5d));
     }
 
     public static String xyInToMmStr(String in)
@@ -208,6 +211,31 @@ public class Utils
     public static int getRandInt(int max)
     {
         return r.nextInt(max);
+    }
+    
+    /**
+     * Generates an MD5 hash for a string value, limited to a specific length
+     * @param input String to generate hash for
+     * @param length Number of characters to return (32 for a full MD5)
+     * 
+     * @return Hash string
+     */
+    public static String hash(String input, int length) {
+        // get the message digest
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] messageDigest = md.digest(input.getBytes());
+            BigInteger number = new BigInteger(1, messageDigest);
+            String hashtext = number.toString(16);
+            // a legit MD5 has 32 characters, so make it legal
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+            return hashtext.substring(0, length);
+        } catch (NoSuchAlgorithmException e) {
+            System.err.println("Unable to get an MD5 message digest");
+            return null;
+        }
     }
 
 }

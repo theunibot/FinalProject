@@ -46,25 +46,6 @@ public class RouteCompiler
     private final String ROUTE_CLONE_FWD = "F";
     private final String ROUTE_CLONE_REV = "R";
 
-//    public static final String[] ROUTE_FILE_PREFIXS =
-//    {
-//        "D1_", "D2_", "S_"
-//    };
-//
-//    public static final KVPair[] PITCH_ORIENTATION =
-//    {
-//        new KVPair("N", "0"), new KVPair("E", "10000"), new KVPair("S", "20000"), new KVPair("W", "30000")
-//    };
-//
-//    public static final KVPair[] YAW_ORIENTATION =
-//    {
-//        new KVPair("N", "0"), new KVPair("E", "10000"), new KVPair("S", "20000"), new KVPair("W", "30000")
-//    };
-//
-//    public static final KVPair[] ROLL_ORIENTATION =
-//    {
-//        new KVPair("N", "0"), new KVPair("E", "10000"), new KVPair("S", "20000"), new KVPair("W", "30000")
-//    };
     private final String ROUTE_COMPILER_FILE_CONTENTS = ""
             + "//This is the R12 Robot Route Compiler file.\n"
             + "\n"
@@ -99,26 +80,43 @@ public class RouteCompiler
     public Result init()
     {
         rh = RouteHolder.getInstance();
-        ao = ArmOperations.getInstance();
+        rh.clearRoutes();
         ArrayList<String> lines = FileUtils.readCommandFileOrGenEmpty(ROUTE_FILE_BASENAME, ROUTE_COMPILER_FILE_CONTENTS);
         System.out.println("Read " + lines.size() + " line(s) from route compiler file.");
         Result parseResult = parseLines(lines);
         if (!parseResult.success())
-        {
             return parseResult;
-        }
 
-        for (Route route : rh.getAllRoutes())
-        {
-
-            //run fwd route
-            Result result = ao.learnRoute(route);
-            if (!result.success())
-            {
-                return result;
+        return new Result();
+    }
+    
+    /**
+     * Programs all routes into the controller
+     * 
+     * @param name optional name of container to program (only routes on that container, or from_to, are programmed); null for all
+     * @return Result with success/fail info
+     */
+    public Result programRoutes(String name) {
+        rh = RouteHolder.getInstance();
+        ao = ArmOperations.getInstance();
+        
+        Result result = init();
+        if (!result.success())
+            return result;
+        
+        for (Route route : rh.getAllRoutes()) {
+            String fromCabinet = route.getRouteProperties().getFrom().toString();
+            String toCabinet = route.getRouteProperties().getTo().toString();
+            // is this the route we want to program?
+            if ( (name == null) || 
+                (name.equalsIgnoreCase(toCabinet)) ||
+                (name.equalsIgnoreCase(fromCabinet)) ||
+                (name.equalsIgnoreCase(fromCabinet + "_" + toCabinet)) ) {
+                result = ao.learnRoute(route);
+                if (!result.success())
+                    return result;
             }
         }
-
         return new Result();
     }
 
@@ -142,14 +140,10 @@ public class RouteCompiler
                         rh.addRoute(route);
                     }
                     else
-                    {
                         return new Result("Format of the command of line " + lineCount + " wrong. The line: \"" + line + "\"");
-                    }
                 }
                 else if (chunks.length == 7)//clone command
                 {
-                    System.out.println("Line " + line + " is a clone command.");
-
                     Route routeToClone = null;
                     if ((routeToClone = rh.getRoute(CabinetType.valueOf(chunks[0]), CabinetType.valueOf(chunks[1]), RouteEffectType.valueOf(chunks[2]))) != null)
                     {
@@ -159,33 +153,22 @@ public class RouteCompiler
                         {
                             System.out.println("From " + chunks[0] + " to " + chunks[1] + " effect " + chunks[2]);
                             for (int i = 0; i < routeToClone.size(); i++)
-                            {
                                 clone.add(new RoutePosition(routeToClone.get(i), clone.getRouteProperties().getRouteIDName()));
-                            }
                         }
                         else if (chunks[3].equals(ROUTE_CLONE_REV))
                         {
                             for (int i = routeToClone.size() - 1; i >= 0; i--)
-                            {
                                 clone.add(new RoutePosition(routeToClone.get(i), clone.getRouteProperties().getRouteIDName(), routeToClone.size() - i));
-                            }
                         }
                         else
-                        {
                             return new Result("Format of the command of line " + lineCount + " wrong. The line: \"" + line + "\"");
-                        }
                         rh.addRoute(clone);
                     }
                     else
-                    {
-
                         return new Result("Route not found");
-                    }
                 }
                 else
-                {
                     return new Result("Format of the metadata command of line " + lineCount + " wrong. The line: \"" + line + "\"");
-                }
 
             }
             else if (route != null)//not defining a new command, so a cartesian position command
@@ -215,43 +198,16 @@ public class RouteCompiler
                     String yaw = pieces[4];
                     String roll = pieces[5];
 
-//                    for (KVPair porint : PITCH_ORIENTATION)
-//                    {
-//                        if (pitch.equals(porint.key))
-//                        {
-//                            pitch = porint.value;
-//                        }
-//                    }
-//                    for (KVPair yorint : YAW_ORIENTATION)
-//                    {
-//                        if (yaw.equals(yorint.key))
-//                        {
-//                            yaw = yorint.value;
-//                        }
-//                    }
-//                    for (KVPair worint : ROLL_ORIENTATION)
-//                    {
-//                        if (roll.equals(worint.key))
-//                        {
-//                            roll = worint.value;
-//                        }
-//                    }
                     pieces[0] = Utils.xyInToMmStr(pieces[0]);
                     pieces[1] = Utils.xyInToMmStr(pieces[1]);
                     pieces[2] = Utils.zInToMmStr(pieces[2]);
                     route.add(new RoutePosition(new Position(null, pieces[0], pieces[1], pieces[2], pitch, yaw, roll), route.getRouteProperties().getRouteIDName(), route.size() + 1));
                 }
                 else//error in format of info
-                {
                     return new Result("Format of the command of line " + lineCount + " wrong. The line: \"" + line + "\"");
-//                    System.err.println("Format of route line " + lineCount + " wrong. The line: \"" + line + "\"");
-                    //ignore line
-                }
             }
             else
-            {
                 return new Result("Route definition failed");
-            }
             lineCount++;
         }
         return new Result();

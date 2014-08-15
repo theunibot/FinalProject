@@ -47,6 +47,13 @@ public class RouteHolder
     private RouteHolder()
     {
     }
+    
+    /**
+     * Clears all routes from memory; used when reloading routes from disk file during runtime
+     */
+    public void clearRoutes() {
+        routes.clear();
+    }
 
     public void addRoute(Route r)
     {
@@ -87,7 +94,6 @@ public class RouteHolder
      */
     public Route getRoute(CabinetType from, CabinetType to, RouteEffectType effect)            
     {
-        System.out.println("GETTING a route of from " + from + " to " + to + " with effect " + effect);
         List<Route> routesToGive = new ArrayList<>();
         for (Route r : routes)
         {
@@ -106,5 +112,22 @@ public class RouteHolder
         
         System.err.println("ERROR, Route from " + from + " to " + to + " with effect " + effect + " not found!");
         return null;
+    }
+    
+    /**
+     * Returns a count of how many routes exist with the same short name (from/to/effect)
+     * 
+     * @param routeShortName name of the route to look for
+     * @return count of the same named routes
+     */
+    public int countSimilarRoutes(String routeShortName) {
+        int count = 0;
+        
+        for (Route r : routes) {
+            RouteProperties props = r.getRouteProperties();
+            if (props.getRouteFriendlyShortName().equals(routeShortName))
+                ++count;
+        }
+        return count;
     }
 }

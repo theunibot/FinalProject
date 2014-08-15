@@ -9,6 +9,8 @@
 // not specified, they will default to the last used value for the cabinet,
 // or 0 0 0 if no prior value used.
 //
+// home z is 559mm, with 303mm offset to base, or 808mm (31.81in)
+
 #HOME 0 0 0 0 0 0
 0 0.0 0.0 33.937 -90.0 0.0 0.0
 

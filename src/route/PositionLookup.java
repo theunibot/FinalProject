@@ -19,7 +19,6 @@
 package route;
 
 import enums.CabinetType;
-import enums.CommandType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -59,8 +58,7 @@ public class PositionLookup
      *
      * @return instance of this object
      */
-    public static PositionLookup getInstance()
-    {
+    public static PositionLookup getInstance() {
         if (plt == null)
         {
             plt = new PositionLookup();
@@ -68,52 +66,56 @@ public class PositionLookup
         return plt;
     }
 
-    private PositionLookup()
-    {
-
+    /**
+     * Private constructor limits instantiation to singleton getInstance
+     */
+    private PositionLookup() {
     }
 
-    public Result init()
-    {
+    /**
+     * Load the disk-based table into memory for all positions
+     * 
+     * @return Result with success/failure info
+     */
+    public Result init() {
         positions = new HashMap<CabinetType, HashMap<Integer, Position>>();
 
         Result result = parseFile();
         if (!result.success())
-        {
             return result;
-        }
 
         if (main.Main.DEBUG)
-        {
             System.out.println("Position Lookup Table Initialized.");
-        }
 
         // and program the positions into the controller
-        return initPositions();
+        return new Result(); 
     }
 
     /**
      * Program the array of positions into the robot
      */
-    private Result initPositions()
-    {
+    public Result programPositions(String name) {
         ArmOperations ao = ArmOperations.getInstance();
 
+        // reload from the file
+        Result result = init();
+        if (!result.success())
+            return result;
+        
         // scan through all cabinets...
-        for (Entry<CabinetType, HashMap<Integer, Position>> cabEntry : positions.entrySet())
-        {
+        for (Entry<CabinetType, HashMap<Integer, Position>> cabEntry : positions.entrySet()) {
             CabinetType cabinet = cabEntry.getKey();
             HashMap<Integer, Position> posHash = cabEntry.getValue();
 
             // now scan all positions and program them up
-            for (Entry<Integer, Position> posEntry : posHash.entrySet())
-            {
+            for (Entry<Integer, Position> posEntry : posHash.entrySet()) {
                 Position pos = posEntry.getValue();
-                // program the point
-                Result result = ao.learnPoint(pos);
-                if (!result.success())
-                {
-                    return result;
+                // is this name the one desired to be programmed?
+                if ( (name == null) || (pos.getName().toLowerCase().startsWith(name))) {
+                    // program the point
+                    result = ao.learnPoint(pos);
+                    if (!result.success())
+                        return result;
                 }
             }
         }
@@ -128,19 +130,16 @@ public class PositionLookup
      * @return Position with the coordinates for the point in front of that
      * shelf/cabinet
      */
-    public Position shelfToPosition(CabinetType cabinet, int shelf)
-    {
+    public Position shelfToPosition(CabinetType cabinet, int shelf) {
         // first, find the cabinet
         HashMap<Integer, Position> cabinetPositions = positions.get(cabinet);
-        if (cabinetPositions == null)
-        {
+        if (cabinetPositions == null) {
             System.err.println("Unable to locate cabinet " + cabinet.toString() + " in position table");
             return null;
         }
         // now see if we can find the shelf
         Position pos = cabinetPositions.get(shelf);
-        if (pos == null)
-        {
+        if (pos == null) {
             System.err.println("Unable to locate shelf " + shelf + " in cabinet " + cabinet.toString() + " in position table");
             return null;
         }
@@ -152,8 +151,7 @@ public class PositionLookup
      *
      * @return Position with the HOME position
      */
-    public static Position homePosition()
-    {
+    public static Position homePosition() {
         return PositionLookup.getInstance().shelfToPosition(CabinetType.HOME, 0);
     }
 
