@@ -262,9 +262,10 @@ public class ArmOperations
         }
         else if (unit == CabinetType.CPL || unit == CabinetType.CPM || unit == CabinetType.CPR)
         {
-            absEndY = absStartY;
-            absEndX = absStartX + DELTA_FORWARD;
-            deltaX = DELTA_FORWARD;
+            absEndY = absStartY + DELTA_FORWARD;
+            absEndX = absStartX;
+            deltaX = 0;
+            deltaY = DELTA_FORWARD;
             yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY));
         }
         else
@@ -419,9 +420,10 @@ public class ArmOperations
         }
         else if (unit == CabinetType.CPL || unit == CabinetType.CPM || unit == CabinetType.CPR)
         {
-            absEndY = absStartY;
-            absEndX = absStartX + DELTA_FORWARD;
-            deltaX = DELTA_FORWARD;
+            absEndY = absStartY + DELTA_FORWARD;
+            absEndX = absStartX;
+            deltaY = DELTA_FORWARD;
+            deltaX = 0;
             yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY));
         }
         else
