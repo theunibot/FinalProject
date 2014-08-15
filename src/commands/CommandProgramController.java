@@ -22,6 +22,14 @@ public class CommandProgramController extends CommandInterface {
     }
     
     public Result execute(CommandArguments args) {
+        ArmOperations ao = ArmOperations.getInstance();
+
+        // if all, do a full reset of the controller
+        if (name == null) {
+            Result result = ao.restartController();
+            if (!result.success())
+                return result;
+        }
         Result result = PositionLookup.getInstance().programPositions(name);
         if (!result.success())
             return result;
@@ -29,7 +37,6 @@ public class CommandProgramController extends CommandInterface {
         if (!result.success())
             return result;
         // now cause these to be permanent
-        ArmOperations ao = ArmOperations.getInstance();
         return ao.persist();
     }
     
