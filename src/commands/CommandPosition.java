@@ -36,7 +36,7 @@ public class CommandPosition extends CommandInterface {
     }
     
     public Result execute(CommandArguments args) {
-        boolean tester = true;
+        boolean tester = false;
         
         ArmOperations ao = ArmOperations.getInstance();
         if (!tester)

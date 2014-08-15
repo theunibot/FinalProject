@@ -9,6 +9,12 @@
 // not specified, they will default to the last used value for the cabinet,
 // or 0 0 0 if no prior value used.
 //
+#SAFER 0 0 0 0 0 0
+0 6.0 11.0 12.0 90.0 0.0 90.0 
+
+#SAFEL 0 0 0 0 0 0
+0 -6.0 11.0 12.0 90.0 0.0 90.0 
+
 #HOME 0 0 0 0 0 0
 0 0.0 0.0 33.937 -90.0 0.0 0.0
 

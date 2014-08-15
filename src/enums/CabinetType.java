@@ -24,5 +24,5 @@ package enums;
  */
 public enum CabinetType
 {
-    D1, D2, CPL, CPM, CPR, HOME, UNKNOWN
+    D1, D2, CPL, CPM, CPR, HOME, UNKNOWN, SAFEL, SAFER
 }
