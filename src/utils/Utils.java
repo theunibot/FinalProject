@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import server.KVObj;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -144,8 +144,6 @@ public class Utils
         return null;
     }
 
-    private static ArrayList<KVObj> response;
-
     public static String genericEnqueueFail()
     {
         return Utils.genericEnqueueFail("\"Generic Enqueue Fail\"");
@@ -153,36 +151,19 @@ public class Utils
 
     public static String genericEnqueueFail(String error)
     {
-        response = new ArrayList<KVObj>();
-        response.add(new KVObj("error", error));
-        return Utils.buildJSON(response);
+        JSONObject json = new JSONObject();
+        System.err.println("GenericEnqueueFail: " + error);
+        json.put("error", error);
+        return json.toString();
     }
 
     public static String genericStatusFail()
     {
-        response = new ArrayList<KVObj>();
-        response.add(new KVObj("status", "unknown"));
-        return Utils.buildJSON(response);
+        JSONObject json = new JSONObject();
+        json.put("status", "unknown");
+        return json.toString();
     }
 
-    public static String buildJSON(ArrayList<KVObj> kvObjs)
-    {
-        StringBuilder b = new StringBuilder();
-        KVObj kvObj;
-        b.append("{");
-        for (int i = 0; i < kvObjs.size() - 1; i++)//all but last set of vals
-        {
-            kvObj = kvObjs.get(i);
-            if (kvObj != null)
-            {
-                b.append(kvObj.getKey() + ":" + kvObj.getValue() + ",");
-            }
-        }
-        kvObj = kvObjs.get(kvObjs.size() - 1);
-        b.append(kvObj.getKey() + ":" + kvObj.getValue() + "}");
-        return b.toString();
-    }
-    
     public static CabinetType shelfToCPCabinet(int shelf) {
         // 00 = lower left, 30 = upper left
         // so second digit is cabinet...

@@ -188,7 +188,7 @@ public class WebServer extends NanoHTTPD
                 catch (FileNotFoundException ex)
                 {
                     System.err.println("File not found: " + ROOT_DIR + uri);
-                    String fail = "{file:notFound}";
+                    String fail = "{\"file\":\"notFound\"}";
                     response.setData(new ByteArrayInputStream(fail.getBytes()));
                     response.setMimeType(mimeType);
                     response.setStatus(Response.Status.OK);

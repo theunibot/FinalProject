@@ -19,10 +19,10 @@
 package inventory;
 
 import enums.CabinetType;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
-import server.KVObj;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import utils.Result;
 import utils.Utils;
 
@@ -174,26 +174,25 @@ public class Inventory
      * Dump all inventory information to the console and returns JSON with the dump as well
      */
     public String dump() {
-        ArrayList<KVObj> response = new ArrayList<KVObj>();
-        
         // loop through all possible entires in inventory
         for(Entry<CabinetType, HashMap<Integer, InventoryShelf>> entry : inventory.entrySet()) {
             CabinetType cabinet = entry.getKey();
             HashMap<Integer, InventoryShelf> shelves = entry.getValue();
 
             System.out.println("Inventory on cabinet " + cabinet.toString());
-            response.add(new KVObj("cabinet", cabinet.toString()));
+//            response.add(new KVObj("cabinet", cabinet.toString()));
             
             for (Entry<Integer, InventoryShelf> shelf : shelves.entrySet()) {
                 Integer shelfId = shelf.getKey();
                 InventoryShelf is = shelf.getValue();
                 
                 System.out.println("* " + shelfId + ": " + is.count + " units of " + is.originalShelf);
-                response.add(new KVObj("shelf", shelfId.toString()));
-                response.add(new KVObj("count", Integer.toString(is.count)));
-                response.add(new KVObj("originalShelf", Integer.toString(is.originalShelf)));
+//                response.add(new KVObj("shelf", shelfId.toString()));
+//                response.add(new KVObj("count", Integer.toString(is.count)));
+//                response.add(new KVObj("originalShelf", Integer.toString(is.originalShelf)));
             }
         }
-        return Utils.buildJSON(response);
+//        return Utils.buildJSON(response);
+        return JSONValue.toJSONString(inventory);
     }
 }

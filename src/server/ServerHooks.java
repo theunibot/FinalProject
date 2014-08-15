@@ -20,16 +20,17 @@ package server;
 
 import commandqueue.CommandQueues;
 import commands.*;
+import enums.*;
+import inventory.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import utils.Utils;
-import utils.Result;
-import inventory.*;
-import enums.*;
+import org.json.simple.JSONObject;
 import route.Position;
 import route.PositionLookup;
+import utils.Result;
+import utils.Utils;
 
 /**
  *
@@ -45,9 +46,6 @@ public class ServerHooks
 
     private CommandQueues cmdq = CommandQueues.getInstance();
 
-    //used in JSON response
-    ArrayList<KVObj> response = new ArrayList<KVObj>();
-
     public static ServerHooks getInstance()
     {
         if (s == null)
@@ -61,7 +59,6 @@ public class ServerHooks
     {
         CommandInterface cmd = null;
 
-        response.clear();
         String command = "";
         
         // decode all possible parameters
@@ -79,16 +76,15 @@ public class ServerHooks
         RouteEffectType effectEnum = Utils.effectStringToEffectType(effect);
                 
         // process the command ... start by making sure it actually is a "command"...
-        if ((command = params.get("command")) == null) {
+        if ((command = params.get("command")) == null)
             // failed to get a valid command
-            System.err.println("Enqueue with missing 'command' tag");
-            return Utils.genericEnqueueFail();
-        }
+            return Utils.genericEnqueueFail("Enqueue missing 'command' tag");
+        
         // also make sure the queue and status flags were provided    
-        if ( (queue == null) || (status == null) ) {
-            System.err.println("Request failure: missing required parameter");
-            return Utils.genericEnqueueFail();
-        }
+        if (queue == null)
+            return Utils.genericEnqueueFail("Request failure: missing 'queue' parameter");
+        if (status == null)
+            return Utils.genericEnqueueFail("Request failure: missing 'status' parameter");
         
         // now decode the command and build up the queue item
         command = command.toLowerCase();    //convert the command to lowercase, case doesn't matter
@@ -96,31 +92,41 @@ public class ServerHooks
         switch (command) {
             case "mount-layer":
             case "replace-layer":
-                if ( (layer == null) || (shelf == null) || (desktop == null) || (effectEnum == null) ) {
-                    System.err.println("Request failure: missing required parameter");
-                    return Utils.genericEnqueueFail();
-                }
+                if (layer == null)
+                    return Utils.genericEnqueueFail("Request failure: missing 'layer' parameter");
+                if (shelf == null)
+                    return Utils.genericEnqueueFail("Request failure: missing 'shelf' parameter");
+                if (desktop == null)
+                    return Utils.genericEnqueueFail("Request failure: missing 'desktop' parameter");
+                if (effect == null)
+                    return Utils.genericEnqueueFail("Request failure: missing 'effect' parameter");
+                if (effectEnum == null)
+                    return Utils.genericEnqueueFail("Request failure: unknown 'effect' parameter " + effect);
                 cmd = new CommandMountLayer(layerInt, shelfInt, desktopInt, effectEnum);
                 break;
             case "show-layer":
-                if ( (shelf == null) || (desktop == null) || (effectEnum == null) ) {
-                    System.err.println("Request failure: missing required parameter");
-                    return Utils.genericEnqueueFail();
-                }
+                if (shelf == null)
+                    return Utils.genericEnqueueFail("Request failure: missing 'shelf' parameter");
+                if (desktop == null)
+                    return Utils.genericEnqueueFail("Request failure: missing 'desktop' parameter");
+                if (effect == null)
+                    return Utils.genericEnqueueFail("Request failure: missing 'effect' parameter");
+                if (effectEnum == null)
+                    return Utils.genericEnqueueFail("Request failure: unknown 'effect' parameter " + effect);
                 cmd = new CommandShowLayer(shelfInt, desktopInt, effectEnum);
                 break;
             case "empty-desktop":
-                if ( (desktop == null) ) {
-                    System.err.println("Request failure: missing required parameter");
+                if (desktop == null)
                     return Utils.genericEnqueueFail();
-                }
                 cmd = new CommandEmptyDesktop(desktopInt);
                 break;
             case "show-sign":
-                if ( (layer == null) || (effectEnum == null) ) {
-                    System.err.println("Request failure: missing required parameter");
-                    return Utils.genericEnqueueFail();
-                }
+                if (layer == null)
+                    return Utils.genericEnqueueFail("Request failure: missing 'layer' parameter");
+                if (effect == null)
+                    return Utils.genericEnqueueFail("Request failure: missing 'effect' parameter");
+                if (effectEnum == null)
+                    return Utils.genericEnqueueFail("Request failure: unknown 'effect' parameter " + effect);
                 cmd = new CommandShowSign(layerInt, effectEnum);
                 break;
             case "arm-home":
@@ -141,26 +147,23 @@ public class ServerHooks
                 break;                
             case "position":
                 String cabinetStr = params.get("cabinet");
-                if ( (cabinetStr == null) || (shelf == null) ) {
-                    System.err.println("Position command missing required parameter");
-                    return Utils.genericEnqueueFail();
-                }
+                if (cabinetStr == null)
+                    return Utils.genericEnqueueFail("Request failure: missing 'cabinet' parameter");
+                if (shelf == null)
+                    return Utils.genericEnqueueFail("Request failure: missing 'shelf' parameter");
 
                 CabinetType cabinet;
                 try {
                     cabinet = CabinetType.valueOf(cabinetStr.trim().toUpperCase());
                 } catch (Exception e) {
-                    System.err.println("Position command mismatch on CabinetType");
-                    return Utils.genericEnqueueFail();
+                    return Utils.genericEnqueueFail("Unknown cabinet type " + cabinetStr);
                 }
                 
                 PositionLookup pl = PositionLookup.getInstance();
 
                 Position position  = pl.shelfToPosition(cabinet, shelfInt);
-                if (position == null) {
-                    System.err.println("Unable to locate position on cabinet " + cabinet.toString() + " shelf " + shelfInt);
-                    return Utils.genericEnqueueFail();
-                }
+                if (position == null)
+                    return Utils.genericEnqueueFail("Unable to locate position on cabinet " + cabinet.toString() + " shelf " + shelfInt);
                 cmd = new CommandPosition(position);
                 break;
             case "route":
@@ -172,49 +175,54 @@ public class ServerHooks
                 String toShelfStr = params.get("toshelf");
                 int toShelf = Integer.valueOf(toShelfStr);
                 
-                if ( (fromCabinetStr == null) || (toCabinetStr == null) || (effectStr == null) ||
-                        (fromShelfStr == null) || (toShelfStr == null) ) {
-                    System.err.println("Route command missing required parameter");
-                    return Utils.genericEnqueueFail();
-                }
+                if (fromCabinetStr == null)
+                    return Utils.genericEnqueueFail("Request failure: missing 'fromcabinet' parameter");
+                if (toCabinetStr == null)
+                    return Utils.genericEnqueueFail("Request failure: missing 'tocabinet' parameter");
+                if (effectStr == null)
+                    return Utils.genericEnqueueFail("Request failure: missing 'effect' parameter");
+                if (fromShelfStr == null)
+                    return Utils.genericEnqueueFail("Request failure: missing 'fromshelf' parameter");
+                if (toShelfStr == null)
+                    return Utils.genericEnqueueFail("Request failure: missing 'toshelf' parameter");
+                
                 CabinetType fromCabinet, toCabinet;
                 try {
                     fromCabinet = CabinetType.valueOf(fromCabinetStr.trim().toUpperCase());
+                } catch (Exception e) {
+                    return Utils.genericEnqueueFail("Unknown fromcabinet type " + fromCabinetStr);
+                }
+                
+                try {
                     toCabinet = CabinetType.valueOf(toCabinetStr.trim().toUpperCase());
                 } catch (Exception e) {
-                    System.err.println("Route command mismatch on CabinetType or RouteEffectType");
-                    return Utils.genericEnqueueFail();
+                    return Utils.genericEnqueueFail("Unknown tocabinet type " + toCabinetStr);
                 }
                 
                 pl = PositionLookup.getInstance();
 
                 Position fromPosition = pl.shelfToPosition(fromCabinet, fromShelf);
-                if (fromPosition == null) {
-                    System.err.println("From position not found");
-                    return Utils.genericEnqueueFail();
-                }
+                if (fromPosition == null)
+                    return Utils.genericEnqueueFail("From position not found");
+
                 Position toPosition = pl.shelfToPosition(toCabinet, toShelf);
-                if (toPosition == null) {
-                    System.err.println("To position not found");
-                    return Utils.genericEnqueueFail();
-                }
+                if (toPosition == null)
+                    return Utils.genericEnqueueFail("To position not found");
+
                 cmd = new CommandRoute(fromCabinet, fromPosition, toCabinet, toPosition, effectEnum);
                 break;
             default:
-                System.err.println("Unknown command " + command);
-                break;
+                return Utils.genericEnqueueFail("Unknown command " + command);
         }
-        // did we build a command?
-        if (cmd != null) {
-            cmdq.add(queueInt, cmd, statusBool);
-            response.add(new KVObj("id", String.valueOf(cmd.getId())));
-            System.out.println("Enqueued request; ID is " + cmd.getId());
-            return Utils.buildJSON(response);
-        }
-
-        // somehow we failed...
-        System.err.println("Failed to enqueue command");
-        return Utils.genericEnqueueFail();
+        
+        // enqueue the command
+        cmdq.add(queueInt, cmd, statusBool);
+        
+        // and return the ID in JSON
+        JSONObject json = new JSONObject();
+        json.put("id", cmd.getId());
+        System.out.println("Enqueued request; ID is " + cmd.getId());
+        return json.toString();
     }
 
     private final String STATUS_ID_KEY = "id";
@@ -223,9 +231,9 @@ public class ServerHooks
 
     public String status(Map<String, String> params)
     {
-        response.clear();
         String id;
-
+        JSONObject json = new JSONObject();
+        
         CommandStatus status = CommandStatus.UNKNOWN;
 
         
@@ -234,23 +242,24 @@ public class ServerHooks
             // item from the list if it has encountered success/error
             Result result = cmdq.getResult(id);
             status = cmdq.getStatus(id);
-            response.add(new KVObj(STATUS_RETURN_STATUS_KEY, status.toString()));
+            json.put(STATUS_RETURN_STATUS_KEY, status.toString());
             if (status == CommandStatus.ERROR) {
                 if (result != null)
-                    response.add(new KVObj(STATUS_ERROR_KEY, "\"" + result.errorMessage + "\""));
+                    json.put(STATUS_ERROR_KEY, result.errorMessage);
             }
         }
         else
-            response.add(new KVObj(STATUS_ERROR_KEY, "Missing id value for status request"));
+            json.put(STATUS_ERROR_KEY, "Missing id value for status request");
 
-        return Utils.buildJSON(response);
+        return json.toString();
     }
 
     private final String CLEAR_QUEUE_ID_KEY = "queue";
 
     public String clearQueue(Map<String, String> params)
     {
-        response.clear();
+        JSONObject json = new JSONObject();
+        
         String strVal = null;
         if ((strVal = params.get(CLEAR_QUEUE_ID_KEY)) != null)
         {
@@ -270,15 +279,15 @@ public class ServerHooks
             }
         } else
             System.out.println("Clear queue failed - no parameter found");
-        return "{}";//returns nothing
+        return json.toString();
     }
 
     private final String GET_INPUT_VAL_KEY = "key";
-    private final String GET_RETURN_VAL_KEY = "\"value\"";
+    private final String GET_RETURN_VAL_KEY = "value";
 
     public String getVar(Map<String, String> params)
     {
-        response.clear();
+        JSONObject json = new JSONObject();
         String key = null;
 
         if ((key = params.get(GET_INPUT_VAL_KEY)) == null)//get the value of the key
@@ -293,16 +302,12 @@ public class ServerHooks
         }
         if (val == null)//get value of the value
         {
-            val = "\"\"";
+            val = "";
             System.out.println("Error, " + key + "\'s value not found");
         }
-        else
-        {
-            val = "\"" + val + "\"";
-        }
-
-        response.add(new KVObj(GET_RETURN_VAL_KEY, val));
-        return Utils.buildJSON(response);
+        
+        json.put(GET_RETURN_VAL_KEY, val);
+        return json.toString();
     }
 
     private final String SET_VAR_READ_VAL_VALUE = "value";
@@ -310,9 +315,8 @@ public class ServerHooks
 
     public String setVar(Map<String, String> params)
     {
-
-        response.clear();
         String key = null;
+        JSONObject json = new JSONObject();
 
         if ((key = params.get(SET_VAR_READ_VAL_KEY)) == null)//get the value of the key
         {
@@ -339,7 +343,7 @@ public class ServerHooks
             System.out.println("Wrt test Get Val: " + vars.get(key));
         }
 
-        return "{}";//returns nothing
+        return json.toString();
     }
     
     public String inventory(Map<String, String> params) {
