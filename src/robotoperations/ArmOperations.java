@@ -573,12 +573,6 @@ public class ArmOperations
      */
     public Result calibrate()
     {
-        Result result = grip();
-        if (!result.success())
-        {
-            return (result);
-        }
-
         if (Simulated)
         {
             System.out.println("ArmOperations: calibrate");

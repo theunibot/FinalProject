@@ -34,9 +34,6 @@ public class CommandArmDeEnergize extends CommandInterface {
     
     public Result execute(CommandArguments args) {
         ArmOperations ao = ArmOperations.getInstance();
-        ao.ungrip();
-        utils.Utils.sleep(1000);
-        ao.grip();
         return ao.deEnergize();
     }
     

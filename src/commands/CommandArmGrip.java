@@ -19,44 +19,31 @@
 
 package commands;
 
+import enums.*;
 import robotoperations.ArmOperations;
+import route.Position;
 import route.PositionLookup;
-import route.RouteCompiler;
 import utils.Result;
 
 /**
  *
  */
-public class CommandProgramController extends CommandInterface {
-    private String name;
+public class CommandArmGrip extends CommandInterface {
+    boolean grip;
     
-    public CommandProgramController(String name) {
-        this.name = name;
+    public CommandArmGrip(boolean grip) {
+        this.grip = grip;
     }
     
     public Result execute(CommandArguments args) {
         ArmOperations ao = ArmOperations.getInstance();
-
-        // if all, do a full reset of the controller
-        if (name == null) {
-            Result result = ao.restartController();
-            if (!result.success())
-                return result;
-        }
-        Result result = PositionLookup.getInstance().programPositions(name);
-        if (!result.success())
-            return result;
-        result = RouteCompiler.getInstance().programRoutes(name);
-        if (!result.success())
-            return result;
-        // now cause these to be permanent
-        return ao.persist();
+        if (grip)
+            return ao.grip();
+        return ao.ungrip();
     }
     
     public String details() {
-        if (name == null)
-            return "ProgramController()";
-        return "ProgramController(" + name + ")";
+        return "ArmGrip(" + grip + ")";
     }
 
     /**
