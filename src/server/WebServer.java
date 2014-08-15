@@ -51,7 +51,7 @@ public class WebServer extends NanoHTTPD
     };
     private final String ENQUEUE = "/ENQUEUE";
     private final String STATUS = "/STATUS";
-    private final String CLEAR_QUEUE = "/CLEAR_QUEUE";
+    private final String CLEAR_QUEUE = "/CLEAR-QUEUE";
     private final String GET_VAR = "/GET-VARIABLE";
     private final String SET_VAR = "/SET-VARIABLE";
     private final String INVENTORY = "/INVENTORY";
