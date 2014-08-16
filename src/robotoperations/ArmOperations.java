@@ -205,6 +205,8 @@ public class ArmOperations
         double smallZOffset = Double.valueOf(posOffsetInfo.getZ());
         double desktopZOffset = Double.valueOf(posOffsetInfo.getZ());
         double moveOffset = Double.valueOf(posOffsetInfo.getX());
+        
+        System.out.println("Big Z: " + bigZOffset+ " small Z: " + smallZOffset + " DTZ: " + desktopZOffset + " MV AMT: " + moveOffset);
 
         //101 Y val big
         // 101 Z val small
@@ -217,7 +219,8 @@ public class ArmOperations
         {
             deltaZ = (stackPosition == 2) ? smallZOffset : bigZOffset;
         }
-
+        
+        System.out.println("Delta z: " + deltaZ);
         //
         //UNGRIP
         //
