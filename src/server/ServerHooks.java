@@ -141,6 +141,13 @@ public class ServerHooks
             case "arm-de-energize":
                 cmd = new CommandArmDeEnergize();
                 break;
+            case "arm-grip":
+                boolean grip = true;
+                String gripStr = params.get("grip");
+                if ( (gripStr != null) && (gripStr.toLowerCase().startsWith("o")) )
+                    grip = false;
+                cmd = new CommandArmGrip(grip);
+                break;
             case "program-controller":
                 String name = params.get("name");
                 cmd = new CommandProgramController((name != null) ? name.toLowerCase() : null);
