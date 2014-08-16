@@ -243,16 +243,30 @@ public class PositionLookup
 
                     // is this three (Shelf, X,Y,Z) or does it include yaw,pitch,roll?
                     Position pos;
+                    
+                    // determine positions to use
+                    String px = Utils.xyInToMmStr(String.valueOf(Double.parseDouble(splitLinePieces[1]) + xOffset));
+                    String py = Utils.xyInToMmStr(String.valueOf(Double.parseDouble(splitLinePieces[2]) + yOffset));
+                    String pz;
+                    if (shelf < 90)
+                        pz = Utils.zInToMmStr(String.valueOf(Double.parseDouble(splitLinePieces[3]) + zOffset));
+                    else
+                        pz = Utils.xyInToMmStr(String.valueOf(Double.parseDouble(splitLinePieces[3]) + zOffset));
+                        
 
                     if (splitLinePieces.length == 4)
                     {
-                        pos = new Position(name, Utils.xyInToMmStr(String.valueOf(Double.parseDouble(splitLinePieces[1]) + xOffset)), Utils.xyInToMmStr(String.valueOf(Double.parseDouble(splitLinePieces[2]) + yOffset)), Utils.zInToMmStr(String.valueOf(Double.parseDouble(splitLinePieces[3]) + zOffset)),
-                                String.valueOf(prevPosition.getPitch() + pitchOffset), String.valueOf(prevPosition.getYaw() + yawOffset), String.valueOf(prevPosition.getRoll() + rollOffset));
+                        pos = new Position(name, px, py, pz, 
+                                String.valueOf(prevPosition.getPitch() + pitchOffset), 
+                                String.valueOf(prevPosition.getYaw() + yawOffset), 
+                                String.valueOf(prevPosition.getRoll() + rollOffset));
                     }
                     else if (splitLinePieces.length == 7)
                     {
-                        pos = new Position(name, Utils.xyInToMmStr(String.valueOf(Double.parseDouble(splitLinePieces[1]) + xOffset)), Utils.xyInToMmStr(String.valueOf(Double.parseDouble(splitLinePieces[2]) + yOffset)), Utils.zInToMmStr(String.valueOf(Double.parseDouble(splitLinePieces[3]) + zOffset)),
-                                String.valueOf(Double.parseDouble(splitLinePieces[4]) + pitchOffset), String.valueOf(Double.parseDouble(splitLinePieces[5]) + yawOffset), String.valueOf(Double.parseDouble(splitLinePieces[6]) + rollOffset));
+                        pos = new Position(name, px, py, pz, 
+                                String.valueOf(Double.parseDouble(splitLinePieces[4]) + pitchOffset), 
+                                String.valueOf(Double.parseDouble(splitLinePieces[5]) + yawOffset), 
+                                String.valueOf(Double.parseDouble(splitLinePieces[6]) + rollOffset));
                     }
                     else
                     {

@@ -57,7 +57,7 @@
 // define in-cabinet pick/drop offsets
 90 0.0 0.0 0.0 0.0 0.0 0.0
 // define in-cabinet push/lift offsets
-91 5.0 -2.75 10.25 0.0 0.0 0.0
+91 5.0 -2.75 -2.05 0.0 0.0 0.0
 
 #CPM 0 0 0 0 0 0
 02 0.35 4.7 6.3 90.0 -4.2 89.1
