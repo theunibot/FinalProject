@@ -11,6 +11,11 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script type='text/javascript' src='edge_includes/jquery-2.0.3.min.js'></script>
         <script type='text/javascript'>
+            function r12reload() {
+                name = prompt('Reload filter (empty is all; examples are CPL0, CPR23, D1_2, CPL_D1)?');
+                cmd = 'ENQUEUE?queue=0&status=0&command=PROGRAM-CONTROLLER&name=' + name;
+                r12(cmd);
+            }
             function r12move() {
                 cabinet = prompt('Which cabinet (CPL, CPM, CPR, D1, or D2)?');
                 shelf = prompt('Which shelf?');
@@ -85,6 +90,7 @@ and open the template in the editor.
                 <div><a onclick="r12adjust('pitch');">Adjust pitch</a></div>
                 <div><a onclick="r12adjust('yaw');">Adjust yaw</a></div>
                 <div><a onclick="r12adjust('roll');">Adjust roll</a></div>
+                <div><a onclick="r12reload()">Reload positions and routes</a></div>
             </div>
         </div>
         <div class="section">
