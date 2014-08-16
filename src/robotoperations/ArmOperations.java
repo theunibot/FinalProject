@@ -64,7 +64,7 @@ public class ArmOperations
     //Strings
     public static final String RESPONSE_OK = "OK";
 
-    private final String INIT_COMMANDS_FILENAME = "initCommands.txt";
+    private final String INIT_COMMANDS_FILENAME = "R12InitCommands.txt";
     private final String INIT_COMMANDS_FILEPATH = FileUtils.getFilesFolderString() + INIT_COMMANDS_FILENAME;
 
     private final String INIT_FILE_HEADER = ""
