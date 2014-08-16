@@ -37,8 +37,9 @@ import utils.Utils;
 public class ArmOperations
 {
 
-    private final boolean armOpsSimulated = true;
-    private final boolean r12OpsSimulated = true;
+    private final boolean armOpsSimulated = false;
+    private final boolean r12OpsSimulated = false;
+    private final boolean armOpsLogging = true;
     private R12Operations r12o = null;
     private RouteCompiler rc = null;
     private PositionLookup plt = null;
@@ -125,14 +126,12 @@ public class ArmOperations
      */
     public Result runRoute(Route route, Position start, Position end)
     {
-        if (armOpsSimulated)
-        {
+        if (armOpsLogging)
             System.out.println("    ArmOperations: runRoute " + route.getRouteProperties().getRouteFriendlyName()
                     + " from " + ((start != null) ? start.getName() : "undefined") + " to "
                     + ((end != null) ? end.getName() : "undefined"));
-            if (!r12OpsSimulated)
-                return new Result();
-        }
+        if (armOpsSimulated && !r12OpsSimulated)
+            return new Result();
 
         ResponseObject response;
         if (route.size() >= 2)//must have start and end pos to modify
@@ -192,7 +191,7 @@ public class ArmOperations
      */
     public Result pick(CabinetType unit, int stackPosition, Position position)
     {
-        if (armOpsSimulated)
+        if (armOpsLogging)
             System.out.println("    ArmOperations: pick from " + unit.toString() + " position " + stackPosition + " starting at " + position.getName());
 
         // make sure the stackPosition is legit
@@ -409,7 +408,7 @@ public class ArmOperations
      */
     public Result drop(CabinetType unit, int stackPosition, Position position)
     {
-        if (armOpsSimulated)
+        if (armOpsLogging)
             System.out.println("    ArmOperations: drop at " + unit.toString() + " position " + stackPosition + " starting at " + position.getName());
 
         // make sure the stackPosition is legit
@@ -621,12 +620,12 @@ public class ArmOperations
      */
     public Result calibrate()
     {
-        if (armOpsSimulated)
-        {
+        if (armOpsLogging)
             System.out.println("    ArmOperations: calibrate");
-            if (!r12OpsSimulated)
-                return new Result();
-        }
+
+        if (armOpsSimulated && !r12OpsSimulated)
+            return new Result();
+        
         return runRobotCommand("CALIBRATE");
     }
 
@@ -638,12 +637,12 @@ public class ArmOperations
      */
     public Result home()
     {
-        if (armOpsSimulated)
-        {
+        if (armOpsLogging)
             System.out.println("    ArmOperations: home");
-            if (!r12OpsSimulated)
-                return new Result();
-        }
+
+        if (armOpsSimulated && !r12OpsSimulated)
+            return new Result();
+
         return runRobotCommand("HOME");
     }
 
@@ -654,12 +653,12 @@ public class ArmOperations
      */
     public Result energize()
     {
-        if (armOpsSimulated)
-        {
+        if (armOpsLogging)
             System.out.println("    ArmOperations: energize");
-            if (!r12OpsSimulated)
-                return new Result();
-        }
+
+        if (armOpsSimulated && !r12OpsSimulated)
+            return new Result();
+
         return runRobotCommand("ENERGIZE");
     }
 
@@ -670,12 +669,12 @@ public class ArmOperations
      */
     public Result deEnergize()
     {
-        if (armOpsSimulated)
-        {
+        if (armOpsLogging)
             System.out.println("    ArmOperations: de-energize");
-            if (!r12OpsSimulated)
-                return new Result();
-        }
+
+        if (armOpsSimulated && !r12OpsSimulated)
+            return new Result();
+
         return runRobotCommand("DE-ENERGIZE");
     }
 
@@ -688,12 +687,12 @@ public class ArmOperations
      */
     public Result moveTo(Position position)
     {
-        if (armOpsSimulated)
-        {
-            System.out.println("    ArmOperations: position to " + position.getName());
-            if (!r12OpsSimulated)
-                return new Result();
-        }
+        if (armOpsLogging)
+             System.out.println("    ArmOperations: position to " + position.getName());
+ 
+        if (armOpsSimulated && !r12OpsSimulated)
+            return new Result();
+ 
         return runRobotCommand(position.getName() + " GOTO");
     }
 
@@ -704,12 +703,12 @@ public class ArmOperations
      */
     public Result persist()
     {
-        if (armOpsSimulated)
-        {
+        if (armOpsLogging)
             System.out.println("    ArmOperations: persist");
-            if (!r12OpsSimulated)
-                return new Result();
-        }
+ 
+        if (armOpsSimulated && !r12OpsSimulated)
+            return new Result();
+
         return runRobotCommand("USAVE");
     }
 
@@ -721,13 +720,11 @@ public class ArmOperations
      */
     public Result learnRoute(Route route)
     {
-
-        if (armOpsSimulated)
-        {
+        if (armOpsLogging)
             System.out.println("    ArmOperations: learnRoute " + route.getRouteProperties().getRouteFriendlyName());
-            if (!r12OpsSimulated)
-                return new Result();
-        }
+ 
+        if (armOpsSimulated && !r12OpsSimulated)
+            return new Result();
 
         ArrayList<String> routeCommands = route.getRoboforthCommands();
 
@@ -751,12 +748,12 @@ public class ArmOperations
      */
     public Result learnPoint(Position position)
     {
-        if (armOpsSimulated)
-        {
+        if (armOpsLogging)
             System.out.println("    ArmOperations: learnPoint " + position.getName());
-            if (!r12OpsSimulated)
-                return new Result();
-        }
+ 
+        if (armOpsSimulated && !r12OpsSimulated)
+            return new Result();
+
         return runRobotCommand(position.getRoboforth());
     }
 
@@ -767,12 +764,12 @@ public class ArmOperations
      */
     public Result grip()
     {
-        if (armOpsSimulated)
-        {
+        if (armOpsLogging)
             System.out.println("    ArmOperations: grip");
-            if (!r12OpsSimulated)
-                return new Result();
-        }
+ 
+        if (armOpsSimulated && !r12OpsSimulated)
+            return new Result();
+
         return runRobotCommand("GRIP");
     }
 
@@ -783,12 +780,12 @@ public class ArmOperations
      */
     public Result ungrip()
     {
-        if (armOpsSimulated)
-        {
+        if (armOpsLogging)
             System.out.println("    ArmOperations: ungrip");
-            if (!r12OpsSimulated)
-                return new Result();
-        }
+ 
+        if (armOpsSimulated && !r12OpsSimulated)
+            return new Result();
+
         return runRobotCommand("UNGRIP");
     }
 
@@ -800,12 +797,12 @@ public class ArmOperations
      */
     public Result restartController()
     {
-        if (armOpsSimulated)
-        {
+        if (armOpsLogging)
             System.out.println("    ArmOperations: restartController");
-            if (!r12OpsSimulated)
-                return new Result();
-        }
+ 
+        if (armOpsSimulated && !r12OpsSimulated)
+            return new Result();
+
         Result result = runRobotCommand("ROBOFORTH");
         if (!result.success())
         {
