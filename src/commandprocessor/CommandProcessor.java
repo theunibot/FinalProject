@@ -20,6 +20,7 @@ package commandprocessor;
 
 import commandqueue.CommandQueues;
 import commands.CommandArguments;
+import commands.CommandArmHome;
 import commands.CommandInterface;
 import enums.CabinetType;
 import enums.CommandCompletion;
@@ -78,7 +79,13 @@ public class CommandProcessor
         
         while (true) 
         {
-            CommandInterface cmd = cmdq.pop();
+            CommandInterface cmd;
+            // before pending on the queue, if there is nothing currently in there,
+            // and we not not in the home position, the let's go sit at home...
+//            if ( (commandArgs.cabinet != CabinetType.HOME) && (cmdq.queueDepth() == 0) )
+//                cmd = new CommandArmHome();
+//            else
+                cmd = cmdq.pop();
             if (cmd == null) {
                 if (cmdq.killed()) {
                     System.out.println("Received kill in processCommands; terminating");
