@@ -169,7 +169,7 @@ public abstract class CommandInterface
         Route route;
         Result result;
         
-        System.out.println("MoveLayer from " + fromCabinet.toString() + " shelf " + fromShelf + " to " +
+        System.out.println("  MoveLayer from " + fromCabinet.toString() + " shelf " + fromShelf + " to " +
                 toCabinet.toString() + " shelf " + toShelf + " using effect " + effect.toString());
         
        // move from our current cabinet to the desired start (from) cabinet (if not already there)
