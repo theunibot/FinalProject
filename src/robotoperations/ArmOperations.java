@@ -44,10 +44,6 @@ public class ArmOperations
     private RouteHolder rh = null;
     private static ArmOperations armOperations = null;
 
-    private final double DELTA_Z_CP_BIG = -2.75 * 25.4;//in to mm
-    private final double DELTA_Z_CP_SMALL = -2.05 * 25.4;//
-    private final double DELTA_Z_DT = -1.50 * 25.4;
-    private final double DELTA_FORWARD = 5 * 25.4;
 
     //Regular Objects
     private ArrayList<String> initCommands = null;
@@ -195,7 +191,6 @@ public class ArmOperations
      * @param position off of which the relative route is run
      * @return Result with success/failure info
      */
-    
     public Result pick(CabinetType unit, int stackPosition, Position position)
     {
         if (Simulated)
@@ -203,12 +198,24 @@ public class ArmOperations
             System.out.println("ArmOperations: pick from " + unit.toString() + " position " + stackPosition + " starting at " + position.getName());
             return new Result();
         }
+        
+        Position posOffsetInfo = plt.shelfToPosition(unit, 101);        
+        
+        double bigZOffset = Double.valueOf(posOffsetInfo.getY());
+        double smallZOffset = Double.valueOf(posOffsetInfo.getY());
+        double desktopZOffset = Double.valueOf(posOffsetInfo.getY());
+        double moveOffset = Double.valueOf(posOffsetInfo.getY());
+
+        //101 Y val big
+        // 101 Z val small
+        //101 Z val dt
+        //101 X val 5"
 
         String commandString = "";
-        double deltaZ = (DELTA_Z_DT);
+        double deltaZ = (desktopZOffset);
         if (unit == CabinetType.CPL || unit == CabinetType.CPM || unit == CabinetType.CPR)
         {
-            deltaZ = (stackPosition == 2) ? DELTA_Z_CP_SMALL : DELTA_Z_CP_BIG;
+            deltaZ = (stackPosition == 2) ? smallZOffset : bigZOffset;
         }
 
         //
@@ -240,22 +247,20 @@ public class ArmOperations
         //
         double absStartX = Double.parseDouble(position.getX());
         double absStartY = Double.parseDouble(position.getY());
-        double deltaAxis = DELTA_FORWARD / (Math.sqrt(2.0d));//get the distance forward divided by root2
+        double deltaAxis = (moveOffset) / (Math.sqrt(2.0d));//get the distance forward divided by root2
         double absEndX = 0;
         double absEndY = absStartY - deltaAxis;
         double deltaX = 0;
         double deltaY = -deltaAxis;
         double yaw = 0;
-        System.out.println("DELTA FWD: " + DELTA_FORWARD);
-        System.out.println("DELTA FOR EACH AXIS: " + deltaAxis);
-        
+
         //abs startX/Y used to calc abs endX/Y which are used to calc the Yaw
         //deltaX/Y used for MOVE commands
         if (unit == CabinetType.D2)
         {
             absEndX = absStartX - deltaAxis;
             deltaX = -deltaAxis;
-            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) - 135;            
+            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) - 135;
         }
         else if (unit == CabinetType.D1)
         {
@@ -265,10 +270,10 @@ public class ArmOperations
         }
         else if (unit == CabinetType.CPL || unit == CabinetType.CPM || unit == CabinetType.CPR)
         {
-            absEndY = absStartY + DELTA_FORWARD;
+            absEndY = absStartY + moveOffset;
             absEndX = absStartX;
             deltaX = 0;
-            deltaY = DELTA_FORWARD;
+            deltaY = moveOffset;
             yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY));
         }
         else
@@ -278,7 +283,7 @@ public class ArmOperations
 
         System.out.println("THEREFORE MOVE X: " + deltaX + " Y: " + deltaY);
         System.out.println("MOVING FROM START ABS X: " + absStartX + " Y: " + absStartY
-        + " to END ABS X: " + absEndX + " Y: " + absEndY);
+                + " to END ABS X: " + absEndX + " Y: " + absEndY);
         commandString = Utils.formatDouble(yaw) + " YAW ! " + Utils.formatDouble(deltaX) + " " + Utils.formatDouble(deltaY) + " 0 MOVE";//moves DOWN set amount
         r12o.write(commandString);
         response = r12o.getResponse(commandString);
@@ -287,7 +292,7 @@ public class ArmOperations
         {
             return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
         }
-        
+
         //
         //GRIP
         //
@@ -299,7 +304,7 @@ public class ArmOperations
         {
             return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
         }
-        
+
         //
         //MOVE UP
         //
@@ -311,7 +316,7 @@ public class ArmOperations
         {
             return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
         }
-        
+
         //
         //MOVE Back to position
         //
@@ -395,21 +400,35 @@ public class ArmOperations
             System.out.println("ArmOperations: drop at " + unit.toString() + " position " + stackPosition + " starting at " + position.getName());
             return new Result();
         }
+
+        
         String commandString = "";
-        ResponseObject response = null;
+        ResponseObject response = null;                
+
+        Position posOffsetInfo = plt.shelfToPosition(unit, 101);        
+        
+        double bigZOffset = Double.valueOf(posOffsetInfo.getY());
+        double smallZOffset = Double.valueOf(posOffsetInfo.getY());
+        double desktopZOffset = Double.valueOf(posOffsetInfo.getY());
+        double moveAmount = Double.valueOf(posOffsetInfo.getY());
+
+        //101 Y val big
+        // 101 Z val small
+        //101 Z val dt
+        //101 X val 5"
         
         //
         //Move forward
         //
         double absStartX = Double.parseDouble(position.getX());
         double absStartY = Double.parseDouble(position.getY());
-        double deltaAxis = DELTA_FORWARD / (Math.sqrt(2.0d));//get the distance forward divided by root2
+        double deltaAxis = (moveAmount)/ (Math.sqrt(2.0d));//get the distance forward divided by root2
         double absEndX = 0;
         double absEndY = absStartY - deltaAxis;
         double deltaX = 0;
         double deltaY = -deltaAxis;
         double yaw = 0;
-        
+
         //abs startX/Y used to calc abs endX/Y which are used to calc the Yaw
         //deltaX/Y used for MOVE commands
         if (unit == CabinetType.D2)
@@ -426,9 +445,9 @@ public class ArmOperations
         }
         else if (unit == CabinetType.CPL || unit == CabinetType.CPM || unit == CabinetType.CPR)
         {
-            absEndY = absStartY + DELTA_FORWARD;
+            absEndY = absStartY + moveAmount;
             absEndX = absStartX;
-            deltaY = DELTA_FORWARD;
+            deltaY = moveAmount;
             deltaX = 0;
             yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY));
         }
@@ -445,14 +464,14 @@ public class ArmOperations
         {
             return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
         }
-        
+
         commandString = "";
-        double deltaZ = (DELTA_Z_DT);
+        double deltaZ = (desktopZOffset);
         if (unit == CabinetType.CPL || unit == CabinetType.CPM || unit == CabinetType.CPR)
         {
-            deltaZ = (stackPosition == 2) ? DELTA_Z_CP_SMALL : DELTA_Z_CP_BIG;
+            deltaZ = (stackPosition == 2) ? smallZOffset : bigZOffset;
         }
-        
+
         //
         //MOVE DOWN
         //
@@ -487,8 +506,8 @@ public class ArmOperations
         if (!response.isSuccessful())
         {
             return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-        }        
-        
+        }
+
         //
         //GRIP
         //
@@ -500,7 +519,7 @@ public class ArmOperations
         {
             return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
         }
-        
+
         //
         //MOVE UP
         //
@@ -512,8 +531,7 @@ public class ArmOperations
         {
             return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
         }
-        
-        
+
 //        //unit is used to define angle to the unit
 //        //stack pos only relevant if CP, used to pick route for depth
 //        RouteEffectType retIn = RouteEffectType.GRIPPER_IN2;
@@ -564,7 +582,6 @@ public class ArmOperations
 //        {
 //            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
 //        }
-
         //move back to start pos succesful.
         return new Result();
     }
@@ -740,21 +757,26 @@ public class ArmOperations
     }
 
     /**
-     * restart the controller, which resets all routes and points and starts fresh
-     * 
+     * restart the controller, which resets all routes and points and starts
+     * fresh
+     *
      * @return Result with success/fail info
      */
-    public Result restartController() {
-        if (Simulated) {
+    public Result restartController()
+    {
+        if (Simulated)
+        {
             System.out.println("ArmOperations: restartController");
             return new Result();
         }
         Result result = runRobotCommand("ROBOFORTH");
         if (!result.success())
+        {
             return result;
+        }
         return runRobotCommand("START");
     }
-    
+
     /**
      * Sends an individual command to robot and looks for errors
      *
