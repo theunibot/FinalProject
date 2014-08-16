@@ -46,6 +46,26 @@ public class Position
         this.name = name;
     }   
 
+    public boolean equals(Object other) {
+        if (other == null)
+            return false;
+        
+        if (this.getClass() != other.getClass())
+            return false;
+        
+        Position op = (Position) other;
+        if ( (this.x != op.x) ||
+            (this.y != op.y) ||
+            (this.z != op.z) ||
+            (this.pitch != op.pitch) ||
+            (this.yaw != op.yaw) ||
+            (this.roll != op.roll) ||
+            (this.name.equals(op.name)) )
+            return false;
+        
+        return true;
+    }
+    
     public String getRoboforth()
     {
         return getX() + " X ! " + getY() + " Y ! " + getZ() + " Z ! " + getPitch() + " PITCH ! " + getYaw() + " YAW ! " + getRoll() + " ROLL ! POINT " + getName();
