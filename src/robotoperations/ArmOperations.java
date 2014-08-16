@@ -199,14 +199,22 @@ public class ArmOperations
             return new Result();
         }
         
-        Position posOffsetInfo = plt.shelfToPosition(unit, 101);        
+        Position posInfo = plt.shelfToPosition(unit, 91);        
+        Position posOffsetInfo = plt.shelfToPosition(unit, 90);        
         
-        double bigZOffset = Double.valueOf(posOffsetInfo.getY());
-        double smallZOffset = Double.valueOf(posOffsetInfo.getZ());
-        double desktopZOffset = Double.valueOf(posOffsetInfo.getZ());
-        double moveOffset = Double.valueOf(posOffsetInfo.getX());
+        double bigZval = Double.valueOf(posInfo.getY());
+        double smallZval = Double.valueOf(posInfo.getZ());
+        double desktopZval = Double.valueOf(posInfo.getZ());
+        double moveval = Double.valueOf(posInfo.getX());
         
-        System.out.println("Big Z: " + bigZOffset+ " small Z: " + smallZOffset + " DTZ: " + desktopZOffset + " MV AMT: " + moveOffset);
+        double offsetX = Double.valueOf(posOffsetInfo.getX());
+        double offsetY = Double.valueOf(posOffsetInfo.getY());
+        double offsetZ = Double.valueOf(posOffsetInfo.getZ());        
+        double offsetPitch = Double.valueOf(posOffsetInfo.getPitch());
+        double offsetYaw = Double.valueOf(posOffsetInfo.getYaw());
+        double offsetRoll = Double.valueOf(posOffsetInfo.getRoll());        
+        
+        System.out.println("Big Z: " + bigZval+ " small Z: " + smallZval + " DTZ: " + desktopZval + " MV AMT: " + moveval);
 
         //101 Y val big
         // 101 Z val small
@@ -214,10 +222,10 @@ public class ArmOperations
         //101 X val 5"
 
         String commandString = "";
-        double deltaZ = (desktopZOffset);
+        double deltaZ = (desktopZval);
         if (unit == CabinetType.CPL || unit == CabinetType.CPM || unit == CabinetType.CPR)
         {
-            deltaZ = (stackPosition == 2) ? smallZOffset : bigZOffset;
+            deltaZ = (stackPosition == 2) ? smallZval : bigZval;
         }
         
         System.out.println("Delta z: " + deltaZ);
@@ -236,7 +244,7 @@ public class ArmOperations
         //
         //MOVE DOWN
         //
-        commandString = "0 0 " + String.valueOf(Utils.formatDouble(deltaZ)) + " MOVE";//moves DOWN set amount
+        commandString = "0 0 " + String.valueOf(Utils.formatDouble(deltaZ + offsetZ)) + " MOVE";//moves DOWN set amount
         r12o.write(commandString);
         response = r12o.getResponse(commandString);
 
@@ -250,34 +258,34 @@ public class ArmOperations
         //
         double absStartX = Double.parseDouble(position.getX());
         double absStartY = Double.parseDouble(position.getY());
-        double deltaAxis = (moveOffset) / (Math.sqrt(2.0d));//get the distance forward divided by root2
+        double deltaAxis = (moveval) / (Math.sqrt(2.0d));//get the distance forward divided by root2
         double absEndX = 0;
-        double absEndY = absStartY - deltaAxis;
+        double absEndY = absStartY - deltaAxis + offsetY;
         double deltaX = 0;
-        double deltaY = -deltaAxis;
+        double deltaY = -deltaAxis + offsetY;
         double yaw = 0;
 
         //abs startX/Y used to calc abs endX/Y which are used to calc the Yaw
         //deltaX/Y used for MOVE commands
         if (unit == CabinetType.D2)
         {
-            absEndX = absStartX - deltaAxis;
-            deltaX = -deltaAxis;
-            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) - 135;
+            absEndX = absStartX - deltaAxis + offsetX;
+            deltaX = -deltaAxis + offsetX;
+            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) - 135 + offsetYaw;
         }
         else if (unit == CabinetType.D1)
         {
-            absEndX = absStartX + deltaAxis;
-            deltaX = deltaAxis;
-            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) + 135;
+            absEndX = absStartX + deltaAxis + offsetX;
+            deltaX = deltaAxis + offsetX;
+            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) + 135 + offsetYaw;
         }
         else if (unit == CabinetType.CPL || unit == CabinetType.CPM || unit == CabinetType.CPR)
         {
-            absEndY = absStartY + moveOffset;
-            absEndX = absStartX;
-            deltaX = 0;
-            deltaY = moveOffset;
-            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY));
+            absEndY = absStartY + moveval + offsetY;
+            absEndX = absStartX + offsetX;
+            deltaX = 0 + offsetX;
+            deltaY = moveval + offsetY;
+            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) + offsetYaw;
         }
         else
         {
@@ -311,7 +319,7 @@ public class ArmOperations
         //
         //MOVE UP
         //
-        commandString = "0 0 " + String.valueOf(Utils.formatDouble(-deltaZ)) + " MOVE";//moves UP set amount
+        commandString = "0 0 " + String.valueOf(Utils.formatDouble(-deltaZ + offsetZ)) + " MOVE";//moves UP set amount
         r12o.write(commandString);
         response = r12o.getResponse(commandString);
 
@@ -408,12 +416,20 @@ public class ArmOperations
         String commandString = "";
         ResponseObject response = null;                
 
-        Position posOffsetInfo = plt.shelfToPosition(unit, 101); 
+        Position posInfo = plt.shelfToPosition(unit, 91); 
+        Position posOffsetInfo = plt.shelfToPosition(unit, 90);
         
-        double bigZOffset = Double.valueOf(posOffsetInfo.getY());
-        double smallZOffset = Double.valueOf(posOffsetInfo.getZ());
-        double desktopZOffset = Double.valueOf(posOffsetInfo.getZ());
-        double moveAmount = Double.valueOf(posOffsetInfo.getX());
+        double bigZval = Double.valueOf(posInfo.getY());
+        double smallZval = Double.valueOf(posInfo.getZ());
+        double desktopZval = Double.valueOf(posInfo.getZ());
+        double moveval = Double.valueOf(posInfo.getX());
+        
+        double offsetX = Double.valueOf(posOffsetInfo.getX());
+        double offsetY = Double.valueOf(posOffsetInfo.getY());
+        double offsetZ = Double.valueOf(posOffsetInfo.getZ());        
+        double offsetPitch = Double.valueOf(posOffsetInfo.getPitch());
+        double offsetYaw = Double.valueOf(posOffsetInfo.getYaw());
+        double offsetRoll = Double.valueOf(posOffsetInfo.getRoll());        
 
         //101 Y val big
         // 101 Z val small
@@ -425,34 +441,34 @@ public class ArmOperations
         //
         double absStartX = Double.parseDouble(position.getX());
         double absStartY = Double.parseDouble(position.getY());
-        double deltaAxis = (moveAmount)/ (Math.sqrt(2.0d));//get the distance forward divided by root2
+        double deltaAxis = (moveval)/ (Math.sqrt(2.0d));//get the distance forward divided by root2
         double absEndX = 0;
-        double absEndY = absStartY - deltaAxis;
+        double absEndY = absStartY - deltaAxis + offsetY;
         double deltaX = 0;
-        double deltaY = -deltaAxis;
+        double deltaY = -deltaAxis + offsetY;
         double yaw = 0;
 
         //abs startX/Y used to calc abs endX/Y which are used to calc the Yaw
         //deltaX/Y used for MOVE commands
         if (unit == CabinetType.D2)
         {
-            absEndX = absStartX - deltaAxis;
-            deltaX = -deltaAxis;
-            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) - 135;
+            absEndX = absStartX - deltaAxis + offsetX;
+            deltaX = -deltaAxis + offsetX;
+            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) - 135 + offsetYaw;
         }
         else if (unit == CabinetType.D1)
         {
-            absEndX = absStartX + deltaAxis;
-            deltaX = deltaAxis;
-            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) + 135;
+            absEndX = absStartX + deltaAxis + offsetX;
+            deltaX = deltaAxis + offsetX;
+            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) + 135 + offsetYaw;
         }
         else if (unit == CabinetType.CPL || unit == CabinetType.CPM || unit == CabinetType.CPR)
         {
-            absEndY = absStartY + moveAmount;
-            absEndX = absStartX;
-            deltaY = moveAmount;
-            deltaX = 0;
-            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY));
+            absEndY = absStartY + moveval + offsetY;
+            absEndX = absStartX + offsetX;
+            deltaY = moveval + offsetY;
+            deltaX = 0 + offsetX;
+            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) + offsetYaw;
         }
         else
         {
@@ -469,16 +485,16 @@ public class ArmOperations
         }
 
         commandString = "";
-        double deltaZ = (desktopZOffset);
+        double deltaZ = (desktopZval);
         if (unit == CabinetType.CPL || unit == CabinetType.CPM || unit == CabinetType.CPR)
         {
-            deltaZ = (stackPosition == 2) ? smallZOffset : bigZOffset;
+            deltaZ = (stackPosition == 2) ? smallZval : bigZval;
         }
 
         //
         //MOVE DOWN
         //
-        commandString = "0 0 " + String.valueOf(Utils.formatDouble(deltaZ)) + " MOVE";//moves DOWN set amount
+        commandString = "0 0 " + String.valueOf(Utils.formatDouble(deltaZ + offsetZ)) + " MOVE";//moves DOWN set amount
         r12o.write(commandString);
         response = r12o.getResponse(commandString);
 
@@ -526,7 +542,7 @@ public class ArmOperations
         //
         //MOVE UP
         //
-        commandString = "0 0 " + String.valueOf(Utils.formatDouble(-deltaZ)) + " MOVE";//moves UP set amount
+        commandString = "0 0 " + String.valueOf(Utils.formatDouble(-deltaZ + offsetZ)) + " MOVE";//moves UP set amount
         r12o.write(commandString);
         response = r12o.getResponse(commandString);
 
