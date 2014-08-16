@@ -202,9 +202,9 @@ public class ArmOperations
         Position posOffsetInfo = plt.shelfToPosition(unit, 101);        
         
         double bigZOffset = Double.valueOf(posOffsetInfo.getY());
-        double smallZOffset = Double.valueOf(posOffsetInfo.getY());
-        double desktopZOffset = Double.valueOf(posOffsetInfo.getY());
-        double moveOffset = Double.valueOf(posOffsetInfo.getY());
+        double smallZOffset = Double.valueOf(posOffsetInfo.getZ());
+        double desktopZOffset = Double.valueOf(posOffsetInfo.getZ());
+        double moveOffset = Double.valueOf(posOffsetInfo.getX());
 
         //101 Y val big
         // 101 Z val small
@@ -405,12 +405,12 @@ public class ArmOperations
         String commandString = "";
         ResponseObject response = null;                
 
-        Position posOffsetInfo = plt.shelfToPosition(unit, 101);        
+        Position posOffsetInfo = plt.shelfToPosition(unit, 101); 
         
         double bigZOffset = Double.valueOf(posOffsetInfo.getY());
-        double smallZOffset = Double.valueOf(posOffsetInfo.getY());
-        double desktopZOffset = Double.valueOf(posOffsetInfo.getY());
-        double moveAmount = Double.valueOf(posOffsetInfo.getY());
+        double smallZOffset = Double.valueOf(posOffsetInfo.getZ());
+        double desktopZOffset = Double.valueOf(posOffsetInfo.getZ());
+        double moveAmount = Double.valueOf(posOffsetInfo.getX());
 
         //101 Y val big
         // 101 Z val small
