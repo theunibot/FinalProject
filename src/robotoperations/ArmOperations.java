@@ -96,13 +96,9 @@ public class ArmOperations
 
         for (String command : initCommands)//runs every command in the file
         {
-            r12o.write(command);
-            ResponseObject response = r12o.getResponse(command);
-
-            if (!response.isSuccessful())
-            {
-                return new Result("Command Failed! Cmd: " + command + " Response Msg: " + response.getMsg());
-            }
+            Result result = runRobotCommand(command);
+            if (!result.success())
+                return result;
         }
         return new Result();
     }
@@ -140,35 +136,24 @@ public class ArmOperations
             {
                 //run the modify start command
                 String modStart = positionCommandToRouteModifyString(start, route.getRouteProperties().getRouteIDName(), 1);
-                r12o.write(modStart);
-                response = r12o.getResponse(modStart);
-                if (!response.isSuccessful())
-                {
-                    return new Result("Command Failed! Cmd: " + modStart + " Response Msg: " + response.getMsg());
-                }
+                Result result = runRobotCommand(modStart);
+                if (!result.success())
+                        return result;
             }
             if (end != null)
             {
                 //run the modify end command
                 String modEnd = positionCommandToRouteModifyString(end, route.getRouteProperties().getRouteIDName(), route.size());
-                r12o.write(modEnd);
-
-                response = r12o.getResponse(modEnd);
-
-                if (!response.isSuccessful())
-                {
-                    return new Result("Command Failed! Cmd: " + modEnd + " Response Msg: " + response.getMsg());
-                }
+                Result result = runRobotCommand(modEnd);
+                if (!result.success())
+                    return result;
             }
 
             // run the route
             String runRoute = "CONTINUOUS ADJUST " + route.getRouteProperties().getRouteIDName() + " RUN";
-            r12o.write(runRoute);
-            response = r12o.getResponse(runRoute);
-            if (!response.isSuccessful())
-            {
-                return new Result("Command Failed! Cmd: " + runRoute + " Response Msg: " + response.getMsg());
-            }
+            Result result = runRobotCommand(runRoute);
+            if (!result.success())
+                return result;
 
             return new Result();
         }
@@ -235,25 +220,17 @@ public class ArmOperations
         //UNGRIP
         //
         commandString = "UNGRIP";//Ungrip
-        r12o.write(commandString);
-        ResponseObject response = r12o.getResponse(commandString);
-
-        if (!response.isSuccessful())
-        {
-            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-        }
+        Result result = runRobotCommand(commandString);
+        if (!result.success())
+            return result;
 
         //
         //MOVE DOWN
         //
         commandString = "0 0 " + String.valueOf(Utils.formatDouble(deltaZ + offsetZ)) + " MOVE";//moves DOWN set amount
-        r12o.write(commandString);
-        response = r12o.getResponse(commandString);
-
-        if (!response.isSuccessful())
-        {
-            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-        }
+        result = runRobotCommand(commandString);
+        if (!result.success())
+            return result;
 
         //
         //Move forward
@@ -298,100 +275,34 @@ public class ArmOperations
 //        System.out.println("MOVING FROM START ABS X: " + absStartX + " Y: " + absStartY
 //                + " to END ABS X: " + absEndX + " Y: " + absEndY);
         commandString = Utils.formatDouble(yaw) + " YAW ! " + Utils.formatDouble(deltaX) + " " + Utils.formatDouble(deltaY) + " 0 MOVE";//moves DOWN set amount
-        r12o.write(commandString);
-        response = r12o.getResponse(commandString);
-
-        if (!response.isSuccessful())
-        {
-            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-        }
+        result = runRobotCommand(commandString);
+        if (!result.success())
+            return result;
 
         //
         //GRIP
         //
         commandString = "GRIP";
-        r12o.write(commandString);
-        response = r12o.getResponse(commandString);
-
-        if (!response.isSuccessful())
-        {
-            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-        }
+        result = runRobotCommand(commandString);
+        if (!result.success())
+            return result;
 
         //
         //MOVE UP
         //
         commandString = "0 0 " + String.valueOf(Utils.formatDouble(-(deltaZ + offsetZ))) + " MOVE";//moves UP set amount
-        r12o.write(commandString);
-        response = r12o.getResponse(commandString);
-
-        if (!response.isSuccessful())
-        {
-            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-        }
+        result = runRobotCommand(commandString);
+        if (!result.success())
+            return result;
 
         //
         //MOVE Back to position
         //
         commandString = position.getYaw() + " YAW ! " + position.getX() + " " + position.getY() + " " + position.getZ() + " MOVETO";
-        r12o.write(commandString);
-        response = r12o.getResponse(commandString);
+        result = runRobotCommand(commandString);
+        if (!result.success())
+            return result;
 
-        if (!response.isSuccessful())
-        {
-            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-        }
-//        //unit is used to define angle to the unit
-//        //stack pos only relevant if CP, used to pick route for depth
-//
-//        RouteEffectType retIn = RouteEffectType.GRIPPER_IN2;
-//        RouteEffectType retOut = RouteEffectType.GRIPPER_OUT2;
-//        if (unit == CabinetType.CPL || unit == CabinetType.CPM || unit == CabinetType.CPR)
-//        {
-//
-//            if (stackPosition == 1)
-//            {
-//                retIn = RouteEffectType.GRIPPER_IN1;
-//                retOut = RouteEffectType.GRIPPER_OUT1;
-//            }
-//        }
-//        Route routeIn = rh.getRoute(unit, unit, retIn);
-//        Route routeOut = rh.getRoute(unit, unit, retOut);
-//
-//        if (routeIn == null || routeOut == null)
-//        {
-//            return new Result("Gripper Route for " + unit.toString() + " not found.");
-//        }
-//
-//        //stuff not null
-//        String commandString = position.getName() + " GOTO " + routeIn.getRouteProperties().getRouteIDName() + " START-HERE ADJUST CONTINUOUS RUN";
-//        r12o.write(commandString);
-//        ResponseObject response = r12o.getResponse(commandString);
-//
-//        if (!response.isSuccessful())
-//        {
-//            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-//        }
-//        //get to position successful
-//
-//        commandString = "GRIP";
-//        r12o.write(commandString);
-//        response = r12o.getResponse(commandString);
-//
-//        if (!response.isSuccessful())
-//        {
-//            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-//        }
-//
-//        //grip successful
-//        commandString = position.getName() + " " + routeIn.getRouteProperties().getRouteIDName() + " END-THERE ADJUST CONTINUOUS RUN";
-//        r12o.write(commandString);
-//        response = r12o.getResponse(commandString);
-//
-//        if (!response.isSuccessful())
-//        {
-//            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-//        }
         //move back to start pos succesful.
         return new Result();
     }
@@ -482,14 +393,10 @@ public class ArmOperations
         }
 
         commandString = Utils.formatDouble(yaw) + " YAW ! " + Utils.formatDouble(deltaX) + " " + Utils.formatDouble(deltaY) + " 0 MOVE";//moves DOWN set amount
-        r12o.write(commandString);
-        response = r12o.getResponse(commandString);
-
-        if (!response.isSuccessful())
-        {
-            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-        }
-
+        Result result = runRobotCommand(commandString);
+        if (!result.success())
+            return result;
+        
         commandString = "";
         double deltaZ = (desktopZval);
         if (unit == CabinetType.CPL || unit == CabinetType.CPM || unit == CabinetType.CPR)
@@ -501,112 +408,43 @@ public class ArmOperations
         //MOVE DOWN
         //
         commandString = "0 0 " + String.valueOf(Utils.formatDouble(deltaZ + offsetZ)) + " MOVE";//moves DOWN set amount
-        r12o.write(commandString);
-        response = r12o.getResponse(commandString);
-
-        if (!response.isSuccessful())
-        {
-            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-        }
+        result = runRobotCommand(commandString);
+        if (!result.success())
+            return result;
 
         //
         //UNGRIP
         //
         commandString = "UNGRIP";//Ungrip
-        r12o.write(commandString);
-        response = r12o.getResponse(commandString);
-
-        if (!response.isSuccessful())
-        {
-            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-        }
+        result = runRobotCommand(commandString);
+        if (!result.success())
+            return result;
 
         //
         //MOVE Back
         //
         commandString = Utils.formatDouble(Double.parseDouble(position.getYaw())) + " YAW ! " + Utils.formatDouble(-deltaX) + " " + Utils.formatDouble(-deltaY) + " 0 MOVE";
-        r12o.write(commandString);
-        response = r12o.getResponse(commandString);
-
-        if (!response.isSuccessful())
-        {
-            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-        }
+        result = runRobotCommand(commandString);
+        if (!result.success())
+            return result;
 
         //
         //GRIP
         //
         commandString = "GRIP";
-        r12o.write(commandString);
-        response = r12o.getResponse(commandString);
-
-        if (!response.isSuccessful())
-        {
-            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-        }
+        result = runRobotCommand(commandString);
+        if (!result.success())
+            return result;
 
         //
         //MOVE UP
         //
         commandString = "0 0 " + String.valueOf(Utils.formatDouble(-(deltaZ + offsetZ))) + " MOVE";//moves UP set amount
-        r12o.write(commandString);
-        response = r12o.getResponse(commandString);
+        result = runRobotCommand(commandString);
+        if (!result.success())
+            return result;
 
-        if (!response.isSuccessful())
-        {
-            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-        }
 
-//        //unit is used to define angle to the unit
-//        //stack pos only relevant if CP, used to pick route for depth
-//        RouteEffectType retIn = RouteEffectType.GRIPPER_IN2;
-//        RouteEffectType retOut = RouteEffectType.GRIPPER_OUT2;
-//        if (unit == CabinetType.CPL || unit == CabinetType.CPM || unit == CabinetType.CPR)
-//        {
-//
-//            if (stackPosition == 1)
-//            {
-//                retIn = RouteEffectType.GRIPPER_IN1;
-//                retOut = RouteEffectType.GRIPPER_OUT1;
-//            }
-//        }
-//        Route routeIn = rh.getRoute(unit, unit, retIn);
-//        Route routeOut = rh.getRoute(unit, unit, retOut);
-//
-//        if (routeIn == null || routeOut == null)
-//        {
-//            return new Result("Gripper Route for " + unit.toString() + " not found.");
-//        }
-//
-//        //stuff not null
-//        String commandString = positon.getName() + " GOTO " + routeIn.getRouteProperties().getRouteIDName() + " START-HERE ADJUST CONTINUOUS RUN";
-//        r12o.write(commandString);
-//        ResponseObject response = r12o.getResponse(commandString);
-//
-//        if (!response.isSuccessful())
-//        {
-//            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-//        }
-//        //get to position successful
-//
-//        commandString = "UNGRIP";
-//        r12o.write(commandString);
-//        response = r12o.getResponse(commandString);
-//
-//        if (!response.isSuccessful())
-//        {
-//            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-//        }
-//
-//        //grip successful
-//        commandString = positon.getName() + " " + routeIn.getRouteProperties().getRouteIDName() + " END-THERE ADJUST CONTINUOUS RUN";
-//        r12o.write(commandString);
-//        response = r12o.getResponse(commandString);
-//
-//        if (!response.isSuccessful())
-//        {
-//            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-//        }
         //move back to start pos succesful.
         return new Result();
     }
