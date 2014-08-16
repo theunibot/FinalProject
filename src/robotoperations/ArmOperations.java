@@ -240,12 +240,14 @@ public class ArmOperations
         //
         double absStartX = Double.parseDouble(position.getX());
         double absStartY = Double.parseDouble(position.getY());
-        double deltaAxis = DELTA_FORWARD / (2 ^ (1 / 2));//get the distance forward divided by root2
+        double deltaAxis = DELTA_FORWARD / (Math.sqrt(2.0d));//get the distance forward divided by root2
         double absEndX = 0;
         double absEndY = absStartY - deltaAxis;
         double deltaX = 0;
         double deltaY = -deltaAxis;
         double yaw = 0;
+        System.out.println("DELTA FWD: " + DELTA_FORWARD);
+        System.out.println("DELTA FOR EACH AXIS: " + deltaAxis);
         
         //abs startX/Y used to calc abs endX/Y which are used to calc the Yaw
         //deltaX/Y used for MOVE commands
@@ -253,7 +255,7 @@ public class ArmOperations
         {
             absEndX = absStartX - deltaAxis;
             deltaX = -deltaAxis;
-            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) - 135;
+            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) - 135;            
         }
         else if (unit == CabinetType.D1)
         {
@@ -274,6 +276,9 @@ public class ArmOperations
             return new Result("Invalid CabinetType: " + unit.toString());
         }
 
+        System.out.println("THEREFORE MOVE X: " + deltaX + " Y: " + deltaY);
+        System.out.println("MOVING FROM START ABS X: " + absStartX + " Y: " + absStartY
+        + " to END ABS X: " + absEndX + " Y: " + absEndY);
         commandString = Utils.formatDouble(yaw) + " YAW ! " + Utils.formatDouble(deltaX) + " " + Utils.formatDouble(deltaY) + " 0 MOVE";//moves DOWN set amount
         r12o.write(commandString);
         response = r12o.getResponse(commandString);
@@ -398,7 +403,7 @@ public class ArmOperations
         //
         double absStartX = Double.parseDouble(position.getX());
         double absStartY = Double.parseDouble(position.getY());
-        double deltaAxis = DELTA_FORWARD / (2 ^ (1 / 2));//get the distance forward divided by root2
+        double deltaAxis = DELTA_FORWARD / (Math.sqrt(2.0d));//get the distance forward divided by root2
         double absEndX = 0;
         double absEndY = absStartY - deltaAxis;
         double deltaX = 0;
