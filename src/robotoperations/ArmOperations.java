@@ -39,7 +39,7 @@ public class ArmOperations
 {
 
     private final boolean armOpsSimulated = false;
-    private final boolean r12OpsSimulated = false;
+    private final boolean r12OpsSimulated = true;
     
     private final boolean armOpsLogging = true;
     private R12Operations r12o = null;
@@ -51,6 +51,8 @@ public class ArmOperations
     private int speed;
     private boolean changeSpeed = false;
     private Semaphore debugSemaphore = new Semaphore(0);
+    private boolean debugSkip = false;
+    private boolean debugFail = false;
 
 
     //Regular Objects
@@ -707,7 +709,35 @@ public class ArmOperations
             debugSemaphore.release();
             return new Result();
         }
-        return new Result("Robot not in debug mode; change not change speed");
+        return new Result("Robot not in debug mode; cannot step");
+    }
+    
+    /**
+     * When in debug mode, skips over the next roboforth statement
+     * 
+     * @return Result w/success/fail info
+     */
+    public Result debugSkip() {
+        if (debugMode) {
+            debugSkip = true;
+            debugSemaphore.release();
+            return new Result();
+        }
+        return new Result("Robot not in debug mode; nothing skipped");
+    }
+    
+    /**
+     * When in debug mode, causes next RF statement to fail
+     * 
+     * @return Result w/success/fail info
+     */
+    public Result debugFail() {
+        if (debugMode) {
+            debugFail = true;
+            debugSemaphore.release();
+            return new Result();
+        }
+        return new Result("Robot not in debug mode; cannot set failure");
     }
     
     /**
@@ -736,6 +766,17 @@ public class ArmOperations
                     return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
                 // return to the debug loop
                 continue;
+            }
+            // were we asked to skip this instruction?
+            if (debugSkip) {
+                debugSkip = false;
+                System.out.println("        Debug: SKIPPING: " + commandString);
+                return new Result();
+            }
+            if (debugFail) {
+                debugFail = false;
+                System.out.println("        Debug: FAILING: " + commandString);
+                return new Result("Debug fail requested");
             }
             break;
         }
