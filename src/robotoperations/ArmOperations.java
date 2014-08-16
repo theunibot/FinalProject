@@ -127,7 +127,7 @@ public class ArmOperations
     {
         if (armOpsSimulated)
         {
-            System.out.println("ArmOperations: runRoute " + route.getRouteProperties().getRouteFriendlyName()
+            System.out.println("   ArmOperations: runRoute " + route.getRouteProperties().getRouteFriendlyName()
                     + " from " + ((start != null) ? start.getName() : "undefined") + " to "
                     + ((end != null) ? end.getName() : "undefined"));
             if (!r12OpsSimulated)
@@ -194,7 +194,7 @@ public class ArmOperations
     {
         if (armOpsSimulated)
         {
-            System.out.println("ArmOperations: pick from " + unit.toString() + " position " + stackPosition + " starting at " + position.getName());
+            System.out.println("   ArmOperations: pick from " + unit.toString() + " position " + stackPosition + " starting at " + position.getName());
             if (!r12OpsSimulated)
                 return new Result();
         }
@@ -408,7 +408,7 @@ public class ArmOperations
     {
         if (armOpsSimulated)
         {
-            System.out.println("ArmOperations: drop at " + unit.toString() + " position " + stackPosition + " starting at " + position.getName());
+            System.out.println("   ArmOperations: drop at " + unit.toString() + " position " + stackPosition + " starting at " + position.getName());
             if (!r12OpsSimulated)
                 return new Result();
         }
@@ -617,7 +617,7 @@ public class ArmOperations
     {
         if (armOpsSimulated)
         {
-            System.out.println("ArmOperations: calibrate");
+            System.out.println("   ArmOperations: calibrate");
             if (!r12OpsSimulated)
                 return new Result();
         }
@@ -634,7 +634,7 @@ public class ArmOperations
     {
         if (armOpsSimulated)
         {
-            System.out.println("ArmOperations: home");
+            System.out.println("   ArmOperations: home");
             if (!r12OpsSimulated)
                 return new Result();
         }
@@ -650,7 +650,7 @@ public class ArmOperations
     {
         if (armOpsSimulated)
         {
-            System.out.println("ArmOperations: energize");
+            System.out.println("   ArmOperations: energize");
             if (!r12OpsSimulated)
                 return new Result();
         }
@@ -666,7 +666,7 @@ public class ArmOperations
     {
         if (armOpsSimulated)
         {
-            System.out.println("ArmOperations: de-energize");
+            System.out.println("   ArmOperations: de-energize");
             if (!r12OpsSimulated)
                 return new Result();
         }
@@ -684,7 +684,7 @@ public class ArmOperations
     {
         if (armOpsSimulated)
         {
-            System.out.println("ArmOperations: position to " + position.getName());
+            System.out.println("   ArmOperations: position to " + position.getName());
             if (!r12OpsSimulated)
                 return new Result();
         }
@@ -700,7 +700,7 @@ public class ArmOperations
     {
         if (armOpsSimulated)
         {
-            System.out.println("ArmOperations: persist");
+            System.out.println("   ArmOperations: persist");
             if (!r12OpsSimulated)
                 return new Result();
         }
@@ -718,7 +718,7 @@ public class ArmOperations
 
         if (armOpsSimulated)
         {
-            System.out.println("ArmOperations: learnRoute " + route.getRouteProperties().getRouteFriendlyName());
+            System.out.println("   ArmOperations: learnRoute " + route.getRouteProperties().getRouteFriendlyName());
             if (!r12OpsSimulated)
                 return new Result();
         }
@@ -747,7 +747,7 @@ public class ArmOperations
     {
         if (armOpsSimulated)
         {
-            System.out.println("ArmOperations: learnPoint " + position.getName());
+            System.out.println("   ArmOperations: learnPoint " + position.getName());
             if (!r12OpsSimulated)
                 return new Result();
         }
@@ -763,7 +763,7 @@ public class ArmOperations
     {
         if (armOpsSimulated)
         {
-            System.out.println("ArmOperations: grip");
+            System.out.println("   ArmOperations: grip");
             if (!r12OpsSimulated)
                 return new Result();
         }
@@ -779,7 +779,7 @@ public class ArmOperations
     {
         if (armOpsSimulated)
         {
-            System.out.println("ArmOperations: ungrip");
+            System.out.println("   ArmOperations: ungrip");
             if (!r12OpsSimulated)
                 return new Result();
         }
@@ -796,7 +796,7 @@ public class ArmOperations
     {
         if (armOpsSimulated)
         {
-            System.out.println("ArmOperations: restartController");
+            System.out.println("   ArmOperations: restartController");
             if (!r12OpsSimulated)
                 return new Result();
         }

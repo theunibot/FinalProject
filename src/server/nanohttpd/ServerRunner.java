@@ -29,21 +29,18 @@ public class ServerRunner
             System.exit(-1);
         }
 
-        if (main.Main.DEBUG)
+        System.out.println("Server started, Hit Enter to stop.");
+
+        try
         {
-            System.out.println("Server started, Hit Enter to stop.");
-
-            try
-            {
-                System.in.read();
-            }
-            catch (IOException ignored)
-            {
-            }
-
-            server.stop();
-            System.out.println("Server stopped.");
+            System.in.read();
         }
+        catch (IOException ignored)
+        {
+        }
+
+        server.stop();
+        System.out.println("Server stopped.");
 
     }
 }
