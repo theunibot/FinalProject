@@ -36,7 +36,7 @@ public class R12Operations
     private int port = 1111;
 
     //INI vars
-    private final String INI_FILENAME = "R12ArmSetup.ini";
+    private final String INI_FILENAME = "R12CommSetup.ini";
     private final String INI_FILE_SECTION_KEY = "vars";
     private final String INI_FILE_PORT_KEY = "portkey";
     private final String INI_FILE_ADDRESS_KEY = "addresskey";
