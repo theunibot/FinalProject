@@ -27,7 +27,6 @@ import utils.Result;
  */
 public class R12Operations
 {
-    private boolean simulated = false;
     //Command Objects
     private R12Interface r12i = null;
     private static R12Operations r12Operations = null;
@@ -47,6 +46,7 @@ public class R12Operations
             + INI_FILE_ADDRESS_KEY + "=" + address + "\n"
             + INI_FILE_PORT_KEY + "=" + port;
 
+    private boolean simulated = false;  // do not change this here - change in ArmOperations
     
     /**
      * Constructor made private since this is a singleton interface

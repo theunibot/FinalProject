@@ -28,10 +28,10 @@ import utils.Result;
 /**
  *
  */
-public class CommandArmGrip extends CommandInterface {
+public class CommandArmGripper extends CommandInterface {
     boolean grip;
     
-    public CommandArmGrip(boolean grip) {
+    public CommandArmGripper(boolean grip) {
         this.grip = grip;
     }
     

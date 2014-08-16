@@ -150,7 +150,7 @@ public class RouteCompiler
                         Route clone = new Route(cloneProps);
                         if (chunks[3].equals(ROUTE_CLONE_FWD))
                         {
-                            System.out.println("From " + chunks[0] + " to " + chunks[1] + " effect " + chunks[2]);
+                            //System.out.println("From " + chunks[0] + " to " + chunks[1] + " effect " + chunks[2]);
                             for (int i = 0; i < routeToClone.size(); i++)
                                 clone.add(new RoutePosition(routeToClone.get(i), clone.getRouteProperties().getRouteIDName()));
                         }

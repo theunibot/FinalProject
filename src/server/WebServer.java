@@ -55,6 +55,7 @@ public class WebServer extends NanoHTTPD
     private final String GET_VAR = "/GET-VARIABLE";
     private final String SET_VAR = "/SET-VARIABLE";
     private final String INVENTORY = "/INVENTORY";
+    private final String DEBUG = "/DEBUG";
 
     private final String XSS_KEY = "Access-Control-Allow-Origin";
     private final String XSS_VALUE = "*";
@@ -136,6 +137,10 @@ public class WebServer extends NanoHTTPD
             else if (uri.startsWith(STATUS))
             {
                 responseStr = sh.status(params);
+            }
+            else if (uri.startsWith(DEBUG))
+            {
+                responseStr = sh.debug(params);
             }
             else if (uri.startsWith(CLEAR_QUEUE))
             {

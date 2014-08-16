@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.json.simple.JSONObject;
+import robotoperations.ArmOperations;
 import route.Position;
 import route.PositionLookup;
 import utils.Result;
@@ -146,7 +147,7 @@ public class ServerHooks
                 String gripStr = params.get("grip");
                 if ( (gripStr != null) && (gripStr.toLowerCase().startsWith("o")) )
                     grip = false;
-                cmd = new CommandArmGrip(grip);
+                cmd = new CommandArmGripper(grip);
                 break;
             case "program-controller":
                 String name = params.get("name");
@@ -260,6 +261,70 @@ public class ServerHooks
 
         return json.toString();
     }
+    
+    private final String DEBUG_COMMAND_KEY = "debug";
+    
+    public String debug(Map<String, String> params) {
+        JSONObject json = new JSONObject();
+        ArmOperations ao = ArmOperations.getInstance();
+        Result result = new Result();
+        
+        String debug = params.get(DEBUG_COMMAND_KEY);
+        if (debug != null) {
+             switch (debug.toLowerCase()) {
+                 case "on":
+                     result = ao.debug(true);
+                     break;
+                 case "off":
+                     result = ao.debug(false);
+                     break;
+                 case "step":
+                     result = ao.debugStep();
+                     break;
+                 case "skip":
+                     result = ao.debugSkip();
+                     break;
+                 case "fail":
+                     result = ao.debugFail();
+                     break;
+                 case "speed":
+                     String speedStr = params.get("speed");
+                     if (speedStr != null) {
+                         int speed = Integer.valueOf(speedStr);
+                         result = ao.debugSpeed(speed);
+                     } else {
+                         System.err.println("Debug speed command missing speed parameter");
+                         json.put(STATUS_ERROR_KEY, "Debug speed command missing speed parameter");
+                     }
+                     break;
+                 case "x":
+                 case "y":
+                 case "z":
+                 case "yaw":
+                 case "pitch":
+                 case "roll":
+                     String valueStr = params.get("value");
+                     if (valueStr != null) {
+                         Double value = Double.valueOf(valueStr) * 10;
+                         result = ao.debugAdjust(debug.toLowerCase(), value.intValue());
+                     } else {
+                         System.err.println("Debug " + debug.toLowerCase() + " command missing value parameter");
+                         json.put(STATUS_ERROR_KEY, "Debug " + debug.toLowerCase() + " command missing value parameter");
+                     }
+                     break;
+                 default:
+                     System.err.println("Unknown debug command " + debug);
+                     json.put(STATUS_ERROR_KEY, "Unknown debug command " + debug);
+                     break;
+             }
+        } else {
+            System.err.println("Missing debug command");
+            json.put(STATUS_ERROR_KEY, "Missing debug command");
+        }
+        if (!result.success())
+            json.put(STATUS_ERROR_KEY, result.errorMessage);
+        return json.toString();
+    }
 
     private final String CLEAR_QUEUE_ID_KEY = "queue";
 
@@ -277,15 +342,18 @@ public class ServerHooks
             }
             catch (NumberFormatException ignored)
             {
-                System.out.println("Clear queue failed - invalid number " + strVal);
+                System.err.println("Clear queue failed - invalid number " + strVal);
+                json.put(STATUS_ERROR_KEY, "Invalid ID number");
             }
             //if value is legit
             if (intVal != -1)
             {
                 cmdq.clear(intVal);
             }
-        } else
-            System.out.println("Clear queue failed - no parameter found");
+        } else {
+            System.err.println("Clear queue failed - no parameter found");
+            json.put(STATUS_ERROR_KEY, "No ID parameter found");
+        }
         return json.toString();
     }
 
