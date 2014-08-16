@@ -86,6 +86,16 @@ public abstract class CommandInterface
     }
     
     /**
+     * By default commands will have various messages logged about their progress.   Commands can override this and
+     * return false to avoid having their command operations logged.
+     * 
+     * @return true if logging to be done, false if silent 
+     */
+    public boolean logActivity() {
+        return true;
+    }
+    
+    /**
      * Set the queue index for this command; used to track which queue this command is executing in
      * 
      * @param queueIndex Index of the queue (0=priority, 1/2 = desktop queues)

@@ -68,7 +68,7 @@ public class CommandProcessor
      * Main command processor thread - blocks and executes command until terminated with kill
      */
     public void processCommands() {
-        System.out.println("Command processor started");
+//        System.out.println("Command processor started");
         Result activeError = new Result("Startup - Calibration required");
         
         // set up our command arguments to track the arm position
@@ -95,34 +95,40 @@ public class CommandProcessor
             }
             // do we have an error pending?
             if (!activeError.success() && !cmd.ignoreErrors()) {
-                System.out.println("Ignoring command " + cmd.details() + " (due to outstanding error)");
+                if (cmd.logActivity())
+                    System.out.println("Ignoring command " + cmd.details() + " (due to outstanding error)");
                 cmd.setResult(activeError);
                 cmd.setStatus(CommandStatus.ERROR);
                 continue;
             }
             // process the command
-            System.out.println("Processing command " + cmd.details());
+            if (cmd.logActivity())
+                System.out.println("Processing command " + cmd.details());
             cmd.setStatus(CommandStatus.EXECUTING);
             Result result = cmd.execute(commandArgs);
             switch (result.completion) {
                 case ERROR:
-                    System.err.println("Command failed; setting status on command");
+                    if (cmd.logActivity())
+                        System.err.println("Command failed; setting status on command");
                     cmd.setResult(result);
                     cmd.setStatus(CommandStatus.ERROR);
                     activeError = result;
                     break;
                 case COMPLETE:
-                    System.out.println("Command completed successfully");
+                    if (cmd.logActivity())
+                        System.out.println("Command completed successfully");
                     cmd.setStatus(CommandStatus.COMPLETE);
                     // can this clear the error flag?
                     if (!activeError.success() && cmd.successClearsError()) {
                         Inventory.getInstance().resetInventory();
-                        System.out.println("Command has cleared error flag; inventory reset and operations to continue normally");
+                        if (cmd.logActivity())
+                            System.out.println("Command has cleared error flag; inventory reset and operations to continue normally");
                         activeError = new Result();
                     }
                     break;
                 case INCOMPLETE:
-                    System.out.println("Command incomplete; queueing for another run");
+                    if (cmd.logActivity())
+                        System.out.println("Command incomplete; queueing for another run");
                     cmd.setStatus(CommandStatus.PENDING);
                     cmdq.push(cmd);
                     break;                    

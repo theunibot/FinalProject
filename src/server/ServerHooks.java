@@ -296,22 +296,16 @@ public class ServerHooks
     {
         JSONObject json = new JSONObject();
         String key = null;
-
-        if ((key = params.get(GET_INPUT_VAL_KEY)) == null)//get the value of the key
-        {
-            System.out.println("Error, getVar key not found");
-        }
-        System.out.println("GET Printout: Key: " + key + " Value: " + vars.get(key));
         String val;
-        synchronized (vars)
-        {
+
+        key = params.get(GET_INPUT_VAL_KEY);
+//        System.out.println("GET Printout: Key: " + key + " Value: " + vars.get(key));
+        synchronized (vars) {
             val = vars.get(key);
         }
-        if (val == null)//get value of the value
-        {
+        
+        if (val == null) 
             val = "";
-            System.out.println("Error, " + key + "\'s value not found");
-        }
         
         json.put(GET_RETURN_VAL_KEY, val);
         return json.toString();
@@ -324,30 +318,15 @@ public class ServerHooks
     {
         String key = null;
         JSONObject json = new JSONObject();
-
-        if ((key = params.get(SET_VAR_READ_VAL_KEY)) == null)//get the value of the key
-        {
-            key = null;
-            System.out.println("Error, key not found");
-        }
         String val;
-        if ((val = params.get(SET_VAR_READ_VAL_VALUE)) == null)//get value of the value
-        {
-            val = null;
-            System.out.println("Error, value not found");
-        }
 
-        if (key != null && val != null)
-        {
-            System.out.println("Wrt: key: " + key + " val: " + val);
-            synchronized (vars)
-            {
+        key = params.get(SET_VAR_READ_VAL_KEY);
+        val = params.get(SET_VAR_READ_VAL_VALUE);
+
+        if (key != null && val != null) {
+            synchronized (vars) {
                 vars.put(key, val);
             }
-        }
-        synchronized (vars)
-        {
-            System.out.println("Wrt test Get Val: " + vars.get(key));
         }
 
         return json.toString();

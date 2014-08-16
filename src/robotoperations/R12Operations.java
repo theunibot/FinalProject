@@ -27,7 +27,7 @@ import utils.Result;
  */
 public class R12Operations
 {
-    private final boolean Simulated = false;
+    private boolean simulated = false;
     //Command Objects
     private R12Interface r12i = null;
     private static R12Operations r12Operations = null;
@@ -58,8 +58,9 @@ public class R12Operations
      *
      * @return Result with success/fail info
      */
-    public Result init(){
-        if(Simulated){
+    public Result init(boolean simulated){
+        this.simulated = simulated;
+        if(simulated){
             return new Result();
         }
         else{
@@ -76,7 +77,7 @@ public class R12Operations
      * @return ResponseObject wrapper object for command sent
      */
     public ResponseObject getResponse(String command){    
-        if(Simulated){
+        if(simulated){
             return new ResponseObject(ArmOperations.RESPONSE_OK, true);
         }
         else{
@@ -167,7 +168,7 @@ public class R12Operations
      */
     public void write(String s){
         System.out.println("ROBOFORTH: " + s);
-        if (!Simulated)
+        if (!simulated)
             r12i.write(s + "\r");
     }
 

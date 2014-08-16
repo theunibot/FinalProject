@@ -28,7 +28,7 @@ import server.nanohttpd.ServerRunner;
 public class Main
 {
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     /**
      * @param args the command line arguments
