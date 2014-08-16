@@ -193,11 +193,14 @@ public class ArmOperations
     public Result pick(CabinetType unit, int stackPosition, Position position)
     {
         if (armOpsSimulated)
-        {
             System.out.println("    ArmOperations: pick from " + unit.toString() + " position " + stackPosition + " starting at " + position.getName());
-            if (!r12OpsSimulated)
-                return new Result();
-        }
+
+        // make sure the stackPosition is legit
+        if ( (stackPosition < 1) || (stackPosition > 2) )
+            return new Result("Invalid stackPosition of " + stackPosition + " passed to pick");
+        
+        if (armOpsSimulated && !r12OpsSimulated)
+            return new Result();
         
         Position posInfo = plt.shelfToPosition(unit, 91);        
         Position posOffsetInfo = plt.shelfToPosition(unit, 90);        
@@ -407,11 +410,14 @@ public class ArmOperations
     public Result drop(CabinetType unit, int stackPosition, Position position)
     {
         if (armOpsSimulated)
-        {
             System.out.println("    ArmOperations: drop at " + unit.toString() + " position " + stackPosition + " starting at " + position.getName());
-            if (!r12OpsSimulated)
-                return new Result();
-        }
+
+        // make sure the stackPosition is legit
+        if ( (stackPosition < 1) || (stackPosition > 2) )
+            return new Result("Invalid stackPosition of " + stackPosition + " passed to drop");
+        
+        if (armOpsSimulated && !r12OpsSimulated)
+            return new Result();
 
         
         String commandString = "";

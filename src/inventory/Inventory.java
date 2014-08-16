@@ -95,7 +95,7 @@ public class Inventory
      * @return Result indicating success/failure
      */
     public Result moveDisc(CabinetType fromType, int fromShelf, CabinetType toType, int toShelf) {
-        System.out.println("   Inventory: moveDisc " + fromType.toString() + " shelf " + fromShelf + " to " + 
+        System.out.println("    Inventory: moveDisc " + fromType.toString() + " shelf " + fromShelf + " to " + 
                 toType.toString() + " shelf " + toShelf);
         
         // if move from/to is the same, just return success

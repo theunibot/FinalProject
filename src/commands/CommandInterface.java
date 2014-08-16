@@ -228,10 +228,20 @@ public abstract class CommandInterface
         if (!result.success())
             return result;
         
+        // update inventory to reflect this change - before the final drop so we can lookup what the
+        // final effect on inventory would be to know our resting position (stack depth) on the cachepoint.
+        // (this resolves an issue where moving a disk from/to the same slot would misunderstand the
+        // depth)
+        if ( (fromShelf != -1) && (toShelf != -1) ) {
+            result = inventory.moveDisc(fromCabinet, fromShelf, toCabinet, toShelf);
+            if (!result.success())
+                return result;
+        }
         // and finally run the drop operation
-        if (toShelf != -1) {
+        if (toShelf != -1) { 
             int depth = inventory.depth(toCabinet, toShelf);
-            result = ao.drop(toCabinet, depth + 1, plt.shelfToPosition(toCabinet, toShelf));
+            
+            result = ao.drop(toCabinet, depth, plt.shelfToPosition(toCabinet, toShelf));
             if (!result.success())
                 return result;
         }
@@ -242,12 +252,6 @@ public abstract class CommandInterface
             args.coordinates = plt.shelfToPosition(toCabinet, toShelf);
         }
         
-        // update inventory to reflect this change
-        if ( (fromShelf != -1) && (toShelf != -1) ) {
-            result = inventory.moveDisc(fromCabinet, fromShelf, toCabinet, toShelf);
-            if (!result.success())
-                return result;
-        }
         // success!
         return new Result();
    }
