@@ -25,6 +25,7 @@ import route.PositionLookup;
 import route.Route;
 import route.RouteCompiler;
 import enums.RouteEffectType;
+import java.util.concurrent.Semaphore;
 import route.RouteHolder;
 import route.RouteProperties;
 import utils.FileUtils;
@@ -39,12 +40,17 @@ public class ArmOperations
 
     private final boolean armOpsSimulated = false;
     private final boolean r12OpsSimulated = false;
+    
     private final boolean armOpsLogging = true;
     private R12Operations r12o = null;
     private RouteCompiler rc = null;
     private PositionLookup plt = null;
     private RouteHolder rh = null;
     private static ArmOperations armOperations = null;
+    private boolean debugMode = false;
+    private int speed;
+    private boolean changeSpeed = false;
+    private Semaphore debugSemaphore = new Semaphore(0);
 
 
     //Regular Objects
@@ -649,6 +655,61 @@ public class ArmOperations
         return runRobotCommand("START");
     }
 
+    
+    /**
+     * Turns on/off robot debugging mode, which lets you step through robot commands one at a time
+     * 
+     * @param enable true to enable, false to disable (and return to normal operations)
+     * @return Result w/success/fail info
+     */
+    public Result debug(boolean enable) {
+        // are we changing mode?
+        if (debugMode == enable)
+            return new Result();
+        
+        // are we currently in debug mode?  If so, make sure nobody is blocked from execution
+        if (debugMode)
+            // ending debug mode - release any blocked operation
+            debugSemaphore.release();
+        else
+            // starting debug mode - make sure no permits are pending
+            debugSemaphore.drainPermits();
+        // set the mode
+        debugMode = enable;
+        return new Result();        
+    }
+    
+    /**
+     * Changes the robot speed.  Only works when in debug mode.
+     * 
+     * @param speed speed to change robot to
+     * @return Result w/success/fail info
+     */
+    public Result debugSpeed(int speed) {
+        if (debugMode) {
+            this.speed = speed;
+            this.changeSpeed = true;
+            // tell the other thread it can do something
+            debugSemaphore.release();
+            return new Result();
+        }
+        return new Result("Robot not in debug mode; change not change speed");
+    }
+    
+    /**
+     * When in debug mode, steps the robot one roboforth statement
+     * 
+     * @return Result w/success/fail info
+     */
+    public Result debugStep() {
+        if (debugMode) {
+            // release one instruction worth of execution
+            debugSemaphore.release();
+            return new Result();
+        }
+        return new Result("Robot not in debug mode; change not change speed");
+    }
+    
     /**
      * Sends an individual command to robot and looks for errors
      *
@@ -657,13 +718,34 @@ public class ArmOperations
      */
     private Result runRobotCommand(String commandString)
     {
+        // are we in debug mode?
+        while (debugMode) {
+            System.out.println("      Debug: Next command is: " + commandString);
+            try {
+               debugSemaphore.acquire();
+            } catch (InterruptedException e) {
+                // let things roll...
+            }
+            // are we being asked to change speed?
+            if (this.changeSpeed) {
+                this.changeSpeed = false;
+                String speedCmd = String.valueOf(this.speed) + " SPEED !";
+                r12o.write(speedCmd);
+                ResponseObject response = r12o.getResponse(speedCmd);
+                if (!response.isSuccessful())
+                    return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+                // return to the debug loop
+                continue;
+            }
+            break;
+        }
+
+        // we got a command - go execute it
         r12o.write(commandString);
         ResponseObject response = r12o.getResponse(commandString);
 
         if (!response.isSuccessful())
-        {
             return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-        }
         return new Result();
     }
 
