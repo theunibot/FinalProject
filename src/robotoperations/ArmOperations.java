@@ -39,7 +39,7 @@ public class ArmOperations
 {
 
     private final boolean armOpsSimulated = false;
-    private final boolean r12OpsSimulated = true;
+    private final boolean r12OpsSimulated = false;
     
     private final boolean armOpsLogging = true;
     private R12Operations r12o = null;
@@ -53,6 +53,9 @@ public class ArmOperations
     private Semaphore debugSemaphore = new Semaphore(0);
     private boolean debugSkip = false;
     private boolean debugFail = false;
+    private boolean debugAdjust = false;
+    private String debugAdjustAxis;
+    private int debugAdjustValue;
 
 
     //Regular Objects
@@ -741,6 +744,23 @@ public class ArmOperations
     }
     
     /**
+     * Adjusts the robot x/y/z/raw/pitch/roll by a specific amount (live)
+     * 
+     * @param axis one of "x", "y", "z", "yaw", "pitch", or "roll"
+     * @param value number of 10th mm to move
+     * @return Result with success/fail info
+     */
+    public Result debugAdjust(String axis, int value) {
+        if (debugMode) {
+            debugAdjust = true;
+            debugAdjustAxis = axis;
+            debugAdjustValue = value;
+            debugSemaphore.release();
+            return new Result();
+        }
+        return new Result("Robot not in debug mode; can not adjust");
+    }
+    /**
      * Sends an individual command to robot and looks for errors
      *
      * @param commandString command to execute
@@ -762,6 +782,37 @@ public class ArmOperations
                 String speedCmd = String.valueOf(this.speed) + " SPEED !";
                 r12o.write(speedCmd);
                 ResponseObject response = r12o.getResponse(speedCmd);
+                if (!response.isSuccessful())
+                    return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+                // return to the debug loop
+                continue;
+            }
+            // do we need to execute an adjustment?
+            if (this.debugAdjust) {
+                String adjustCmd = "";
+                this.debugAdjust = false;
+                switch (this.debugAdjustAxis) {
+                    case "x":
+                        adjustCmd = String.valueOf(this.debugAdjustValue) + " 0 0 MOVE";
+                        break;
+                    case "y":
+                        adjustCmd = "0 " + String.valueOf(this.debugAdjustValue) + " 0 MOVE";
+                        break;
+                    case "z":
+                        adjustCmd = "0 0 " + String.valueOf(this.debugAdjustValue) + " MOVE";
+                        break;
+                    case "pitch":
+                        adjustCmd = String.valueOf(this.debugAdjustValue) + " PITCH +! 0 0 0 MOVE";
+                        break;
+                    case "yaw":
+                        adjustCmd = String.valueOf(this.debugAdjustValue) + " YAW +! 0 0 0 MOVE";
+                        break;
+                    case "roll":
+                        adjustCmd = String.valueOf(this.debugAdjustValue) + " ROLL +! 0 0 0 MOVE";
+                        break;
+                }
+                r12o.write(adjustCmd);
+                ResponseObject response = r12o.getResponse(adjustCmd);
                 if (!response.isSuccessful())
                     return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
                 // return to the debug loop
