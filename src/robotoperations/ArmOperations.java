@@ -319,7 +319,7 @@ public class ArmOperations
         //
         //MOVE UP
         //
-        commandString = "0 0 " + String.valueOf(Utils.formatDouble(-deltaZ + offsetZ)) + " MOVE";//moves UP set amount
+        commandString = "0 0 " + String.valueOf(Utils.formatDouble(-(deltaZ + offsetZ))) + " MOVE";//moves UP set amount
         r12o.write(commandString);
         response = r12o.getResponse(commandString);
 
@@ -542,7 +542,7 @@ public class ArmOperations
         //
         //MOVE UP
         //
-        commandString = "0 0 " + String.valueOf(Utils.formatDouble(-deltaZ + offsetZ)) + " MOVE";//moves UP set amount
+        commandString = "0 0 " + String.valueOf(Utils.formatDouble(-(deltaZ + offsetZ))) + " MOVE";//moves UP set amount
         r12o.write(commandString);
         response = r12o.getResponse(commandString);
 
