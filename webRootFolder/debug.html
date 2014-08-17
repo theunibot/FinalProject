@@ -43,14 +43,17 @@ and open the template in the editor.
             cmd = "ENQUEUE?queue=0&status=0&command=POSITION-CALIBRATE&option=" + axis + "&value=" + distance;
             r12(cmd);
         }
-        function r12reload() {
-                name = prompt('Reload filter (empty is all; examples are CPL0, CPR23, D1_2, CPL_D1)?');
+        function r12reload(name) {
+                if (name == '')
+                    name = prompt('Reload filter (empty is all; examples are CPL0, CPR23, D1_2, CPL_D1)?');
                 cmd = 'ENQUEUE?queue=0&status=0&command=PROGRAM-CONTROLLER&name=' + name;
                 r12(cmd);
             }
-            function r12move() {
-                cabinet = prompt('Which cabinet (CPL, CPM, CPR, D1, or D2)?');
-                shelf = prompt('Which shelf?');
+            function r12move(cabinet, shelf) {
+                if (cabinet == null)
+                    cabinet = prompt('Which cabinet (CPL, CPM, CPR, D1, or D2)?');
+                if (shelf == null)
+                    shelf = prompt('Which shelf?');
                 cmd = 'ENQUEUE?queue=0&status=0&command=POSITION&cabinet=' + cabinet + '&shelf=' + shelf;
                 r12(cmd);
             }
@@ -117,16 +120,18 @@ and open the template in the editor.
             <div class="header">POSITION CALIBRATION</div>
             <div class="commands">
                 <div><a onclick="setCalibrate('D1', -1, 1, -1)">Calibrate D1</a></div>
-                <div><a onclick="setCalibrate('D1', -1, 1, -1)">Calibrate D2</a></div>
-                <div><a onclick="setCalibrate('D1', -1, 1, -1)">Calibrate CPL</a></div>
-                <div><a onclick="setCalibrate('D1', -1, 1, -1)">Calibrate CPM</a></div>
-                <div><a onclick="setCalibrate('D1', -1, 1, -1)">Calibrate CPR</a></div>
+                <div><a onclick="setCalibrate('D2', -1, 1, -1)">Calibrate D2</a></div>
+                <div><a onclick="setCalibrate('CPL', -1, 1, -1)">Calibrate CPL</a></div>
+                <div><a onclick="setCalibrate('CPM', -1, 1, -1)">Calibrate CPM</a></div>
+                <div><a onclick="setCalibrate('CPR', -1, 1, -1)">Calibrate CPR</a></div>
                 <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=ARM-GRIP&grip=o');">Ungrip</a></div>
                 <div><a onclick="r12CalPosition('out-top');">Move to OUT-TOP</a></div>
                 <div><a onclick="r12CalPosition('in-top');">Move to IN-TOP</a></div>
                 <div><a onclick="r12CalPosition('in-bottom');">Move to IN-BOTTOM</a></div>
                 <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=ARM-GRIP&grip=c');">Grip</a></div>
                 <div><a onclick="r12CalPosition('out-bottom');">Move to OUT-BOTTOM</a></div>
+                <div><a onclick="r12move('SAFEL', 0);">Move to SAFEL (D2 and CPL)</a></div>
+                <div><a onclick="r12move('SAFER', 0);">Move to SAFER (D1 and CPR)</a></div>
                 <div><a onclick="r12CalAdjust('x', -1);">Adjust X</a></div>
                 <div><a onclick="r12CalAdjust('y', -1);">Adjust Y</a></div>
                 <div><a onclick="r12CalAdjust('z', -1);">Adjust Z</a></div>
@@ -134,6 +139,7 @@ and open the template in the editor.
                 <div><a onclick="r12CalAdjust('yaw', -1);">Adjust Yaw</a></div>
                 <div><a onclick="r12CalAdjust('roll', -1);">Adjust Roll</a></div>
                 <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=POSITION-CALIBRATE&option=save');">Persist adjustments</a></div>
+                <div><a onclick="r12reload('NONE')">Reload positions and adjustments</a></div>
             </div>
         </div>
         <div class="section">
@@ -145,7 +151,7 @@ and open the template in the editor.
                 <div><a onclick="r12adjust('pitch');">Adjust Pitch</a></div>
                 <div><a onclick="r12adjust('yaw');">Adjust Yaw</a></div>
                 <div><a onclick="r12adjust('roll');">Adjust Roll</a></div>
-                <div><a onclick="r12reload()">Reload positions and routes</a></div>
+                <div><a onclick="r12reload('')">Reload positions and routes</a></div>
             </div>
         </div>
         <div class="section">

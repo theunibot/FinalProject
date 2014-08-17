@@ -179,12 +179,10 @@ public class PositionLookup
             Position adjustPos = adjustCabinetPositions.get(shelf);
             if (adjustPos != null) {
                 // apply the adjustments
-                System.out.println("Adjusting position by " + adjustPos.toString());
                 pos.offsetPositions(adjustPos);
             }
         }
         
-        System.out.println("Resulting position is " + pos.toString());
         return pos;
     }
 
@@ -234,7 +232,7 @@ public class PositionLookup
      * @return Result with success/fail information 
      */
     private Result loadPositionFile(String fileName, String defaultHeader, HashMap<CabinetType, HashMap<Integer, Position>> hashMap,
-            boolean adjustZOffset)
+            boolean adjustZForFloor)
     {
         ArrayList<String> lines = FileUtils.readCommandFileOrGenEmpty(FileUtils.getFilesFolderString() + fileName, defaultHeader);
         if (lines != null)
@@ -276,9 +274,9 @@ public class PositionLookup
                         prevPosition = new Position("None");
 
                         //update our offsets
-                        xOffset = Double.parseDouble(chunks[1]);
-                        yOffset = Double.parseDouble(chunks[2]);
-                        zOffset = Double.parseDouble(chunks[3]);
+                        xOffset = Utils.inToMm(Double.parseDouble(chunks[1]));
+                        yOffset = Utils.inToMm(Double.parseDouble(chunks[2]));
+                        zOffset = Utils.inToMm(Double.parseDouble(chunks[3]));
                         pitchOffset = Double.parseDouble(chunks[4]);
                         yawOffset = Double.parseDouble(chunks[5]);
                         rollOffset = Double.parseDouble(chunks[6]);
@@ -294,6 +292,8 @@ public class PositionLookup
 
                     // break up the line into multiple pieces split on spaces
                     String[] splitLinePieces = line.trim().split(" ");
+                    if ( (splitLinePieces.length != 4) && (splitLinePieces.length != 7) )
+                        return new Result(fileName + " invalid syntax: " + line);
 
                     // get the shelf id
                     int shelf;
@@ -321,33 +321,35 @@ public class PositionLookup
                     Position pos;
                     
                     // determine positions to use
-                    double px = Utils.inToMm(Double.parseDouble(splitLinePieces[1]) + xOffset);
-                    double py = Utils.inToMm(Double.parseDouble(splitLinePieces[2]) + yOffset);
+                    double px = Utils.inToMm(Double.parseDouble(splitLinePieces[1]));
+                    double py = Utils.inToMm(Double.parseDouble(splitLinePieces[2]));
                     double pz;
-                    if ( (shelf < 90) && (adjustZOffset) )
-                        pz = Utils.zInToMm(Double.parseDouble(splitLinePieces[3]) + zOffset);
-                    else
-                        pz = Utils.inToMm(Double.parseDouble(splitLinePieces[3]) + zOffset);
+                    if ( (shelf < 90) && (adjustZForFloor) )
+                        pz = Utils.zInToMm(Double.parseDouble(splitLinePieces[3]));
+                    else   
+                        pz = Utils.inToMm(Double.parseDouble(splitLinePieces[3]));
                         
+                    double pitch = prevPosition.getPitch();
+                    double yaw = prevPosition.getYaw();
+                    double roll = prevPosition.getRoll();
+                    
+                    if (splitLinePieces.length == 7) {
+                        pitch = Double.parseDouble(splitLinePieces[4]);
+                        yaw = Double.parseDouble(splitLinePieces[5]);
+                        roll = Double.parseDouble(splitLinePieces[6]);
+                    }
 
-                    if (splitLinePieces.length == 4)
-                    {
-                        pos = new Position(name, px, py, pz, 
-                                prevPosition.getPitch() + pitchOffset, 
-                                prevPosition.getYaw() + yawOffset, 
-                                prevPosition.getRoll() + rollOffset);
+                    // apply offsets if standard shelf
+                    if (shelf < 90) {
+                        px += xOffset;
+                        py += yOffset;
+                        pz += zOffset;
+                        pitch += pitchOffset;
+                        yaw += yawOffset;
+                        roll += rollOffset;
                     }
-                    else if (splitLinePieces.length == 7)
-                    {
-                        pos = new Position(name, px, py, pz, 
-                                Double.parseDouble(splitLinePieces[4]) + pitchOffset, 
-                                Double.parseDouble(splitLinePieces[5]) + yawOffset, 
-                                Double.parseDouble(splitLinePieces[6]) + rollOffset);
-                    }
-                    else
-                    {
-                        return new Result(fileName + " invalid syntax: " + line);
-                    }
+
+                    pos = new Position(name, px, py, pz, pitch, yaw, roll);
 
                     // save this away for later reference to get default values
                     prevPosition = pos;
@@ -410,17 +412,17 @@ public class PositionLookup
                 // add the point
                 builder.append(posEntry.getKey());
                 builder.append(" ");
-                builder.append(Utils.mmToIn(pos.getX()));
+                builder.append(String.format("%.3f", Utils.mmToIn(pos.getX())));
                 builder.append(" ");
-                builder.append(Utils.mmToIn(pos.getY()));
+                builder.append(String.format("%.3f", Utils.mmToIn(pos.getY())));
                 builder.append(" ");
-                builder.append(Utils.mmToIn(pos.getZ()));
+                builder.append(String.format("%.3f", Utils.mmToIn(pos.getZ())));
                 builder.append(" ");
-                builder.append(pos.getPitchStr());
+                builder.append(String.format("%.3f", pos.getPitch()));
                 builder.append(" ");
-                builder.append(pos.getYawStr());
+                builder.append(String.format("%.3f", pos.getYaw()));
                 builder.append(" ");
-                builder.append(pos.getRollStr());
+                builder.append(String.format("%.3f", pos.getRoll()));
                 builder.append("\n");
             }
         }

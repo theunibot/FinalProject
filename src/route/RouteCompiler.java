@@ -99,7 +99,7 @@ public class RouteCompiler
     public Result programRoutes(String name) {
         rh = RouteHolder.getInstance();
         ao = ArmOperations.getInstance();
-        
+
         Result result = init();
         if (!result.success())
             return result;
@@ -108,6 +108,7 @@ public class RouteCompiler
             String fromCabinet = route.getRouteProperties().getFrom().toString();
             String toCabinet = route.getRouteProperties().getTo().toString();
             // is this the route we want to program?
+
             if ( (name == null) || 
                 (name.equalsIgnoreCase(toCabinet)) ||
                 (name.equalsIgnoreCase(fromCabinet)) ||

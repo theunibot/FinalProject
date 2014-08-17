@@ -32,6 +32,8 @@ public class CommandProgramController extends CommandInterface {
     
     public CommandProgramController(String name) {
         this.name = name;
+        if ( (this.name != null) && (this.name.length() == 0) )
+            this.name = null;
     }
     
     public Result execute(CommandArguments args) {
