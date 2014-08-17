@@ -192,31 +192,31 @@ public class RouteCompiler
                 String[] pieces = line.split(" ");//splits the line to pieces
                 if (pieces.length == 3)//x,y,z only
                 {
-                    String pitch = "0", yaw = "0", roll = "0";
+                    double pitch = 0.0, yaw = 0.0, roll = 0.0;
 
                     //grab the pitch,yaw,roll from the last cartesian command
                     if (route.getLastObject() != null)
                     {
                         RoutePosition orcc = route.getLastObject();
-                        pitch = String.valueOf(orcc.getPosition().getPitchStr());
-                        yaw = String.valueOf(orcc.getPosition().getYawStr());
-                        roll = String.valueOf(orcc.getPosition().getRollStr());
+                        pitch = orcc.getPosition().getPitch();
+                        yaw = orcc.getPosition().getYaw();
+                        roll = orcc.getPosition().getRoll();
                     }
-                    pieces[0] = Utils.xyInToMmStr(pieces[0]);
-                    pieces[1] = Utils.xyInToMmStr(pieces[1]);
-                    pieces[2] = Utils.zInToMmStr(pieces[2]);
-                    route.add(new RoutePosition(new Position(null, pieces[0], pieces[1], pieces[2], pitch, yaw, roll), route.getRouteProperties().getRouteIDName(), route.size() + 1));
+                    double x = Utils.inToMm(Double.valueOf(pieces[0]));
+                    double y = Utils.inToMm(Double.valueOf(pieces[1]));
+                    double z = Utils.zInToMm(Double.valueOf(pieces[2]));
+                    route.add(new RoutePosition(new Position(null, x, y, z, pitch, yaw, roll), route.getRouteProperties().getRouteIDName(), route.size() + 1));
                 }
                 else if (pieces.length == 6)//x,y,z,pitch,yaw,roll
                 {
-                    String pitch = pieces[3];
-                    String yaw = pieces[4];
-                    String roll = pieces[5];
+                    double pitch = Double.valueOf(pieces[3]);
+                    double yaw = Double.valueOf(pieces[4]);
+                    double roll = Double.valueOf(pieces[5]);
 
-                    pieces[0] = Utils.xyInToMmStr(pieces[0]);
-                    pieces[1] = Utils.xyInToMmStr(pieces[1]);
-                    pieces[2] = Utils.zInToMmStr(pieces[2]);
-                    route.add(new RoutePosition(new Position(null, pieces[0], pieces[1], pieces[2], pitch, yaw, roll), route.getRouteProperties().getRouteIDName(), route.size() + 1));
+                    double x = Utils.inToMm(Double.valueOf(pieces[0]));
+                    double y = Utils.inToMm(Double.valueOf(pieces[1]));
+                    double z = Utils.zInToMm(Double.valueOf(pieces[2]));
+                    route.add(new RoutePosition(new Position(null, x, y, z, pitch, yaw, roll), route.getRouteProperties().getRouteIDName(), route.size() + 1));
                 }
                 else//error in format of info
                     return new Result("Format of the command of line " + lineCount + " wrong. The line: \"" + line + "\"");

@@ -1,8 +1,12 @@
 //
-// This file defines ADJUSTMENTS for all known positions in front of each shelf
+// This file defines all adjustments for all known positions of each shelf
 //
-// Each cabinet is defined with a '#CABINET_NAME' line, followed
-// by a series of coordinates.  Each coordinate is in millimeters as a
-// relative offset from the original coordinate (defined in the Positions
-// table).  
+// This file defines minor adjustments, in millimeters, to the positions
+// contained in the Positions.txt file.  It can be edited by hand, or is also
+// updated by commands from within the software.  This provides for tuning and
+// calibration of the surface without having to adust the primary coordinate
+// file.  Additionally, adjustments can be made on-the-fly while the software
+// is operational.  The syntax is basically the same as the Positions.txt file,
+// except that each line defines the relative offset, rather than the absolute
+// position.
 //

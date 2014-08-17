@@ -26,12 +26,12 @@ import utils.Utils;
  */
 public class Position
 {
-    private Double x;
-    private Double y;
-    private Double z;
-    private Double pitch;
-    private Double yaw;
-    private Double roll;
+    private double x;
+    private double y;
+    private double z;
+    private double pitch;
+    private double yaw;
+    private double roll;
     private String name = null;
 
     public Position(String name) {
@@ -44,18 +44,7 @@ public class Position
         this.name = name;
     }
 
-    public Position(String name, String x, String y, String z, String pitch, String yaw, String roll)
-    {
-        this.x = Double.valueOf(x);
-        this.y = Double.valueOf(y);
-        this.z = Double.valueOf(z);
-        this.pitch = Double.valueOf(pitch);
-        this.yaw = Double.valueOf(yaw);
-        this.roll = Double.valueOf(roll);
-        this.name = name;
-    }   
-    
-    public Position(String name, Double x, Double y, Double z, Double pitch, Double yaw, Double roll)
+    public Position(String name, double x, double y, double z, double pitch, double yaw, double roll)
     {
         this.x = x;
         this.y = y;
@@ -118,7 +107,7 @@ public class Position
         return getXStr() + " X ! " + getYStr() + " Y ! " + getZStr() + " Z ! " + getPitchStr() + " PITCH ! " + getYawStr() + " YAW ! " + getRollStr() + " ROLL ! POINT " + getName();
     }
     
-    public Double getX() {
+    public double getX() {
         return x;
     }
 
@@ -131,11 +120,11 @@ public class Position
         this.x = Double.valueOf(x);
     }
     
-    public void setX(Double x) {
+    public void setX(double x) {
         this.x = x;
     }
     
-    public Double getY() {
+    public double getY() {
         return y;
     }
     
@@ -148,11 +137,11 @@ public class Position
         this.y = Double.valueOf(y);
     }
     
-    public void setY(Double y) {
+    public void setY(double y) {
         this.y = y;
     }
     
-    public Double getZ() {
+    public double getZ() {
         return z;
     }
 
@@ -165,11 +154,11 @@ public class Position
         this.z = Double.valueOf(z);
     }
     
-    public void setZ(Double z) {
+    public void setZ(double z) {
         this.z = z;
     }
     
-    public Double getPitch() {
+    public double getPitch() {
         return pitch;
     }
     
@@ -182,11 +171,11 @@ public class Position
         this.pitch = Double.valueOf(pitch);
     }
     
-    public void setPitch(Double pitch) {
+    public void setPitch(double pitch) {
         this.pitch = pitch;
     }
     
-    public Double getYaw() {
+    public double getYaw() {
         return yaw;
     }
 
@@ -199,11 +188,11 @@ public class Position
         this.yaw = Double.valueOf(yaw);
     }
     
-    public void setYaw(Double yaw) {
+    public void setYaw(double yaw) {
         this.yaw = yaw;
     }
     
-    public Double getRoll() {
+    public double getRoll() {
         return roll;
     }
 
@@ -216,7 +205,7 @@ public class Position
         this.roll = Double.valueOf(roll);
     }
     
-    public void setRoll(Double roll) {
+    public void setRoll(double roll) {
         this.roll = roll;
     }
 

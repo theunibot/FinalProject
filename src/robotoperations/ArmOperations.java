@@ -39,8 +39,8 @@ import utils.Utils;
 public class ArmOperations
 {
 
-    private final boolean armOpsSimulated = true;
-    private final boolean r12OpsSimulated = true;
+    private final boolean armOpsSimulated = false;
+    private final boolean r12OpsSimulated = false;
     
     private final boolean armOpsLogging = true;
     private R12Operations r12o = null;
@@ -56,8 +56,13 @@ public class ArmOperations
     private boolean debugFail = false;
     private boolean debugAdjust = false;
     private String debugAdjustAxis;
-    private int debugAdjustValue;
-
+    private double debugAdjustValue;
+    private Position calibratePosition = null;
+    private Position adjustmentPosition = null;
+    private CabinetType calibrateCabinet = null;
+    private int calibrateShelf;
+    private String calibratePlunge;
+    private int calibrateDepth;
 
     //Regular Objects
     private ArrayList<String> initCommands = null;
@@ -175,23 +180,119 @@ public class ArmOperations
             return new Result("Route named " + route.getRouteProperties().getRouteFriendlyName() + " has " + route.size() + " coordinates; must have at least two (start and end)");
         }
     }
+    
+    /**
+     * Executes calibration services for the arm for a specific point.  Moves the arm to the specified cabinet /
+     * shelf location, at one of a variety of specific points (called plunge positions).  Once in any of these positions,
+     * the calibrateAdjust call can be made which will move the arm by specified relative routes and track those
+     * changes with the specified point.  Finally, once one or more points have been calibrated, the adjustment table
+     * should be persisted to disk (which is PositionLookup.saveAdjustmentFile).
+     * 
+     * @param cabinet Cabinet to locate
+     * @param shelf Shelf within the cabinet
+     * @param plungePosition Name of the plunge position (in-top, in-bottom, out-top, out-bottom)
+     * @param depth Plunge depth (1 for desktop, 1=bottom and 2=top for cachepoint)
+     * @param speed Speed to set the arm to before doing the move
+     * @return Result with success/fail info
+     */
+    public Result calibratePoint(CabinetType cabinet, int shelf, String plungePosition, int depth, int speed) {
+        // save our cabinet and shelf
+        calibrateCabinet = cabinet;
+        calibrateShelf = shelf;
+        calibratePlunge = plungePosition;
+        calibrateDepth = depth;
+        
+        if (armOpsLogging)
+            System.out.println("    ArmOperations: calibratePoint " + cabinet.toString() + 
+                    ", shelf " + shelf + ", plungePosition " + plungePosition + ", depth " + depth + ", speed " + speed);
+                
+        // determine our move position, our adjustments to alter, and the various plunge positions
+        calibratePosition = PositionLookup.getInstance().shelfToPosition(cabinet, shelf);
+        adjustmentPosition = PositionLookup.getInstance().shelfToAdjustmentPosition(cabinet, shelf);
+        HashMap<String, Position> plungeMap = plungePositions(cabinet, shelf, depth, calibratePosition);
+        
+        // set the speed
+        Result result = runRobotCommand(String.valueOf(speed) + " SPEED !");
+        if (!result.success())
+            return result;
+        
+        // move to the requested position
+        Position plungePos = plungeMap.get(calibratePlunge);
+        if (plungePos == null)
+            return new Result("Unable to locate plungePosition " + calibratePlunge);
+        return moveTo(plungePos);
+    }
 
+    /**
+     * Calibrate the last point specified to the calibrate call.  Use this carefully, because if the arm is not still
+     * at the last point called by calibration, you could be calibrating to the wrong point.  The result of this calibration
+     * will move the arm and also record the change in the adjustment positions map.  To persist these changes, use the
+     * PositionLookup.saveAdjustmentFile() call.  These changes will persist in memory and take effect for live testing.
+     * 
+     * @param axis Axis to adjust (x, y, z, pitch, yaw, roll)
+     * @param value Value to move by (in mm)
+     * @return Result with success/fail info
+     */
+    public Result calibrateAdjust(String axis, double value) {
+        if (armOpsLogging)
+            System.out.println("    ArmOperations: calibrateAdjust, axis " + axis + ", value " + value);
+
+        if (adjustmentPosition == null)
+            return new Result("Uknown calibrate location");
+
+        
+        // record the adjustment
+        switch (axis) {
+            case "x":
+                adjustmentPosition.setX(adjustmentPosition.getX() + value);
+                break;
+            case "y":
+                adjustmentPosition.setY(adjustmentPosition.getY() + value);
+                break;
+            case "z":
+                adjustmentPosition.setZ(adjustmentPosition.getZ() + value);
+                break;
+            case "pitch":
+                adjustmentPosition.setPitch(adjustmentPosition.getPitch() + value);
+                break;
+            case "yaw":
+                adjustmentPosition.setYaw(adjustmentPosition.getYaw() + value);
+                break;
+            case "roll":
+                adjustmentPosition.setRoll(adjustmentPosition.getRoll() + value);
+                break;
+        }
+        
+        // now locate the point again (which will execute the adjustment) and move to it
+        Position newPosition = PositionLookup.getInstance().shelfToPosition(calibrateCabinet, calibrateShelf);
+        if (newPosition == null)
+            return new Result("calibrateAdjust unable to locate cabinet " + calibrateCabinet.toString() + " shelf " + calibrateShelf);
+        
+        
+        HashMap<String, Position> plungeMap = plungePositions(calibrateCabinet, calibrateShelf, calibrateDepth, newPosition);
+        Position plungePos = plungeMap.get(calibratePlunge);
+        if (plungePos == null)
+            return new Result("Unable to locate plungePosition " + calibratePlunge);
+        return moveTo(plungePos);
+   }
+    
     /**
      * Pickup a disc from a shelf. Assumes that the robot is already at the safe
      * pickup location for the specified disc, and is not already holding one
      *
-     * @param unit if this is a CP or a desktop
+     * @param cabinet if this is a CP or a desktop
+     * @param shelf shelf within the cabinet
      * @param stackPosition stack position (when CP) - where 1 is bottom disc,
      * and 2 is top disc)
      * @param position off of which the relative route is run
      * @return Result with success/failure info
      */
-    public Result pick(CabinetType unit, int stackPosition, Position position)
+    public Result pick(CabinetType cabinet, int shelf, int stackPosition, Position position)
     {
-        HashMap<String, Position> plunge = plungePositions(unit, stackPosition, position);
+        HashMap<String, Position> plunge = plungePositions(cabinet, shelf, stackPosition, position);
             
         if (armOpsLogging)
-            System.out.println("    ArmOperations: pick from " + unit.toString() + " position " + stackPosition + " starting at " + position.getName());
+            System.out.println("    ArmOperations: pick from " + cabinet.toString() + " position " + stackPosition + " starting at " + position.getName());
 
         // make sure the stackPosition is legit
         if ( (stackPosition < 1) || (stackPosition > 2) )
@@ -229,128 +330,7 @@ public class ArmOperations
         result = runRobotCommand(plunge.get("out-top"));
         if (!result.success())
             return result;
-        
-        
-        
-        /***** OLD VERSION ******/
-        Position posInfo = plt.shelfToPosition(unit, 91);        
-        Position posOffsetInfo = plt.shelfToPosition(unit, 90);        
-        
-        double bigZval = Double.valueOf(posInfo.getYStr());
-        double smallZval = Double.valueOf(posInfo.getZStr());
-        double desktopZval = Double.valueOf(posInfo.getZStr());
-        double moveval = Double.valueOf(posInfo.getXStr());
-        
-        double offsetX = Double.valueOf(posOffsetInfo.getXStr());
-        double offsetY = Double.valueOf(posOffsetInfo.getYStr());
-        double offsetZ = Double.valueOf(posOffsetInfo.getZStr());        
-        double offsetPitch = Double.valueOf(posOffsetInfo.getPitchStr());
-        double offsetYaw = Double.valueOf(posOffsetInfo.getYawStr());
-        double offsetRoll = Double.valueOf(posOffsetInfo.getRollStr());        
-        
-//        System.out.println("Big Z: " + bigZval+ " small Z: " + smallZval + " DTZ: " + desktopZval + " MV AMT: " + moveval);
-
-        //101 Y val big
-        // 101 Z val small
-        //101 Z val dt
-        //101 X val 5"
-
-        String commandString = "";
-        double deltaZ = (desktopZval);
-        if (unit == CabinetType.CPL || unit == CabinetType.CPM || unit == CabinetType.CPR)
-        {
-            deltaZ = (stackPosition == 2) ? smallZval : bigZval;
-        }
-        
-//        System.out.println("Delta z: " + deltaZ);
-        //
-        //UNGRIP
-        //
-        commandString = "UNGRIP";//Ungrip
-        result = runRobotCommand(commandString);
-        if (!result.success())
-            return result;
-
-        //
-        //MOVE DOWN
-        //
-        commandString = "0 0 " + String.valueOf(Utils.formatDouble(deltaZ + offsetZ)) + " MOVE";//moves DOWN set amount
-        result = runRobotCommand(commandString);
-        if (!result.success())
-            return result;
-
-        //
-        //Move forward
-        //
-        double absStartX = Double.parseDouble(position.getXStr());
-        double absStartY = Double.parseDouble(position.getYStr());
-        double deltaAxis = (moveval) / (Math.sqrt(2.0d));//get the distance forward divided by root2
-        double absEndX = 0;
-        double absEndY = absStartY - deltaAxis + offsetY;
-        double deltaX = 0;
-        double deltaY = -deltaAxis + offsetY;
-        double yaw = 0;
-
-        //abs startX/Y used to calc abs endX/Y which are used to calc the Yaw
-        //deltaX/Y used for MOVE commands
-        if (unit == CabinetType.D2)
-        {
-            absEndX = absStartX - deltaAxis + offsetX;
-            deltaX = -deltaAxis + offsetX;
-            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) - 135 + offsetYaw;
-        }
-        else if (unit == CabinetType.D1)
-        {
-            absEndX = absStartX + deltaAxis + offsetX;
-            deltaX = deltaAxis + offsetX;
-            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) + 135 + offsetYaw;
-        }
-        else if (unit == CabinetType.CPL || unit == CabinetType.CPM || unit == CabinetType.CPR)
-        {
-            absEndY = absStartY + moveval + offsetY;
-            absEndX = absStartX + offsetX;
-            deltaX = 0 + offsetX;
-            deltaY = moveval + offsetY;
-            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) + offsetYaw;
-        }
-        else
-        {
-            return new Result("Invalid CabinetType: " + unit.toString());
-        }
-
-//        System.out.println("THEREFORE MOVE X: " + deltaX + " Y: " + deltaY);
-//        System.out.println("MOVING FROM START ABS X: " + absStartX + " Y: " + absStartY
-//                + " to END ABS X: " + absEndX + " Y: " + absEndY);
-        commandString = Utils.formatDouble(yaw) + " YAW ! " + Utils.formatDouble(deltaX) + " " + Utils.formatDouble(deltaY) + " 0 MOVE";//moves DOWN set amount
-        result = runRobotCommand(commandString);
-        if (!result.success())
-            return result;
-
-        //
-        //GRIP
-        //
-        commandString = "GRIP";
-        result = runRobotCommand(commandString);
-        if (!result.success())
-            return result;
-
-        //
-        //MOVE UP
-        //
-        commandString = "0 0 " + String.valueOf(Utils.formatDouble(-(deltaZ + offsetZ))) + " MOVE";//moves UP set amount
-        result = runRobotCommand(commandString);
-        if (!result.success())
-            return result;
-
-        //
-        //MOVE Back to position
-        //
-        commandString = position.getYawStr() + " YAW ! " + position.getXStr() + " " + position.getYStr() + " " + position.getZStr() + " MOVETO";
-        result = runRobotCommand(commandString);
-        if (!result.success())
-            return result;
-
-        //move back to start pos succesful.
+      
         return new Result();
     }
 
@@ -358,18 +338,19 @@ public class ArmOperations
      * Drop off a disc to a shelf. Assumes that the robot is already at the safe
      * dropoff location for the specified disc, and is currently holding a disc
      *
-     * @param unit if this is a CP or a desktop
+     * @param cabinet if this is a CP or a desktop
+     * @param shelf shelf within the cabinet
      * @param stackPosition stack position (when CP) - where 1 is bottom disc,
      * and 2 is top disc)
      * @param position off of which the relative route is run
      * @return Result with success/fail info
      */
-    public Result drop(CabinetType unit, int stackPosition, Position position)
+    public Result drop(CabinetType cabinet, int shelf, int stackPosition, Position position)
     {
-        HashMap<String, Position> plunge = plungePositions(unit, stackPosition, position);
+        HashMap<String, Position> plunge = plungePositions(cabinet, shelf, stackPosition, position);
             
         if (armOpsLogging)
-            System.out.println("    ArmOperations: drop at " + unit.toString() + " position " + stackPosition + " starting at " + position.getName());
+            System.out.println("    ArmOperations: drop at " + cabinet.toString() + " position " + stackPosition + " starting at " + position.getName());
 
         // make sure the stackPosition is legit
         if ( (stackPosition < 1) || (stackPosition > 2) )
@@ -408,123 +389,6 @@ public class ArmOperations
         if (!result.success())
             return result;
         
-/***** OLD VERSION ********/
-        String commandString = "";
-        ResponseObject response = null;                
-
-        Position posInfo = plt.shelfToPosition(unit, 91); 
-        Position posOffsetInfo = plt.shelfToPosition(unit, 90);
-        
-        double bigZval = Double.valueOf(posInfo.getYStr());
-        double smallZval = Double.valueOf(posInfo.getZStr());
-        double desktopZval = Double.valueOf(posInfo.getZStr());
-        double moveval = Double.valueOf(posInfo.getXStr());
-        
-        double offsetX = Double.valueOf(posOffsetInfo.getXStr());
-        double offsetY = Double.valueOf(posOffsetInfo.getYStr());
-        double offsetZ = Double.valueOf(posOffsetInfo.getZStr());        
-        double offsetPitch = Double.valueOf(posOffsetInfo.getPitchStr());
-        double offsetYaw = Double.valueOf(posOffsetInfo.getYawStr());
-        double offsetRoll = Double.valueOf(posOffsetInfo.getRollStr());        
-
-        //101 Y val big
-        // 101 Z val small
-        //101 Z val dt
-        //101 X val 5"
-        
-        //
-        //Move forward
-        //
-        double absStartX = Double.parseDouble(position.getXStr());
-        double absStartY = Double.parseDouble(position.getYStr());
-        double deltaAxis = (moveval)/ (Math.sqrt(2.0d));//get the distance forward divided by root2
-        double absEndX = 0;
-        double absEndY = absStartY - deltaAxis + offsetY;
-        double deltaX = 0;
-        double deltaY = -deltaAxis + offsetY;
-        double yaw = 0;
-
-        //abs startX/Y used to calc abs endX/Y which are used to calc the Yaw
-        //deltaX/Y used for MOVE commands
-        if (unit == CabinetType.D2)
-        {
-            absEndX = absStartX - deltaAxis + offsetX;
-            deltaX = -deltaAxis + offsetX;
-            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) - 135 + offsetYaw;
-        }
-        else if (unit == CabinetType.D1)
-        {
-            absEndX = absStartX + deltaAxis + offsetX;
-            deltaX = deltaAxis + offsetX;
-            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) + 135 + offsetYaw;
-        }
-        else if (unit == CabinetType.CPL || unit == CabinetType.CPM || unit == CabinetType.CPR)
-        {
-            absEndY = absStartY + moveval + offsetY;
-            absEndX = absStartX + offsetX;
-            deltaY = moveval + offsetY;
-            deltaX = 0 + offsetX;
-            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) + offsetYaw;
-        }
-        else
-        {
-            return new Result("Invalid CabinetType: " + unit.toString());
-        }
-
-        commandString = Utils.formatDouble(yaw) + " YAW ! " + Utils.formatDouble(deltaX) + " " + Utils.formatDouble(deltaY) + " 0 MOVE";//moves DOWN set amount
-        result = runRobotCommand(commandString);
-        if (!result.success())
-            return result;
-        
-        commandString = "";
-        double deltaZ = (desktopZval);
-        if (unit == CabinetType.CPL || unit == CabinetType.CPM || unit == CabinetType.CPR)
-        {
-            deltaZ = (stackPosition == 2) ? smallZval : bigZval;
-        }
-
-        //
-        //MOVE DOWN
-        //
-        commandString = "0 0 " + String.valueOf(Utils.formatDouble(deltaZ + offsetZ)) + " MOVE";//moves DOWN set amount
-        result = runRobotCommand(commandString);
-        if (!result.success())
-            return result;
-
-        //
-        //UNGRIP
-        //
-        commandString = "UNGRIP";//Ungrip
-        result = runRobotCommand(commandString);
-        if (!result.success())
-            return result;
-
-        //
-        //MOVE Back
-        //
-        commandString = Utils.formatDouble(Double.parseDouble(position.getYawStr())) + " YAW ! " + Utils.formatDouble(-deltaX) + " " + Utils.formatDouble(-deltaY) + " 0 MOVE";
-        result = runRobotCommand(commandString);
-        if (!result.success())
-            return result;
-
-        //
-        //GRIP
-        //
-        commandString = "GRIP";
-        result = runRobotCommand(commandString);
-        if (!result.success())
-            return result;
-
-        //
-        //MOVE UP
-        //
-        commandString = "0 0 " + String.valueOf(Utils.formatDouble(-(deltaZ + offsetZ))) + " MOVE";//moves UP set amount
-        result = runRobotCommand(commandString);
-        if (!result.success())
-            return result;
-
-
-        //move back to start pos succesful.
         return new Result();
   
     }
@@ -533,11 +397,12 @@ public class ArmOperations
      * Compute a series of Positions for plunging into a cabinet to pick up a disc.
      * 
      * @param cabinet Cabinet we are working with
+     * @param shelf Shelf within the cabinet
      * @param stackPosition Stack position (desktop always 1, but can be 1 or 2 for a CachePoint, with 2 being top disc)
      * @param position Current position of the arm in front of the cabinet
      * @return Map of Positions, containing "in-top", "in-bottom", and "out-bottom" (position is the "out-top" so not computed)
      */
-    private HashMap<String, Position> plungePositions(CabinetType cabinet, int stackPosition, Position position)
+    private HashMap<String, Position> plungePositions(CabinetType cabinet, int shelf, int stackPosition, Position position)
     {
         // locate the values for the plunge depth (X) and Z movement (Y=2 deep, Z=1 deep)
         Position posInfo = plt.shelfToPosition(cabinet, 91);        
@@ -545,15 +410,22 @@ public class ArmOperations
         Position posOffsetInfo = plt.shelfToPosition(cabinet, 90);        
         
         // convert values into useful double format for our math
-        double bigZval = Double.valueOf(posInfo.getYStr());
-        double smallZval = Double.valueOf(posInfo.getZStr());
-        double desktopZval = Double.valueOf(posInfo.getZStr());
-        double moveval = Double.valueOf(posInfo.getXStr());
+        double bigZval = posInfo.getY();
+        double smallZval = posInfo.getZ();
+        double desktopZval = posInfo.getZ();
+        double moveval = posInfo.getX();
         
-        double offsetX = Double.valueOf(posOffsetInfo.getXStr());
-        double offsetY = Double.valueOf(posOffsetInfo.getYStr());
-        double offsetZ = Double.valueOf(posOffsetInfo.getZStr());        
-        double offsetYaw = Double.valueOf(posOffsetInfo.getYawStr());
+        double offsetX = posOffsetInfo.getX();
+        double offsetY = posOffsetInfo.getY();
+        double offsetZ = posOffsetInfo.getZ();        
+        double offsetYaw = posOffsetInfo.getYaw();
+        
+        // because we are hand computing Yaw from an X/Y position, we need to adjust offSetYaw
+        // by the Adustment table amount for Yaw.  The other positions will already have that
+        // value taken into account
+        Position adjustmentPos = plt.shelfToAdjustmentPosition(cabinet, shelf);
+        if (adjustmentPos != null)
+            offsetYaw += adjustmentPos.getYaw();
         
         // setup deltaZ based on the cabinet type and stack position
         double deltaZ = (desktopZval);
@@ -566,8 +438,8 @@ public class ArmOperations
         outBottom.setZ(outBottom.getZ() + deltaZ + offsetZ);
 
         // determine the in-bottom position
-        double absStartX = Double.parseDouble(position.getXStr());
-        double absStartY = Double.parseDouble(position.getYStr());
+        double absStartX = position.getX();
+        double absStartY = position.getY();
         double deltaAxis = (moveval) / (Math.sqrt(2.0d));//get the distance forward divided by root2
         double absEndX = 0;
         double absEndY = absStartY - deltaAxis + offsetY;
@@ -705,7 +577,14 @@ public class ArmOperations
         if (armOpsSimulated && !r12OpsSimulated)
             return new Result();
  
-        return runRobotCommand(position.getName() + " GOTO");
+        //return runRobotCommand(position.getName() + " GOTO");
+        return runRobotCommand(
+            position.getPitchStr() + " PITCH ! " +
+            position.getYawStr() + " YAW ! " +
+            position.getRollStr() + " ROLL ! " +
+            position.getXStr() + " " +
+            position.getYStr() + " " +
+            position.getZStr() + " MOVETO");
     }
 
     /**
@@ -913,7 +792,7 @@ public class ArmOperations
      * @param value number of 10th mm to move
      * @return Result with success/fail info
      */
-    public Result debugAdjust(String axis, int value) {
+    public Result debugAdjust(String axis, double value) {
         if (debugMode) {
             debugAdjust = true;
             debugAdjustAxis = axis;

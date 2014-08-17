@@ -209,7 +209,7 @@ public abstract class CommandInterface
             int depth = inventory.depth(fromCabinet, fromShelf);
             if (depth < 0)
                 return new Result("Cabinet " + fromCabinet.toString() + " shelf " + fromShelf + " is empty; unable to retreive a disc");
-            result = ao.pick(fromCabinet, depth, fromCoordinates);
+            result = ao.pick(fromCabinet, fromShelf, depth, fromCoordinates);
             if (!result.success())
                 return result;
         }
@@ -241,7 +241,7 @@ public abstract class CommandInterface
         if (toShelf != -1) { 
             int depth = inventory.depth(toCabinet, toShelf);
             
-            result = ao.drop(toCabinet, depth, plt.shelfToPosition(toCabinet, toShelf));
+            result = ao.drop(toCabinet, toShelf, depth, plt.shelfToPosition(toCabinet, toShelf));
             if (!result.success())
                 return result;
         }

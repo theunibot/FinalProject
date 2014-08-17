@@ -75,7 +75,12 @@ public class ServerHooks
         int desktopInt = Utils.strToInt(desktop);
         String effect = params.get("effect");
         RouteEffectType effectEnum = Utils.effectStringToEffectType(effect);
-                
+        String cabinetStr = params.get("cabinet");
+        CabinetType cabinet = null;
+        try {
+            cabinet = CabinetType.valueOf(cabinetStr);
+        } catch (Exception e) {}
+        
         // process the command ... start by making sure it actually is a "command"...
         if ((command = params.get("command")) == null)
             // failed to get a valid command
@@ -152,21 +157,68 @@ public class ServerHooks
             case "program-controller":
                 String name = params.get("name");
                 cmd = new CommandProgramController((name != null) ? name.toLowerCase() : null);
-                break;                
+                break;    
+            case "position-calibrate":
+                String option = params.get("option");
+                if (option == null)
+                    return Utils.genericEnqueueFail("Position-calibrate command missing option parameter");
+                switch (option.toLowerCase()) {
+                    case "move":
+                        if (cabinetStr == null)
+                            return Utils.genericEnqueueFail("Position-calibrate 'move' option missing cabinet parameter");
+                        if (cabinet == null)
+                            return Utils.genericEnqueueFail("Position-calibrate 'move' option has unknown cabinet " + cabinetStr);
+
+                        if (shelf == null)
+                            return Utils.genericEnqueueFail("Position-calibrate 'move' option missing shelf parameter");
+
+                        String plungeStr = params.get("plunge");
+                        if (plungeStr == null)
+                            return Utils.genericEnqueueFail("Position-calibrate 'move' option missing plunge parameter");
+
+                        String depthStr = params.get("depth");
+                        if (depthStr == null)
+                            return Utils.genericEnqueueFail("Position-calibrate 'move' option missing depth parameter");
+                        int depth = Integer.valueOf(depthStr);
+
+                        String speedStr = params.get("speed");
+                        if (speedStr == null)
+                            return Utils.genericEnqueueFail("Position-calibrate 'move' option missing speed parameter");
+                        int speed = Integer.valueOf(speedStr);
+
+                        // do the command
+                        cmd = new CommandCalibratePosition(cabinet, shelfInt, plungeStr, depth, speed);
+                        break;
+                    case "x":
+                    case "y":
+                    case "z":
+                    case "yaw":
+                    case "pitch":
+                    case "roll":
+                        String valueStr = params.get("value");
+                        if (valueStr == null)
+                            return Utils.genericEnqueueFail("Position-calibrate '" + option + "' option missing value parameter");
+
+                        Double value = Double.valueOf(valueStr);
+                        cmd = new CommandCalibrateAdjust(option.toLowerCase(), value);
+                        break;
+                    case "save":
+                        Result result = PositionLookup.getInstance().saveAdjustmentFile();
+                        if (!result.success())
+                            return Utils.genericEnqueueFail(result.errorMessage);
+                        break;
+                    default:
+                        return Utils.genericEnqueueFail("Position-calibrate unknown option '" + option + "'");
+                }
+                break;
             case "position":
-                String cabinetStr = params.get("cabinet");
                 if (cabinetStr == null)
                     return Utils.genericEnqueueFail("Request failure: missing 'cabinet' parameter");
+                if (cabinet == null)
+                    return Utils.genericEnqueueFail("Unknown cabinet type " + cabinetStr);
                 if (shelf == null)
                     return Utils.genericEnqueueFail("Request failure: missing 'shelf' parameter");
 
-                CabinetType cabinet;
-                try {
-                    cabinet = CabinetType.valueOf(cabinetStr.trim().toUpperCase());
-                } catch (Exception e) {
-                    return Utils.genericEnqueueFail("Unknown cabinet type " + cabinetStr);
-                }
-                
                 PositionLookup pl = PositionLookup.getInstance();
 
                 Position position  = pl.shelfToPosition(cabinet, shelfInt);
@@ -224,12 +276,14 @@ public class ServerHooks
         }
         
         // enqueue the command
-        cmdq.add(queueInt, cmd, statusBool);
-        
-        // and return the ID in JSON
         JSONObject json = new JSONObject();
-        json.put("id", cmd.getId());
-        System.out.println("Enqueued request; ID is " + cmd.getId());
+        if (cmd != null) {
+            cmdq.add(queueInt, cmd, statusBool);
+
+            // and return the ID in JSON
+            json.put("id", cmd.getId());
+            System.out.println("Enqueued request; ID is " + cmd.getId());
+        }
         return json.toString();
     }
 
@@ -261,6 +315,8 @@ public class ServerHooks
 
         return json.toString();
     }
+    
+    
     
     private final String DEBUG_COMMAND_KEY = "debug";
     
@@ -303,19 +359,19 @@ public class ServerHooks
                  case "yaw":
                  case "pitch":
                  case "roll":
-                     String valueStr = params.get("value");
-                     if (valueStr != null) {
-                         Double value = Double.valueOf(valueStr) * 10;
-                         result = ao.debugAdjust(debug.toLowerCase(), value.intValue());
-                     } else {
-                         System.err.println("Debug " + debug.toLowerCase() + " command missing value parameter");
-                         json.put(STATUS_ERROR_KEY, "Debug " + debug.toLowerCase() + " command missing value parameter");
-                     }
-                     break;
+                    String valueStr = params.get("value");
+                    if (valueStr != null) {
+                        Double value = Double.valueOf(valueStr);
+                        result = ao.debugAdjust(debug.toLowerCase(), value);
+                    } else {
+                        System.err.println("Debug " + debug.toLowerCase() + " command missing value parameter");
+                        json.put(STATUS_ERROR_KEY, "Debug " + debug.toLowerCase() + " command missing value parameter");
+                    }
+                    break;
                  default:
-                     System.err.println("Unknown debug command " + debug);
-                     json.put(STATUS_ERROR_KEY, "Unknown debug command " + debug);
-                     break;
+                    System.err.println("Unknown debug command " + debug);
+                    json.put(STATUS_ERROR_KEY, "Unknown debug command " + debug);
+                    break;
              }
         } else {
             System.err.println("Missing debug command");

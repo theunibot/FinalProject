@@ -11,7 +11,39 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script type='text/javascript' src='edge_includes/jquery-2.0.3.min.js'></script>
         <script type='text/javascript'>
-            function r12reload() {
+
+        var calCabinet = "";
+        var calShelf = "";
+        var calDepth = "1";
+        var calSpeed = "300";
+        function setCalibrate(cabinet, shelf, depth, speed) {
+            if (cabinet == null)
+                cabinet = prompt("Cabinet to calibrate (D1, D2, CPL, CPM, CPR)?", calCabinet);
+            if (shelf == -1)
+                shelf = prompt("Shelf to calibrate (00-34)?", calShelf);
+            if (depth == -1)
+                depth = prompt("Depth of plunge (1 for desktop; 1 (bottom) or 2 (top) disc in CP)?", calDepth);
+            if (speed == -1)
+                speed = prompt("Speed to run arm at during calibration?", calSpeed);
+            calCabinet = cabinet;
+            calShelf = shelf;
+            calDepth = depth;
+            calSpeed = speed;
+        }
+        function r12CalPosition(plunge) {
+            cmd = "ENQUEUE?queue=0&status=0&command=POSITION-CALIBRATE&option=move&cabinet=" + calCabinet +
+                    "&shelf=" + calShelf + "&plunge=" + plunge + "&depth=" + calDepth + "&speed=" + calSpeed;
+            r12(cmd);
+        }
+        function r12CalAdjust(axis, distance) {
+            if (axis == null)
+                axis = prompt("Which axis to adjust (x, y, z, pitch, yaw, roll)?");
+            if (distance == -1)
+                distance = prompt("Move amount (positive or negative, mm or degrees)?");
+            cmd = "ENQUEUE?queue=0&status=0&command=POSITION-CALIBRATE&option=" + axis + "&value=" + distance;
+            r12(cmd);
+        }
+        function r12reload() {
                 name = prompt('Reload filter (empty is all; examples are CPL0, CPR23, D1_2, CPL_D1)?');
                 cmd = 'ENQUEUE?queue=0&status=0&command=PROGRAM-CONTROLLER&name=' + name;
                 r12(cmd);
@@ -70,7 +102,7 @@ and open the template in the editor.
                 <div><a onclick="r12debug('debug=step')">Debug STEP</a></div>
             </div>
         </div>
-        <div>
+        <div class="section">
             <div class="header">DEBUGGER OPTIONS</div>
             <div class='commands'>        
                 <div><a onclick="r12debug('debug=speed&speed=30000')">Debug SPEED 30K</a></div>
@@ -82,14 +114,37 @@ and open the template in the editor.
             </div>
         </div>
         <div class="section">
-            <div class="header">ARM TUNING (in debug only)</div>
+            <div class="header">POSITION CALIBRATION</div>
+            <div class="commands">
+                <div><a onclick="setCalibrate('D1', -1, 1, -1)">Calibrate D1</a></div>
+                <div><a onclick="setCalibrate('D1', -1, 1, -1)">Calibrate D2</a></div>
+                <div><a onclick="setCalibrate('D1', -1, 1, -1)">Calibrate CPL</a></div>
+                <div><a onclick="setCalibrate('D1', -1, 1, -1)">Calibrate CPM</a></div>
+                <div><a onclick="setCalibrate('D1', -1, 1, -1)">Calibrate CPR</a></div>
+                <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=ARM-GRIP&grip=o');">Ungrip</a></div>
+                <div><a onclick="r12CalPosition('out-top');">Move to OUT-TOP</a></div>
+                <div><a onclick="r12CalPosition('in-top');">Move to IN-TOP</a></div>
+                <div><a onclick="r12CalPosition('in-bottom');">Move to IN-BOTTOM</a></div>
+                <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=ARM-GRIP&grip=c');">Grip</a></div>
+                <div><a onclick="r12CalPosition('out-bottom');">Move to OUT-BOTTOM</a></div>
+                <div><a onclick="r12CalAdjust('x', -1);">Adjust X</a></div>
+                <div><a onclick="r12CalAdjust('y', -1);">Adjust Y</a></div>
+                <div><a onclick="r12CalAdjust('z', -1);">Adjust Z</a></div>
+                <div><a onclick="r12CalAdjust('pitch', -1);">Adjust Pitch</a></div>
+                <div><a onclick="r12CalAdjust('yaw', -1);">Adjust Yaw</a></div>
+                <div><a onclick="r12CalAdjust('roll', -1);">Adjust Roll</a></div>
+                <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=POSITION-CALIBRATE&option=save');">Persist adjustments</a></div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="header">ARM TUNING (in debug only; does not persist adjustment)</div>
             <div class="commands">
                 <div><a onclick="r12adjust('x');">Adjust X</a></div>
-                <div><a onclick="r12adjust('y');">Adjust X</a></div>
-                <div><a onclick="r12adjust('z');">Adjust X</a></div>
-                <div><a onclick="r12adjust('pitch');">Adjust pitch</a></div>
-                <div><a onclick="r12adjust('yaw');">Adjust yaw</a></div>
-                <div><a onclick="r12adjust('roll');">Adjust roll</a></div>
+                <div><a onclick="r12adjust('y');">Adjust Y</a></div>
+                <div><a onclick="r12adjust('z');">Adjust Z</a></div>
+                <div><a onclick="r12adjust('pitch');">Adjust Pitch</a></div>
+                <div><a onclick="r12adjust('yaw');">Adjust Yaw</a></div>
+                <div><a onclick="r12adjust('roll');">Adjust Roll</a></div>
                 <div><a onclick="r12reload()">Reload positions and routes</a></div>
             </div>
         </div>
