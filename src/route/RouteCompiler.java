@@ -39,7 +39,7 @@ public class RouteCompiler
     private ArmOperations ao = null;
 
     //String consts
-    public static final String ROUTE_FILE_BASENAME = FileUtils.getFilesFolderString() + "allRoutes.txt";
+    public static final String ROUTE_FILE_BASENAME = FileUtils.getFilesFolderString() + "Routes.txt";
 //    pathToFile = FileUtils.getFilesFolderString() + prefix + ROUTE_FILE_BASENAME + ".txt";
     public static final String ROUTE_DEFINE_PREFIX = "route ";
 
@@ -198,9 +198,9 @@ public class RouteCompiler
                     if (route.getLastObject() != null)
                     {
                         RoutePosition orcc = route.getLastObject();
-                        pitch = String.valueOf(orcc.getPosition().getPitch());
-                        yaw = String.valueOf(orcc.getPosition().getYaw());
-                        roll = String.valueOf(orcc.getPosition().getRoll());
+                        pitch = String.valueOf(orcc.getPosition().getPitchStr());
+                        yaw = String.valueOf(orcc.getPosition().getYawStr());
+                        roll = String.valueOf(orcc.getPosition().getRollStr());
                     }
                     pieces[0] = Utils.xyInToMmStr(pieces[0]);
                     pieces[1] = Utils.xyInToMmStr(pieces[1]);

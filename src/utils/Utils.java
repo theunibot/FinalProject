@@ -91,18 +91,32 @@ public class Utils
 
     public static String zInToMmStr(String z)
     {
-
         return formatDouble((double) (inToMm(strToDbl(z)) - 303.0d - 9.5d));
+    }
+    
+    public static String zMmToInStr(String z)
+    {
+        return formatDouble((double) (mmToIn(strToDbl(z) + 303.0d + 9.5d)));
     }
 
     public static String xyInToMmStr(String in)
     {
-        return formatDouble(25.4d * strToDbl(in));
+        return formatDouble(inToMm(strToDbl(in)));
+    }
+    
+    public static String xyMmToInStr(String mm)
+    {
+        return formatDouble(mmToIn(strToDbl(mm)));
     }
 
     public static double inToMm(double in)
     {
         return (25.4d * in);
+    }
+    
+    public static double mmToIn(double mm)
+    {
+        return (mm / 25.4d);
     }
 
     public static String formatDouble(double d)

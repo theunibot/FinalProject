@@ -19,13 +19,14 @@
 package robotoperations;
 
 import enums.CabinetType;
+import enums.RouteEffectType;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.concurrent.Semaphore;
 import route.Position;
 import route.PositionLookup;
 import route.Route;
 import route.RouteCompiler;
-import enums.RouteEffectType;
-import java.util.concurrent.Semaphore;
 import route.RouteHolder;
 import route.RouteProperties;
 import utils.FileUtils;
@@ -38,8 +39,8 @@ import utils.Utils;
 public class ArmOperations
 {
 
-    private final boolean armOpsSimulated = false;
-    private final boolean r12OpsSimulated = false;
+    private final boolean armOpsSimulated = true;
+    private final boolean r12OpsSimulated = true;
     
     private final boolean armOpsLogging = true;
     private R12Operations r12o = null;
@@ -187,6 +188,8 @@ public class ArmOperations
      */
     public Result pick(CabinetType unit, int stackPosition, Position position)
     {
+        HashMap<String, Position> plunge = plungePositions(unit, stackPosition, position);
+            
         if (armOpsLogging)
             System.out.println("    ArmOperations: pick from " + unit.toString() + " position " + stackPosition + " starting at " + position.getName());
 
@@ -196,21 +199,54 @@ public class ArmOperations
         
         if (armOpsSimulated && !r12OpsSimulated)
             return new Result();
+
+        // move down to position
+        Result result = runRobotCommand(plunge.get("out-bottom"));
+        if (!result.success())
+            return result;
         
+        // ungrip in prep to get the disc
+        result = runRobotCommand("UNGRIP");
+        if (!result.success())
+            return result;
+
+        // move into the cabinet
+        result = runRobotCommand(plunge.get("in-bottom"));
+        if (!result.success())
+            return result;
+        
+        // now grip the disc
+        result = runRobotCommand("GRIP");
+        if (!result.success())
+            return result;
+        
+        // lift the disc
+        result = runRobotCommand(plunge.get("in-top"));
+        if (!result.success())
+            return result;
+        
+        // and finally move back to our home position
+        result = runRobotCommand(plunge.get("out-top"));
+        if (!result.success())
+            return result;
+        
+        
+        
+        /***** OLD VERSION ******/
         Position posInfo = plt.shelfToPosition(unit, 91);        
         Position posOffsetInfo = plt.shelfToPosition(unit, 90);        
         
-        double bigZval = Double.valueOf(posInfo.getY());
-        double smallZval = Double.valueOf(posInfo.getZ());
-        double desktopZval = Double.valueOf(posInfo.getZ());
-        double moveval = Double.valueOf(posInfo.getX());
+        double bigZval = Double.valueOf(posInfo.getYStr());
+        double smallZval = Double.valueOf(posInfo.getZStr());
+        double desktopZval = Double.valueOf(posInfo.getZStr());
+        double moveval = Double.valueOf(posInfo.getXStr());
         
-        double offsetX = Double.valueOf(posOffsetInfo.getX());
-        double offsetY = Double.valueOf(posOffsetInfo.getY());
-        double offsetZ = Double.valueOf(posOffsetInfo.getZ());        
-        double offsetPitch = Double.valueOf(posOffsetInfo.getPitch());
-        double offsetYaw = Double.valueOf(posOffsetInfo.getYaw());
-        double offsetRoll = Double.valueOf(posOffsetInfo.getRoll());        
+        double offsetX = Double.valueOf(posOffsetInfo.getXStr());
+        double offsetY = Double.valueOf(posOffsetInfo.getYStr());
+        double offsetZ = Double.valueOf(posOffsetInfo.getZStr());        
+        double offsetPitch = Double.valueOf(posOffsetInfo.getPitchStr());
+        double offsetYaw = Double.valueOf(posOffsetInfo.getYawStr());
+        double offsetRoll = Double.valueOf(posOffsetInfo.getRollStr());        
         
 //        System.out.println("Big Z: " + bigZval+ " small Z: " + smallZval + " DTZ: " + desktopZval + " MV AMT: " + moveval);
 
@@ -231,7 +267,7 @@ public class ArmOperations
         //UNGRIP
         //
         commandString = "UNGRIP";//Ungrip
-        Result result = runRobotCommand(commandString);
+        result = runRobotCommand(commandString);
         if (!result.success())
             return result;
 
@@ -246,8 +282,8 @@ public class ArmOperations
         //
         //Move forward
         //
-        double absStartX = Double.parseDouble(position.getX());
-        double absStartY = Double.parseDouble(position.getY());
+        double absStartX = Double.parseDouble(position.getXStr());
+        double absStartY = Double.parseDouble(position.getYStr());
         double deltaAxis = (moveval) / (Math.sqrt(2.0d));//get the distance forward divided by root2
         double absEndX = 0;
         double absEndY = absStartY - deltaAxis + offsetY;
@@ -309,7 +345,7 @@ public class ArmOperations
         //
         //MOVE Back to position
         //
-        commandString = position.getYaw() + " YAW ! " + position.getX() + " " + position.getY() + " " + position.getZ() + " MOVETO";
+        commandString = position.getYawStr() + " YAW ! " + position.getXStr() + " " + position.getYStr() + " " + position.getZStr() + " MOVETO";
         result = runRobotCommand(commandString);
         if (!result.success())
             return result;
@@ -330,6 +366,8 @@ public class ArmOperations
      */
     public Result drop(CabinetType unit, int stackPosition, Position position)
     {
+        HashMap<String, Position> plunge = plungePositions(unit, stackPosition, position);
+            
         if (armOpsLogging)
             System.out.println("    ArmOperations: drop at " + unit.toString() + " position " + stackPosition + " starting at " + position.getName());
 
@@ -339,25 +377,55 @@ public class ArmOperations
         
         if (armOpsSimulated && !r12OpsSimulated)
             return new Result();
-
         
+        // move into the cabinet
+        Result result = runRobotCommand(plunge.get("in-top"));
+        if (!result.success())
+            return result;
+        
+        // and down to position
+        result = runRobotCommand(plunge.get("in-bottom"));
+        if (!result.success())
+            return result;
+        
+        // now ungrip
+        result = runRobotCommand("UNGRIP");
+        if (!result.success())
+            return result;
+        
+        // and pull out
+        result = runRobotCommand(plunge.get("out-bottom"));
+        if (!result.success())
+            return result;
+        
+        // regrip
+        result = runRobotCommand("GRIP");
+        if (!result.success())
+            return result;
+        
+        // and finally move back to our home position
+        result = runRobotCommand(plunge.get("out-top"));
+        if (!result.success())
+            return result;
+        
+/***** OLD VERSION ********/
         String commandString = "";
         ResponseObject response = null;                
 
         Position posInfo = plt.shelfToPosition(unit, 91); 
         Position posOffsetInfo = plt.shelfToPosition(unit, 90);
         
-        double bigZval = Double.valueOf(posInfo.getY());
-        double smallZval = Double.valueOf(posInfo.getZ());
-        double desktopZval = Double.valueOf(posInfo.getZ());
-        double moveval = Double.valueOf(posInfo.getX());
+        double bigZval = Double.valueOf(posInfo.getYStr());
+        double smallZval = Double.valueOf(posInfo.getZStr());
+        double desktopZval = Double.valueOf(posInfo.getZStr());
+        double moveval = Double.valueOf(posInfo.getXStr());
         
-        double offsetX = Double.valueOf(posOffsetInfo.getX());
-        double offsetY = Double.valueOf(posOffsetInfo.getY());
-        double offsetZ = Double.valueOf(posOffsetInfo.getZ());        
-        double offsetPitch = Double.valueOf(posOffsetInfo.getPitch());
-        double offsetYaw = Double.valueOf(posOffsetInfo.getYaw());
-        double offsetRoll = Double.valueOf(posOffsetInfo.getRoll());        
+        double offsetX = Double.valueOf(posOffsetInfo.getXStr());
+        double offsetY = Double.valueOf(posOffsetInfo.getYStr());
+        double offsetZ = Double.valueOf(posOffsetInfo.getZStr());        
+        double offsetPitch = Double.valueOf(posOffsetInfo.getPitchStr());
+        double offsetYaw = Double.valueOf(posOffsetInfo.getYawStr());
+        double offsetRoll = Double.valueOf(posOffsetInfo.getRollStr());        
 
         //101 Y val big
         // 101 Z val small
@@ -367,8 +435,8 @@ public class ArmOperations
         //
         //Move forward
         //
-        double absStartX = Double.parseDouble(position.getX());
-        double absStartY = Double.parseDouble(position.getY());
+        double absStartX = Double.parseDouble(position.getXStr());
+        double absStartY = Double.parseDouble(position.getYStr());
         double deltaAxis = (moveval)/ (Math.sqrt(2.0d));//get the distance forward divided by root2
         double absEndX = 0;
         double absEndY = absStartY - deltaAxis + offsetY;
@@ -404,7 +472,7 @@ public class ArmOperations
         }
 
         commandString = Utils.formatDouble(yaw) + " YAW ! " + Utils.formatDouble(deltaX) + " " + Utils.formatDouble(deltaY) + " 0 MOVE";//moves DOWN set amount
-        Result result = runRobotCommand(commandString);
+        result = runRobotCommand(commandString);
         if (!result.success())
             return result;
         
@@ -434,7 +502,7 @@ public class ArmOperations
         //
         //MOVE Back
         //
-        commandString = Utils.formatDouble(Double.parseDouble(position.getYaw())) + " YAW ! " + Utils.formatDouble(-deltaX) + " " + Utils.formatDouble(-deltaY) + " 0 MOVE";
+        commandString = Utils.formatDouble(Double.parseDouble(position.getYawStr())) + " YAW ! " + Utils.formatDouble(-deltaX) + " " + Utils.formatDouble(-deltaY) + " 0 MOVE";
         result = runRobotCommand(commandString);
         if (!result.success())
             return result;
@@ -458,6 +526,101 @@ public class ArmOperations
 
         //move back to start pos succesful.
         return new Result();
+  
+    }
+    
+    /**
+     * Compute a series of Positions for plunging into a cabinet to pick up a disc.
+     * 
+     * @param cabinet Cabinet we are working with
+     * @param stackPosition Stack position (desktop always 1, but can be 1 or 2 for a CachePoint, with 2 being top disc)
+     * @param position Current position of the arm in front of the cabinet
+     * @return Map of Positions, containing "in-top", "in-bottom", and "out-bottom" (position is the "out-top" so not computed)
+     */
+    private HashMap<String, Position> plungePositions(CabinetType cabinet, int stackPosition, Position position)
+    {
+        // locate the values for the plunge depth (X) and Z movement (Y=2 deep, Z=1 deep)
+        Position posInfo = plt.shelfToPosition(cabinet, 91);        
+        // locate the relative offsets that we apply to all insertion positions for this cabinet (X/Y/Z/P/Y/R)
+        Position posOffsetInfo = plt.shelfToPosition(cabinet, 90);        
+        
+        // convert values into useful double format for our math
+        double bigZval = Double.valueOf(posInfo.getYStr());
+        double smallZval = Double.valueOf(posInfo.getZStr());
+        double desktopZval = Double.valueOf(posInfo.getZStr());
+        double moveval = Double.valueOf(posInfo.getXStr());
+        
+        double offsetX = Double.valueOf(posOffsetInfo.getXStr());
+        double offsetY = Double.valueOf(posOffsetInfo.getYStr());
+        double offsetZ = Double.valueOf(posOffsetInfo.getZStr());        
+        double offsetYaw = Double.valueOf(posOffsetInfo.getYawStr());
+        
+        // setup deltaZ based on the cabinet type and stack position
+        double deltaZ = (desktopZval);
+        if (cabinet == CabinetType.CPL || cabinet == CabinetType.CPM || cabinet == CabinetType.CPR) {
+            deltaZ = (stackPosition == 2) ? smallZval : bigZval;
+        }
+        
+        // determine the out-bottom position
+        Position outBottom = new Position(position.getName() + "_OB", position);
+        outBottom.setZ(outBottom.getZ() + deltaZ + offsetZ);
+
+        // determine the in-bottom position
+        double absStartX = Double.parseDouble(position.getXStr());
+        double absStartY = Double.parseDouble(position.getYStr());
+        double deltaAxis = (moveval) / (Math.sqrt(2.0d));//get the distance forward divided by root2
+        double absEndX = 0;
+        double absEndY = absStartY - deltaAxis + offsetY;
+        double deltaX = 0;
+        double deltaY = -deltaAxis + offsetY;
+        double yaw = 0;
+
+        //abs startX/Y used to calc abs endX/Y which are used to calc the Yaw
+        //deltaX/Y used for MOVE commands
+        if (cabinet == CabinetType.D2)
+        {
+            absEndX = absStartX - deltaAxis + offsetX;
+            deltaX = -deltaAxis + offsetX;
+            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) - 135 + offsetYaw;
+        }
+        else if (cabinet == CabinetType.D1)
+        {
+            absEndX = absStartX + deltaAxis + offsetX;
+            deltaX = deltaAxis + offsetX;
+            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) + 135 + offsetYaw;
+        }
+        else if (cabinet == CabinetType.CPL || cabinet == CabinetType.CPM || cabinet == CabinetType.CPR)
+        {
+            absEndY = absStartY + moveval + offsetY;
+            absEndX = absStartX + offsetX;
+            deltaX = 0 + offsetX;
+            deltaY = moveval + offsetY;
+            yaw = -Math.toDegrees(Math.atan2(absEndX, absEndY)) + offsetYaw;
+        }
+        else
+        {
+            System.err.println("Invalid CabinetType: " + cabinet.toString());
+            return null;
+        }
+        
+        // set the in bottom position
+        Position inBottom = new Position(position.getName() + "_IB", outBottom);
+        inBottom.setYaw(yaw);
+        inBottom.setX(inBottom.getX() + deltaX);
+        inBottom.setY(inBottom.getY() + deltaY);
+
+        // figure out the in up position
+        Position inTop = new Position(position.getName() + "_IU", inBottom);
+        inTop.setZ(inTop.getZ() - (deltaZ + offsetZ));
+
+        // store these values into the map
+        HashMap<String, Position> map = new HashMap<>();
+        map.put("out-top", position);
+        map.put("in-bottom", inBottom);
+        map.put("out-bottom", outBottom);
+        map.put("in-top", inTop);
+        
+        return map;
     }
 
     /**
@@ -760,6 +923,21 @@ public class ArmOperations
         }
         return new Result("Robot not in debug mode; can not adjust");
     }
+    
+    /**
+     * Move the arm to the specified absolute position
+     * 
+     * @param position Absolute position to move to
+     * @return Result with success/failure
+     */
+    private Result runRobotCommand(Position position) {
+        String command = position.getPitchStr() + " PITCH ! " +
+                position.getYawStr() + " YAW ! " +
+                position.getRollStr() +  " ROLL ! " +
+                position.getXStr() + " " + position.getYStr() + " " + position.getZStr() + " MOVETO";
+        return runRobotCommand(command);
+    }
+    
     /**
      * Sends an individual command to robot and looks for errors
      *
@@ -852,7 +1030,7 @@ public class ArmOperations
      */
     private String positionCommandToRouteModifyString(Position c, String routeName, int pos)
     {
-        return "DECIMAL " + c.getRoll() + " " + c.getYaw() + " " + c.getPitch() + " " + c.getZ() + " " + c.getY() + " " + c.getX() + " " + routeName + " " + pos + " LINE DLD";
+        return "DECIMAL " + c.getRollStr() + " " + c.getYawStr() + " " + c.getPitchStr() + " " + c.getZStr() + " " + c.getYStr() + " " + c.getXStr() + " " + routeName + " " + pos + " LINE DLD";
     }
 
 }

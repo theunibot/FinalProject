@@ -33,12 +33,14 @@ import utils.Utils;
 public class PositionLookup
 {
 
-    private final String FILE_NAME = "PositionLookupTable.txt";
+    private final String POSITION_FILE_NAME = "Positions.txt";
+    private final String ADJUSTMENT_FILE_NAME = "Adjustments.txt";
     private HashMap<CabinetType, HashMap<Integer, Position>> positions;
+    private HashMap<CabinetType, HashMap<Integer, Position>> adjustments;
 
     private boolean USE_LINE_NUMS = true;
 
-    private String FILE_CONTENTS = ""
+    private String POSITION_FILE_CONTENTS = ""
             + "//\n"
             + "// This file defines all known positions in front of each shelf\n"
             + "//\n"
@@ -49,6 +51,20 @@ public class PositionLookup
             + "// numbers identify the PITCH YAW and ROLL.  If these last three are\n"
             + "// not specified, they will default to the last used value for the cabinet,\n"
             + "// or 0 0 0 if no prior value used.\n"
+            + "//\n";
+    
+    private String ADJUSTMENT_FILE_CONTENTS = ""
+            + "//\n"
+            + "// This file defines all adjustments for all known positions of each shelf\n"
+            + "//\n"
+            + "// This file defines minor adjustments, in millimeters, to the positions\n"
+            + "// contained in the Positions.txt file.  It can be edited by hand, or is also\n"
+            + "// updated by commands from within the software.  This provides for tuning and\n"
+            + "// calibration of the surface without having to adust the primary coordinate\n"
+            + "// file.  Additionally, adjustments can be made on-the-fly while the software\n"
+            + "// is operational.  The syntax is basically the same as the Positions.txt file,\n"
+            + "// except that each line defines the relative offset, rather than the absolute\n"
+            + "// position.\n"
             + "//\n";
 
     private static PositionLookup plt = null;
@@ -79,13 +95,18 @@ public class PositionLookup
      */
     public Result init() {
         positions = new HashMap<CabinetType, HashMap<Integer, Position>>();
-
-        Result result = parseFile();
+        adjustments = new HashMap<CabinetType, HashMap<Integer, Position>>();
+        
+        Result result = loadPositionFile(POSITION_FILE_NAME, POSITION_FILE_CONTENTS, positions);
+        if (!result.success())
+            return result;
+        
+        result = loadPositionFile(ADJUSTMENT_FILE_NAME, ADJUSTMENT_FILE_CONTENTS, adjustments);
         if (!result.success())
             return result;
 
         if (main.Main.DEBUG)
-            System.out.println("Position Lookup Table Initialized.");
+            System.out.println("Positions (and adjustments) loaded");
 
         // and program the positions into the controller
         return new Result(); 
@@ -112,6 +133,11 @@ public class PositionLookup
                 Position pos = posEntry.getValue();
                 // is this name the one desired to be programmed?
                 if ( (name == null) || (pos.getName().toLowerCase().startsWith(name))) {
+                    // locate the point again, because this will implement any calibration adjustments
+                    Position adjPos = shelfToPosition(cabinet, posEntry.getKey());
+                    if (adjPos != null)
+                        pos = adjPos;
+
                     // program the point
                     result = ao.learnPoint(pos);
                     if (!result.success())
@@ -143,6 +169,16 @@ public class PositionLookup
             System.err.println("Unable to locate shelf " + shelf + " in cabinet " + cabinet.toString() + " in position table");
             return null;
         }
+        // see if we have an adjustment position for this
+        HashMap<Integer, Position> adjustCabinetPositions = adjustments.get(cabinet);
+        if (adjustCabinetPositions != null) {
+            Position adjustPos = adjustCabinetPositions.get(shelf);
+            if (adjustPos != null) {
+                // apply the adjustments
+                pos.offsetPositions(adjustPos);
+            }
+        }
+        
         return pos;
     }
 
@@ -154,14 +190,41 @@ public class PositionLookup
     public static Position homePosition() {
         return PositionLookup.getInstance().shelfToPosition(CabinetType.HOME, 0);
     }
+    
+    /**
+     * Add or update an adjustment for a specific cabinet/shelf
+     * 
+     * @param cabinet Cabinet to adjust
+     * @param shelf Shelf within cabinet to adjust
+     * @param adjustment Relative adjustment to use (adjusts existing adjustment by this amount)
+     */
+    public void adjustPosition(CabinetType cabinet, int shelf, Position adjustment) {
+        // create cabinet if it doesn't already exist
+        if (adjustments.get(cabinet) == null)
+            adjustments.put(cabinet, new HashMap<Integer, Position>());
+
+        // do we already have an adjustment?
+        Position adjPos = adjustments.get(cabinet).get(shelf);
+        if (adjPos != null)
+            adjustments.get(cabinet).put(shelf, adjPos.offsetPositions(adjustment));
+        else
+            // update the adjustment
+            adjustments.get(cabinet).put(shelf, adjustment);
+    }
 
     //<editor-fold defaultstate="collapsed" desc="Parse File Stuff">
-    private Result parseFile()
+    
+    /**
+     * Loads the position file into memory as a collection of positions
+     * 
+     * @return Result with success/fail information 
+     */
+    private Result loadPositionFile(String fileName, String defaultHeader, HashMap<CabinetType, HashMap<Integer, Position>> hashMap)
     {
-        ArrayList<String> lines = FileUtils.readCommandFileOrGenEmpty(FileUtils.getFilesFolderString() + FILE_NAME, FILE_CONTENTS);
+        ArrayList<String> lines = FileUtils.readCommandFileOrGenEmpty(FileUtils.getFilesFolderString() + fileName, defaultHeader);
         if (lines != null)
         {
-            System.out.println("Read " + lines.size() + " line(s) from position file.");
+            System.out.println("Read " + lines.size() + " line(s) from " + fileName);
 
             Position prevPosition = new Position("None", "0", "0", "0", "0", "0", "0");
 
@@ -191,7 +254,7 @@ public class PositionLookup
                         }
                         catch (IllegalArgumentException e)
                         {
-                            return new Result("PositionLookupTable file has unknown CabinetType of " + line.trim().toUpperCase());
+                            return new Result(fileName + " file has unknown CabinetType of " + line.trim().toUpperCase());
                         }
 
                         // reset our last known position
@@ -209,7 +272,7 @@ public class PositionLookup
                     }
                     else
                     {
-                        return new Result("Position Lookup Line " + line + " missing data");
+                        return new Result(fileName + " Lookup Line " + line + " missing data");
                     }
                 }
                 else
@@ -227,7 +290,7 @@ public class PositionLookup
                     }
                     catch (IllegalArgumentException e)
                     {
-                        return new Result("Invalid shelf ID " + splitLinePieces[0] + " in PositionLookupTable");
+                        return new Result("Invalid shelf ID " + splitLinePieces[0] + " in " + fileName);
                     }
 
                     // build up a name of this position
@@ -257,9 +320,9 @@ public class PositionLookup
                     if (splitLinePieces.length == 4)
                     {
                         pos = new Position(name, px, py, pz, 
-                                String.valueOf(prevPosition.getPitch() + pitchOffset), 
-                                String.valueOf(prevPosition.getYaw() + yawOffset), 
-                                String.valueOf(prevPosition.getRoll() + rollOffset));
+                                String.valueOf(prevPosition.getPitchStr() + pitchOffset), 
+                                String.valueOf(prevPosition.getYawStr() + yawOffset), 
+                                String.valueOf(prevPosition.getRollStr() + rollOffset));
                     }
                     else if (splitLinePieces.length == 7)
                     {
@@ -270,7 +333,7 @@ public class PositionLookup
                     }
                     else
                     {
-                        return new Result("PositionLookupTable invalid syntax: " + line);
+                        return new Result(fileName + " invalid syntax: " + line);
                     }
 
                     // save this away for later reference to get default values
@@ -279,29 +342,78 @@ public class PositionLookup
                     // make sure we know the cabinet type...
                     if (ct == null)
                     {
-                        return new Result("Position found before CabinetType defined in PositionLookupTable (line " + line + ")");
+                        return new Result("Position found before CabinetType defined in " + fileName + " (line " + line + ")");
                     }
 
                     // and tuck it into the hashmap.  
                     // do we know the cabinet?
-                    if (positions.get(ct) == null)
+                    if (hashMap.get(ct) == null)
                     // create the cabinet
                     {
-                        positions.put(ct, new HashMap<Integer, Position>());
+                        hashMap.put(ct, new HashMap<Integer, Position>());
                     }
                     // make sure we don't already know this id
-                    if (positions.get(ct).get(shelf) != null)
+                    if (hashMap.get(ct).get(shelf) != null)
                     {
-                        return new Result("Duplicate shelf in cabinet " + ct.toString() + " shelf " + shelf + " in PositionLookupTable");
+                        return new Result("Duplicate shelf in cabinet " + ct.toString() + " shelf " + shelf + " in " + fileName);
                     }
                     // now add the position
-                    positions.get(ct).put(shelf, pos);
+                    hashMap.get(ct).put(shelf, pos);
                 }
             }
         }
         // success!
         return new Result();
     }
+    
+    
+    /**
+     * saves the Adjustments to a disk file
+     * 
+     * @return Result with success/fail information 
+     */
+    public Result saveAdjustmentFile() {
+        StringBuilder builder = new StringBuilder();
+        
+        // place the header into the builder
+        builder.append(ADJUSTMENT_FILE_CONTENTS);
+        
+        // scan through all cabinets...
+        for (Entry<CabinetType, HashMap<Integer, Position>> cabEntry : adjustments.entrySet()) {
+            CabinetType cabinet = cabEntry.getKey();
+            HashMap<Integer, Position> posHash = cabEntry.getValue();
 
+            // add the header for the cabinet
+            builder.append("\n");
+            builder.append(FileUtils.COMMAND_FILE_METADATA_PREFIX);
+            builder.append(cabinet.toString());
+            builder.append("\n");
+            
+            // now scan all positions
+            for (Entry<Integer, Position> posEntry : posHash.entrySet()) {
+                Position pos = posEntry.getValue();
+
+                // add the point
+                builder.append(Utils.xyMmToInStr(pos.getXStr()));
+                builder.append(" ");
+                builder.append(Utils.xyMmToInStr(pos.getYStr()));
+                builder.append(" ");
+                builder.append(Utils.zMmToInStr(pos.getZStr()));
+                builder.append(" ");
+                builder.append(pos.getPitchStr());
+                builder.append(" ");
+                builder.append(pos.getYawStr());
+                builder.append(" ");
+                builder.append(pos.getRollStr());
+                builder.append("\n");
+            }
+        }
+        
+        // write it to the file
+        if (!FileUtils.createFile(ADJUSTMENT_FILE_NAME, builder.toString()))
+            return new Result("Unable to create adjustment file " + ADJUSTMENT_FILE_NAME);
+        
+        return new Result();
+    }    
     //</editor-fold>
 }

@@ -69,6 +69,6 @@ public class RoutePosition
     
     public String toString()
     {        
-        return "DECIMAL " + coord.getRoll() + " " + coord.getYaw() + " " + coord.getPitch() + " " + coord.getZ() + " " + coord.getY() + " " + coord.getX() + " " + routeName + " " + line + " LINE DLD\r";
+        return "DECIMAL " + coord.getRollStr() + " " + coord.getYawStr() + " " + coord.getPitchStr() + " " + coord.getZStr() + " " + coord.getYStr() + " " + coord.getXStr() + " " + routeName + " " + line + " LINE DLD\r";
     }
 }
