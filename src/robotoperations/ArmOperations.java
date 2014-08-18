@@ -19,7 +19,6 @@
 package robotoperations;
 
 import enums.CabinetType;
-import enums.RouteEffectType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
@@ -28,11 +27,8 @@ import route.PositionLookup;
 import route.Route;
 import route.RouteCompiler;
 import route.RouteHolder;
-import route.RoutePosition;
-import route.RouteProperties;
 import utils.FileUtils;
 import utils.Result;
-import utils.Utils;
 
 /**
  *
@@ -40,8 +36,8 @@ import utils.Utils;
 public class ArmOperations
 {
 
-    private final boolean armOpsSimulated = false;
-    private final boolean r12OpsSimulated = false;
+    private final boolean armOpsSimulated = true;
+    private final boolean r12OpsSimulated = true;
 
     public final static int ARM_MAX_SPEED = 30000;
     private int armSpeed = ARM_MAX_SPEED;
@@ -377,70 +373,51 @@ public class ArmOperations
      * @param shelf shelf within the cabinet
      * @param stackPosition stack position (when CP) - where 1 is bottom disc,
      * and 2 is top disc)
-     * @param position off of which the relative route is run
+     * @param position current position of the arm
      * @return Result with success/failure info
      */
-    public Result pick(CabinetType cabinet, int shelf, int stackPosition, Position position)
-    {
+    public Result pick(CabinetType cabinet, int shelf, int stackPosition, Position position) {
         HashMap<String, Position> plunge = plungePositions(cabinet, shelf, stackPosition, position);
-
+        Result result;
+        
         if (armOpsLogging)
-        {
             System.out.println("    ArmOperations: pick from " + cabinet.toString() + " position " + stackPosition + " starting at " + position.getName());
-        }
 
         // make sure the stackPosition is legit
         if ((stackPosition < 1) || (stackPosition > 2))
-        {
             return new Result("Invalid stackPosition of " + stackPosition + " passed to pick");
-        }
 
         if (armOpsSimulated && !r12OpsSimulated)
-        {
             return new Result();
-        }
 
-        // move down to position
-        Result result = runRobotCommand(plunge.get("out-bottom"));
+        result = runRobotCommand(plunge.get("out-bottom"));
         if (!result.success())
-        {
             return result;
-        }
-
+        
         // ungrip in prep to get the disc
         result = runRobotCommand("UNGRIP");
         if (!result.success())
-        {
             return result;
-        }
 
         // move into the cabinet
         result = runRobotCommand(plunge.get("in-bottom"));
         if (!result.success())
-        {
             return result;
-        }
 
         // now grip the disc
         result = runRobotCommand("GRIP");
         if (!result.success())
-        {
             return result;
-        }
 
         // lift the disc
         result = runRobotCommand(plunge.get("in-top"));
         if (!result.success())
-        {
             return result;
-        }
 
-        // and finally move back to our home position
+        // and return to out-top
         result = runRobotCommand(plunge.get("out-top"));
         if (!result.success())
-        {
             return result;
-        }
 
         return new Result();
     }
@@ -456,70 +433,51 @@ public class ArmOperations
      * @param position off of which the relative route is run
      * @return Result with success/fail info
      */
-    public Result drop(CabinetType cabinet, int shelf, int stackPosition, Position position)
-    {
+    public Result drop(CabinetType cabinet, int shelf, int stackPosition, Position position) {
         HashMap<String, Position> plunge = plungePositions(cabinet, shelf, stackPosition, position);
-
+        Result result;
+        
         if (armOpsLogging)
-        {
             System.out.println("    ArmOperations: drop at " + cabinet.toString() + " position " + stackPosition + " starting at " + position.getName());
-        }
 
         // make sure the stackPosition is legit
         if ((stackPosition < 1) || (stackPosition > 2))
-        {
             return new Result("Invalid stackPosition of " + stackPosition + " passed to drop");
-        }
 
         if (armOpsSimulated && !r12OpsSimulated)
-        {
             return new Result();
-        }
 
-        // move into the cabinet
-        Result result = runRobotCommand(plunge.get("in-top"));
+        // move in
+        result = runRobotCommand(plunge.get("in-top"));
         if (!result.success())
-        {
             return result;
-        }
 
         // and down to position
         result = runRobotCommand(plunge.get("in-bottom"));
         if (!result.success())
-        {
             return result;
-        }
 
         // now ungrip
         result = runRobotCommand("UNGRIP");
         if (!result.success())
-        {
             return result;
-        }
 
         // and pull out
         result = runRobotCommand(plunge.get("out-bottom"));
         if (!result.success())
-        {
             return result;
-        }
 
         // regrip
         result = runRobotCommand("GRIP");
         if (!result.success())
-        {
             return result;
-        }
 
-        // and finally move back to our home position
+        // and return to out-top
         result = runRobotCommand(plunge.get("out-top"));
         if (!result.success())
-        {
             return result;
-        }
 
         return new Result();
-
     }
 
     /**
