@@ -238,8 +238,6 @@ public class ArmOperations
                 {
                     return result;
                 }
-
-                return new Result();
             }
             return new Result();
         }
