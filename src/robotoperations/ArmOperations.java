@@ -150,85 +150,76 @@ public class ArmOperations
     public Result runRoute(Route route, Position start, Position end)
     {
         if (armOpsLogging)
-        {
             System.out.println("    ArmOperations: runRoute " + route.getRouteProperties().getRouteFriendlyName()
                     + " from " + ((start != null) ? start.getName() : "undefined") + " to "
                     + ((end != null) ? end.getName() : "undefined"));
-        }
+
         if (armOpsSimulated && !r12OpsSimulated)
-        {
             return new Result();
-        }
 
         ResponseObject response;
-        if (route.size() >= 2)//must have start and end pos to modify
-        {
-            if (start != null)
-            {
+        if (route.size() >= 2) {
+            //must have start and end pos to modify
+            if (start != null) {
                 //run the modify start command
                 String modStart = positionCommandToRouteModifyString(start, route.getRouteProperties().getRouteIDName(), 1);
                 Result result = runRobotCommand(modStart);
                 if (!result.success())
-                {
                     return result;
-                }
             }
-            if (end != null)
-            {
+
+            if (end != null) {
                 //run the modify end command
                 String modEnd = positionCommandToRouteModifyString(end, route.getRouteProperties().getRouteIDName(), route.size());
                 Result result = runRobotCommand(modEnd);
                 if (!result.success())
-                {
                     return result;
-                }
             }
 
-            // see if any positions in the route require delta adjustment (ignoring first and last)
-            for (int routeIndex = 1; routeIndex < (route.size() - 1); ++routeIndex)
-            {
-                RoutePosition rp = route.get(routeIndex);
+            // see if any positions in the route require delta adjustment
+            Position priorPos = null;
+            for (int routeIndex = 0; routeIndex < route.size(); ++routeIndex) {
+                Position curPos;
 
-                if (rp.getPosition().hasDelta())
-                {
+                // determine the current route position in the route
+                if (routeIndex == 0)
+                    curPos = start;
+                else if (routeIndex == (route.size() - 1))
+                    curPos = end;
+                else
+                    curPos = route.get(routeIndex).getPosition();
+                
+//System.out.println("***** Processing " + routeIndex + ": " + curPos);
+                if (curPos.hasDelta()) {
+//System.out.println("***** Has delta");
                     // determine prior position
-                    Position priorPos, nextPos;
-                    if (routeIndex == 1)
-                    {
-                        priorPos = start;
-                    }
-                    else
-                    {
-                        priorPos = route.get(routeIndex - 1).getPosition();
-                    }
-                    if (routeIndex == (route.size() - 2))
-                    {
+                    Position nextPos;
+
+                    if (routeIndex >= (route.size() - 2))
                         nextPos = end;
-                    }
                     else
-                    {
                         nextPos = route.get(routeIndex + 1).getPosition();
-                    }
+
                     // this line is a delta - so compute the varient position
+//System.out.println("***** prior: " + priorPos);
+//System.out.println("***** next: " + nextPos);
                     Position adjPos;
                     if (route.getRouteProperties().getReverse())
-                    {
-                        adjPos = rp.getPosition().getDeltaPosition(nextPos, priorPos);
-                    }
+                        adjPos = curPos.getDeltaPosition(nextPos, priorPos);
                     else
-                    {
-                        adjPos = rp.getPosition().getDeltaPosition(priorPos, nextPos);
-                    }
-
+                        adjPos = curPos.getDeltaPosition(priorPos, nextPos);
+//System.out.println("***** adusted is: " + adjPos);
                     String modMiddle = positionCommandToRouteModifyString(adjPos, route.getRouteProperties().getRouteIDName(), routeIndex + 1);
                     // execute the route change
                     Result result = runRobotCommand(modMiddle);
                     if (!result.success())
-                    {
                         return result;
-                    }
-                }
-
+                    // save our adjusted position for next time...
+                    priorPos = adjPos;
+                } else
+                    // save our current position for next time
+                    priorPos = curPos;
+            
             }
 
             // run the route
@@ -236,14 +227,12 @@ public class ArmOperations
             String runRoute = Integer.toString((armSpeed < routeSpeed) ? armSpeed : routeSpeed) + " SPEED ! CONTINUOUS ADJUST " + route.getRouteProperties().getRouteIDName() + " RUN";
             Result result = runRobotCommand(runRoute);
             if (!result.success())
-            {
                 return result;
-            }
+
             return new Result();
         }
-        else
-        //not enough pos to modify start and end routes
-        {
+        else {
+            //not enough pos to modify start and end routes
             return new Result("Route named " + route.getRouteProperties().getRouteFriendlyName() + " has " + route.size() + " coordinates; must have at least two (start and end)");
         }
     }
