@@ -189,7 +189,8 @@ public class ArmOperations
             {
                 RoutePosition rp = route.get(routeIndex);
 
-                if (rp.getPosition().hasDelta()) {
+                if (rp.getPosition().hasDelta())
+                {
                     // determine prior position
                     Position priorPos, nextPos;
                     if (routeIndex == 1)
@@ -207,33 +208,39 @@ public class ArmOperations
                     else
                     {
                         nextPos = route.get(routeIndex + 1).getPosition();
-                    
-                    // this line is a delta - so compute the varient position
-                    Position adjPos;
-                    if (route.getRouteProperties().getReverse())
-                        adjPos = rp.getPosition().getDeltaPosition(nextPos, priorPos);
-                    else
-                        adjPos = rp.getPosition().getDeltaPosition(priorPos, nextPos);
 
-                    String modMiddle = positionCommandToRouteModifyString(adjPos, route.getRouteProperties().getRouteIDName(), routeIndex + 1);
-                    // execute the route change
-                    Result result = runRobotCommand(modMiddle);
-                    if (!result.success())
-                    {
-                        return result;
+                        // this line is a delta - so compute the varient position
+                        Position adjPos;
+                        if (route.getRouteProperties().getReverse())
+                        {
+                            adjPos = rp.getPosition().getDeltaPosition(nextPos, priorPos);
+                        }
+                        else
+                        {
+                            adjPos = rp.getPosition().getDeltaPosition(priorPos, nextPos);
+                        }
+
+                        String modMiddle = positionCommandToRouteModifyString(adjPos, route.getRouteProperties().getRouteIDName(), routeIndex + 1);
+                        // execute the route change
+                        Result result = runRobotCommand(modMiddle);
+                        if (!result.success())
+                        {
+                            return result;
+                        }
                     }
                 }
-            }
 
-            // run the route
-            int routeSpeed = route.getRouteProperties().getRouteSpeed();
-            String runRoute = Integer.toString((armSpeed < routeSpeed) ? armSpeed : routeSpeed) + " SPEED ! CONTINUOUS ADJUST " + route.getRouteProperties().getRouteIDName() + " RUN";
-            Result result = runRobotCommand(runRoute);
-            if (!result.success())
-            {
-                return result;
-            }
+                // run the route
+                int routeSpeed = route.getRouteProperties().getRouteSpeed();
+                String runRoute = Integer.toString((armSpeed < routeSpeed) ? armSpeed : routeSpeed) + " SPEED ! CONTINUOUS ADJUST " + route.getRouteProperties().getRouteIDName() + " RUN";
+                Result result = runRobotCommand(runRoute);
+                if (!result.success())
+                {
+                    return result;
+                }
 
+                return new Result();
+            }
             return new Result();
         }
         else
