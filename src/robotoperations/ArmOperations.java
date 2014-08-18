@@ -41,6 +41,9 @@ public class ArmOperations
 
     private final boolean armOpsSimulated = false;
     private final boolean r12OpsSimulated = false;
+
+    private int armMaxSpeed = 30000;    
+    private int armSpeed = armMaxSpeed;
     
     private final boolean armOpsLogging = true;
     private R12Operations r12o = null;
@@ -167,7 +170,7 @@ public class ArmOperations
             }
 
             // run the route
-            String runRoute = "CONTINUOUS ADJUST " + route.getRouteProperties().getRouteIDName() + " RUN";
+            String runRoute = Integer.toString(armSpeed) + " SPEED ! CONTINUOUS ADJUST " + route.getRouteProperties().getRouteIDName() + " RUN";
             Result result = runRobotCommand(runRoute);
             if (!result.success())
                 return result;
@@ -206,8 +209,12 @@ public class ArmOperations
             System.out.println("    ArmOperations: calibratePoint " + cabinet.toString() + 
                     ", shelf " + shelf + ", plungePosition " + plungePosition + ", depth " + depth + ", speed " + speed);
                 
+        // set speed for all actions
+        armSpeed = speed;
         // determine our move position, our adjustments to alter, and the various plunge positions
         calibratePosition = PositionLookup.getInstance().shelfToPosition(cabinet, shelf);
+        if (calibratePosition == null)
+            return new Result("Unable to locate cabinet " + cabinet.toString() + " shelf " + shelf);
         adjustmentPosition = PositionLookup.getInstance().shelfToAdjustmentPosition(cabinet, shelf);
         HashMap<String, Position> plungeMap = plungePositions(cabinet, shelf, depth, calibratePosition);
         
@@ -217,9 +224,13 @@ public class ArmOperations
             return result;
         
         // move to the requested position
-        Position plungePos = plungeMap.get(calibratePlunge);
-        if (plungePos == null)
-            return new Result("Unable to locate plungePosition " + calibratePlunge);
+        Position plungePos;
+        if (plungeMap != null) {
+            plungePos = plungeMap.get(calibratePlunge);
+            if (plungePos == null)
+                return new Result("Unable to locate plungePosition " + calibratePlunge);
+        } else
+            plungePos = calibratePosition;
         return moveTo(plungePos);
     }
 
@@ -238,8 +249,7 @@ public class ArmOperations
             System.out.println("    ArmOperations: calibrateAdjust, axis " + axis + ", value " + value);
 
         if (adjustmentPosition == null)
-            return new Result("Uknown calibrate location");
-
+            return new Result("Unknown calibrate location");
         
         // record the adjustment
         switch (axis) {
@@ -404,10 +414,17 @@ public class ArmOperations
      */
     private HashMap<String, Position> plungePositions(CabinetType cabinet, int shelf, int stackPosition, Position position)
     {
+        // if not in a plunge cabinet, just make a simple map of the out-top position only
+        if ( (cabinet != CabinetType.D1) && (cabinet != CabinetType.D2) && (cabinet != CabinetType.CPL) &&
+                (cabinet != CabinetType.CPM) && (cabinet != CabinetType.CPR) ) {
+            HashMap<String, Position> map = new HashMap<>();
+            map.put("out-top", position);
+            return map;
+        }
         // locate the values for the plunge depth (X) and Z movement (Y=2 deep, Z=1 deep)
-        Position posInfo = plt.shelfToPosition(cabinet, 91);        
+        Position posInfo = plt.shelfToPosition(cabinet, 91);   
         // locate the relative offsets that we apply to all insertion positions for this cabinet (X/Y/Z/P/Y/R)
-        Position posOffsetInfo = plt.shelfToPosition(cabinet, 90);        
+        Position posOffsetInfo = plt.shelfToPosition(cabinet, 90);  
         
         System.out.println("90: " + posOffsetInfo.toString());
         System.out.println("91: " + posInfo.toString());
@@ -510,10 +527,13 @@ public class ArmOperations
         if (armOpsLogging)
             System.out.println("    ArmOperations: calibrate");
 
+        // reset speed to fast
+        armSpeed = armMaxSpeed;
+       
         if (armOpsSimulated && !r12OpsSimulated)
             return new Result();
-        
-        return runRobotCommand("CALIBRATE");
+         
+        return runRobotCommand(Integer.toString(armSpeed) + " SPEED ! CALIBRATE");
     }
 
     /**
@@ -582,6 +602,7 @@ public class ArmOperations
  
         //return runRobotCommand(position.getName() + " GOTO");
         return runRobotCommand(
+            Integer.toString(armSpeed) + " SPEED ! " +
             position.getPitchStr() + " PITCH ! " +
             position.getYawStr() + " YAW ! " +
             position.getRollStr() + " ROLL ! " +
@@ -841,6 +862,7 @@ public class ArmOperations
                 this.changeSpeed = false;
                 String speedCmd = String.valueOf(this.speed) + " SPEED !";
                 r12o.write(speedCmd);
+                armSpeed = this.speed;
                 ResponseObject response = r12o.getResponse(speedCmd);
                 if (!response.isSuccessful())
                     return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());

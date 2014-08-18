@@ -134,13 +134,14 @@ public class RouteCompiler
                 String[] chunks = line.replaceFirst(FileUtils.COMMAND_FILE_METADATA_PREFIX, "").split(" ");
                 if (chunks.length == 3)
                 {
-                    if ((routeProperties = parseForMetadata(chunks)) != null)
-                    {
-                        route = new Route(routeProperties);
-                        rh.addRoute(route);
-                    }
-                    else
-                        return new Result("Format of the command of line " + lineCount + " wrong. The line: \"" + line + "\"");
+                    RouteProperties props = null;
+
+                    String from = chunks[0];
+                    String to = chunks[1];
+                    String effect = chunks[2];
+                    routeProperties = new RouteProperties(getCabinetType(from), getCabinetType(to), getRouteEffectType(effect));
+                    route = new Route(routeProperties);
+                    rh.addRoute(route);
                 }
                 else if (chunks.length == 7)//clone command
                 {
@@ -229,35 +230,6 @@ public class RouteCompiler
         return new Result();
     }
 
-    /**
-     * Takes in the array of Metadata pieces and parses out info.
-     *
-     * @param array of pieces
-     * @return properties found.
-     */
-    private RouteProperties parseForMetadata(String[] array)
-    {
-        RouteProperties props = null;
-        if (array.length < 3)
-        {
-            System.err.println("Not enough metadata for this route");
-            return null;
-        }
-        else if (array.length > 3)
-        {
-
-            System.err.println("Too much metadata for this route");
-            return null;
-        }
-        //exactly 3 pieces, from "X" to "Y" with "Z" effect
-
-        String from = array[0];
-        String to = array[1];
-        String effect = array[2];
-        props = new RouteProperties(getCabinetType(from), getCabinetType(to), getRouteEffectType(effect));
-
-        return props;
-    }
 
     /**
      * Converts a string to a RouteEffectType object

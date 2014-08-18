@@ -43,9 +43,9 @@
 //
 
 #CPL D1 EFFICIENT
->CPL 30
->SAFEL 0
->HOME 0
+-5.2 4.7 ~0.0 ~0.0 -45.0 89.1
+>HOME 21
+>HOME 1
 >SAFER 0
 >D1 5
 

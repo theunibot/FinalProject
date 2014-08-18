@@ -119,19 +119,22 @@ and open the template in the editor.
         <div class="section">
             <div class="header">POSITION CALIBRATION</div>
             <div class="commands">
-                <div><a onclick="setCalibrate('D1', -1, 1, -1)">Calibrate D1</a></div>
-                <div><a onclick="setCalibrate('D2', -1, 1, -1)">Calibrate D2</a></div>
-                <div><a onclick="setCalibrate('CPL', -1, 1, -1)">Calibrate CPL</a></div>
-                <div><a onclick="setCalibrate('CPM', -1, 1, -1)">Calibrate CPM</a></div>
-                <div><a onclick="setCalibrate('CPR', -1, 1, -1)">Calibrate CPR</a></div>
+                <div><a onclick="setCalibrate('D1', -1, -1, -1)">Calibrate D1</a></div>
+                <div><a onclick="setCalibrate('D2', -1, -1, -1)">Calibrate D2</a></div>
+                <div><a onclick="setCalibrate('CPL', -1, -1, -1)">Calibrate CPL</a></div>
+                <div><a onclick="setCalibrate('CPM', -1, -1, -1)">Calibrate CPM</a></div>
+                <div><a onclick="setCalibrate('CPR', -1, -1, -1)">Calibrate CPR</a></div>
+                <div><a onclick="setCalibrate('SAFEL', 0, 1, -1)">Calibrate SAFEL</a></div>
+                <div><a onclick="setCalibrate('SAFER', 0, 1, -1)">Calibrate SAFER</a></div>
                 <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=ARM-GRIP&grip=o');">Ungrip</a></div>
+                <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=ARM-GRIP&grip=c');">Grip</a></div>
                 <div><a onclick="r12CalPosition('out-top');">Move to OUT-TOP</a></div>
                 <div><a onclick="r12CalPosition('in-top');">Move to IN-TOP</a></div>
                 <div><a onclick="r12CalPosition('in-bottom');">Move to IN-BOTTOM</a></div>
-                <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=ARM-GRIP&grip=c');">Grip</a></div>
                 <div><a onclick="r12CalPosition('out-bottom');">Move to OUT-BOTTOM</a></div>
                 <div><a onclick="r12move('SAFEL', 0);">Move to SAFEL (D2 and CPL)</a></div>
                 <div><a onclick="r12move('SAFER', 0);">Move to SAFER (D1 and CPR)</a></div>
+                <div><a onclick="r12move('HOME', 0);">Move to HOME (not via route)</a></div>
                 <div><a onclick="r12CalAdjust('x', -1);">Adjust X</a></div>
                 <div><a onclick="r12CalAdjust('y', -1);">Adjust Y</a></div>
                 <div><a onclick="r12CalAdjust('z', -1);">Adjust Z</a></div>
@@ -217,12 +220,12 @@ and open the template in the editor.
             <div class="commands">
                 <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=SHOW-SIGN&queue=0&layer=00&effect=efficient')">Show sign 00 (efficient)</a></div>
                 <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=SHOW-SIGN&queue=0&layer=01&effect=efficient')">Show sign 01 (efficient)</a></div>
-                <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=SHOW-SIGN&queue=0&layer=02&effect=efficient')">Show sign 02 (efficient)</a></div>
                 <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=SHOW-SIGN&queue=0&layer=03&effect=efficient')">Show sign 03 (efficient)</a></div>
+                <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=SHOW-SIGN&queue=0&layer=04&effect=efficient')">Show sign 04 (efficient)</a></div>
                 <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=SHOW-SIGN&queue=0&layer=00&effect=continuous')">Show sign 00 (continuous)</a></div>
                 <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=SHOW-SIGN&queue=0&layer=01&effect=continuous')">Show sign 01 (continuous)</a></div>
-                <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=SHOW-SIGN&queue=0&layer=02&effect=continuous')">Show sign 02 (continuous)</a></div>
                 <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=SHOW-SIGN&queue=0&layer=03&effect=continuous')">Show sign 03 (continuous)</a></div>
+                <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=SHOW-SIGN&queue=0&layer=04&effect=continuous')">Show sign 04 (continuous)</a></div>
             </div>
         </div>
        <div class="section">
@@ -230,12 +233,12 @@ and open the template in the editor.
             <div class="commands">
                 <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=SHOW-SIGN&queue=0&layer=00&effect=efficient')">Show sign 00 (efficient)</a></div>
                 <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=SHOW-SIGN&queue=0&layer=01&effect=efficient')">Show sign 01 (efficient)</a></div>
-                <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=SHOW-SIGN&queue=0&layer=02&effect=efficient')">Show sign 02 (efficient)</a></div>
                 <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=SHOW-SIGN&queue=0&layer=03&effect=efficient')">Show sign 03 (efficient)</a></div>
+                <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=SHOW-SIGN&queue=0&layer=04&effect=efficient')">Show sign 04 (efficient)</a></div>
                 <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=SHOW-SIGN&queue=0&layer=00&effect=continuous')">Show sign 00 (continuous)</a></div>
                 <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=SHOW-SIGN&queue=0&layer=01&effect=continuous')">Show sign 01 (continuous)</a></div>
-                <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=SHOW-SIGN&queue=0&layer=02&effect=continuous')">Show sign 02 (continuous)</a></div>
                 <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=SHOW-SIGN&queue=0&layer=03&effect=continuous')">Show sign 03 (continuous)</a></div>
+                <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=SHOW-SIGN&queue=0&layer=04&effect=continuous')">Show sign 04 (continuous)</a></div>
             </div>
         </div>
         <div class="section">
