@@ -47,7 +47,7 @@ public class ArmOperations
     private int armSpeed = ARM_MAX_SPEED;
 
     private final boolean armOpsLogging = true;
-    private R12Operations r12o = null;
+    private R12OperationsUSB r12o = null;
     private RouteCompiler rc = null;
     private PositionLookup plt = null;
     private RouteHolder rh = null;
@@ -90,7 +90,7 @@ public class ArmOperations
 
     public Result init()
     {
-        r12o = R12Operations.getInstance();
+        r12o = R12OperationsUSB.getInstance();
         rc = RouteCompiler.getInstance();
         plt = PositionLookup.getInstance();
         rh = RouteHolder.getInstance();
