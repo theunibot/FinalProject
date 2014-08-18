@@ -81,6 +81,7 @@ public class R12OperationsUSB
             try
             {
                 serialPort.openPort();//Open port
+                serialPort.purgePort(SerialPort.PURGE_RXABORT + SerialPort.PURGE_RXCLEAR + SerialPort.PURGE_TXABORT + SerialPort.PURGE_TXCLEAR);
                 serialPort.setParams(SerialPort.BAUDRATE_19200, 8, 1, 0);//Set params
                 serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
             }
@@ -182,7 +183,7 @@ public class R12OperationsUSB
                         finalByteArray[i + byteIterator] = bytes[i];
                     }
                     byteIterator += bytes.length;
-                   
+
                     System.out.println(new String(finalByteArray, 0, byteIterator).replace("\r", "\\r").replace("\n", "\\n"));
                     //ends with "\n>"
                     if (byteIterator >= 2 && finalByteArray[(byteIterator - 1)] == (char) ('>') && finalByteArray[(byteIterator - 2)] == (char) ('\n'))
