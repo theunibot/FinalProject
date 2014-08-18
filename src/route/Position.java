@@ -284,7 +284,13 @@ public class Position
     }
     
     public String toString() {
-        return name + " (" + getXStr() + ", " + getYStr() + ", " + getZStr() + "; " + getPitchStr() + ", " + getYawStr() + ", " + getRollStr() + ")";
+        return name + " (" + 
+                (xDelta ? (xDeltaForward ? ">" : "<") : "") + getXStr() + ", " + 
+                (yDelta ? (yDeltaForward ? ">" : "<") : "") + getYStr() + ", " + 
+                (zDelta ? (zDeltaForward ? ">" : "<") : "") + getZStr() + "; " + 
+                (pitchDelta ? (pitchDeltaForward ? ">" : "<") : "") + getPitchStr() + ", " + 
+                (yawDelta ? (yawDeltaForward ? ">" : "<") : "") + getYawStr() + ", " + 
+                (rollDelta ? (rollDeltaForward ? ">" : "<") : "") + getRollStr() + ")";
     }
     
     public void posDeltaX(boolean forward) {

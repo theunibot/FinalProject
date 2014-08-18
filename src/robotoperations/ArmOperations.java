@@ -40,10 +40,10 @@ import utils.Utils;
 public class ArmOperations
 {
 
-    private final boolean armOpsSimulated = false;
-    private final boolean r12OpsSimulated = false;
+    private final boolean armOpsSimulated = true;
+    private final boolean r12OpsSimulated = true;
 
-    private int armMaxSpeed = 3000;    
+    private int armMaxSpeed = 2000;    
     private int armSpeed = armMaxSpeed;
     
     private final boolean armOpsLogging = true;
@@ -173,6 +173,7 @@ public class ArmOperations
             // see if any positions in the route require delta adjustment (ignoring first and last)
             for (int routeIndex = 1; routeIndex < (route.size() - 1); ++routeIndex) {
                 RoutePosition rp = route.get(routeIndex);
+System.err.println("****** Checking position " + routeIndex + ": " + rp.getPosition().toString());
                 if (rp.getPosition().hasDelta()) {
                     // determine prior position
                     Position priorPos, nextPos;
@@ -187,13 +188,18 @@ public class ArmOperations
                     
 System.err.println("****** Index is: " + routeIndex);
 System.err.println("****** PRIOR POSITION: " + priorPos);
+System.err.println("****** NEXT POSITION: " + nextPos);
 System.err.println("****** DELTA ADJUST POS: " + rp.getPosition());
                     // this line is a delta - so compute the varient position
                     Position adjPos;
-                    if (route.getRouteProperties().getReverse())
+                    if (route.getRouteProperties().getReverse()) {
+                        System.err.println("****** Running in reverse");
                         adjPos = rp.getPosition().getDeltaPosition(nextPos, priorPos);
-                    else
+                    }
+                    else {
+                        System.err.println("****** Running in forward");
                         adjPos = rp.getPosition().getDeltaPosition(priorPos, nextPos);
+                    }
 System.err.println("****** RESULT ADJUST POSITION: " + adjPos);
                     String modMiddle = positionCommandToRouteModifyString(adjPos, route.getRouteProperties().getRouteIDName(), routeIndex + 1);
 System.err.println("****** CMD TO ADJUST: " + modMiddle);

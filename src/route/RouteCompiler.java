@@ -208,32 +208,32 @@ public class RouteCompiler
                 
                 if (pieces[1].startsWith(FileUtils.COMMAND_FILE_RELATIVE_POINT_PREVIOUS))
                     newPos.posDeltaY(false);
-                else if (pieces[0].startsWith(COMMAND_FILE_RELATIVE_POINT_NEXT))
+                else if (pieces[1].startsWith(COMMAND_FILE_RELATIVE_POINT_NEXT))
                     newPos.posDeltaY(true);
                 double y = Utils.inToMm(Double.valueOf(stripRelative(pieces[1])));
                 
                 if (pieces[2].startsWith(FileUtils.COMMAND_FILE_RELATIVE_POINT_PREVIOUS))
                     newPos.posDeltaZ(false);
-                else if (pieces[0].startsWith(COMMAND_FILE_RELATIVE_POINT_NEXT))
-                    newPos.posDeltaY(true);
+                else if (pieces[2].startsWith(COMMAND_FILE_RELATIVE_POINT_NEXT))
+                    newPos.posDeltaZ(true);
                 double z = Utils.inToMm(Double.valueOf(stripRelative(pieces[2])));
                 
                 if (pieces[3].startsWith(FileUtils.COMMAND_FILE_RELATIVE_POINT_PREVIOUS))
                     newPos.posDeltaPitch(false);
-                else if (pieces[0].startsWith(COMMAND_FILE_RELATIVE_POINT_NEXT))
-                    newPos.posDeltaY(true);
+                else if (pieces[3].startsWith(COMMAND_FILE_RELATIVE_POINT_NEXT))
+                    newPos.posDeltaPitch(true);
                 double pitch = Double.valueOf(stripRelative(pieces[3]));
                 
                 if (pieces[4].startsWith(FileUtils.COMMAND_FILE_RELATIVE_POINT_PREVIOUS))
                     newPos.posDeltaYaw(false);
-                else if (pieces[0].startsWith(COMMAND_FILE_RELATIVE_POINT_NEXT))
-                    newPos.posDeltaY(true);
+                else if (pieces[4].startsWith(COMMAND_FILE_RELATIVE_POINT_NEXT))
+                    newPos.posDeltaYaw(true);
                 double yaw = Double.valueOf(stripRelative(pieces[4]));
                 
                 if (pieces[5].startsWith(FileUtils.COMMAND_FILE_RELATIVE_POINT_PREVIOUS))
                     newPos.posDeltaRoll(false);
-                else if (pieces[0].startsWith(COMMAND_FILE_RELATIVE_POINT_NEXT))
-                    newPos.posDeltaY(true);
+                else if (pieces[5].startsWith(COMMAND_FILE_RELATIVE_POINT_NEXT))
+                    newPos.posDeltaRoll(true);
                 double roll = Double.valueOf(stripRelative(pieces[5]));
                 
                 
