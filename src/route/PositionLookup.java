@@ -97,11 +97,11 @@ public class PositionLookup
         positions = new HashMap<CabinetType, HashMap<Integer, Position>>();
         adjustments = new HashMap<CabinetType, HashMap<Integer, Position>>();
         
-        Result result = loadPositionFile(POSITION_FILE_NAME, POSITION_FILE_CONTENTS, positions, true);
+        Result result = loadPositionFile(POSITION_FILE_NAME, POSITION_FILE_CONTENTS, positions);
         if (!result.success())
             return result;
         
-        result = loadPositionFile(ADJUSTMENT_FILE_NAME, ADJUSTMENT_FILE_CONTENTS, adjustments, false);
+        result = loadPositionFile(ADJUSTMENT_FILE_NAME, ADJUSTMENT_FILE_CONTENTS, adjustments);
         if (!result.success())
             return result;
 
@@ -231,8 +231,7 @@ public class PositionLookup
      * 
      * @return Result with success/fail information 
      */
-    private Result loadPositionFile(String fileName, String defaultHeader, HashMap<CabinetType, HashMap<Integer, Position>> hashMap,
-            boolean adjustZForFloor)
+    private Result loadPositionFile(String fileName, String defaultHeader, HashMap<CabinetType, HashMap<Integer, Position>> hashMap)
     {
         ArrayList<String> lines = FileUtils.readCommandFileOrGenEmpty(FileUtils.getFilesFolderString() + fileName, defaultHeader);
         if (lines != null)
@@ -274,9 +273,8 @@ public class PositionLookup
                         prevPosition = new Position("None");
 
                         //update our offsets
-                        xOffset = Utils.inToMm(Double.parseDouble(chunks[1]));
-                        yOffset = Utils.inToMm(Double.parseDouble(chunks[2]));
-                        zOffset = Utils.inToMm(Double.parseDouble(chunks[3]));
+                        yOffset = Double.parseDouble(chunks[2]);
+                        zOffset = Double.parseDouble(chunks[3]);
                         pitchOffset = Double.parseDouble(chunks[4]);
                         yawOffset = Double.parseDouble(chunks[5]);
                         rollOffset = Double.parseDouble(chunks[6]);
@@ -321,14 +319,10 @@ public class PositionLookup
                     Position pos;
                     
                     // determine positions to use
-                    double px = Utils.inToMm(Double.parseDouble(splitLinePieces[1]));
-                    double py = Utils.inToMm(Double.parseDouble(splitLinePieces[2]));
-                    double pz;
-                    if ( (shelf < 90) && (adjustZForFloor) )
-                        pz = Utils.zInToMm(Double.parseDouble(splitLinePieces[3]));
-                    else   
-                        pz = Utils.inToMm(Double.parseDouble(splitLinePieces[3]));
-                        
+                    double px = Double.parseDouble(splitLinePieces[1]);
+                    double py = Double.parseDouble(splitLinePieces[2]);
+                    double pz = Double.parseDouble(splitLinePieces[3]);
+
                     double pitch = prevPosition.getPitch();
                     double yaw = prevPosition.getYaw();
                     double roll = prevPosition.getRoll();
@@ -412,17 +406,17 @@ public class PositionLookup
                 // add the point
                 builder.append(posEntry.getKey());
                 builder.append(" ");
-                builder.append(String.format("%.3f", Utils.mmToIn(pos.getX())));
+                builder.append(Utils.formatDouble(pos.getX()));
                 builder.append(" ");
-                builder.append(String.format("%.3f", Utils.mmToIn(pos.getY())));
+                builder.append(Utils.formatDouble(pos.getY()));
                 builder.append(" ");
-                builder.append(String.format("%.3f", Utils.mmToIn(pos.getZ())));
+                builder.append(Utils.formatDouble(pos.getZ()));
                 builder.append(" ");
-                builder.append(String.format("%.3f", pos.getPitch()));
+                builder.append(Utils.formatDouble(pos.getPitch()));
                 builder.append(" ");
-                builder.append(String.format("%.3f", pos.getYaw()));
+                builder.append(Utils.formatDouble(pos.getYaw()));
                 builder.append(" ");
-                builder.append(String.format("%.3f", pos.getRoll()));
+                builder.append(Utils.formatDouble(pos.getRoll()));
                 builder.append("\n");
             }
         }

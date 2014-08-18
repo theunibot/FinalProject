@@ -264,7 +264,7 @@ public class RouteCompiler
                     newPos.posDeltaX(true);
                 }
 
-                double x = Utils.inToMm(Double.valueOf(stripRelative(pieces[0])));
+                double x = Double.valueOf(stripRelative(pieces[0]));
 
                 if (pieces[1].startsWith(FileUtils.COMMAND_FILE_RELATIVE_POINT_PREVIOUS))
                 {
@@ -274,7 +274,7 @@ public class RouteCompiler
                 {
                     newPos.posDeltaY(true);
                 }
-                double y = Utils.inToMm(Double.valueOf(stripRelative(pieces[1])));
+                double y = Double.valueOf(stripRelative(pieces[1]));
 
                 if (pieces[2].startsWith(FileUtils.COMMAND_FILE_RELATIVE_POINT_PREVIOUS))
                 {
@@ -284,7 +284,7 @@ public class RouteCompiler
                 {
                     newPos.posDeltaZ(true);
                 }
-                double z = Utils.inToMm(Double.valueOf(stripRelative(pieces[2])));
+                double z = Double.valueOf(stripRelative(pieces[2]));
 
                 if (pieces[3].startsWith(FileUtils.COMMAND_FILE_RELATIVE_POINT_PREVIOUS))
                 {

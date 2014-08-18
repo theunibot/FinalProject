@@ -89,27 +89,6 @@ public class Utils
         }
     }
 
-    public static double inToMm(double in)
-    {
-        return (25.4d * in);
-    }
-    
-    public static double mmToIn(double mm)
-    {
-        return (mm / 25.4d);
-    }
-
-    public static double zInToMm(double z)
-    {
-        return inToMm(z) - 303.0d - 9.5d;
-    }
-    
-    public static double zMmToIn(double z)
-    {
-        return mmToIn(z + 303.0d + 9.5d);
-    }
-
-
     public static String formatDouble(double d)
     {
 
