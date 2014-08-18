@@ -87,37 +87,47 @@ public class RouteCompiler
         System.out.println("Read " + lines.size() + " line(s) from route compiler file.");
         Result parseResult = parseLines(lines);
         if (!parseResult.success())
+        {
             return parseResult;
+        }
 
         return new Result();
     }
-    
+
     /**
      * Programs all routes into the controller
-     * 
-     * @param name optional name of container to program (only routes on that container, or from_to, are programmed); null for all
+     *
+     * @param name optional name of container to program (only routes on that
+     * container, or from_to, are programmed); null for all
      * @return Result with success/fail info
      */
-    public Result programRoutes(String name) {
+    public Result programRoutes(String name)
+    {
         rh = RouteHolder.getInstance();
         ao = ArmOperations.getInstance();
 
         Result result = init();
         if (!result.success())
+        {
             return result;
-        
-        for (Route route : rh.getAllRoutes()) {
+        }
+
+        for (Route route : rh.getAllRoutes())
+        {
             String fromCabinet = route.getRouteProperties().getFrom().toString();
             String toCabinet = route.getRouteProperties().getTo().toString();
             // is this the route we want to program?
 
-            if ( (name == null) || 
-                (name.equalsIgnoreCase(toCabinet)) ||
-                (name.equalsIgnoreCase(fromCabinet)) ||
-                (name.equalsIgnoreCase(fromCabinet + "_" + toCabinet)) ) {
+            if ((name == null)
+                    || (name.equalsIgnoreCase(toCabinet))
+                    || (name.equalsIgnoreCase(fromCabinet))
+                    || (name.equalsIgnoreCase(fromCabinet + "_" + toCabinet)))
+            {
                 result = ao.learnRoute(route);
                 if (!result.success())
+                {
                     return result;
+                }
             }
         }
         return new Result();
@@ -127,13 +137,37 @@ public class RouteCompiler
     {
         RouteProperties routeProperties = null;
         Route route = null;       //set route type, D1, D2, etc
+        
 
         int lineCount = 1;//used in error tracking
         for (String line : lines)
         {
             if (line.startsWith(FileUtils.COMMAND_FILE_METADATA_PREFIX))//new Route
             {
+                int routeSpeed = ArmOperations.ARM_MAX_SPEED;
                 String[] chunks = line.replaceFirst(FileUtils.COMMAND_FILE_METADATA_PREFIX, "").split(" ");
+
+                //parse for speed param as the last param
+                if (chunks[chunks.length - 1].startsWith("@"))
+                {
+                    //copy the array to chunks, make chunks 1 shorter
+                    String[] tempHolder = new String[chunks.length - 1];
+                    try
+                    {
+                        routeSpeed = Integer.parseInt(chunks[chunks.length - 1].replace("@", ""));
+                    }
+                    catch (NumberFormatException ignored)
+                    {
+                        return new Result("Route speed of line " + line + " could not be parsed as it is formatted improperly.");
+                    }
+                    for (int i = 0; i < chunks.length - 1; i++)
+                    {
+                        tempHolder[i] = chunks[i];
+                    }
+                    chunks = tempHolder;
+                }
+
+                //check the rest of the params
                 if (chunks.length == 3)
                 {
                     RouteProperties props = null;
@@ -141,7 +175,7 @@ public class RouteCompiler
                     String from = chunks[0];
                     String to = chunks[1];
                     String effect = chunks[2];
-                    routeProperties = new RouteProperties(getCabinetType(from), getCabinetType(to), getRouteEffectType(effect));
+                    routeProperties = new RouteProperties(getCabinetType(from), getCabinetType(to), getRouteEffectType(effect), routeSpeed);
                     route = new Route(routeProperties);
                     rh.addRoute(route);
                 }
@@ -150,114 +184,166 @@ public class RouteCompiler
                     Route routeToClone = null;
                     if ((routeToClone = rh.getRoute(CabinetType.valueOf(chunks[0]), CabinetType.valueOf(chunks[1]), RouteEffectType.valueOf(chunks[2]))) != null)
                     {
-                        RouteProperties cloneProps = new RouteProperties(CabinetType.valueOf(chunks[4]), CabinetType.valueOf(chunks[5]), RouteEffectType.valueOf(chunks[6]));
+                        RouteProperties cloneProps = new RouteProperties(CabinetType.valueOf(chunks[4]), CabinetType.valueOf(chunks[5]), RouteEffectType.valueOf(chunks[6]), routeSpeed);
                         Route clone = new Route(cloneProps);
                         if (chunks[3].equals(ROUTE_CLONE_FWD))
                         {
                             //System.out.println("From " + chunks[0] + " to " + chunks[1] + " effect " + chunks[2]);
                             for (int i = 0; i < routeToClone.size(); i++)
+                            {
                                 clone.add(new RoutePosition(routeToClone.get(i), clone.getRouteProperties().getRouteIDName()));
+                            }
                         }
                         else if (chunks[3].equals(ROUTE_CLONE_REV))
                         {
                             for (int i = routeToClone.size() - 1; i >= 0; i--)
+                            {
                                 clone.add(new RoutePosition(routeToClone.get(i), clone.getRouteProperties().getRouteIDName(), routeToClone.size() - i));
+                            }
                             clone.getRouteProperties().setReverse(true);
                         }
                         else
+                        {
                             return new Result("Format of the command of line " + lineCount + " wrong. The line: \"" + line + "\"");
+                        }
                         rh.addRoute(clone);
                     }
                     else
+                    {
                         return new Result("Route not found");
+                    }
                 }
                 else
+                {
                     return new Result("Format of the metadata command of line " + lineCount + " wrong. The line: \"" + line + "\"");
+                }
 
-            } else if (line.startsWith(FileUtils.COMMAND_FILE_REFERENCE_POINT)) {
+            }
+            else if (line.startsWith(FileUtils.COMMAND_FILE_REFERENCE_POINT))
+            {
                 // this is a reference to a point
                 String[] chunks = line.replaceFirst(FileUtils.COMMAND_FILE_REFERENCE_POINT, "").split(" ");
-                if (chunks.length == 2) {
+                if (chunks.length == 2)
+                {
                     PositionLookup pl = PositionLookup.getInstance();
                     CabinetType cabinet = CabinetType.valueOf(chunks[0]);
                     if (cabinet == null)
+                    {
                         return new Result("Unknown cabinet at line " + lineCount + ": " + line);
+                    }
                     int shelf = Integer.valueOf(chunks[1]);
                     Position reference = pl.shelfToPosition(cabinet, shelf);
                     if (reference == null)
+                    {
                         return new Result("Unable to locate cabinet/shelf at line " + lineCount + ": " + line);
+                    }
                     // add the reference position
                     route.add(new RoutePosition(reference, route.getRouteProperties().getRouteIDName(), route.size() + 1));
-                } else
-                  return new Result("Format of line " + lineCount + " is wrong: " + line); 
+                }
+                else
+                {
+                    return new Result("Format of line " + lineCount + " is wrong: " + line);
+                }
             }
             else if (route != null)//not defining a new command, so a cartesian position command
             {
                 String[] pieces = line.split(" ");//splits the line to pieces
                 Position newPos = new Position(null);
-                
+
                 if (pieces.length != 6)
+                {
                     return new Result("Format of the command of line " + lineCount + " wrong: \"" + line + "\"");
+                }
 
                 if (pieces[0].startsWith(COMMAND_FILE_RELATIVE_POINT_PREVIOUS))
+                {
                     newPos.posDeltaX(false);
+                }
                 else if (pieces[0].startsWith(COMMAND_FILE_RELATIVE_POINT_NEXT))
+                {
                     newPos.posDeltaX(true);
-                
+                }
+
                 double x = Utils.inToMm(Double.valueOf(stripRelative(pieces[0])));
-                
+
                 if (pieces[1].startsWith(FileUtils.COMMAND_FILE_RELATIVE_POINT_PREVIOUS))
+                {
                     newPos.posDeltaY(false);
+                }
                 else if (pieces[1].startsWith(COMMAND_FILE_RELATIVE_POINT_NEXT))
+                {
                     newPos.posDeltaY(true);
+                }
                 double y = Utils.inToMm(Double.valueOf(stripRelative(pieces[1])));
-                
+
                 if (pieces[2].startsWith(FileUtils.COMMAND_FILE_RELATIVE_POINT_PREVIOUS))
+                {
                     newPos.posDeltaZ(false);
+                }
                 else if (pieces[2].startsWith(COMMAND_FILE_RELATIVE_POINT_NEXT))
+                {
                     newPos.posDeltaZ(true);
+                }
                 double z = Utils.inToMm(Double.valueOf(stripRelative(pieces[2])));
-                
+
                 if (pieces[3].startsWith(FileUtils.COMMAND_FILE_RELATIVE_POINT_PREVIOUS))
+                {
                     newPos.posDeltaPitch(false);
+                }
                 else if (pieces[3].startsWith(COMMAND_FILE_RELATIVE_POINT_NEXT))
+                {
                     newPos.posDeltaPitch(true);
+                }
                 double pitch = Double.valueOf(stripRelative(pieces[3]));
-                
+
                 if (pieces[4].startsWith(FileUtils.COMMAND_FILE_RELATIVE_POINT_PREVIOUS))
+                {
                     newPos.posDeltaYaw(false);
+                }
                 else if (pieces[4].startsWith(COMMAND_FILE_RELATIVE_POINT_NEXT))
+                {
                     newPos.posDeltaYaw(true);
+                }
                 double yaw = Double.valueOf(stripRelative(pieces[4]));
-                
+
                 if (pieces[5].startsWith(FileUtils.COMMAND_FILE_RELATIVE_POINT_PREVIOUS))
+                {
                     newPos.posDeltaRoll(false);
+                }
                 else if (pieces[5].startsWith(COMMAND_FILE_RELATIVE_POINT_NEXT))
+                {
                     newPos.posDeltaRoll(true);
+                }
                 double roll = Double.valueOf(stripRelative(pieces[5]));
-                
-                
+
                 newPos.setX(x);
                 newPos.setY(y);
                 newPos.setZ(z);
                 newPos.setPitch(pitch);
                 newPos.setYaw(yaw);
                 newPos.setRoll(roll);
-                
+
                 route.add(new RoutePosition(newPos, route.getRouteProperties().getRouteIDName(), route.size() + 1));
             }
             else
+            {
                 return new Result("Route definition failed");
+            }
             lineCount++;
         }
         return new Result();
     }
 
-    private String stripRelative(String relativeStr) {
+    private String stripRelative(String relativeStr)
+    {
         if (relativeStr.startsWith(FileUtils.COMMAND_FILE_RELATIVE_POINT_PREVIOUS))
+        {
             return relativeStr.substring(1);
+        }
         if (relativeStr.startsWith(COMMAND_FILE_RELATIVE_POINT_NEXT))
+        {
             return relativeStr.substring(1);
+        }
         return relativeStr;
     }
 

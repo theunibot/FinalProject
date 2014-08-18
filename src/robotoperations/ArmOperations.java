@@ -43,9 +43,9 @@ public class ArmOperations
     private final boolean armOpsSimulated = true;
     private final boolean r12OpsSimulated = true;
 
-    private int armMaxSpeed = 2000;    
-    private int armSpeed = armMaxSpeed;
-    
+    public final static int ARM_MAX_SPEED = 4321;
+    private int armSpeed = ARM_MAX_SPEED;
+
     private final boolean armOpsLogging = true;
     private R12Operations r12o = null;
     private RouteCompiler rc = null;
@@ -97,11 +97,15 @@ public class ArmOperations
 
         Result result = r12o.init(r12OpsSimulated);
         if (!result.success())
+        {
             return result;
+        }
 
         result = runInitCommands();
         if (!result.success())
+        {
             return result;
+        }
 
         result = rc.init();
         return result;
@@ -119,7 +123,9 @@ public class ArmOperations
         {
             Result result = runRobotCommand(command);
             if (!result.success())
+            {
                 return result;
+            }
         }
         return new Result();
     }
@@ -144,11 +150,15 @@ public class ArmOperations
     public Result runRoute(Route route, Position start, Position end)
     {
         if (armOpsLogging)
+        {
             System.out.println("    ArmOperations: runRoute " + route.getRouteProperties().getRouteFriendlyName()
                     + " from " + ((start != null) ? start.getName() : "undefined") + " to "
                     + ((end != null) ? end.getName() : "undefined"));
+        }
         if (armOpsSimulated && !r12OpsSimulated)
+        {
             return new Result();
+        }
 
         ResponseObject response;
         if (route.size() >= 2)//must have start and end pos to modify
@@ -159,7 +169,9 @@ public class ArmOperations
                 String modStart = positionCommandToRouteModifyString(start, route.getRouteProperties().getRouteIDName(), 1);
                 Result result = runRobotCommand(modStart);
                 if (!result.success())
-                        return result;
+                {
+                    return result;
+                }
             }
             if (end != null)
             {
@@ -167,54 +179,73 @@ public class ArmOperations
                 String modEnd = positionCommandToRouteModifyString(end, route.getRouteProperties().getRouteIDName(), route.size());
                 Result result = runRobotCommand(modEnd);
                 if (!result.success())
+                {
                     return result;
+                }
             }
-            
+
             // see if any positions in the route require delta adjustment (ignoring first and last)
-            for (int routeIndex = 1; routeIndex < (route.size() - 1); ++routeIndex) {
+            for (int routeIndex = 1; routeIndex < (route.size() - 1); ++routeIndex)
+            {
                 RoutePosition rp = route.get(routeIndex);
-System.err.println("****** Checking position " + routeIndex + ": " + rp.getPosition().toString());
-                if (rp.getPosition().hasDelta()) {
+                System.err.println("****** Checking position " + routeIndex + ": " + rp.getPosition().toString());
+                if (rp.getPosition().hasDelta())
+                {
                     // determine prior position
                     Position priorPos, nextPos;
                     if (routeIndex == 1)
+                    {
                         priorPos = start;
+                    }
                     else
+                    {
                         priorPos = route.get(routeIndex - 1).getPosition();
+                    }
                     if (routeIndex == (route.size() - 2))
+                    {
                         nextPos = end;
+                    }
                     else
+                    {
                         nextPos = route.get(routeIndex + 1).getPosition();
-                    
-System.err.println("****** Index is: " + routeIndex);
-System.err.println("****** PRIOR POSITION: " + priorPos);
-System.err.println("****** NEXT POSITION: " + nextPos);
-System.err.println("****** DELTA ADJUST POS: " + rp.getPosition());
+                    }
+
+                    System.err.println("****** Index is: " + routeIndex);
+                    System.err.println("****** PRIOR POSITION: " + priorPos);
+                    System.err.println("****** NEXT POSITION: " + nextPos);
+                    System.err.println("****** DELTA ADJUST POS: " + rp.getPosition());
                     // this line is a delta - so compute the varient position
                     Position adjPos;
-                    if (route.getRouteProperties().getReverse()) {
+                    if (route.getRouteProperties().getReverse())
+                    {
                         System.err.println("****** Running in reverse");
                         adjPos = rp.getPosition().getDeltaPosition(nextPos, priorPos);
                     }
-                    else {
+                    else
+                    {
                         System.err.println("****** Running in forward");
                         adjPos = rp.getPosition().getDeltaPosition(priorPos, nextPos);
                     }
-System.err.println("****** RESULT ADJUST POSITION: " + adjPos);
+                    System.err.println("****** RESULT ADJUST POSITION: " + adjPos);
                     String modMiddle = positionCommandToRouteModifyString(adjPos, route.getRouteProperties().getRouteIDName(), routeIndex + 1);
-System.err.println("****** CMD TO ADJUST: " + modMiddle);
+                    System.err.println("****** CMD TO ADJUST: " + modMiddle);
                     // execute the route change
                     Result result = runRobotCommand(modMiddle);
                     if (!result.success())
+                    {
                         return result;
+                    }
                 }
             }
 
             // run the route
-            String runRoute = Integer.toString(armSpeed) + " SPEED ! CONTINUOUS ADJUST " + route.getRouteProperties().getRouteIDName() + " RUN";
+            int routeSpeed = route.getRouteProperties().getRouteSpeed();
+            String runRoute = Integer.toString((armSpeed < routeSpeed) ? armSpeed : routeSpeed) + " SPEED ! CONTINUOUS ADJUST " + route.getRouteProperties().getRouteIDName() + " RUN";
             Result result = runRobotCommand(runRoute);
             if (!result.success())
+            {
                 return result;
+            }
 
             return new Result();
         }
@@ -224,76 +255,103 @@ System.err.println("****** CMD TO ADJUST: " + modMiddle);
             return new Result("Route named " + route.getRouteProperties().getRouteFriendlyName() + " has " + route.size() + " coordinates; must have at least two (start and end)");
         }
     }
-    
+
     /**
-     * Executes calibration services for the arm for a specific point.  Moves the arm to the specified cabinet /
-     * shelf location, at one of a variety of specific points (called plunge positions).  Once in any of these positions,
-     * the calibrateAdjust call can be made which will move the arm by specified relative routes and track those
-     * changes with the specified point.  Finally, once one or more points have been calibrated, the adjustment table
-     * should be persisted to disk (which is PositionLookup.saveAdjustmentFile).
-     * 
+     * Executes calibration services for the arm for a specific point. Moves the
+     * arm to the specified cabinet / shelf location, at one of a variety of
+     * specific points (called plunge positions). Once in any of these
+     * positions, the calibrateAdjust call can be made which will move the arm
+     * by specified relative routes and track those changes with the specified
+     * point. Finally, once one or more points have been calibrated, the
+     * adjustment table should be persisted to disk (which is
+     * PositionLookup.saveAdjustmentFile).
+     *
      * @param cabinet Cabinet to locate
      * @param shelf Shelf within the cabinet
-     * @param plungePosition Name of the plunge position (in-top, in-bottom, out-top, out-bottom)
-     * @param depth Plunge depth (1 for desktop, 1=bottom and 2=top for cachepoint)
+     * @param plungePosition Name of the plunge position (in-top, in-bottom,
+     * out-top, out-bottom)
+     * @param depth Plunge depth (1 for desktop, 1=bottom and 2=top for
+     * cachepoint)
      * @param speed Speed to set the arm to before doing the move
      * @return Result with success/fail info
      */
-    public Result calibratePoint(CabinetType cabinet, int shelf, String plungePosition, int depth, int speed) {
+    public Result calibratePoint(CabinetType cabinet, int shelf, String plungePosition, int depth, int speed)
+    {
         // save our cabinet and shelf
         calibrateCabinet = cabinet;
         calibrateShelf = shelf;
         calibratePlunge = plungePosition;
         calibrateDepth = depth;
-        
+
         if (armOpsLogging)
-            System.out.println("    ArmOperations: calibratePoint " + cabinet.toString() + 
-                    ", shelf " + shelf + ", plungePosition " + plungePosition + ", depth " + depth + ", speed " + speed);
-                
+        {
+            System.out.println("    ArmOperations: calibratePoint " + cabinet.toString()
+                    + ", shelf " + shelf + ", plungePosition " + plungePosition + ", depth " + depth + ", speed " + speed);
+        }
+
         // set speed for all actions
         armSpeed = speed;
         // determine our move position, our adjustments to alter, and the various plunge positions
         calibratePosition = PositionLookup.getInstance().shelfToPosition(cabinet, shelf);
         if (calibratePosition == null)
+        {
             return new Result("Unable to locate cabinet " + cabinet.toString() + " shelf " + shelf);
+        }
         adjustmentPosition = PositionLookup.getInstance().shelfToAdjustmentPosition(cabinet, shelf);
         HashMap<String, Position> plungeMap = plungePositions(cabinet, shelf, depth, calibratePosition);
-        
+
         // set the speed
         Result result = runRobotCommand(String.valueOf(speed) + " SPEED !");
         if (!result.success())
+        {
             return result;
-        
+        }
+
         // move to the requested position
         Position plungePos;
-        if (plungeMap != null) {
+        if (plungeMap != null)
+        {
             plungePos = plungeMap.get(calibratePlunge);
             if (plungePos == null)
+            {
                 return new Result("Unable to locate plungePosition " + calibratePlunge);
-        } else
+            }
+        }
+        else
+        {
             plungePos = calibratePosition;
+        }
         return moveTo(plungePos);
     }
 
     /**
-     * Calibrate the last point specified to the calibrate call.  Use this carefully, because if the arm is not still
-     * at the last point called by calibration, you could be calibrating to the wrong point.  The result of this calibration
-     * will move the arm and also record the change in the adjustment positions map.  To persist these changes, use the
-     * PositionLookup.saveAdjustmentFile() call.  These changes will persist in memory and take effect for live testing.
-     * 
+     * Calibrate the last point specified to the calibrate call. Use this
+     * carefully, because if the arm is not still at the last point called by
+     * calibration, you could be calibrating to the wrong point. The result of
+     * this calibration will move the arm and also record the change in the
+     * adjustment positions map. To persist these changes, use the
+     * PositionLookup.saveAdjustmentFile() call. These changes will persist in
+     * memory and take effect for live testing.
+     *
      * @param axis Axis to adjust (x, y, z, pitch, yaw, roll)
      * @param value Value to move by (in mm)
      * @return Result with success/fail info
      */
-    public Result calibrateAdjust(String axis, double value) {
+    public Result calibrateAdjust(String axis, double value)
+    {
         if (armOpsLogging)
+        {
             System.out.println("    ArmOperations: calibrateAdjust, axis " + axis + ", value " + value);
+        }
 
         if (adjustmentPosition == null)
+        {
             return new Result("Unknown calibrate location");
-        
+        }
+
         // record the adjustment
-        switch (axis) {
+        switch (axis)
+        {
             case "x":
                 adjustmentPosition.setX(adjustmentPosition.getX() + value);
                 break;
@@ -313,20 +371,23 @@ System.err.println("****** CMD TO ADJUST: " + modMiddle);
                 adjustmentPosition.setRoll(adjustmentPosition.getRoll() + value);
                 break;
         }
-        
+
         // now locate the point again (which will execute the adjustment) and move to it
         Position newPosition = PositionLookup.getInstance().shelfToPosition(calibrateCabinet, calibrateShelf);
         if (newPosition == null)
+        {
             return new Result("calibrateAdjust unable to locate cabinet " + calibrateCabinet.toString() + " shelf " + calibrateShelf);
-        
-        
+        }
+
         HashMap<String, Position> plungeMap = plungePositions(calibrateCabinet, calibrateShelf, calibrateDepth, newPosition);
         Position plungePos = plungeMap.get(calibratePlunge);
         if (plungePos == null)
+        {
             return new Result("Unable to locate plungePosition " + calibratePlunge);
+        }
         return moveTo(plungePos);
-   }
-    
+    }
+
     /**
      * Pickup a disc from a shelf. Assumes that the robot is already at the safe
      * pickup location for the specified disc, and is not already holding one
@@ -341,47 +402,65 @@ System.err.println("****** CMD TO ADJUST: " + modMiddle);
     public Result pick(CabinetType cabinet, int shelf, int stackPosition, Position position)
     {
         HashMap<String, Position> plunge = plungePositions(cabinet, shelf, stackPosition, position);
-            
+
         if (armOpsLogging)
+        {
             System.out.println("    ArmOperations: pick from " + cabinet.toString() + " position " + stackPosition + " starting at " + position.getName());
+        }
 
         // make sure the stackPosition is legit
-        if ( (stackPosition < 1) || (stackPosition > 2) )
+        if ((stackPosition < 1) || (stackPosition > 2))
+        {
             return new Result("Invalid stackPosition of " + stackPosition + " passed to pick");
-        
+        }
+
         if (armOpsSimulated && !r12OpsSimulated)
+        {
             return new Result();
+        }
 
         // move down to position
         Result result = runRobotCommand(plunge.get("out-bottom"));
         if (!result.success())
+        {
             return result;
-        
+        }
+
         // ungrip in prep to get the disc
         result = runRobotCommand("UNGRIP");
         if (!result.success())
+        {
             return result;
+        }
 
         // move into the cabinet
         result = runRobotCommand(plunge.get("in-bottom"));
         if (!result.success())
+        {
             return result;
-        
+        }
+
         // now grip the disc
         result = runRobotCommand("GRIP");
         if (!result.success())
+        {
             return result;
-        
+        }
+
         // lift the disc
         result = runRobotCommand(plunge.get("in-top"));
         if (!result.success())
+        {
             return result;
-        
+        }
+
         // and finally move back to our home position
         result = runRobotCommand(plunge.get("out-top"));
         if (!result.success())
+        {
             return result;
-      
+        }
+
         return new Result();
     }
 
@@ -399,101 +478,126 @@ System.err.println("****** CMD TO ADJUST: " + modMiddle);
     public Result drop(CabinetType cabinet, int shelf, int stackPosition, Position position)
     {
         HashMap<String, Position> plunge = plungePositions(cabinet, shelf, stackPosition, position);
-            
+
         if (armOpsLogging)
+        {
             System.out.println("    ArmOperations: drop at " + cabinet.toString() + " position " + stackPosition + " starting at " + position.getName());
+        }
 
         // make sure the stackPosition is legit
-        if ( (stackPosition < 1) || (stackPosition > 2) )
+        if ((stackPosition < 1) || (stackPosition > 2))
+        {
             return new Result("Invalid stackPosition of " + stackPosition + " passed to drop");
-        
+        }
+
         if (armOpsSimulated && !r12OpsSimulated)
+        {
             return new Result();
-        
+        }
+
         // move into the cabinet
         Result result = runRobotCommand(plunge.get("in-top"));
         if (!result.success())
+        {
             return result;
-        
+        }
+
         // and down to position
         result = runRobotCommand(plunge.get("in-bottom"));
         if (!result.success())
+        {
             return result;
-        
+        }
+
         // now ungrip
         result = runRobotCommand("UNGRIP");
         if (!result.success())
+        {
             return result;
-        
+        }
+
         // and pull out
         result = runRobotCommand(plunge.get("out-bottom"));
         if (!result.success())
+        {
             return result;
-        
+        }
+
         // regrip
         result = runRobotCommand("GRIP");
         if (!result.success())
+        {
             return result;
-        
+        }
+
         // and finally move back to our home position
         result = runRobotCommand(plunge.get("out-top"));
         if (!result.success())
+        {
             return result;
-        
+        }
+
         return new Result();
-  
+
     }
-    
+
     /**
-     * Compute a series of Positions for plunging into a cabinet to pick up a disc.
-     * 
+     * Compute a series of Positions for plunging into a cabinet to pick up a
+     * disc.
+     *
      * @param cabinet Cabinet we are working with
      * @param shelf Shelf within the cabinet
-     * @param stackPosition Stack position (desktop always 1, but can be 1 or 2 for a CachePoint, with 2 being top disc)
+     * @param stackPosition Stack position (desktop always 1, but can be 1 or 2
+     * for a CachePoint, with 2 being top disc)
      * @param position Current position of the arm in front of the cabinet
-     * @return Map of Positions, containing "in-top", "in-bottom", and "out-bottom" (position is the "out-top" so not computed)
+     * @return Map of Positions, containing "in-top", "in-bottom", and
+     * "out-bottom" (position is the "out-top" so not computed)
      */
     private HashMap<String, Position> plungePositions(CabinetType cabinet, int shelf, int stackPosition, Position position)
     {
         // if not in a plunge cabinet, just make a simple map of the out-top position only
-        if ( (cabinet != CabinetType.D1) && (cabinet != CabinetType.D2) && (cabinet != CabinetType.CPL) &&
-                (cabinet != CabinetType.CPM) && (cabinet != CabinetType.CPR) ) {
+        if ((cabinet != CabinetType.D1) && (cabinet != CabinetType.D2) && (cabinet != CabinetType.CPL)
+                && (cabinet != CabinetType.CPM) && (cabinet != CabinetType.CPR))
+        {
             HashMap<String, Position> map = new HashMap<>();
             map.put("out-top", position);
             return map;
         }
         // locate the values for the plunge depth (X) and Z movement (Y=2 deep, Z=1 deep)
-        Position posInfo = plt.shelfToPosition(cabinet, 91);   
+        Position posInfo = plt.shelfToPosition(cabinet, 91);
         // locate the relative offsets that we apply to all insertion positions for this cabinet (X/Y/Z/P/Y/R)
-        Position posOffsetInfo = plt.shelfToPosition(cabinet, 90);  
-        
+        Position posOffsetInfo = plt.shelfToPosition(cabinet, 90);
+
         System.out.println("90: " + posOffsetInfo.toString());
         System.out.println("91: " + posInfo.toString());
-        
+
         // convert values into useful double format for our math
         double bigZval = posInfo.getY();
         double smallZval = posInfo.getZ();
         double desktopZval = posInfo.getZ();
         double moveval = posInfo.getX();
-        
+
         double offsetX = posOffsetInfo.getX();
         double offsetY = posOffsetInfo.getY();
-        double offsetZ = posOffsetInfo.getZ();        
+        double offsetZ = posOffsetInfo.getZ();
         double offsetYaw = posOffsetInfo.getYaw();
-        
+
         // because we are hand computing Yaw from an X/Y position, we need to adjust offSetYaw
         // by the Adustment table amount for Yaw.  The other positions will already have that
         // value taken into account
         Position adjustmentPos = plt.shelfToAdjustmentPosition(cabinet, shelf);
         if (adjustmentPos != null)
+        {
             offsetYaw += adjustmentPos.getYaw();
-        
+        }
+
         // setup deltaZ based on the cabinet type and stack position
         double deltaZ = (desktopZval);
-        if (cabinet == CabinetType.CPL || cabinet == CabinetType.CPM || cabinet == CabinetType.CPR) {
+        if (cabinet == CabinetType.CPL || cabinet == CabinetType.CPM || cabinet == CabinetType.CPR)
+        {
             deltaZ = (stackPosition == 2) ? smallZval : bigZval;
         }
-        
+
         // determine the out-bottom position
         Position outBottom = new Position(position.getName() + "_OB", position);
         outBottom.setZ(outBottom.getZ() + deltaZ + offsetZ);
@@ -535,7 +639,7 @@ System.err.println("****** CMD TO ADJUST: " + modMiddle);
             System.err.println("Invalid CabinetType: " + cabinet.toString());
             return null;
         }
-        
+
         // set the in bottom position
         Position inBottom = new Position(position.getName() + "_IB", outBottom);
         inBottom.setYaw(yaw);
@@ -552,7 +656,7 @@ System.err.println("****** CMD TO ADJUST: " + modMiddle);
         map.put("in-bottom", inBottom);
         map.put("out-bottom", outBottom);
         map.put("in-top", inTop);
-        
+
         return map;
     }
 
@@ -566,14 +670,18 @@ System.err.println("****** CMD TO ADJUST: " + modMiddle);
     public Result calibrate()
     {
         if (armOpsLogging)
+        {
             System.out.println("    ArmOperations: calibrate");
+        }
 
         // reset speed to fast
-        armSpeed = armMaxSpeed;
-       
+        armSpeed = ARM_MAX_SPEED;
+
         if (armOpsSimulated && !r12OpsSimulated)
+        {
             return new Result();
-         
+        }
+
         return runRobotCommand(Integer.toString(armSpeed) + " SPEED ! CALIBRATE");
     }
 
@@ -586,10 +694,14 @@ System.err.println("****** CMD TO ADJUST: " + modMiddle);
     public Result home()
     {
         if (armOpsLogging)
+        {
             System.out.println("    ArmOperations: home");
+        }
 
         if (armOpsSimulated && !r12OpsSimulated)
+        {
             return new Result();
+        }
 
         return runRobotCommand("HOME");
     }
@@ -602,10 +714,14 @@ System.err.println("****** CMD TO ADJUST: " + modMiddle);
     public Result energize()
     {
         if (armOpsLogging)
+        {
             System.out.println("    ArmOperations: energize");
+        }
 
         if (armOpsSimulated && !r12OpsSimulated)
+        {
             return new Result();
+        }
 
         return runRobotCommand("ENERGIZE");
     }
@@ -618,10 +734,14 @@ System.err.println("****** CMD TO ADJUST: " + modMiddle);
     public Result deEnergize()
     {
         if (armOpsLogging)
+        {
             System.out.println("    ArmOperations: de-energize");
+        }
 
         if (armOpsSimulated && !r12OpsSimulated)
+        {
             return new Result();
+        }
 
         return runRobotCommand("DE-ENERGIZE");
     }
@@ -636,20 +756,24 @@ System.err.println("****** CMD TO ADJUST: " + modMiddle);
     public Result moveTo(Position position)
     {
         if (armOpsLogging)
-             System.out.println("    ArmOperations: position to " + position.getName());
- 
+        {
+            System.out.println("    ArmOperations: position to " + position.getName());
+        }
+
         if (armOpsSimulated && !r12OpsSimulated)
+        {
             return new Result();
- 
+        }
+
         //return runRobotCommand(position.getName() + " GOTO");
         return runRobotCommand(
-            Integer.toString(armSpeed) + " SPEED ! " +
-            position.getPitchStr() + " PITCH ! " +
-            position.getYawStr() + " YAW ! " +
-            position.getRollStr() + " ROLL ! " +
-            position.getXStr() + " " +
-            position.getYStr() + " " +
-            position.getZStr() + " MOVETO");
+                Integer.toString(armSpeed) + " SPEED ! "
+                + position.getPitchStr() + " PITCH ! "
+                + position.getYawStr() + " YAW ! "
+                + position.getRollStr() + " ROLL ! "
+                + position.getXStr() + " "
+                + position.getYStr() + " "
+                + position.getZStr() + " MOVETO");
     }
 
     /**
@@ -660,10 +784,14 @@ System.err.println("****** CMD TO ADJUST: " + modMiddle);
     public Result persist()
     {
         if (armOpsLogging)
+        {
             System.out.println("    ArmOperations: persist");
- 
+        }
+
         if (armOpsSimulated && !r12OpsSimulated)
+        {
             return new Result();
+        }
 
         return runRobotCommand("USAVE");
     }
@@ -677,10 +805,14 @@ System.err.println("****** CMD TO ADJUST: " + modMiddle);
     public Result learnRoute(Route route)
     {
         if (armOpsLogging)
+        {
             System.out.println("    ArmOperations: learnRoute " + route.getRouteProperties().getRouteFriendlyName());
- 
+        }
+
         if (armOpsSimulated && !r12OpsSimulated)
+        {
             return new Result();
+        }
 
         ArrayList<String> routeCommands = route.getRoboforthCommands();
 
@@ -705,10 +837,14 @@ System.err.println("****** CMD TO ADJUST: " + modMiddle);
     public Result learnPoint(Position position)
     {
         if (armOpsLogging)
+        {
             System.out.println("    ArmOperations: learnPoint " + position.getName());
- 
+        }
+
         if (armOpsSimulated && !r12OpsSimulated)
+        {
             return new Result();
+        }
 
         return runRobotCommand(position.getRoboforth());
     }
@@ -721,10 +857,14 @@ System.err.println("****** CMD TO ADJUST: " + modMiddle);
     public Result grip()
     {
         if (armOpsLogging)
+        {
             System.out.println("    ArmOperations: grip");
- 
+        }
+
         if (armOpsSimulated && !r12OpsSimulated)
+        {
             return new Result();
+        }
 
         return runRobotCommand("GRIP");
     }
@@ -737,10 +877,14 @@ System.err.println("****** CMD TO ADJUST: " + modMiddle);
     public Result ungrip()
     {
         if (armOpsLogging)
+        {
             System.out.println("    ArmOperations: ungrip");
- 
+        }
+
         if (armOpsSimulated && !r12OpsSimulated)
+        {
             return new Result();
+        }
 
         return runRobotCommand("UNGRIP");
     }
@@ -754,10 +898,14 @@ System.err.println("****** CMD TO ADJUST: " + modMiddle);
     public Result restartController()
     {
         if (armOpsLogging)
+        {
             System.out.println("    ArmOperations: restartController");
- 
+        }
+
         if (armOpsSimulated && !r12OpsSimulated)
+        {
             return new Result();
+        }
 
         Result result = runRobotCommand("ROBOFORTH");
         if (!result.success())
@@ -767,38 +915,48 @@ System.err.println("****** CMD TO ADJUST: " + modMiddle);
         return runRobotCommand("START");
     }
 
-    
     /**
-     * Turns on/off robot debugging mode, which lets you step through robot commands one at a time
-     * 
-     * @param enable true to enable, false to disable (and return to normal operations)
+     * Turns on/off robot debugging mode, which lets you step through robot
+     * commands one at a time
+     *
+     * @param enable true to enable, false to disable (and return to normal
+     * operations)
      * @return Result w/success/fail info
      */
-    public Result debug(boolean enable) {
+    public Result debug(boolean enable)
+    {
         // are we changing mode?
         if (debugMode == enable)
+        {
             return new Result();
-        
+        }
+
         // are we currently in debug mode?  If so, make sure nobody is blocked from execution
         if (debugMode)
-            // ending debug mode - release any blocked operation
+        // ending debug mode - release any blocked operation
+        {
             debugSemaphore.release();
+        }
         else
-            // starting debug mode - make sure no permits are pending
+        // starting debug mode - make sure no permits are pending
+        {
             debugSemaphore.drainPermits();
+        }
         // set the mode
         debugMode = enable;
-        return new Result();        
+        return new Result();
     }
-    
+
     /**
-     * Changes the robot speed.  Only works when in debug mode.
-     * 
+     * Changes the robot speed. Only works when in debug mode.
+     *
      * @param speed speed to change robot to
      * @return Result w/success/fail info
      */
-    public Result debugSpeed(int speed) {
-        if (debugMode) {
+    public Result debugSpeed(int speed)
+    {
+        if (debugMode)
+        {
             this.speed = speed;
             this.changeSpeed = true;
             // tell the other thread it can do something
@@ -807,58 +965,66 @@ System.err.println("****** CMD TO ADJUST: " + modMiddle);
         }
         return new Result("Robot not in debug mode; change not change speed");
     }
-    
+
     /**
      * When in debug mode, steps the robot one roboforth statement
-     * 
+     *
      * @return Result w/success/fail info
      */
-    public Result debugStep() {
-        if (debugMode) {
+    public Result debugStep()
+    {
+        if (debugMode)
+        {
             // release one instruction worth of execution
             debugSemaphore.release();
             return new Result();
         }
         return new Result("Robot not in debug mode; cannot step");
     }
-    
+
     /**
      * When in debug mode, skips over the next roboforth statement
-     * 
+     *
      * @return Result w/success/fail info
      */
-    public Result debugSkip() {
-        if (debugMode) {
+    public Result debugSkip()
+    {
+        if (debugMode)
+        {
             debugSkip = true;
             debugSemaphore.release();
             return new Result();
         }
         return new Result("Robot not in debug mode; nothing skipped");
     }
-    
+
     /**
      * When in debug mode, causes next RF statement to fail
-     * 
+     *
      * @return Result w/success/fail info
      */
-    public Result debugFail() {
-        if (debugMode) {
+    public Result debugFail()
+    {
+        if (debugMode)
+        {
             debugFail = true;
             debugSemaphore.release();
             return new Result();
         }
         return new Result("Robot not in debug mode; cannot set failure");
     }
-    
+
     /**
      * Adjusts the robot x/y/z/raw/pitch/roll by a specific amount (live)
-     * 
+     *
      * @param axis one of "x", "y", "z", "yaw", "pitch", or "roll"
      * @param value number of 10th mm to move
      * @return Result with success/fail info
      */
-    public Result debugAdjust(String axis, double value) {
-        if (debugMode) {
+    public Result debugAdjust(String axis, double value)
+    {
+        if (debugMode)
+        {
             debugAdjust = true;
             debugAdjustAxis = axis;
             debugAdjustValue = value;
@@ -867,21 +1033,22 @@ System.err.println("****** CMD TO ADJUST: " + modMiddle);
         }
         return new Result("Robot not in debug mode; can not adjust");
     }
-    
+
     /**
      * Move the arm to the specified absolute position
-     * 
+     *
      * @param position Absolute position to move to
      * @return Result with success/failure
      */
-    private Result runRobotCommand(Position position) {
-        String command = position.getPitchStr() + " PITCH ! " +
-                position.getYawStr() + " YAW ! " +
-                position.getRollStr() +  " ROLL ! " +
-                position.getXStr() + " " + position.getYStr() + " " + position.getZStr() + " MOVETO";
+    private Result runRobotCommand(Position position)
+    {
+        String command = position.getPitchStr() + " PITCH ! "
+                + position.getYawStr() + " YAW ! "
+                + position.getRollStr() + " ROLL ! "
+                + position.getXStr() + " " + position.getYStr() + " " + position.getZStr() + " MOVETO";
         return runRobotCommand(command);
     }
-    
+
     /**
      * Sends an individual command to robot and looks for errors
      *
@@ -891,30 +1058,39 @@ System.err.println("****** CMD TO ADJUST: " + modMiddle);
     private Result runRobotCommand(String commandString)
     {
         // are we in debug mode?
-        while (debugMode) {
+        while (debugMode)
+        {
             System.out.println("      Debug: Next command is: " + commandString);
-            try {
-               debugSemaphore.acquire();
-            } catch (InterruptedException e) {
+            try
+            {
+                debugSemaphore.acquire();
+            }
+            catch (InterruptedException e)
+            {
                 // let things roll...
             }
             // are we being asked to change speed?
-            if (this.changeSpeed) {
+            if (this.changeSpeed)
+            {
                 this.changeSpeed = false;
                 String speedCmd = String.valueOf(this.speed) + " SPEED !";
                 r12o.write(speedCmd);
                 armSpeed = this.speed;
                 ResponseObject response = r12o.getResponse(speedCmd);
                 if (!response.isSuccessful())
+                {
                     return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+                }
                 // return to the debug loop
                 continue;
             }
             // do we need to execute an adjustment?
-            if (this.debugAdjust) {
+            if (this.debugAdjust)
+            {
                 String adjustCmd = "";
                 this.debugAdjust = false;
-                switch (this.debugAdjustAxis) {
+                switch (this.debugAdjustAxis)
+                {
                     case "x":
                         adjustCmd = String.valueOf(this.debugAdjustValue) + " 0 0 MOVE";
                         break;
@@ -937,17 +1113,21 @@ System.err.println("****** CMD TO ADJUST: " + modMiddle);
                 r12o.write(adjustCmd);
                 ResponseObject response = r12o.getResponse(adjustCmd);
                 if (!response.isSuccessful())
+                {
                     return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+                }
                 // return to the debug loop
                 continue;
             }
             // were we asked to skip this instruction?
-            if (debugSkip) {
+            if (debugSkip)
+            {
                 debugSkip = false;
                 System.out.println("        Debug: SKIPPING: " + commandString);
                 return new Result();
             }
-            if (debugFail) {
+            if (debugFail)
+            {
                 debugFail = false;
                 System.out.println("        Debug: FAILING: " + commandString);
                 return new Result("Debug fail requested");
@@ -960,7 +1140,9 @@ System.err.println("****** CMD TO ADJUST: " + modMiddle);
         ResponseObject response = r12o.getResponse(commandString);
 
         if (!response.isSuccessful())
+        {
             return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+        }
         return new Result();
     }
 
