@@ -43,7 +43,7 @@ public class ArmOperations
     private final boolean armOpsSimulated = false;
     private final boolean r12OpsSimulated = false;
 
-    public final static int ARM_MAX_SPEED = 4321;
+    public final static int ARM_MAX_SPEED = 30000;
     private int armSpeed = ARM_MAX_SPEED;
 
     private final boolean armOpsLogging = true;
@@ -208,36 +208,36 @@ public class ArmOperations
                     else
                     {
                         nextPos = route.get(routeIndex + 1).getPosition();
+                    }
+                    // this line is a delta - so compute the varient position
+                    Position adjPos;
+                    if (route.getRouteProperties().getReverse())
+                    {
+                        adjPos = rp.getPosition().getDeltaPosition(nextPos, priorPos);
+                    }
+                    else
+                    {
+                        adjPos = rp.getPosition().getDeltaPosition(priorPos, nextPos);
+                    }
 
-                        // this line is a delta - so compute the varient position
-                        Position adjPos;
-                        if (route.getRouteProperties().getReverse())
-                        {
-                            adjPos = rp.getPosition().getDeltaPosition(nextPos, priorPos);
-                        }
-                        else
-                        {
-                            adjPos = rp.getPosition().getDeltaPosition(priorPos, nextPos);
-                        }
-
-                        String modMiddle = positionCommandToRouteModifyString(adjPos, route.getRouteProperties().getRouteIDName(), routeIndex + 1);
-                        // execute the route change
-                        Result result = runRobotCommand(modMiddle);
-                        if (!result.success())
-                        {
-                            return result;
-                        }
+                    String modMiddle = positionCommandToRouteModifyString(adjPos, route.getRouteProperties().getRouteIDName(), routeIndex + 1);
+                    // execute the route change
+                    Result result = runRobotCommand(modMiddle);
+                    if (!result.success())
+                    {
+                        return result;
                     }
                 }
 
-                // run the route
-                int routeSpeed = route.getRouteProperties().getRouteSpeed();
-                String runRoute = Integer.toString((armSpeed < routeSpeed) ? armSpeed : routeSpeed) + " SPEED ! CONTINUOUS ADJUST " + route.getRouteProperties().getRouteIDName() + " RUN";
-                Result result = runRobotCommand(runRoute);
-                if (!result.success())
-                {
-                    return result;
-                }
+            }
+
+            // run the route
+            int routeSpeed = route.getRouteProperties().getRouteSpeed();
+            String runRoute = Integer.toString((armSpeed < routeSpeed) ? armSpeed : routeSpeed) + " SPEED ! CONTINUOUS ADJUST " + route.getRouteProperties().getRouteIDName() + " RUN";
+            Result result = runRobotCommand(runRoute);
+            if (!result.success())
+            {
+                return result;
             }
             return new Result();
         }
