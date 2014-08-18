@@ -30,6 +30,31 @@ and open the template in the editor.
             calDepth = depth;
             calSpeed = speed;
         }
+        var routeFromCabinet = "";
+        var routeToCabinet = "";
+        var routeFromShelf = 0;
+        var routeToShelf = 0;
+        var routeEffect = "EFFICIENT";
+        function r12runRoute(fromCabinet, fromShelf, toCabinet, toShelf, effect) {
+            if (fromCabinet == '' || fromCabinet == null)
+                fromCabinet = prompt("Starting cabinet?", routeFromCabinet);
+            if (fromShelf == -1)
+                fromShelf = prompt("Starting shelf?", routeFromShelf);
+            if (toCabinet == '' || toCabinet == null)
+                toCabinet = prompt("Ending cabinet?", routeToCabinet);
+            if (toShelf == -1)
+                toShelf = prompt("Ending shelf?", routeToShelf);
+            if (effect == '' || effect == null)
+                effect = prompt("Effect?", routeEffect);
+            r12("ENQUEUE?queue=0&status=0&command=ROUTE&fromcabinet=" + fromCabinet + 
+                    "&fromshelf=" + fromShelf + "&tocabinet=" + toCabinet + "&toshelf=" + toShelf +
+                    "&effect=" + effect);
+            routeFromCabinet = fromCabinet;
+            routeFromShelf = fromShelf;
+            routeToCabinet = toCabinet;
+            routeToShelf = toShelf;
+            routeEffect = effect;
+        }
         function r12CalPosition(plunge) {
             cmd = "ENQUEUE?queue=0&status=0&command=POSITION-CALIBRATE&option=move&cabinet=" + calCabinet +
                     "&shelf=" + calShelf + "&plunge=" + plunge + "&depth=" + calDepth + "&speed=" + calSpeed;
@@ -207,8 +232,9 @@ and open the template in the editor.
                 <div><a onclick="r12CalPosition('out-bottom');">Move to OUT-BOTTOM</a></div>
                 <div><a onclick="r12move('SAFEL', 0);">Move to SAFEL (D2 and CPL)</a></div>
                 <div><a onclick="r12move('SAFER', 0);">Move to SAFER (D1 and CPR)</a></div>
-                <div><a onclick="r12move('HOME', 0);">Move to HOME (not via route)</a></div>
-                <div><a onclick="r12move(null, -1);">Move to any position (not via route)</a></div>
+                <div><a onclick="r12move('HOME', 0);">Move to HOME (not via route; caution!)</a></div>
+                <div><a onclick="r12move(null, -1);">Move to any position (not via route; caution!)</a></div>
+                <div><a onclick="r12runRoute(null, -1, null, -1, null);">Run route (caution!)</a></div>
                 <div><a onclick="r12CalAdjust('x', -1);">Adjust X</a></div>
                 <div><a onclick="r12CalAdjust('y', -1);">Adjust Y</a></div>
                 <div><a onclick="r12CalAdjust('z', -1);">Adjust Z</a></div>
