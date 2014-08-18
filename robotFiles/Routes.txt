@@ -40,7 +40,7 @@
 // CachePoint to desktop
 //
 
-#CPL D1 EFFICIENT
+#CPL D1 EFFICIENT @1000
 .CPL 21
 <-1.0 <-1.0 <0.0 <0.0 -45.0 90.0
 .HOME 1
