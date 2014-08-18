@@ -23,31 +23,31 @@ package route;
  */
 public class RoutePosition 
 {
-    private Position coord;
+    private Position position;
     private String routeName;
     private int line;
 
-    public RoutePosition(Position coord, String routeName, int line)
+    public RoutePosition(Position pos, String routeName, int line)
     {
-        this.coord = coord;
+        this.position = pos;
         this.routeName = routeName;
         this.line = line;     
     }
     
     public RoutePosition(RoutePosition pos, String routeName) {
-        this.coord = pos.getPosition();
+        this.position = pos.getPosition();
         this.routeName = routeName;
         this.line = pos.getLine();
     }
     
     public RoutePosition(RoutePosition pos, String routeName, int line) {
-        this.coord = pos.getPosition();
+        this.position = pos.getPosition();
         this.routeName = routeName;
         this.line = line;
     }
     
     public Position getPosition() {
-        return this.coord;
+        return this.position;
     }
 
     public int getLine() {
@@ -69,6 +69,6 @@ public class RoutePosition
     
     public String toString()
     {        
-        return "DECIMAL " + coord.getRollStr() + " " + coord.getYawStr() + " " + coord.getPitchStr() + " " + coord.getZStr() + " " + coord.getYStr() + " " + coord.getXStr() + " " + routeName + " " + line + " LINE DLD\r";
+        return "DECIMAL " + position.getRollStr() + " " + position.getYawStr() + " " + position.getPitchStr() + " " + position.getZStr() + " " + position.getYStr() + " " + position.getXStr() + " " + routeName + " " + line + " LINE DLD\r";
     }
 }

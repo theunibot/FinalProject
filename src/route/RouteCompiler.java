@@ -18,15 +18,17 @@
  */
 package route;
 
-import enums.RouteEffectType;
 import enums.CabinetType;
+import enums.RouteEffectType;
 import enums.RouteType;
-import robotoperations.ArmOperations;
-import utils.FileUtils;
 import java.util.ArrayList;
 import java.util.List;
-import utils.Utils;
+import robotoperations.ArmOperations;
+import utils.FileUtils;
+import static utils.FileUtils.COMMAND_FILE_RELATIVE_POINT_NEXT;
+import static utils.FileUtils.COMMAND_FILE_RELATIVE_POINT_PREVIOUS;
 import utils.Result;
+import utils.Utils;
 
 /**
  *
@@ -160,6 +162,7 @@ public class RouteCompiler
                         {
                             for (int i = routeToClone.size() - 1; i >= 0; i--)
                                 clone.add(new RoutePosition(routeToClone.get(i), clone.getRouteProperties().getRouteIDName(), routeToClone.size() - i));
+                            clone.getRouteProperties().setReverse(true);
                         }
                         else
                             return new Result("Format of the command of line " + lineCount + " wrong. The line: \"" + line + "\"");
@@ -190,38 +193,58 @@ public class RouteCompiler
             }
             else if (route != null)//not defining a new command, so a cartesian position command
             {
-
                 String[] pieces = line.split(" ");//splits the line to pieces
-                if (pieces.length == 3)//x,y,z only
-                {
-                    double pitch = 0.0, yaw = 0.0, roll = 0.0;
+                Position newPos = new Position(null);
+                
+                if (pieces.length != 6)
+                    return new Result("Format of the command of line " + lineCount + " wrong: \"" + line + "\"");
 
-                    //grab the pitch,yaw,roll from the last cartesian command
-                    if (route.getLastObject() != null)
-                    {
-                        RoutePosition orcc = route.getLastObject();
-                        pitch = orcc.getPosition().getPitch();
-                        yaw = orcc.getPosition().getYaw();
-                        roll = orcc.getPosition().getRoll();
-                    }
-                    double x = Utils.inToMm(Double.valueOf(pieces[0]));
-                    double y = Utils.inToMm(Double.valueOf(pieces[1]));
-                    double z = Utils.zInToMm(Double.valueOf(pieces[2]));
-                    route.add(new RoutePosition(new Position(null, x, y, z, pitch, yaw, roll), route.getRouteProperties().getRouteIDName(), route.size() + 1));
-                }
-                else if (pieces.length == 6)//x,y,z,pitch,yaw,roll
-                {
-                    double pitch = Double.valueOf(pieces[3]);
-                    double yaw = Double.valueOf(pieces[4]);
-                    double roll = Double.valueOf(pieces[5]);
-
-                    double x = Utils.inToMm(Double.valueOf(pieces[0]));
-                    double y = Utils.inToMm(Double.valueOf(pieces[1]));
-                    double z = Utils.zInToMm(Double.valueOf(pieces[2]));
-                    route.add(new RoutePosition(new Position(null, x, y, z, pitch, yaw, roll), route.getRouteProperties().getRouteIDName(), route.size() + 1));
-                }
-                else//error in format of info
-                    return new Result("Format of the command of line " + lineCount + " wrong. The line: \"" + line + "\"");
+                if (pieces[0].startsWith(COMMAND_FILE_RELATIVE_POINT_PREVIOUS))
+                    newPos.posDeltaX(false);
+                else if (pieces[0].startsWith(COMMAND_FILE_RELATIVE_POINT_NEXT))
+                    newPos.posDeltaX(true);
+                
+                double x = Utils.inToMm(Double.valueOf(stripRelative(pieces[0])));
+                
+                if (pieces[1].startsWith(FileUtils.COMMAND_FILE_RELATIVE_POINT_PREVIOUS))
+                    newPos.posDeltaY(false);
+                else if (pieces[0].startsWith(COMMAND_FILE_RELATIVE_POINT_NEXT))
+                    newPos.posDeltaY(true);
+                double y = Utils.inToMm(Double.valueOf(stripRelative(pieces[1])));
+                
+                if (pieces[2].startsWith(FileUtils.COMMAND_FILE_RELATIVE_POINT_PREVIOUS))
+                    newPos.posDeltaZ(false);
+                else if (pieces[0].startsWith(COMMAND_FILE_RELATIVE_POINT_NEXT))
+                    newPos.posDeltaY(true);
+                double z = Utils.inToMm(Double.valueOf(stripRelative(pieces[2])));
+                
+                if (pieces[3].startsWith(FileUtils.COMMAND_FILE_RELATIVE_POINT_PREVIOUS))
+                    newPos.posDeltaPitch(false);
+                else if (pieces[0].startsWith(COMMAND_FILE_RELATIVE_POINT_NEXT))
+                    newPos.posDeltaY(true);
+                double pitch = Double.valueOf(stripRelative(pieces[3]));
+                
+                if (pieces[4].startsWith(FileUtils.COMMAND_FILE_RELATIVE_POINT_PREVIOUS))
+                    newPos.posDeltaYaw(false);
+                else if (pieces[0].startsWith(COMMAND_FILE_RELATIVE_POINT_NEXT))
+                    newPos.posDeltaY(true);
+                double yaw = Double.valueOf(stripRelative(pieces[4]));
+                
+                if (pieces[5].startsWith(FileUtils.COMMAND_FILE_RELATIVE_POINT_PREVIOUS))
+                    newPos.posDeltaRoll(false);
+                else if (pieces[0].startsWith(COMMAND_FILE_RELATIVE_POINT_NEXT))
+                    newPos.posDeltaY(true);
+                double roll = Double.valueOf(stripRelative(pieces[5]));
+                
+                
+                newPos.setX(x);
+                newPos.setY(y);
+                newPos.setZ(z);
+                newPos.setPitch(pitch);
+                newPos.setYaw(yaw);
+                newPos.setRoll(roll);
+                
+                route.add(new RoutePosition(newPos, route.getRouteProperties().getRouteIDName(), route.size() + 1));
             }
             else
                 return new Result("Route definition failed");
@@ -230,6 +253,13 @@ public class RouteCompiler
         return new Result();
     }
 
+    private String stripRelative(String relativeStr) {
+        if (relativeStr.startsWith(FileUtils.COMMAND_FILE_RELATIVE_POINT_PREVIOUS))
+            return relativeStr.substring(1);
+        if (relativeStr.startsWith(COMMAND_FILE_RELATIVE_POINT_NEXT))
+            return relativeStr.substring(1);
+        return relativeStr;
+    }
 
     /**
      * Converts a string to a RouteEffectType object

@@ -101,17 +101,3 @@ public class Route
 
 }
 
-//    public Route getReverseRoute()
-//    {
-//        Route revRoute = new Route(
-//                new RouteProperties(
-//                        routeProperties.getTo(),
-//                        routeProperties.getFrom(),
-//                        routeProperties.getEffect()));
-//        //sticks the commands from this route in the reverse order in the new route
-//        for (int i = commands.size() - 1; i >= 0; i--)
-//        {
-//            revRoute.add(commands.get(i));
-//        }
-//        return revRoute;
-//    }

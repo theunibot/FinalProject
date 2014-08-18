@@ -31,6 +31,7 @@ public class RouteProperties
     private CabinetType to = null;
     private RouteEffectType effect = null;
     private int uniqueId;
+    private boolean reverse = false;
 
     public RouteProperties(CabinetType from, CabinetType to, RouteEffectType effect) {
         this.from = from;
@@ -75,6 +76,14 @@ public class RouteProperties
 
     public void setEffect(RouteEffectType effect) {
         this.effect = effect;
+    }
+    
+    public boolean getReverse() {
+        return reverse;
+    }
+    
+    public void setReverse(boolean reverse) {
+        this.reverse = reverse;
     }
 
 }

@@ -40,7 +40,9 @@ public class FileUtils
 
     public static final String COMMAND_FILE_COMMENT = "//";
     public static final String COMMAND_FILE_METADATA_PREFIX = "#";
-    public static final String COMMAND_FILE_REFERENCE_POINT = ">";
+    public static final String COMMAND_FILE_REFERENCE_POINT = ".";
+    public static final String COMMAND_FILE_RELATIVE_POINT_PREVIOUS = "<";
+    public static final String COMMAND_FILE_RELATIVE_POINT_NEXT = ">";
     
     /**
      * Reads an INI file and parses out each value, placing it in the Map. Generates a file if none is found.

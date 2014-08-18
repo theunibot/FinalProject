@@ -32,6 +32,18 @@ public class Position
     private double pitch;
     private double yaw;
     private double roll;
+    private boolean xDelta = false;
+    private boolean yDelta = false;
+    private boolean zDelta = false;
+    private boolean pitchDelta = false;
+    private boolean yawDelta = false;
+    private boolean rollDelta = false;
+    private boolean xDeltaForward = true;
+    private boolean yDeltaForward = true;
+    private boolean zDeltaForward = true;
+    private boolean pitchDeltaForward = true;
+    private boolean yawDeltaForward = true;
+    private boolean rollDeltaForward = true;
     private String name = null;
 
     public Position(String name) {
@@ -100,6 +112,59 @@ public class Position
         this.roll += offsetPosition.getRoll();
 
         return this;
+    }
+    
+    /**
+     * Determines a delta position by using this position which may or may not contain delta coordinates (those that
+     * have had their posDeltaXXX() method called), and when a position is delta, the provided reference position is
+     * then used to calculate the delta.  A unique new Position object is returned with the resulting positions.
+     * 
+     * @param referencePositionPrior Prior position object that has no delta positions (all absolute coordinates)
+     * @param referencePositionNext Next position object that has no delta positions (all absolute coordinates)
+     * @return Position object with all absolute positions, using all absolute positions from this object and using deltas relative to the referencePostion.
+     */
+    public Position getDeltaPosition(Position referencePositionPrior, Position referencePositionNext) {
+        // construct a new position with the same name and values as this one
+        Position newPos = new Position(name, this);
+
+        // now offset deltas where they exist
+        if (xDelta) {
+            if (xDeltaForward)
+                newPos.x = referencePositionNext.x + this.x;
+            else
+                newPos.x = referencePositionPrior.x + this.x;
+        }
+        if (yDelta) {
+            if (yDeltaForward)
+                newPos.y = referencePositionNext.y + this.y;
+            else
+                newPos.y = referencePositionPrior.y + this.y;
+        }
+        if (zDelta) {
+            if (zDeltaForward)
+                newPos.z = referencePositionNext.z + this.z;
+            else
+                newPos.z = referencePositionPrior.z + this.z;
+        }
+        if (pitchDelta) {
+            if (pitchDeltaForward)
+                newPos.pitch = referencePositionNext.pitch + this.pitch;
+            else
+                newPos.pitch = referencePositionPrior.pitch + this.pitch;
+        }
+        if (yawDelta) {
+            if (yawDeltaForward)
+                newPos.yaw = referencePositionNext.yaw + this.yaw;
+            else
+                newPos.yaw = referencePositionPrior.yaw + this.yaw;
+        }
+        if (rollDelta) {
+            if (rollDeltaForward)
+                newPos.roll = referencePositionNext.roll + this.roll;
+            else
+                newPos.roll = referencePositionPrior.roll + this.roll;
+        }
+        return newPos;
     }
     
     public String getRoboforth()
@@ -222,4 +287,38 @@ public class Position
         return name + " (" + getXStr() + ", " + getYStr() + ", " + getZStr() + "; " + getPitchStr() + ", " + getYawStr() + ", " + getRollStr() + ")";
     }
     
+    public void posDeltaX(boolean forward) {
+        xDelta = true;
+        xDeltaForward = forward;
+    }
+
+    public void posDeltaY(boolean forward) {
+        yDelta = true;
+        yDeltaForward = forward;
+    }
+
+    public void posDeltaZ(boolean forward) {
+        zDelta = true;
+        zDeltaForward = forward;
+    }
+
+    public void posDeltaPitch(boolean forward) {
+        pitchDelta = true;
+        pitchDeltaForward = forward;
+    }
+
+    public void posDeltaYaw(boolean forward) {
+        yawDelta = true;
+        yawDeltaForward = forward;
+    }
+    
+    public void posDeltaRoll(boolean forward) {
+        rollDelta = true;
+        rollDeltaForward = forward;
+    }
+    
+    public boolean hasDelta() {
+        return xDelta || yDelta || zDelta || pitchDelta || yawDelta || rollDelta;
+    }
+
 }
