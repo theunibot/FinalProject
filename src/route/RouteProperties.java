@@ -32,15 +32,22 @@ public class RouteProperties
     private RouteEffectType effect = null;
     private int uniqueId;
     private boolean reverse = false;
+    private int routeSpeed;
 
-    public RouteProperties(CabinetType from, CabinetType to, RouteEffectType effect) {
+    public RouteProperties(CabinetType from, CabinetType to, RouteEffectType effect, int routeSpeed) {
         this.from = from;
         this.to = to;
         this.effect = effect;        
        // determine how many other routes exist with this name, to give it a unique number
         RouteHolder rh = RouteHolder.getInstance();
-        this.uniqueId = rh.countSimilarRoutes(getRouteFriendlyShortName());
+        this.uniqueId = rh.countSimilarRoutes(getRouteFriendlyShortName());        
+        this.routeSpeed = routeSpeed;
     }
+
+    public int getRouteSpeed()
+    {
+        return routeSpeed;
+    }        
 
     public String getRouteFriendlyName() {
         return getRouteFriendlyShortName() + "_" + (this.uniqueId + 1);
