@@ -255,5 +255,49 @@ public abstract class CommandInterface
         // success!
         return new Result();
    }
+    
+    /**
+     * Internal function to move the arm to a position, while tracking it for future moves
+     * 
+     * @param args Command arguments to track the position of the arm
+     * @param toCabinet Cabinet to move the disc to
+     * @param toShelf to Shelf within the cabinet
+     * @param effect effect to use for the actual placement route
+     * 
+     * @return Result with success/fail info
+     */
+    protected Result movePosition(CommandArguments args, CabinetType toCabinet, int toShelf, RouteEffectType effect) {
+        ArmOperations ao = ArmOperations.getInstance();
+        RouteHolder rh = RouteHolder.getInstance();
+        PositionLookup plt = PositionLookup.getInstance();
+        Inventory inventory = Inventory.getInstance();
+        Route route;
+        Result result;
         
+        System.out.println("  MovePosition from " + args.cabinet.toString() + " position " + args.coordinates.toString() + " to " +
+                toCabinet.toString() + " shelf " + toShelf + " using effect " + effect.toString());
+        
+        // now find a route to the destination
+        route = rh.getRoute(args.cabinet, toCabinet, effect);
+        if (route == null)
+            return new Result("Unable to locate route from " + args.cabinet.toString() + " to " + toCabinet.toString() + " (effect " + effect + ")");
+        Position toCoordinates = null;
+        if (toShelf != -1) {
+            toCoordinates = plt.shelfToPosition(toCabinet, toShelf);
+            if (toCoordinates == null)
+                return new Result("Unable to locate point for " + toCabinet.toString() + " shelf " + toShelf);
+        }
+        result = ao.runRoute(route, args.coordinates, toCoordinates);
+        if (!result.success())
+            return result;
+        
+        // update args to reflect our new position
+        if (toShelf != -1) {
+            args.cabinet = toCabinet;
+            args.coordinates = plt.shelfToPosition(toCabinet, toShelf);
+        }
+        
+        // success!
+        return new Result();
+   }
 }

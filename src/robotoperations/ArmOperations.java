@@ -36,8 +36,8 @@ import utils.Result;
 public class ArmOperations
 {
 
-    private final boolean armOpsSimulated = false;
-    private final boolean r12OpsSimulated = false;
+    private final boolean armOpsSimulated = true;
+    private final boolean r12OpsSimulated = true;
 
     public final static int ARM_MAX_SPEED = 5000;
     private int armSpeed = ARM_MAX_SPEED;
@@ -507,8 +507,8 @@ public class ArmOperations
         // locate the relative offsets that we apply to all insertion positions for this cabinet (X/Y/Z/P/Y/R)
         Position posOffsetInfo = plt.shelfToPosition(cabinet, 90);
 
-        System.out.println("90: " + posOffsetInfo.toString());
-        System.out.println("91: " + posInfo.toString());
+//        System.out.println("90: " + posOffsetInfo.toString());
+//        System.out.println("91: " + posInfo.toString());
 
         // convert values into useful double format for our math
         double bigZval = posInfo.getY();

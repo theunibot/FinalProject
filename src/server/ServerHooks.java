@@ -218,13 +218,16 @@ public class ServerHooks
                     return Utils.genericEnqueueFail("Unknown cabinet type " + cabinetStr);
                 if (shelf == null)
                     return Utils.genericEnqueueFail("Request failure: missing 'shelf' parameter");
+                if (effect == null)
+                    return Utils.genericEnqueueFail("Request failure: missing 'effect' parameter");
+                    
 
                 PositionLookup pl = PositionLookup.getInstance();
 
                 Position position  = pl.shelfToPosition(cabinet, shelfInt);
                 if (position == null)
                     return Utils.genericEnqueueFail("Unable to locate position on cabinet " + cabinet.toString() + " shelf " + shelfInt);
-                cmd = new CommandPosition(position);
+                cmd = new CommandPosition(cabinet, shelfInt, effectEnum);
                 break;
             case "route":
                 String fromCabinetStr = params.get("fromcabinet");

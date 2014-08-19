@@ -29,54 +29,21 @@ import utils.Result;
  *
  */
 public class CommandPosition extends CommandInterface {
-    private Position position;
+    private CabinetType cabinet;
+    int shelf;
+    RouteEffectType effect;
     
-    public CommandPosition(Position position) {
-        this.position = position;
+    public CommandPosition(CabinetType cabinet, int shelf, RouteEffectType effect) {
+        this.cabinet = cabinet;
+        this.shelf = shelf;
+        this.effect = effect;
     }
     
     public Result execute(CommandArguments args) {
-        boolean tester = false;
-        
-        ArmOperations ao = ArmOperations.getInstance();
-        if (!tester)
-            return ao.moveTo(position);
-        else {
-            PositionLookup pl = PositionLookup.getInstance();
-            ao.moveTo(pl.shelfToPosition(CabinetType.CPL, 00));
-            ao.moveTo(pl.shelfToPosition(CabinetType.CPL, 30));
-            ao.moveTo(pl.shelfToPosition(CabinetType.CPM, 22));
-            ao.moveTo(pl.shelfToPosition(CabinetType.CPR, 33));
-            ao.moveTo(pl.shelfToPosition(CabinetType.CPL, 31));
-            ao.moveTo(pl.shelfToPosition(CabinetType.CPL, 10));
-            ao.moveTo(pl.shelfToPosition(CabinetType.CPR, 23));
-            ao.moveTo(pl.shelfToPosition(CabinetType.CPR, 04));
-            ao.moveTo(pl.shelfToPosition(CabinetType.CPL, 01));
-            ao.moveTo(pl.shelfToPosition(CabinetType.CPM, 12));
-            ao.moveTo(pl.shelfToPosition(CabinetType.CPR, 03));
-            ao.moveTo(pl.shelfToPosition(CabinetType.CPL, 11));
-            ao.moveTo(pl.shelfToPosition(CabinetType.CPL, 20));
-            ao.moveTo(pl.shelfToPosition(CabinetType.CPR, 13));
-            ao.moveTo(pl.shelfToPosition(CabinetType.CPL, 21));
-            ao.moveTo(pl.shelfToPosition(CabinetType.CPR, 14));
-            ao.moveTo(pl.shelfToPosition(CabinetType.CPM, 02));
-            ao.moveTo(pl.shelfToPosition(CabinetType.CPR, 24));
-            ao.moveTo(pl.shelfToPosition(CabinetType.CPM, 32));
-            ao.moveTo(pl.shelfToPosition(CabinetType.CPR, 34));
-            return ao.home();
-        }
+        return movePosition(args, cabinet, shelf, effect);
     }
     
     public String details() {
-        return "Position(" + position.getName() + ")";
+        return "Position(" + cabinet.toString() + ", " + shelf + ", " + effect.toString() + ")";
     }
-
-    /**
-     * This command should be allowed to run, even if we have outstanding robot errors
-     * 
-     * @return true to indicate we should run even during errors
-     */
-    public boolean ignoreErrors() {
-        return true;
-    }    
 }
