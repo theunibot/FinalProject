@@ -16,6 +16,11 @@ and open the template in the editor.
                 //$('.section').hide();
                 $('#' + sectionId).toggle();
             }
+            $(document).ready(function() { 
+                $('.header').click(function() {
+                    menu($(this).parent().attr('id'));
+                });
+            });
         </script>
 
         <style>
@@ -24,6 +29,7 @@ and open the template in the editor.
                 font-weight: bold;
                 padding-top: 5px;
                 padding-bottom: 15px;
+                cursor: pointer;
             }
             .commands div {
                 padding-bottom: 8px;
@@ -51,6 +57,10 @@ and open the template in the editor.
                 font-weight: bold;
                 display: inline;
                 padding-right: 15px;
+                cursor: pointer;
+            }
+            .commands a {
+                cursor: pointer;
             }
             body {
                 font-family: helvetica;
@@ -115,8 +125,6 @@ and open the template in the editor.
                     <div><a onclick="r12mount(1, 24, -1)">CPR MR to DR: Layer 24</a></div>
                     <div><a onclick="r12mount(1, 34, -1)">CPR TR to DR: Layer 34</a></div>
                 </div>
-            </div>
-            <div id="layer-management" class="section">
                 <div class="header">LAYER MANAGEMENT (D2 [left])</div>
                 <div class="commands">
                     <div><a onclick="r12mount(2, 10, -1)">CPL BL to DL: Layer 10</a></div>
@@ -135,8 +143,6 @@ and open the template in the editor.
                     <div><a onclick="r12mount(2, 24, -1)">CPR MR to DL: Layer 24</a></div>
                     <div><a onclick="r12mount(2, 34, -1)">CPR TR to DL: Layer 34</a></div>
                 </div>
-           </div>
-            <div id="layer-management" class="section">
                 <div class="header">REPAIR DESKTOP</div>
                 <div class="commands">
                     <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=SHOW-LAYER&desktop=1&shelf=5&effect=shake');">Repair desktop 1</a></div>
@@ -199,8 +205,6 @@ and open the template in the editor.
                     <div></div>
                     <div><a onclick="r12debug('debug=step')">Debug STEP</a></div>
                 </div>
-            </div>
-            <div id='debugger' class="section">
                 <div class="header">DEBUGGER OPTIONS</div>
                 <div class='commands'>        
                     <div><a onclick="r12debug('debug=speed&speed=30000')">Debug SPEED 30K</a></div>
@@ -213,8 +217,6 @@ and open the template in the editor.
                     <div><a onclick="r12debug('debug=skip')">Debug SKIP</a></div>
                     <div><a onclick="r12debug('debug=fail')">Debug FAIL</a></div>
                 </div>
-            </div>
-            <div id='debugger' class="section">
                 <div class="header">ARM TUNING (in debug only; does not persist adjustment)</div>
                 <div class="commands">
                     <div><a onclick="r12adjust('x');">Adjust X</a></div>
