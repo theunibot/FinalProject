@@ -40,6 +40,16 @@ public class CommandQueue
     }
     
     /**
+     * Inserts the given command at the given position in the queue.
+     * @param cmd Command to insert at the given position in the queue.
+     * @param index Index of where to insert the given command.
+     */
+    public void insert(CommandInterface cmd, int index)
+    {
+        queue.add(index, cmd);
+    }
+    
+    /**
      * add a command to the queue
      * 
      * @param cmd - command interface to add 

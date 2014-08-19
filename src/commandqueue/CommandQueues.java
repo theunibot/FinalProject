@@ -172,7 +172,8 @@ public class CommandQueues
      */
     public void push(CommandInterface cmd) {
         synchronized (this) {
-            queues[cmd.getQueueIndex()].add(cmd);
+            //inserts the command at the head of the queue
+            queues[cmd.getQueueIndex()].insert(cmd, 0);
             // signal that we have something to do
             queueSemaphore.release();
         }
