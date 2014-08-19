@@ -8,6 +8,43 @@
 
 // X Y Z P Y R
 
+//
+// Move within cabinets
+//
+#D1 D1 EFFICIENT
+.D1 5
+<0 <0 <0 <0 20 <0
+>0 >0 >0 >0 20 >0
+.D1 5
+
+#D2 D2 EFFICIENT
+.D2 5
+<0 <0 <0 <0 -20 <0
+>0 >0 >0 >0 -20 >0
+.D2 5
+
+#CPL CPL EFFICIENT
+.CPL 30
+<0 <0 <0 <0 -45 <0
+>0 >0 >0 >0 -45 >0
+.CPL 30
+
+#CPM CPM EFFICIENT
+.CPM 32
+<0 <0 <0 <0 -90 <0
+>0 >0 >0 >0 -90 >0
+.CPM 32
+
+#CPR CPR EFFICIENT
+.CPR 34
+<0 <0 <0 <0 45 <0
+>0 >0 >0 >0 45 >0
+.CPR 34
+
+//
+// Move between desktops
+//
+
 #D1 D2 EFFICIENT
 .D1 5
 <0 <0 <0 <0 20 <0
@@ -18,6 +55,10 @@
 .D2 5
 
 #D1 D2 EFFICIENT R D2 D1 EFFICIENT
+
+//
+// Move between CP cabinets
+//
 
 #CPL CPM EFFICIENT
 .CPL 30
@@ -182,7 +223,7 @@
 //
 // Show sign
 //
-#CPL CPL EFFICIENT
+#CPL CPL SIGN
 .CPL 30
 <0 <0 <0 <0 -45 <0
 .SCL 10
@@ -193,7 +234,7 @@
 >0 >0 >0 >0 -45 >0
 .CPL 30
 
-#CPR CPR EFFICIENT
+#CPR CPR SIGN
 <0 <0 <0 <0 45 <0
 .SCR 10
 .HOME 10

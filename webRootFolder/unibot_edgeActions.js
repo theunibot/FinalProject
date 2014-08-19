@@ -518,7 +518,7 @@
 	
 	      Symbol.bindElementAction(compId, symbolName, "${_ClickSurface}", "click", function(sym, e) {
 	         var stage = sym.getComposition().getStage();
-	         stage.unibot.enqueue('SHOW-SIGN', { queue: 0, status: 0, layer: window.welcomeSign, effect: 'FACE' + stage.controller });
+	         //stage.unibot.enqueue('SHOW-SIGN', { queue: 0, status: 0, layer: window.welcomeSign, effect: 'FACE' + stage.controller });
 	         sym.play()
 	
 	      });
@@ -526,7 +526,7 @@
 	
 	      Symbol.bindElementAction(compId, symbolName, "${_ClickSurface}", "touchstart", function(sym, e) {
 	         var stage = sym.getComposition().getStage();
-	         stage.unibot.enqueue('SHOW-SIGN', { queue: 0, status: 0, layer: window.welcomeSign, effect: 'FACE' + stage.controller });
+	         //stage.unibot.enqueue('SHOW-SIGN', { queue: 0, status: 0, layer: window.welcomeSign, effect: 'FACE' + stage.controller });
 	         sym.play()
 	         
 	

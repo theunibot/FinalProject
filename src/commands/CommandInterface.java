@@ -182,7 +182,7 @@ public abstract class CommandInterface
 
         // move from our current cabinet to the desired start (from) cabinet (if not already there)
         if (fromShelf != -1) {
-            if (args.cabinet != fromCabinet) {
+            if ( (args.cabinet != fromCabinet) || ((!args.coordinates.equals(fromCoordinates))) ) {
                 // locate a route between these cabinets
                 route = rh.getRoute(args.cabinet, fromCabinet, RouteEffectType.EFFICIENT);
                 if (route == null)
@@ -198,12 +198,12 @@ public abstract class CommandInterface
                 args.cabinet = fromCabinet;
                 args.coordinates = fromCoordinates;
 
-            } else if (!args.coordinates.equals(fromCoordinates)) {
-                // we are in the same cabinet, but at the wrong location
-                result = ao.moveTo(fromCoordinates);
-                if (!result.success())
-                    return result;
-            }
+            }// else if (!args.coordinates.equals(fromCoordinates)) {
+//                // we are in the same cabinet, but at the wrong location
+//                result = ao.moveTo(fromCoordinates);
+//                if (!result.success())
+//                    return result;
+//            }
 
             // now run the pick operation
             int depth = inventory.depth(fromCabinet, fromShelf);
@@ -282,19 +282,19 @@ public abstract class CommandInterface
             return new Result("Unable to locate point for " + toCabinet.toString() + " shelf " + toShelf);
 
         // now find a route to the destination
-        if (args.cabinet != toCabinet) {
+        if ( (args.cabinet != toCabinet) || (!args.coordinates.equals(toCoordinates)) ) {
             route = rh.getRoute(args.cabinet, toCabinet, effect);
             if (route == null)
                 return new Result("Unable to locate route from " + args.cabinet.toString() + " to " + toCabinet.toString() + " (effect " + effect + ")");
             result = ao.runRoute(route, args.coordinates, toCoordinates);
             if (!result.success())
                 return result;
-        } else if (!args.coordinates.equals(toCoordinates)) {
-            // we are in the same cabinet, but at the wrong location
-            result = ao.moveTo(toCoordinates);
-            if (!result.success())
-                return result;
-        }
+        } //else if (!args.coordinates.equals(toCoordinates)) {
+//            // we are in the same cabinet, but at the wrong location
+//            result = ao.moveTo(toCoordinates);
+//            if (!result.success())
+//                return result;
+//        }
         
         // update args to reflect our new position
         if (toShelf != -1) {

@@ -28,7 +28,5 @@ public enum RouteEffectType
     // desktop repair movement
     SHAKE, 
     // sign movements
-    FACE1, FACE2,CONTINUOUS_START, CONTINUOUS, CONTINUOUS_END,
-    // pick/place movements
-    GRIPPER_IN2, GRIPPER_OUT2, GRIPPER_IN1, GRIPPER_OUT1
+    SIGN, CONTINUOUS_START, CONTINUOUS, CONTINUOUS_END
 }
