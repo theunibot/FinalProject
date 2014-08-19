@@ -105,7 +105,18 @@ public class CommandProcessor
             if (cmd.logActivity())
                 System.out.println("Processing command " + cmd.details());
             cmd.setStatus(CommandStatus.EXECUTING);
-            Result result = cmd.execute(commandArgs);
+            Result result;
+            try {
+                result = cmd.execute(commandArgs);
+            } catch (Exception e1) {
+                result = new Result("Unexpected error caught: " + e1.getMessage());
+                try {
+                    System.err.println("Command " + cmd.details() + " threw unexpected error:");
+                } catch (Exception e2) {
+                    System.err.println("Command threw unexpected error:");
+                }
+                e1.printStackTrace();
+            }
             switch (result.completion) {
                 case ERROR:
                     if (cmd.logActivity())
