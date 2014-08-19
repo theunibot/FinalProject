@@ -29,6 +29,7 @@ import route.RouteCompiler;
 import route.RouteHolder;
 import utils.FileUtils;
 import utils.Result;
+import utils.Utils;
 
 /**
  *
@@ -36,8 +37,8 @@ import utils.Result;
 public class ArmOperations
 {
 
-    private final boolean armOpsSimulated = false;
-    private final boolean r12OpsSimulated = false;
+    private final boolean armOpsSimulated = true;
+    private final boolean r12OpsSimulated = true;
 
     public final static int ARM_MAX_SPEED = 2000;
     private int armSpeed = ARM_MAX_SPEED;
@@ -150,8 +151,10 @@ public class ArmOperations
                     + " from " + ((start != null) ? start.getName() : "undefined") + " to "
                     + ((end != null) ? end.getName() : "undefined"));
 
-        if (armOpsSimulated && !r12OpsSimulated)
+        if (armOpsSimulated && !r12OpsSimulated){            
+            Utils.sleep(4000);
             return new Result();
+        }
 
         ResponseObject response;
         if (route.size() >= 2) {
@@ -389,8 +392,10 @@ public class ArmOperations
         if ((stackPosition < 1) || (stackPosition > 2))
             return new Result("Invalid stackPosition of " + stackPosition + " passed to pick");
 
-        if (armOpsSimulated && !r12OpsSimulated)
+        if (armOpsSimulated && !r12OpsSimulated){
+            Utils.sleep(1500);
             return new Result();
+        }
 
         result = runRobotCommand(plunge.get("out-bottom"));
         if (!result.success())
@@ -446,8 +451,10 @@ public class ArmOperations
         if ((stackPosition < 1) || (stackPosition > 2))
             return new Result("Invalid stackPosition of " + stackPosition + " passed to drop");
 
-        if (armOpsSimulated && !r12OpsSimulated)
+        if (armOpsSimulated && !r12OpsSimulated){
+            Utils.sleep(1500);
             return new Result();
+        }
 
         // move in
         result = runRobotCommand(plunge.get("in-top"));
@@ -620,6 +627,7 @@ public class ArmOperations
 
         if (armOpsSimulated && !r12OpsSimulated)
         {
+            Utils.sleep(8000);
             return new Result();
         }
 
@@ -641,6 +649,7 @@ public class ArmOperations
 
         if (armOpsSimulated && !r12OpsSimulated)
         {
+            Utils.sleep(2500);
             return new Result();
         }
 
@@ -661,6 +670,7 @@ public class ArmOperations
 
         if (armOpsSimulated && !r12OpsSimulated)
         {
+            Utils.sleep(100);
             return new Result();
         }
 
@@ -681,6 +691,7 @@ public class ArmOperations
 
         if (armOpsSimulated && !r12OpsSimulated)
         {
+            Utils.sleep(100);
             return new Result();
         }
 
@@ -703,6 +714,7 @@ public class ArmOperations
 
         if (armOpsSimulated && !r12OpsSimulated)
         {
+            Utils.sleep(3000);
             return new Result();
         }
 
@@ -731,6 +743,7 @@ public class ArmOperations
 
         if (armOpsSimulated && !r12OpsSimulated)
         {
+            Utils.sleep(500);
             return new Result();
         }
 
@@ -752,6 +765,7 @@ public class ArmOperations
 
         if (armOpsSimulated && !r12OpsSimulated)
         {
+            Utils.sleep(3000);
             return new Result();
         }
 
@@ -784,6 +798,7 @@ public class ArmOperations
 
         if (armOpsSimulated && !r12OpsSimulated)
         {
+            Utils.sleep(1000);
             return new Result();
         }
 
@@ -804,6 +819,7 @@ public class ArmOperations
 
         if (armOpsSimulated && !r12OpsSimulated)
         {
+            Utils.sleep(1000);
             return new Result();
         }
 
@@ -824,6 +840,7 @@ public class ArmOperations
 
         if (armOpsSimulated && !r12OpsSimulated)
         {
+            Utils.sleep(1000);
             return new Result();
         }
 
