@@ -503,7 +503,7 @@
 	   
 	      
 	
-	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 500, function(sym, e) {
+	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 684, function(sym, e) {
 	         sym.stop();
 	
 	      });
@@ -1309,7 +1309,7 @@
 	      });
 	      //Edge binding end
 	
-	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 1500, function(sym, e) {
+	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 1750, function(sym, e) {
 	         sym.stop();
 	
 	      });

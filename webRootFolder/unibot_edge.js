@@ -220,11 +220,8 @@ var symbols = {
         },
     states: {
         "Base State": {
-            "${_banner_top_01}": [
-                ["style", "height", '1000.39%'],
-                ["style", "top", '-1728px'],
-                ["style", "left", '-2303px'],
-                ["style", "width", '999.61%']
+            "${_Startup}": [
+                ["style", "display", 'none']
             ],
             "${_ActionDesktopRepair}": [
                 ["style", "display", 'none']
@@ -246,50 +243,53 @@ var symbols = {
                 ["style", "-ms-transform-origin", [50,50],{valueTemplate:'@@0@@% @@1@@%'}],
                 ["style", "msTransformOrigin", [50,50],{valueTemplate:'@@0@@% @@1@@%'}],
                 ["style", "-o-transform-origin", [50,50],{valueTemplate:'@@0@@% @@1@@%'}],
-                ["style", "opacity", '0'],
+                ["style", "right", 'auto'],
                 ["style", "bottom", 'auto'],
                 ["style", "height", '25px'],
-                ["style", "right", 'auto'],
+                ["style", "opacity", '0'],
                 ["style", "left", '0px'],
                 ["style", "width", '100%']
+            ],
+            "${_bg_gradient_01}": [
+                ["style", "height", '385px'],
+                ["style", "width", '512px']
+            ],
+            "${_RobotError}": [
+                ["style", "display", 'none']
+            ],
+            "${_Goodbye}": [
+                ["style", "display", 'none']
+            ],
+            "${_banner_top_01}": [
+                ["style", "top", '-1728px'],
+                ["style", "height", '1000.39%'],
+                ["style", "left", '-2303px'],
+                ["style", "width", '999.61%']
+            ],
+            "${_ChangeOptions}": [
+                ["style", "display", 'none']
+            ],
+            "${_ActionUpgradeOS}": [
+                ["style", "display", 'none']
+            ],
+            "${_Stage}": [
+                ["color", "background-color", 'rgba(255,255,255,1)'],
+                ["style", "overflow", 'hidden'],
+                ["style", "height", '384px'],
+                ["style", "width", '512px']
+            ],
+            "${_AssignLayers}": [
+                ["style", "top", '0px'],
+                ["transform", "scaleX", '0.99962'],
+                ["style", "left", '0px'],
+                ["style", "display", 'none']
             ],
             "${_Intro}": [
                 ["style", "display", 'none'],
                 ["style", "left", '-0.07%'],
                 ["style", "top", '0%']
             ],
-            "${_AssignLayers}": [
-                ["style", "display", 'none'],
-                ["style", "top", '0px'],
-                ["style", "left", '0px'],
-                ["transform", "scaleX", '0.99962']
-            ],
             "${_BuildDesktop}": [
-                ["style", "display", 'none']
-            ],
-            "${_Goodbye}": [
-                ["style", "display", 'none']
-            ],
-            "${_ActionUpgradeOS}": [
-                ["style", "display", 'none']
-            ],
-            "${_ChangeOptions}": [
-                ["style", "display", 'none']
-            ],
-            "${_Stage}": [
-                ["color", "background-color", 'rgba(255,255,255,1)'],
-                ["style", "width", '512px'],
-                ["style", "height", '384px'],
-                ["style", "overflow", 'hidden']
-            ],
-            "${_RobotError}": [
-                ["style", "display", 'none']
-            ],
-            "${_bg_gradient_01}": [
-                ["style", "height", '385px'],
-                ["style", "width", '512px']
-            ],
-            "${_Startup}": [
                 ["style", "display", 'none']
             ]
         }
@@ -301,17 +301,17 @@ var symbols = {
             duration: 0,
             autoPlay: true,
             timeline: [
-                { id: "eid401", tween: [ "style", "${_AssignLayers}", "display", 'none', { fromValue: 'none'}], position: 0, duration: 0 },
+                { id: "eid731", tween: [ "style", "${_ActionUpgradeApp}", "display", 'none', { fromValue: 'none'}], position: 0, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid671", tween: [ "style", "${_ChangeOptions}", "display", 'none', { fromValue: 'none'}], position: 0, duration: 0 },
                 { id: "eid716", tween: [ "style", "${_Goodbye}", "display", 'none', { fromValue: 'none'}], position: 0, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid613", tween: [ "style", "${_BuildDesktop}", "display", 'none', { fromValue: 'none'}], position: 0, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid621", tween: [ "style", "${_Startup}", "display", 'none', { fromValue: 'none'}], position: 0, duration: 0 },
-                { id: "eid730", tween: [ "style", "${_ActionUpgradeOS}", "display", 'none', { fromValue: 'none'}], position: 0, duration: 0, easing: "easeInOutQuad" },
-                { id: "eid719", tween: [ "style", "${_ActionDesktopRepair}", "display", 'none', { fromValue: 'none'}], position: 0, duration: 0, easing: "easeInOutQuad" },
-                { id: "eid731", tween: [ "style", "${_ActionUpgradeApp}", "display", 'none', { fromValue: 'none'}], position: 0, duration: 0, easing: "easeInOutQuad" },
-                { id: "eid402", tween: [ "style", "${_Intro}", "display", 'none', { fromValue: 'none'}], position: 0, duration: 0 },
+                { id: "eid395", tween: [ "style", "${_PasswordWindow}", "display", 'none', { fromValue: 'none'}], position: 0, duration: 0 },
                 { id: "eid746", tween: [ "style", "${_RobotError}", "display", 'none', { fromValue: 'none'}], position: 0, duration: 0 },
-                { id: "eid395", tween: [ "style", "${_PasswordWindow}", "display", 'none', { fromValue: 'none'}], position: 0, duration: 0 }            ]
+                { id: "eid402", tween: [ "style", "${_Intro}", "display", 'none', { fromValue: 'none'}], position: 0, duration: 0 },
+                { id: "eid401", tween: [ "style", "${_AssignLayers}", "display", 'none', { fromValue: 'none'}], position: 0, duration: 0 },
+                { id: "eid719", tween: [ "style", "${_ActionDesktopRepair}", "display", 'none', { fromValue: 'none'}], position: 0, duration: 0, easing: "easeInOutQuad" },
+                { id: "eid730", tween: [ "style", "${_ActionUpgradeOS}", "display", 'none', { fromValue: 'none'}], position: 0, duration: 0, easing: "easeInOutQuad" }            ]
         }
     }
 },
@@ -328,26 +328,26 @@ var symbols = {
     content: {
             dom: [
                 {
-                    rect: ['-854px', '-340px', '1840px', '710px', 'auto', 'auto'],
-                    id: 'temp_layer_green_01',
                     transform: [[0, 0], [], [], ['0.1', '0.1']],
+                    id: 'temp_layer_green_01',
                     type: 'image',
+                    rect: ['-854px', '-340px', '1840px', '710px', 'auto', 'auto'],
                     fill: ['rgba(0,0,0,0)', 'images/temp_layer_green_01.png', '0px', '0px']
                 },
                 {
-                    rect: ['0px', '0px', '131px', '29px', 'auto', 'auto'],
+                    type: 'rect',
                     id: 'Layer',
                     stroke: [0, 'rgba(0,0,0,1)', 'none'],
-                    type: 'rect',
+                    rect: ['0px', '0px', '131px', '29px', 'auto', 'auto'],
                     fill: ['rgba(192,18,18,0.00)'],
                     c: [
                     {
-                        rect: ['0px', '4px', '131px', '29px', 'auto', 'auto'],
                         font: ['Roboto, Arial, sans-serif', 16, 'rgba(255,255,255,1)', '300', 'none', 'normal'],
+                        type: 'text',
                         id: 'Layername',
                         text: '(name)',
                         align: 'center',
-                        type: 'text'
+                        rect: ['0px', '4px', '131px', '29px', 'auto', 'auto']
                     }]
                 },
                 {
@@ -374,17 +374,17 @@ var symbols = {
         },
     states: {
         "Base State": {
-            "${_status_executing_01}": [
-                ["style", "left", '146px'],
-                ["style", "opacity", '0']
+            "${symbolSelector}": [
+                ["style", "height", '7.55%'],
+                ["style", "width", '25.59%']
             ],
             "${_status_pending_01}": [
                 ["style", "left", '146px'],
                 ["style", "opacity", '0']
             ],
-            "${symbolSelector}": [
-                ["style", "height", '7.55%'],
-                ["style", "width", '25.59%']
+            "${_status_executing_01}": [
+                ["style", "left", '146px'],
+                ["style", "opacity", '0']
             ],
             "${_status_done_01}": [
                 ["style", "left", '146px'],
@@ -392,13 +392,13 @@ var symbols = {
             ],
             "${_Layername}": [
                 ["style", "top", '4px'],
-                ["style", "font-size", '16px'],
+                ["style", "width", '131px'],
                 ["style", "text-align", 'center'],
-                ["style", "font-weight", '300'],
-                ["style", "height", '29px'],
                 ["style", "font-family", 'Roboto, Arial, sans-serif'],
+                ["style", "height", '29px'],
+                ["style", "font-weight", '300'],
                 ["style", "left", '0px'],
-                ["style", "width", '131px']
+                ["style", "font-size", '16px']
             ],
             "${_Layer}": [
                 ["color", "background-color", 'rgba(192,18,18,0.00)'],
@@ -429,14 +429,14 @@ var symbols = {
                 "Executing": 4000
             },
             timeline: [
-                { id: "eid833", tween: [ "style", "${_status_pending_01}", "opacity", '0', { fromValue: '0'}], position: 1002, duration: 0, easing: "easeOutQuad" },
-                { id: "eid834", tween: [ "style", "${_status_pending_01}", "opacity", '1', { fromValue: '0'}], position: 2000, duration: 0, easing: "easeOutQuad" },
-                { id: "eid839", tween: [ "style", "${_status_pending_01}", "opacity", '0', { fromValue: '1'}], position: 3003, duration: 0, easing: "easeOutQuad" },
-                { id: "eid842", tween: [ "style", "${_status_pending_01}", "opacity", '0', { fromValue: '0'}], position: 4000, duration: 0, easing: "easeOutQuad" },
                 { id: "eid832", tween: [ "style", "${_status_executing_01}", "opacity", '0', { fromValue: '0'}], position: 1002, duration: 0, easing: "easeOutQuad" },
                 { id: "eid835", tween: [ "style", "${_status_executing_01}", "opacity", '0', { fromValue: '0'}], position: 2000, duration: 0, easing: "easeOutQuad" },
                 { id: "eid837", tween: [ "style", "${_status_executing_01}", "opacity", '0', { fromValue: '0'}], position: 3003, duration: 0, easing: "easeOutQuad" },
                 { id: "eid841", tween: [ "style", "${_status_executing_01}", "opacity", '1', { fromValue: '0'}], position: 4000, duration: 0, easing: "easeOutQuad" },
+                { id: "eid833", tween: [ "style", "${_status_pending_01}", "opacity", '0', { fromValue: '0'}], position: 1002, duration: 0, easing: "easeOutQuad" },
+                { id: "eid834", tween: [ "style", "${_status_pending_01}", "opacity", '1', { fromValue: '0'}], position: 2000, duration: 0, easing: "easeOutQuad" },
+                { id: "eid839", tween: [ "style", "${_status_pending_01}", "opacity", '0', { fromValue: '1'}], position: 3003, duration: 0, easing: "easeOutQuad" },
+                { id: "eid842", tween: [ "style", "${_status_pending_01}", "opacity", '0', { fromValue: '0'}], position: 4000, duration: 0, easing: "easeOutQuad" },
                 { id: "eid767", tween: [ "style", "${_temp_layer_green_01}", "opacity", '0.7', { fromValue: '0.7'}], position: 1002, duration: 0 },
                 { id: "eid768", tween: [ "style", "${_temp_layer_green_01}", "opacity", '0.25', { fromValue: '0.7'}], position: 2000, duration: 0 },
                 { id: "eid769", tween: [ "style", "${_temp_layer_green_01}", "opacity", '0', { fromValue: '0.25'}], position: 3003, duration: 0 },
@@ -479,168 +479,168 @@ var symbols = {
                     fill: ['rgba(0,0,0,0)', 'images/desktop_bg_01.png', '0px', '0px']
                 },
                 {
-                    transform: [[0, 0], [], [], ['0.54586', '0.54586']],
                     type: 'rect',
+                    rect: ['294', '63', 'auto', 'auto', 'auto', 'auto'],
                     id: 'PersonalizationSymbol',
                     opacity: 1,
                     display: 'none',
-                    rect: ['294', '63', 'auto', 'auto', 'auto', 'auto']
+                    transform: [[0, 0], [], [], ['0.54586', '0.54586']]
                 },
                 {
-                    type: 'rect',
-                    borderRadius: ['10px', '10px', '10px', '10px'],
                     rect: ['294px', '28px', '131px', '29px', 'auto', 'auto'],
+                    borderRadius: ['10px', '10px', '10px', '10px'],
+                    type: 'rect',
                     id: 'DesktopSlot1',
                     stroke: [0, 'rgb(0, 0, 0)', 'none'],
                     display: 'none',
                     fill: ['rgba(192,192,192,1)']
                 },
                 {
-                    type: 'rect',
-                    borderRadius: ['10px', '10px', '10px', '10px'],
                     rect: ['294px', '76px', '131px', '29px', 'auto', 'auto'],
+                    borderRadius: ['10px', '10px', '10px', '10px'],
+                    type: 'rect',
                     id: 'DesktopSlot2',
                     stroke: [0, 'rgb(0, 0, 0)', 'none'],
                     display: 'none',
                     fill: ['rgba(192,192,192,1)']
                 },
                 {
-                    type: 'rect',
-                    borderRadius: ['10px', '10px', '10px', '10px'],
                     rect: ['294px', '123px', '131px', '29px', 'auto', 'auto'],
+                    borderRadius: ['10px', '10px', '10px', '10px'],
+                    type: 'rect',
                     id: 'DesktopSlot3',
                     stroke: [0, 'rgb(0, 0, 0)', 'none'],
                     display: 'none',
                     fill: ['rgba(192,192,192,1)']
                 },
                 {
-                    type: 'rect',
-                    borderRadius: ['10px', '10px', '10px', '10px'],
                     rect: ['294px', '171px', '131px', '29px', 'auto', 'auto'],
+                    borderRadius: ['10px', '10px', '10px', '10px'],
+                    type: 'rect',
                     id: 'DesktopSlot4',
                     stroke: [0, 'rgb(0, 0, 0)', 'none'],
                     display: 'none',
                     fill: ['rgba(192,192,192,1)']
                 },
                 {
-                    type: 'rect',
-                    borderRadius: ['10px', '10px', '10px', '10px'],
                     rect: ['294px', '171px', '131px', '29px', 'auto', 'auto'],
+                    borderRadius: ['10px', '10px', '10px', '10px'],
+                    type: 'rect',
                     id: 'DesktopOSSlot',
                     stroke: [0, 'rgb(0, 0, 0)', 'none'],
                     display: 'none',
                     fill: ['rgba(192,192,192,1)']
                 },
                 {
-                    transform: [[0, 0], [], [], ['0.54586', '0.54586']],
-                    display: 'none',
                     type: 'rect',
                     id: 'OSLayer',
-                    rect: ['294', '297', 'auto', 'auto', 'auto', 'auto']
+                    rect: ['294', '297', 'auto', 'auto', 'auto', 'auto'],
+                    display: 'none',
+                    transform: [[0, 0], [], [], ['0.54586', '0.54586']]
                 },
                 {
-                    type: 'rect',
                     rect: ['0px', '110px', '131px', '29px', 'auto', 'auto'],
+                    type: 'rect',
                     id: 'LayerSlot1',
                     stroke: [0, 'rgba(0,0,0,1)', 'none'],
                     display: 'none',
                     fill: ['rgba(192,192,192,1)']
                 },
                 {
-                    type: 'rect',
                     rect: ['0px', '151px', '131px', '29px', 'auto', 'auto'],
+                    type: 'rect',
                     id: 'LayerSlot2',
                     stroke: [0, 'rgba(0,0,0,1)', 'none'],
                     display: 'none',
                     fill: ['rgba(192,192,192,1)']
                 },
                 {
-                    type: 'rect',
                     rect: ['0px', '192px', '131px', '29px', 'auto', 'auto'],
+                    type: 'rect',
                     id: 'LayerSlot3',
                     stroke: [0, 'rgba(0,0,0,1)', 'none'],
                     display: 'none',
                     fill: ['rgba(192,192,192,1)']
                 },
                 {
-                    type: 'rect',
                     rect: ['0px', '232px', '131px', '29px', 'auto', 'auto'],
+                    type: 'rect',
                     id: 'LayerSlot4',
                     stroke: [0, 'rgba(0,0,0,1)', 'none'],
                     display: 'none',
                     fill: ['rgba(192,192,192,1)']
                 },
                 {
-                    type: 'rect',
                     rect: ['0px', '273px', '131px', '29px', 'auto', 'auto'],
+                    type: 'rect',
                     id: 'LayerSlot5',
                     stroke: [0, 'rgba(0,0,0,1)', 'none'],
                     display: 'none',
                     fill: ['rgba(192,192,192,1)']
                 },
                 {
-                    type: 'rect',
                     rect: ['0px', '314px', '131px', '29px', 'auto', 'auto'],
+                    type: 'rect',
                     id: 'LayerSlot6',
                     stroke: [0, 'rgba(0,0,0,1)', 'none'],
                     display: 'none',
                     fill: ['rgba(192,192,192,1)']
                 },
                 {
-                    transform: [[0, 0], [], [], ['0.54718', '0.54586']],
-                    display: 'none',
                     type: 'rect',
                     id: 'Layer6',
-                    rect: ['153px', '68px', 'auto', 'auto', 'auto', 'auto']
+                    rect: ['153px', '68px', 'auto', 'auto', 'auto', 'auto'],
+                    display: 'none',
+                    transform: [[0, 0], [], [], ['0.54718', '0.54586']]
                 },
                 {
-                    transform: [[0, 0], [], [], ['0.54718', '0.54586']],
-                    display: 'none',
                     type: 'rect',
                     id: 'Layer5',
-                    rect: ['153px', '68px', 'auto', 'auto', 'auto', 'auto']
+                    rect: ['153px', '68px', 'auto', 'auto', 'auto', 'auto'],
+                    display: 'none',
+                    transform: [[0, 0], [], [], ['0.54718', '0.54586']]
                 },
                 {
-                    transform: [[0, 0], [], [], ['0.54718', '0.54586']],
-                    display: 'none',
                     type: 'rect',
                     id: 'Layer4',
-                    rect: ['0px', '232px', 'auto', 'auto', 'auto', 'auto']
+                    rect: ['0px', '232px', 'auto', 'auto', 'auto', 'auto'],
+                    display: 'none',
+                    transform: [[0, 0], [], [], ['0.54718', '0.54586']]
                 },
                 {
-                    transform: [[0, 0], [], [], ['0.54718', '0.54586']],
-                    display: 'none',
                     type: 'rect',
                     id: 'Layer3',
-                    rect: ['153px', '68px', 'auto', 'auto', 'auto', 'auto']
+                    rect: ['153px', '68px', 'auto', 'auto', 'auto', 'auto'],
+                    display: 'none',
+                    transform: [[0, 0], [], [], ['0.54718', '0.54586']]
                 },
                 {
-                    transform: [[0, 0], [], [], ['0.54718', '0.54586']],
-                    display: 'none',
                     type: 'rect',
                     id: 'Layer2',
-                    rect: ['153px', '68px', 'auto', 'auto', 'auto', 'auto']
+                    rect: ['153px', '68px', 'auto', 'auto', 'auto', 'auto'],
+                    display: 'none',
+                    transform: [[0, 0], [], [], ['0.54718', '0.54586']]
                 },
                 {
-                    transform: [[0, 0], [], [], ['0.54718', '0.54586']],
-                    display: 'none',
                     type: 'rect',
                     id: 'Layer1',
-                    rect: ['0px', '110px', 'auto', 'auto', 'auto', 'auto']
+                    rect: ['0px', '110px', 'auto', 'auto', 'auto', 'auto'],
+                    display: 'none',
+                    transform: [[0, 0], [], [], ['0.54718', '0.54586']]
                 },
                 {
                     display: 'none',
                     type: 'rect',
-                    id: 'DoneButton',
-                    rect: ['206px', '322px', 'auto', 'auto', 'auto', 'auto']
+                    rect: ['206px', '322px', 'auto', 'auto', 'auto', 'auto'],
+                    id: 'DoneButton'
                 },
                 {
-                    font: ['Roboto, Arial, sans-serif', 16, 'rgba(183,18,52,1)', '300', 'none', 'normal'],
                     type: 'text',
+                    rect: ['11px', '50px', 'auto', 'auto', 'auto', 'auto'],
                     id: 'Text',
                     text: 'Instructions lipsum sed colorem dorm sanctus sed amis non colorem.',
                     align: 'center',
-                    rect: ['11px', '50px', 'auto', 'auto', 'auto', 'auto']
+                    font: ['Roboto, Arial, sans-serif', 16, 'rgba(183,18,52,1)', '300', 'none', 'normal']
                 }
             ],
             symbolInstances: [
@@ -738,10 +738,13 @@ var symbols = {
                 ["style", "left", '44px'],
                 ["style", "width", '122px']
             ],
-            "${_Text2}": [
-                ["style", "top", '-59px'],
-                ["style", "left", '188px'],
-                ["style", "font-size", '18px']
+            "${_PersonalizationSymbol}": [
+                ["style", "top", '-18px'],
+                ["transform", "scaleY", '0.54586'],
+                ["style", "display", 'none'],
+                ["style", "opacity", '1'],
+                ["style", "left", '551px'],
+                ["transform", "scaleX", '0.54586']
             ],
             "${_Layer3}": [
                 ["style", "top", '192px'],
@@ -757,8 +760,8 @@ var symbols = {
                 ["style", "left", '-228px'],
                 ["style", "display", 'none']
             ],
-            "${_Layer4}": [
-                ["style", "top", '232px'],
+            "${_Layer1}": [
+                ["style", "top", '110px'],
                 ["transform", "scaleY", '0.54586'],
                 ["style", "display", 'none'],
                 ["style", "opacity", '0'],
@@ -773,25 +776,22 @@ var symbols = {
                 ["style", "left", '1px'],
                 ["transform", "scaleX", '0.54718']
             ],
-            "${_LayerSlot2}": [
-                ["style", "top", '151px'],
-                ["style", "opacity", '0'],
-                ["style", "left", '-228px'],
-                ["style", "display", 'none']
+            "${symbolSelector}": [
+                ["style", "height", '100%'],
+                ["style", "overflow", 'visible'],
+                ["style", "width", '100%']
             ],
-            "${_PersonalizationSymbol}": [
-                ["style", "top", '-18px'],
-                ["transform", "scaleY", '0.54586'],
+            "${_Text2}": [
+                ["style", "top", '-59px'],
+                ["style", "left", '188px'],
+                ["style", "font-size", '18px']
+            ],
+            "${_DesktopSlot4}": [
+                ["style", "top", '27px'],
                 ["style", "display", 'none'],
-                ["style", "opacity", '1'],
-                ["style", "left", '551px'],
-                ["transform", "scaleX", '0.54586']
-            ],
-            "${_LayerSlot1}": [
-                ["style", "top", '110px'],
                 ["style", "opacity", '0'],
-                ["style", "left", '-228px'],
-                ["style", "display", 'none']
+                ["style", "left", '551px'],
+                ["style", "width", '131px']
             ],
             "${_Layer6}": [
                 ["style", "top", '314px'],
@@ -816,11 +816,10 @@ var symbols = {
                 ["style", "left", '143px'],
                 ["style", "width", '185px']
             ],
-            "${_LayerSlot6}": [
-                ["style", "top", '314px'],
-                ["style", "opacity", '0'],
-                ["style", "left", '-228px'],
-                ["style", "display", 'none']
+            "${_Text}": [
+                ["style", "top", '50px'],
+                ["style", "left", '11px'],
+                ["style", "font-size", '16px']
             ],
             "${_DesktopSlot3}": [
                 ["style", "top", '75px'],
@@ -837,8 +836,8 @@ var symbols = {
                 ["style", "right", 'auto']
             ],
             "${_desktop_bg_01}": [
-                ["style", "top", '78px'],
                 ["style", "height", '284px'],
+                ["style", "top", '78px'],
                 ["style", "left", '341px'],
                 ["style", "width", '129px']
             ],
@@ -850,10 +849,11 @@ var symbols = {
                 ["style", "left", '1px'],
                 ["transform", "scaleX", '0.54718']
             ],
-            "${_Text}": [
-                ["style", "top", '50px'],
-                ["style", "left", '11px'],
-                ["style", "font-size", '16px']
+            "${_LayerSlot2}": [
+                ["style", "top", '151px'],
+                ["style", "opacity", '0'],
+                ["style", "left", '-228px'],
+                ["style", "display", 'none']
             ],
             "${_LayerSlot3}": [
                 ["style", "top", '192px'],
@@ -861,12 +861,11 @@ var symbols = {
                 ["style", "left", '-228px'],
                 ["style", "display", 'none']
             ],
-            "${_DesktopSlot4}": [
-                ["style", "top", '27px'],
-                ["style", "display", 'none'],
+            "${_LayerSlot6}": [
+                ["style", "top", '314px'],
                 ["style", "opacity", '0'],
-                ["style", "left", '551px'],
-                ["style", "width", '131px']
+                ["style", "left", '-228px'],
+                ["style", "display", 'none']
             ],
             "${_LayerSlot5}": [
                 ["style", "top", '273px'],
@@ -874,13 +873,14 @@ var symbols = {
                 ["style", "left", '-228px'],
                 ["style", "display", 'none']
             ],
-            "${symbolSelector}": [
-                ["style", "height", '100%'],
-                ["style", "width", '100%'],
-                ["style", "overflow", 'visible']
-            ],
-            "${_Layer1}": [
+            "${_LayerSlot1}": [
                 ["style", "top", '110px'],
+                ["style", "opacity", '0'],
+                ["style", "left", '-228px'],
+                ["style", "display", 'none']
+            ],
+            "${_Layer4}": [
+                ["style", "top", '232px'],
                 ["transform", "scaleY", '0.54586'],
                 ["style", "display", 'none'],
                 ["style", "opacity", '0'],
@@ -903,14 +903,13 @@ var symbols = {
                 { id: "eid252", tween: [ "style", "${_Layer6}", "opacity", '1', { fromValue: '0'}], position: 505, duration: 495, easing: "easeOutQuad" },
                 { id: "eid253", tween: [ "style", "${_Layer6}", "opacity", '0', { fromValue: '1'}], position: 1000, duration: 500, easing: "easeOutQuad" },
                 { id: "eid448", tween: [ "style", "${_OSLayer}", "display", 'block', { fromValue: 'none'}], position: 500, duration: 0, easing: "easeOutQuad" },
-                { id: "eid259", tween: [ "style", "${_DoneButton}", "opacity", '1', { fromValue: '0'}], position: 750, duration: 250, easing: "easeOutQuad" },
-                { id: "eid261", tween: [ "style", "${_DoneButton}", "opacity", '0', { fromValue: '1'}], position: 1000, duration: 500, easing: "easeOutQuad" },
+                { id: "eid236", tween: [ "style", "${_Layer3}", "opacity", '1', { fromValue: '0'}], position: 505, duration: 495, easing: "easeOutQuad" },
+                { id: "eid237", tween: [ "style", "${_Layer3}", "opacity", '0', { fromValue: '1'}], position: 1000, duration: 500, easing: "easeOutQuad" },
                 { id: "eid169", tween: [ "style", "${_Layer1}", "display", 'block', { fromValue: 'none'}], position: 500, duration: 0, easing: "easeOutQuad" },
-                { id: "eid199", tween: [ "style", "${_LayerSlot4}", "opacity", '0', { fromValue: '0'}], position: 505, duration: 0, easing: "easeOutQuad" },
+                { id: "eid251", tween: [ "style", "${_Layer6}", "display", 'block', { fromValue: 'none'}], position: 500, duration: 0, easing: "easeOutQuad" },
                 { id: "eid235", tween: [ "style", "${_Layer3}", "top", '192px', { fromValue: '192px'}], position: 500, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid452", tween: [ "style", "${_OSLayer}", "top", '309px', { fromValue: '393px'}], position: 500, duration: 0, easing: "easeOutQuad" },
-                { id: "eid193", tween: [ "style", "${_Layer2}", "opacity", '1', { fromValue: '0'}], position: 505, duration: 495, easing: "easeOutQuad" },
-                { id: "eid215", tween: [ "style", "${_Layer2}", "opacity", '0', { fromValue: '1'}], position: 1000, duration: 500, easing: "easeOutQuad" },
+                { id: "eid240", tween: [ "style", "${_Layer3}", "display", 'block', { fromValue: 'none'}], position: 500, duration: 0, easing: "easeOutQuad" },
                 { id: "eid125", tween: [ "style", "${_DesktopSlot2}", "top", '256px', { fromValue: '122px'}], position: 500, duration: 500, easing: "easeOutQuad" },
                 { id: "eid127", tween: [ "style", "${_DesktopSlot3}", "left", '341px', { fromValue: '551px'}], position: 500, duration: 500, easing: "easeOutQuad" },
                 { id: "eid170", tween: [ "style", "${_LayerSlot6}", "display", 'block', { fromValue: 'none'}], position: 500, duration: 0, easing: "easeOutQuad" },
@@ -936,14 +935,15 @@ var symbols = {
                 { id: "eid430", tween: [ "style", "${_DesktopOSSlot}", "left", '341px', { fromValue: '551px'}], position: 500, duration: 500, easing: "easeOutQuad" },
                 { id: "eid137", tween: [ "style", "${_DesktopSlot1}", "top", '282px', { fromValue: '170px'}], position: 500, duration: 500, easing: "easeOutQuad" },
                 { id: "eid175", tween: [ "style", "${_LayerSlot1}", "display", 'block', { fromValue: 'none'}], position: 500, duration: 0, easing: "easeOutQuad" },
-                { id: "eid123", tween: [ "style", "${_DesktopSlot2}", "left", '341px', { fromValue: '551px'}], position: 500, duration: 500, easing: "easeOutQuad" },
+                { id: "eid171", tween: [ "style", "${_LayerSlot5}", "display", 'block', { fromValue: 'none'}], position: 500, duration: 0, easing: "easeOutQuad" },
                 { id: "eid143", tween: [ "style", "${_DesktopSlot4}", "opacity", '0', { fromValue: '0'}], position: 500, duration: 0, easing: "easeOutQuad" },
                 { id: "eid241", tween: [ "style", "${_Layer4}", "display", 'block', { fromValue: 'none'}], position: 500, duration: 0, easing: "easeOutQuad" },
                 { id: "eid461", tween: [ "style", "${_PersonalizationSymbol}", "left", '340px', { fromValue: '551px'}], position: 500, duration: 0, easing: "easeOutQuad" },
                 { id: "eid129", tween: [ "style", "${_DesktopSlot3}", "top", '230px', { fromValue: '75px'}], position: 500, duration: 500, easing: "easeOutQuad" },
                 { id: "eid462", tween: [ "style", "${_PersonalizationSymbol}", "top", '177px', { fromValue: '-18px'}], position: 500, duration: 0, easing: "easeOutQuad" },
                 { id: "eid191", tween: [ "style", "${_Layer1}", "left", '40px', { fromValue: '-228px'}], position: 505, duration: 495, easing: "easeOutQuad" },
-                { id: "eid167", tween: [ "style", "${_DesktopSlot3}", "display", 'block', { fromValue: 'none'}], position: 500, duration: 0, easing: "easeOutQuad" },
+                { id: "eid176", tween: [ "style", "${_Layer2}", "left", '-227px', { fromValue: '1px'}], position: 500, duration: 5, easing: "easeOutQuad" },
+                { id: "eid177", tween: [ "style", "${_Layer2}", "left", '40px', { fromValue: '-227px'}], position: 505, duration: 495, easing: "easeOutQuad" },
                 { id: "eid187", tween: [ "style", "${_LayerSlot3}", "left", '42px', { fromValue: '-228px'}], position: 505, duration: 495, easing: "easeOutQuad" },
                 { id: "eid246", tween: [ "style", "${_Layer5}", "opacity", '1', { fromValue: '0'}], position: 505, duration: 495, easing: "easeOutQuad" },
                 { id: "eid247", tween: [ "style", "${_Layer5}", "opacity", '0', { fromValue: '1'}], position: 1000, duration: 500, easing: "easeOutQuad" },
@@ -951,30 +951,30 @@ var symbols = {
                 { id: "eid853", tween: [ "style", "${_cachepoint_arrow_01}", "opacity", '0', { fromValue: '1'}], position: 1000, duration: 483, easing: "easeOutQuad" },
                 { id: "eid854", tween: [ "style", "${_cachepoint_bg_01}", "opacity", '0', { fromValue: '1'}], position: 1000, duration: 483, easing: "easeOutQuad" },
                 { id: "eid181", tween: [ "style", "${_LayerSlot2}", "left", '42px', { fromValue: '-228px'}], position: 505, duration: 495, easing: "easeOutQuad" },
-                { id: "eid135", tween: [ "style", "${_DesktopSlot1}", "left", '341px', { fromValue: '551px'}], position: 500, duration: 500, easing: "easeOutQuad" },
-                { id: "eid205", tween: [ "style", "${_LayerSlot6}", "opacity", '0', { fromValue: '0'}], position: 505, duration: 0, easing: "easeOutQuad" },
                 { id: "eid238", tween: [ "style", "${_Layer3}", "left", '-227px', { fromValue: '1px'}], position: 500, duration: 5, easing: "easeOutQuad" },
                 { id: "eid239", tween: [ "style", "${_Layer3}", "left", '40px', { fromValue: '-227px'}], position: 505, duration: 495, easing: "easeOutQuad" },
-                { id: "eid201", tween: [ "style", "${_LayerSlot1}", "opacity", '0', { fromValue: '0'}], position: 505, duration: 0, easing: "easeOutQuad" },
                 { id: "eid257", tween: [ "style", "${_DoneButton}", "display", 'block', { fromValue: 'none'}], position: 750, duration: 0, easing: "easeOutQuad" },
                 { id: "eid260", tween: [ "style", "${_DoneButton}", "display", 'none', { fromValue: 'block'}], position: 1500, duration: 0, easing: "easeOutQuad" },
-                { id: "eid176", tween: [ "style", "${_Layer2}", "left", '-227px', { fromValue: '1px'}], position: 500, duration: 5, easing: "easeOutQuad" },
-                { id: "eid177", tween: [ "style", "${_Layer2}", "left", '40px', { fromValue: '-227px'}], position: 505, duration: 495, easing: "easeOutQuad" },
+                { id: "eid205", tween: [ "style", "${_LayerSlot6}", "opacity", '0', { fromValue: '0'}], position: 505, duration: 0, easing: "easeOutQuad" },
+                { id: "eid201", tween: [ "style", "${_LayerSlot1}", "opacity", '0', { fromValue: '0'}], position: 505, duration: 0, easing: "easeOutQuad" },
+                { id: "eid135", tween: [ "style", "${_DesktopSlot1}", "left", '341px', { fromValue: '551px'}], position: 500, duration: 500, easing: "easeOutQuad" },
+                { id: "eid167", tween: [ "style", "${_DesktopSlot3}", "display", 'block', { fromValue: 'none'}], position: 500, duration: 0, easing: "easeOutQuad" },
                 { id: "eid207", tween: [ "style", "${_Layer1}", "opacity", '1', { fromValue: '0'}], position: 505, duration: 495, easing: "easeOutQuad" },
                 { id: "eid219", tween: [ "style", "${_Layer1}", "opacity", '0', { fromValue: '1'}], position: 1000, duration: 500, easing: "easeOutQuad" },
-                { id: "eid240", tween: [ "style", "${_Layer3}", "display", 'block', { fromValue: 'none'}], position: 500, duration: 0, easing: "easeOutQuad" },
+                { id: "eid193", tween: [ "style", "${_Layer2}", "opacity", '1', { fromValue: '0'}], position: 505, duration: 495, easing: "easeOutQuad" },
+                { id: "eid215", tween: [ "style", "${_Layer2}", "opacity", '0', { fromValue: '1'}], position: 1000, duration: 500, easing: "easeOutQuad" },
                 { id: "eid203", tween: [ "style", "${_LayerSlot3}", "opacity", '0', { fromValue: '0'}], position: 505, duration: 0, easing: "easeOutQuad" },
                 { id: "eid141", tween: [ "style", "${_DesktopSlot3}", "opacity", '0', { fromValue: '0'}], position: 500, duration: 0, easing: "easeOutQuad" },
-                { id: "eid251", tween: [ "style", "${_Layer6}", "display", 'block', { fromValue: 'none'}], position: 500, duration: 0, easing: "easeOutQuad" },
-                { id: "eid173", tween: [ "style", "${_LayerSlot3}", "display", 'block', { fromValue: 'none'}], position: 500, duration: 0, easing: "easeOutQuad" },
-                { id: "eid195", tween: [ "style", "${_LayerSlot5}", "opacity", '0', { fromValue: '0'}], position: 505, duration: 0, easing: "easeOutQuad" },
-                { id: "eid97", tween: [ "style", "${_Layer2}", "top", '151px', { fromValue: '151px'}], position: 500, duration: 0, easing: "easeInOutQuad" },
-                { id: "eid171", tween: [ "style", "${_LayerSlot5}", "display", 'block', { fromValue: 'none'}], position: 500, duration: 0, easing: "easeOutQuad" },
-                { id: "eid236", tween: [ "style", "${_Layer3}", "opacity", '1', { fromValue: '0'}], position: 505, duration: 495, easing: "easeOutQuad" },
-                { id: "eid237", tween: [ "style", "${_Layer3}", "opacity", '0', { fromValue: '1'}], position: 1000, duration: 500, easing: "easeOutQuad" },
-                { id: "eid183", tween: [ "style", "${_LayerSlot4}", "left", '42px', { fromValue: '-228px'}], position: 505, duration: 495, easing: "easeOutQuad" },
-                { id: "eid256", tween: [ "style", "${_Layer6}", "top", '314px', { fromValue: '314px'}], position: 500, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid174", tween: [ "style", "${_LayerSlot2}", "display", 'block', { fromValue: 'none'}], position: 500, duration: 0, easing: "easeOutQuad" },
+                { id: "eid173", tween: [ "style", "${_LayerSlot3}", "display", 'block', { fromValue: 'none'}], position: 500, duration: 0, easing: "easeOutQuad" },
+                { id: "eid256", tween: [ "style", "${_Layer6}", "top", '314px', { fromValue: '314px'}], position: 500, duration: 0, easing: "easeInOutQuad" },
+                { id: "eid97", tween: [ "style", "${_Layer2}", "top", '151px', { fromValue: '151px'}], position: 500, duration: 0, easing: "easeInOutQuad" },
+                { id: "eid123", tween: [ "style", "${_DesktopSlot2}", "left", '341px', { fromValue: '551px'}], position: 500, duration: 500, easing: "easeOutQuad" },
+                { id: "eid259", tween: [ "style", "${_DoneButton}", "opacity", '1', { fromValue: '0'}], position: 750, duration: 250, easing: "easeOutQuad" },
+                { id: "eid261", tween: [ "style", "${_DoneButton}", "opacity", '0', { fromValue: '1'}], position: 1000, duration: 500, easing: "easeOutQuad" },
+                { id: "eid183", tween: [ "style", "${_LayerSlot4}", "left", '42px', { fromValue: '-228px'}], position: 505, duration: 495, easing: "easeOutQuad" },
+                { id: "eid195", tween: [ "style", "${_LayerSlot5}", "opacity", '0', { fromValue: '0'}], position: 505, duration: 0, easing: "easeOutQuad" },
+                { id: "eid199", tween: [ "style", "${_LayerSlot4}", "opacity", '0', { fromValue: '0'}], position: 505, duration: 0, easing: "easeOutQuad" },
                 { id: "eid165", tween: [ "style", "${_DesktopSlot4}", "display", 'block', { fromValue: 'none'}], position: 500, duration: 0, easing: "easeOutQuad" },
                 { id: "eid185", tween: [ "style", "${_LayerSlot1}", "left", '42px', { fromValue: '-228px'}], position: 505, duration: 495, easing: "easeOutQuad" },
                 { id: "eid164", tween: [ "style", "${_DesktopSlot2}", "display", 'block', { fromValue: 'none'}], position: 500, duration: 0, easing: "easeOutQuad" },
@@ -1068,41 +1068,37 @@ var symbols = {
     states: {
         "Base State": {
             "${_Text3}": [
-                ["style", "top", '103px'],
                 ["color", "color", 'rgba(183,18,52,1.00)'],
+                ["style", "top", '103px'],
                 ["style", "left", '-311px'],
                 ["style", "width", '169px']
             ],
             "${_bot_01}": [
-                ["style", "top", '88px'],
                 ["style", "height", '283px'],
+                ["style", "top", '88px'],
                 ["style", "left", '763px'],
                 ["style", "width", '395px']
             ],
-            "${_EnjoyShow}": [
-                ["color", "color", 'rgba(22,32,157,1.00)'],
-                ["style", "top", '80px'],
-                ["style", "left", '51px'],
-                ["style", "display", 'none']
+            "${_ClickSurface}": [
+                ["style", "height", '100%'],
+                ["style", "left", '0%'],
+                ["style", "top", '0%']
             ],
-            "${_bot_speechbubble_01}": [
-                ["style", "top", '70px'],
-                ["style", "height", '160px'],
-                ["style", "left", '-342px'],
-                ["style", "width", '234px']
+            "${_EnjoyShow}": [
+                ["style", "top", '80px'],
+                ["style", "display", 'none'],
+                ["style", "left", '51px'],
+                ["color", "color", 'rgba(22,32,157,1.00)']
             ],
             "${symbolSelector}": [
                 ["style", "height", '57px'],
                 ["style", "width", '220px']
             ],
-            "${_Text}": [
-                ["style", "top", '325px'],
-                ["style", "text-align", 'center'],
-                ["style", "font-family", 'Roboto, Arial, sans-serif'],
-                ["color", "color", 'rgba(255,255,255,1.00)'],
-                ["style", "font-weight", '300'],
-                ["style", "left", '239px'],
-                ["style", "font-size", '18px']
+            "${_bot_speechbubble_01}": [
+                ["style", "height", '160px'],
+                ["style", "top", '70px'],
+                ["style", "left", '-342px'],
+                ["style", "width", '234px']
             ],
             "${_GenericButton}": [
                 ["style", "left", '206px'],
@@ -1116,10 +1112,14 @@ var symbols = {
                 ["style", "left", '239px'],
                 ["style", "font-size", '18px']
             ],
-            "${_ClickSurface}": [
-                ["style", "height", '100%'],
-                ["style", "left", '0%'],
-                ["style", "top", '0%']
+            "${_Text}": [
+                ["style", "top", '325px'],
+                ["style", "text-align", 'center'],
+                ["style", "font-weight", '300'],
+                ["color", "color", 'rgba(255,255,255,1.00)'],
+                ["style", "font-family", 'Roboto, Arial, sans-serif'],
+                ["style", "left", '239px'],
+                ["style", "font-size", '18px']
             ]
         }
     },
@@ -1177,12 +1177,12 @@ var symbols = {
                     rect: ['0px', '0px', 'auto', 'auto', 'auto', 'auto']
                 },
                 {
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(255,255,255,1.00)', '300', 'none', ''],
                     type: 'text',
+                    rect: ['0px', '1px', '105px', '29px', 'auto', 'auto'],
                     id: 'TextCopy2',
                     text: 'Done',
                     align: 'center',
-                    rect: ['0px', '1px', '105px', '29px', 'auto', 'auto']
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(255,255,255,1.00)', '300', 'none', '']
                 }
             ],
             symbolInstances: [
@@ -1204,8 +1204,8 @@ var symbols = {
                 ["style", "top", '355px'],
                 ["style", "height", '29px'],
                 ["style", "font-family", 'Roboto, Arial, sans-serif'],
-                ["style", "opacity", '0'],
-                ["style", "width", '105px']
+                ["style", "width", '105px'],
+                ["style", "opacity", '0']
             ],
             "${symbolSelector}": [
                 ["style", "height", '29px'],
@@ -1223,8 +1223,8 @@ var symbols = {
                 ["style", "top", '355px'],
                 ["style", "height", '29px'],
                 ["style", "font-family", 'Roboto, Arial, sans-serif'],
-                ["style", "opacity", '0'],
-                ["style", "width", '105px']
+                ["style", "width", '105px'],
+                ["style", "opacity", '0']
             ],
             "${_TextCopy2}": [
                 ["color", "color", 'rgba(255,255,255,1)'],
@@ -1234,8 +1234,8 @@ var symbols = {
                 ["style", "top", '355px'],
                 ["style", "height", '29px'],
                 ["style", "font-family", 'Roboto, Arial, sans-serif'],
-                ["style", "opacity", '0'],
-                ["style", "width", '105px']
+                ["style", "width", '105px'],
+                ["style", "opacity", '0']
             ]
         }
     },
@@ -1263,19 +1263,19 @@ var symbols = {
     content: {
             dom: [
                 {
-                    type: 'rect',
+                    rect: ['0px', '0px', '100%', '99%', 'auto', 'auto'],
                     id: 'Background',
                     stroke: [0, 'rgb(0, 0, 0)', 'solid'],
-                    rect: ['0px', '0px', '100%', '99%', 'auto', 'auto'],
+                    type: 'rect',
                     fill: ['rgba(255,255,255,1.00)']
                 },
                 {
                     rect: ['21.9%', '21%', '56.2%', '57.7%', 'auto', 'auto'],
-                    sizeRange: ['0px', '', '', ''],
+                    fill: ['rgba(255,255,255,1.00)'],
                     id: 'Frame',
                     stroke: [14, 'rgb(0, 0, 0)', 'none'],
                     type: 'rect',
-                    fill: ['rgba(255,255,255,1.00)']
+                    sizeRange: ['0px', '', '', '']
                 },
                 {
                     id: 'PasswordButton6',
@@ -1310,50 +1310,50 @@ var symbols = {
                 {
                     display: 'none',
                     type: 'rect',
-                    id: 'RestartUI',
-                    rect: ['51.4%', '62.5%', 'auto', 'auto', 'auto', 'auto']
+                    rect: ['51.4%', '62.5%', 'auto', 'auto', 'auto', 'auto'],
+                    id: 'RestartUI'
                 },
                 {
                     display: 'none',
                     type: 'rect',
-                    id: 'SuspendButton',
-                    rect: ['27.9%', '62.5%', 'auto', 'auto', 'auto', 'auto']
+                    rect: ['27.9%', '62.5%', 'auto', 'auto', 'auto', 'auto'],
+                    id: 'SuspendButton'
                 },
                 {
                     display: 'none',
                     type: 'rect',
-                    id: 'CalibrateButton',
-                    rect: ['52.2%', '45.8%', 'auto', 'auto', 'auto', 'auto']
+                    rect: ['52.2%', '45.8%', 'auto', 'auto', 'auto', 'auto'],
+                    id: 'CalibrateButton'
                 },
                 {
                     display: 'none',
                     type: 'rect',
-                    id: 'HomeButton',
-                    rect: ['27.9%', '46.1%', 'auto', 'auto', 'auto', 'auto']
+                    rect: ['27.9%', '46.1%', 'auto', 'auto', 'auto', 'auto'],
+                    id: 'HomeButton'
                 },
                 {
                     display: 'none',
                     type: 'rect',
-                    id: 'DeEnergizeButton',
-                    rect: ['52%', '35.9%', 'auto', 'auto', 'auto', 'auto']
+                    rect: ['52%', '35.9%', 'auto', 'auto', 'auto', 'auto'],
+                    id: 'DeEnergizeButton'
                 },
                 {
                     display: 'none',
                     type: 'rect',
-                    id: 'EnergizeButton',
-                    rect: ['27.9%', '36.2%', 'auto', 'auto', 'auto', 'auto']
+                    rect: ['27.9%', '36.2%', 'auto', 'auto', 'auto', 'auto'],
+                    id: 'EnergizeButton'
                 },
                 {
                     display: 'none',
                     type: 'rect',
-                    id: 'ShowNowButton',
-                    rect: ['30.9%', '38.5%', 'auto', 'auto', 'auto', 'auto']
+                    rect: ['30.9%', '38.5%', 'auto', 'auto', 'auto', 'auto'],
+                    id: 'ShowNowButton'
                 },
                 {
                     display: 'none',
                     type: 'rect',
-                    id: 'ShowInFiveButton',
-                    rect: ['27.9%', '32.3%', 'auto', 'auto', 'auto', 'auto']
+                    rect: ['27.9%', '32.3%', 'auto', 'auto', 'auto', 'auto'],
+                    id: 'ShowInFiveButton'
                 }
             ],
             symbolInstances: [
@@ -1491,23 +1491,23 @@ var symbols = {
                 ["style", "top", '26.04%']
             ],
             "${_Frame}": [
-                ["color", "background-color", 'rgba(255,255,255,1.00)'],
-                ["transform", "scaleX", '1'],
-                ["style", "border-style", 'none'],
-                ["style", "left", '21.88%'],
-                ["style", "width", '56.2%'],
-                ["style", "top", '20.98%'],
                 ["style", "-webkit-transform-origin", [50,50], {valueTemplate:'@@0@@% @@1@@%'} ],
                 ["style", "-moz-transform-origin", [50,50],{valueTemplate:'@@0@@% @@1@@%'}],
                 ["style", "-ms-transform-origin", [50,50],{valueTemplate:'@@0@@% @@1@@%'}],
                 ["style", "msTransformOrigin", [50,50],{valueTemplate:'@@0@@% @@1@@%'}],
                 ["style", "-o-transform-origin", [50,50],{valueTemplate:'@@0@@% @@1@@%'}],
+                ["transform", "scaleX", '1'],
+                ["style", "border-style", 'none'],
+                ["style", "left", '21.88%'],
+                ["style", "width", '56.2%'],
+                ["style", "top", '20.98%'],
+                ["style", "opacity", '0'],
                 ["style", "min-width", '0px'],
                 ["style", "max-width", 'none'],
                 ["style", "height", '57.7%'],
-                ["transform", "scaleY", '1'],
                 ["style", "border-width", '14px'],
-                ["style", "opacity", '0']
+                ["transform", "scaleY", '1'],
+                ["color", "background-color", 'rgba(255,255,255,1.00)']
             ],
             "${_HomeButton}": [
                 ["style", "display", 'none'],
@@ -1521,10 +1521,11 @@ var symbols = {
                 ["style", "left", '27.93%'],
                 ["style", "top", '56.25%']
             ],
-            "${_PasswordButton2}": [
-                ["style", "top", '43.64%'],
+            "${_DeEnergizeButton}": [
+                ["style", "display", 'none'],
                 ["style", "opacity", '0'],
-                ["style", "left", '31.45%']
+                ["style", "left", '51.37%'],
+                ["style", "top", '35.94%']
             ],
             "${_ShowNowButton}": [
                 ["style", "display", 'none'],
@@ -1542,11 +1543,10 @@ var symbols = {
                 ["style", "opacity", '0'],
                 ["style", "left", '53.52%']
             ],
-            "${_DeEnergizeButton}": [
-                ["style", "display", 'none'],
+            "${_PasswordButton2}": [
+                ["style", "top", '43.64%'],
                 ["style", "opacity", '0'],
-                ["style", "left", '51.37%'],
-                ["style", "top", '35.94%']
+                ["style", "left", '31.45%']
             ],
             "${_EnergizeButton}": [
                 ["style", "display", 'none'],
@@ -1562,11 +1562,11 @@ var symbols = {
             "${_Background}": [
                 ["style", "top", '0px'],
                 ["color", "background-color", 'rgba(255,255,255,1.00)'],
-                ["style", "border-width", '0px'],
-                ["style", "border-style", 'solid'],
-                ["style", "height", '100%'],
-                ["style", "opacity", '0'],
                 ["style", "left", '0px'],
+                ["style", "opacity", '0'],
+                ["style", "height", '100%'],
+                ["style", "border-style", 'solid'],
+                ["style", "border-width", '0px'],
                 ["style", "width", '100%']
             ]
         }
@@ -1587,11 +1587,12 @@ var symbols = {
                 { id: "eid354", tween: [ "style", "${_ShowNowButton}", "top", '25.78%', { fromValue: '25.78%'}], position: 3250, duration: 0 },
                 { id: "eid619", tween: [ "style", "${_RestartUI}", "opacity", '1', { fromValue: '0'}], position: 3000, duration: 250 },
                 { id: "eid353", tween: [ "style", "${_ShowInFiveButton}", "top", '26.04%', { fromValue: '26.04%'}], position: 3250, duration: 0 },
-                { id: "eid350", tween: [ "style", "${_ShowInFiveButton}", "display", 'block', { fromValue: 'none'}], position: 3000, duration: 0 },
-                { id: "eid335", tween: [ "style", "${_HomeButton}", "opacity", '1', { fromValue: '0'}], position: 3000, duration: 250 },
+                { id: "eid734", tween: [ "style", "${_SuspendButton}", "top", '56.25%', { fromValue: '56.25%'}], position: 3250, duration: 0 },
+                { id: "eid303", tween: [ "style", "${_PasswordButton4}", "opacity", '1', { fromValue: '0'}], position: 1000, duration: 250 },
+                { id: "eid297", tween: [ "style", "${_PasswordButton4}", "opacity", '0', { fromValue: '1'}], position: 2000, duration: 250 },
+                { id: "eid314", tween: [ "style", "${_PasswordButton4}", "opacity", '0', { fromValue: '1'}], position: 3002, duration: 248 },
                 { id: "eid351", tween: [ "style", "${_ShowInFiveButton}", "opacity", '1', { fromValue: '0'}], position: 3000, duration: 250 },
-                { id: "eid300", tween: [ "style", "${_PasswordButton3}", "opacity", '1', { fromValue: '0'}], position: 1000, duration: 250 },
-                { id: "eid294", tween: [ "style", "${_PasswordButton3}", "opacity", '0', { fromValue: '1'}], position: 2000, duration: 250 },
+                { id: "eid742", tween: [ "style", "${_EnergizeButton}", "opacity", '1', { fromValue: '0'}], position: 3000, duration: 250 },
                 { id: "eid745", tween: [ "style", "${_DeEnergizeButton}", "left", '51.37%', { fromValue: '51.37%'}], position: 3250, duration: 0 },
                 { id: "eid305", tween: [ "style", "${_PasswordButton1}", "opacity", '1', { fromValue: '0'}], position: 1000, duration: 250 },
                 { id: "eid299", tween: [ "style", "${_PasswordButton1}", "opacity", '0', { fromValue: '1'}], position: 2000, duration: 250 },
@@ -1603,7 +1604,7 @@ var symbols = {
                 { id: "eid298", tween: [ "style", "${_PasswordButton6}", "opacity", '0', { fromValue: '1'}], position: 2000, duration: 250 },
                 { id: "eid744", tween: [ "style", "${_DeEnergizeButton}", "opacity", '1', { fromValue: '0'}], position: 3000, duration: 250 },
                 { id: "eid347", tween: [ "style", "${_ShowNowButton}", "opacity", '1', { fromValue: '0'}], position: 3000, duration: 250 },
-                { id: "eid346", tween: [ "style", "${_ShowNowButton}", "display", 'block', { fromValue: 'none'}], position: 3000, duration: 0 },
+                { id: "eid741", tween: [ "style", "${_EnergizeButton}", "display", 'block', { fromValue: 'none'}], position: 3000, duration: 0 },
                 { id: "eid279", tween: [ "style", "${_Frame}", "opacity", '0.75168320528455', { fromValue: '0'}], position: 1000, duration: 250 },
                 { id: "eid280", tween: [ "style", "${_Frame}", "opacity", '0', { fromValue: '0.75168320528455'}], position: 2000, duration: 250 },
                 { id: "eid293", tween: [ "style", "${_Frame}", "opacity", '0.74523669918699', { fromValue: '0'}], position: 3000, duration: 0 },
@@ -1612,17 +1613,16 @@ var symbols = {
                 { id: "eid301", tween: [ "style", "${_PasswordButton2}", "opacity", '1', { fromValue: '0'}], position: 1000, duration: 250 },
                 { id: "eid295", tween: [ "style", "${_PasswordButton2}", "opacity", '0', { fromValue: '1'}], position: 2000, duration: 250 },
                 { id: "eid315", tween: [ "style", "${_PasswordButton2}", "opacity", '0', { fromValue: '1'}], position: 3002, duration: 248 },
-                { id: "eid618", tween: [ "style", "${_RestartUI}", "display", 'block', { fromValue: 'none'}], position: 3000, duration: 0 },
                 { id: "eid743", tween: [ "style", "${_DeEnergizeButton}", "display", 'block', { fromValue: 'none'}], position: 3000, duration: 0 },
+                { id: "eid618", tween: [ "style", "${_RestartUI}", "display", 'block', { fromValue: 'none'}], position: 3000, duration: 0 },
                 { id: "eid736", tween: [ "style", "${_SuspendButton}", "display", 'block', { fromValue: 'none'}], position: 3000, duration: 0 },
                 { id: "eid338", tween: [ "style", "${_CalibrateButton}", "left", '51.37%', { fromValue: '51.37%'}], position: 3250, duration: 0 },
                 { id: "eid336", tween: [ "style", "${_CalibrateButton}", "display", 'block', { fromValue: 'none'}], position: 3000, duration: 0 },
-                { id: "eid741", tween: [ "style", "${_EnergizeButton}", "display", 'block', { fromValue: 'none'}], position: 3000, duration: 0 },
-                { id: "eid742", tween: [ "style", "${_EnergizeButton}", "opacity", '1', { fromValue: '0'}], position: 3000, duration: 250 },
-                { id: "eid303", tween: [ "style", "${_PasswordButton4}", "opacity", '1', { fromValue: '0'}], position: 1000, duration: 250 },
-                { id: "eid297", tween: [ "style", "${_PasswordButton4}", "opacity", '0', { fromValue: '1'}], position: 2000, duration: 250 },
-                { id: "eid314", tween: [ "style", "${_PasswordButton4}", "opacity", '0', { fromValue: '1'}], position: 3002, duration: 248 },
-                { id: "eid734", tween: [ "style", "${_SuspendButton}", "top", '56.25%', { fromValue: '56.25%'}], position: 3250, duration: 0 }            ]
+                { id: "eid346", tween: [ "style", "${_ShowNowButton}", "display", 'block', { fromValue: 'none'}], position: 3000, duration: 0 },
+                { id: "eid300", tween: [ "style", "${_PasswordButton3}", "opacity", '1', { fromValue: '0'}], position: 1000, duration: 250 },
+                { id: "eid294", tween: [ "style", "${_PasswordButton3}", "opacity", '0', { fromValue: '1'}], position: 2000, duration: 250 },
+                { id: "eid335", tween: [ "style", "${_HomeButton}", "opacity", '1', { fromValue: '0'}], position: 3000, duration: 250 },
+                { id: "eid350", tween: [ "style", "${_ShowInFiveButton}", "display", 'block', { fromValue: 'none'}], position: 3000, duration: 0 }            ]
         }
     }
 },
@@ -1652,10 +1652,6 @@ var symbols = {
         },
     states: {
         "Base State": {
-            "${symbolSelector}": [
-                ["style", "height", '10.14%'],
-                ["style", "width", '15.1%']
-            ],
             "${_RoundRect}": [
                 ["color", "background-color", 'rgba(46,56,45,1.00)'],
                 ["style", "top", '0px'],
@@ -1663,6 +1659,10 @@ var symbols = {
                 ["style", "border-style", 'none'],
                 ["style", "left", '0px'],
                 ["style", "width", '100%']
+            ],
+            "${symbolSelector}": [
+                ["style", "height", '10.14%'],
+                ["style", "width", '15.1%']
             ]
         }
     },
@@ -1697,20 +1697,20 @@ var symbols = {
                     {
                         rect: ['0%', '0%', '100%', '100%', 'auto', 'auto'],
                         borderRadius: ['10px', '10px', '10px', '10px'],
-                        opacity: 1,
-                        id: 'ButtonFrame',
                         stroke: [14, 'rgb(0, 0, 0)', 'none'],
+                        id: 'ButtonFrame',
+                        opacity: 1,
                         type: 'rect',
                         fill: ['rgba(79,79,79,1.00)']
                     },
                     {
-                        type: 'text',
                         rect: ['0%', '20%', '100%', '60%', 'auto', 'auto'],
-                        text: '(title)',
-                        id: 'ButtonLabel',
-                        opacity: 1,
+                        font: ['Verdana, Geneva, sans-serif', [91.6, '%'], 'rgba(255,255,255,1.00)', '300', 'none', ''],
                         align: 'center',
-                        font: ['Verdana, Geneva, sans-serif', [91.6, '%'], 'rgba(255,255,255,1.00)', '300', 'none', '']
+                        id: 'ButtonLabel',
+                        text: '(title)',
+                        opacity: 1,
+                        type: 'text'
                     }]
                 }
             ],
@@ -1722,9 +1722,9 @@ var symbols = {
             "${_ButtonFrame}": [
                 ["style", "top", '0%'],
                 ["color", "background-color", 'rgba(32,255,0,1.00)'],
-                ["style", "border-style", 'none'],
-                ["style", "height", '100%'],
                 ["style", "opacity", '1'],
+                ["style", "height", '100%'],
+                ["style", "border-style", 'none'],
                 ["style", "left", '0%'],
                 ["style", "width", '100%']
             ],
@@ -1737,8 +1737,8 @@ var symbols = {
                 ["style", "text-align", 'center'],
                 ["style", "height", '60%'],
                 ["style", "font-family", 'Verdana, Geneva, sans-serif'],
-                ["style", "font-size", '91.6%'],
-                ["style", "font-weight", '300']
+                ["style", "font-weight", '300'],
+                ["style", "font-size", '91.6%']
             ],
             "${symbolSelector}": [
                 ["style", "height", '8.2%'],
@@ -1777,27 +1777,45 @@ var symbols = {
     content: {
             dom: [
                 {
-                    rect: ['-853px', '-339px', '1840px', '710px', 'auto', 'auto'],
+                    id: 'status_pending_01',
+                    type: 'image',
+                    rect: ['146px', '0', '130px', '33px', 'auto', 'auto'],
+                    fill: ['rgba(0,0,0,0)', 'images/status_pending_01.png', '0px', '0px']
+                },
+                {
+                    id: 'status_executing_01',
+                    type: 'image',
+                    rect: ['146px', '0', '129px', '32px', 'auto', 'auto'],
+                    fill: ['rgba(0,0,0,0)', 'images/status_executing_01.png', '0px', '0px']
+                },
+                {
+                    id: 'status_done_01',
+                    type: 'image',
+                    rect: ['146px', '0', '129px', '32px', 'auto', 'auto'],
+                    fill: ['rgba(0,0,0,0)', 'images/status_done_01.png', '0px', '0px']
+                },
+                {
                     transform: [[0, 0], [], [], ['0.1', '0.1']],
+                    rect: ['-853px', '-339px', '1840px', '710px', 'auto', 'auto'],
                     id: 'temp_layer_gold_01',
                     opacity: 0.70172764227642,
                     type: 'image',
                     fill: ['rgba(0,0,0,0)', 'images/temp_layer_gold_01.png', '0px', '0px']
                 },
                 {
-                    rect: ['0px', '0px', '131px', '29px', 'auto', 'auto'],
+                    type: 'rect',
                     id: 'Layer',
                     stroke: [0, 'rgba(0,0,0,1)', 'none'],
-                    type: 'rect',
+                    rect: ['0px', '0px', '131px', '29px', 'auto', 'auto'],
                     fill: ['rgba(198,165,18,0.00)'],
                     c: [
                     {
-                        rect: ['0px', '4px', '131px', '29px', 'auto', 'auto'],
                         font: ['Roboto, Arial, sans-serif', 16, 'rgba(255,255,255,1)', '300', 'none', 'normal'],
+                        type: 'text',
                         id: 'Layername',
                         text: 'OS Gold',
                         align: 'center',
-                        type: 'text'
+                        rect: ['0px', '4px', '131px', '29px', 'auto', 'auto']
                     }]
                 }
             ],
@@ -1810,15 +1828,27 @@ var symbols = {
                 ["style", "height", '29px'],
                 ["style", "width", '131px']
             ],
+            "${_status_pending_01}": [
+                ["style", "left", '146px'],
+                ["style", "opacity", '0']
+            ],
+            "${_status_executing_01}": [
+                ["style", "left", '146px'],
+                ["style", "opacity", '0']
+            ],
+            "${_status_done_01}": [
+                ["style", "left", '146px'],
+                ["style", "opacity", '0']
+            ],
             "${_Layername}": [
                 ["style", "top", '4px'],
-                ["style", "width", '131px'],
+                ["style", "font-size", '16px'],
                 ["style", "text-align", 'center'],
-                ["style", "font-weight", '300'],
-                ["style", "height", '29px'],
                 ["style", "font-family", 'Roboto, Arial, sans-serif'],
+                ["style", "height", '29px'],
+                ["style", "font-weight", '300'],
                 ["style", "left", '0px'],
-                ["style", "font-size", '16px']
+                ["style", "width", '131px']
             ],
             "${_Layer}": [
                 ["color", "background-color", 'rgba(198,165,18,0.00)'],
@@ -1848,7 +1878,15 @@ var symbols = {
                 "Executing": 3000
             },
             timeline: [
-            ]
+                { id: "eid1147", tween: [ "style", "${_status_pending_01}", "opacity", '0', { fromValue: '0'}], position: 1002, duration: 0, easing: "easeOutQuad" },
+                { id: "eid1148", tween: [ "style", "${_status_pending_01}", "opacity", '1', { fromValue: '0'}], position: 2000, duration: 0, easing: "easeOutQuad" },
+                { id: "eid1150", tween: [ "style", "${_status_pending_01}", "opacity", '0', { fromValue: '0'}], position: 3000, duration: 0, easing: "easeOutQuad" },
+                { id: "eid1143", tween: [ "style", "${_status_executing_01}", "opacity", '0', { fromValue: '0'}], position: 1002, duration: 0, easing: "easeOutQuad" },
+                { id: "eid1144", tween: [ "style", "${_status_executing_01}", "opacity", '0', { fromValue: '0'}], position: 2000, duration: 0, easing: "easeOutQuad" },
+                { id: "eid1146", tween: [ "style", "${_status_executing_01}", "opacity", '1', { fromValue: '0'}], position: 3000, duration: 0, easing: "easeOutQuad" },
+                { id: "eid1139", tween: [ "style", "${_status_done_01}", "opacity", '0', { fromValue: '0'}], position: 1002, duration: 0, easing: "easeOutQuad" },
+                { id: "eid1140", tween: [ "style", "${_status_done_01}", "opacity", '0', { fromValue: '0'}], position: 2000, duration: 0, easing: "easeOutQuad" },
+                { id: "eid1142", tween: [ "style", "${_status_done_01}", "opacity", '0', { fromValue: '0'}], position: 3000, duration: 0, easing: "easeOutQuad" }            ]
         }
     }
 },
@@ -1865,27 +1903,45 @@ var symbols = {
     content: {
             dom: [
                 {
-                    rect: ['-854px', '-340px', '1840px', '710px', 'auto', 'auto'],
+                    id: 'status_pending_01Copy',
+                    type: 'image',
+                    rect: ['146px', '0', '130px', '33px', 'auto', 'auto'],
+                    fill: ['rgba(0,0,0,0)', 'images/status_pending_01.png', '0px', '0px']
+                },
+                {
+                    id: 'status_executing_01Copy',
+                    type: 'image',
+                    rect: ['146px', '0', '129px', '32px', 'auto', 'auto'],
+                    fill: ['rgba(0,0,0,0)', 'images/status_executing_01.png', '0px', '0px']
+                },
+                {
+                    id: 'status_done_01Copy',
+                    type: 'image',
+                    rect: ['146px', '0', '129px', '32px', 'auto', 'auto'],
+                    fill: ['rgba(0,0,0,0)', 'images/status_done_01.png', '0px', '0px']
+                },
+                {
                     transform: [[0, 0], [], [], ['0.1', '0.1']],
+                    rect: ['-854px', '-340px', '1840px', '710px', 'auto', 'auto'],
                     id: 'temp_layer_blue_01',
                     opacity: 0.7,
                     type: 'image',
                     fill: ['rgba(0,0,0,0)', 'images/temp_layer_blue_01.png', '0px', '0px']
                 },
                 {
-                    rect: ['0px', '0px', '131px', '29px', 'auto', 'auto'],
+                    type: 'rect',
                     id: 'Layer',
                     stroke: [0, 'rgba(0,0,0,1)', 'none'],
-                    type: 'rect',
+                    rect: ['0px', '0px', '131px', '29px', 'auto', 'auto'],
                     fill: ['rgba(72,148,187,0.00)'],
                     c: [
                     {
-                        rect: ['0px', '4px', '131px', '29px', 'auto', 'auto'],
                         font: ['Roboto, Arial, sans-serif', 16, 'rgba(255,255,255,1)', '300', 'none', 'normal'],
+                        type: 'text',
                         id: 'Layername',
                         text: 'Personalization',
                         align: 'center',
-                        type: 'text'
+                        rect: ['0px', '4px', '131px', '29px', 'auto', 'auto']
                     }]
                 }
             ],
@@ -1894,6 +1950,10 @@ var symbols = {
         },
     states: {
         "Base State": {
+            "${_status_pending_01Copy}": [
+                ["style", "left", '146px'],
+                ["style", "opacity", '0']
+            ],
             "${_temp_layer_blue_01}": [
                 ["style", "top", '-340px'],
                 ["style", "height", '710px'],
@@ -1901,15 +1961,23 @@ var symbols = {
                 ["style", "left", '-854px'],
                 ["style", "width", '1840px']
             ],
+            "${symbolSelector}": [
+                ["style", "height", '29px'],
+                ["style", "width", '131px']
+            ],
+            "${_status_done_01Copy}": [
+                ["style", "left", '146px'],
+                ["style", "opacity", '0']
+            ],
             "${_Layername}": [
                 ["style", "top", '4px'],
-                ["style", "font-size", '16px'],
+                ["style", "width", '131px'],
                 ["style", "text-align", 'center'],
-                ["style", "font-weight", '300'],
-                ["style", "height", '29px'],
                 ["style", "font-family", 'Roboto, Arial, sans-serif'],
+                ["style", "height", '29px'],
+                ["style", "font-weight", '300'],
                 ["style", "left", '0px'],
-                ["style", "width", '131px']
+                ["style", "font-size", '16px']
             ],
             "${_Layer}": [
                 ["color", "background-color", 'rgba(72,148,187,0.00)'],
@@ -1918,9 +1986,9 @@ var symbols = {
                 ["style", "left", '0px'],
                 ["style", "top", '0px']
             ],
-            "${symbolSelector}": [
-                ["style", "height", '29px'],
-                ["style", "width", '131px']
+            "${_status_executing_01Copy}": [
+                ["style", "left", '146px'],
+                ["style", "opacity", '0']
             ]
         }
     },
@@ -1936,7 +2004,15 @@ var symbols = {
                 "Executing": 3000
             },
             timeline: [
-            ]
+                { id: "eid1157", tween: [ "style", "${_status_pending_01Copy}", "opacity", '0', { fromValue: '0'}], position: 1002, duration: 0, easing: "easeOutQuad" },
+                { id: "eid1158", tween: [ "style", "${_status_pending_01Copy}", "opacity", '1', { fromValue: '0'}], position: 2000, duration: 0, easing: "easeOutQuad" },
+                { id: "eid1159", tween: [ "style", "${_status_pending_01Copy}", "opacity", '0', { fromValue: '1'}], position: 3000, duration: 0, easing: "easeOutQuad" },
+                { id: "eid1154", tween: [ "style", "${_status_executing_01Copy}", "opacity", '0', { fromValue: '0'}], position: 1002, duration: 0, easing: "easeOutQuad" },
+                { id: "eid1155", tween: [ "style", "${_status_executing_01Copy}", "opacity", '0', { fromValue: '0'}], position: 2000, duration: 0, easing: "easeOutQuad" },
+                { id: "eid1156", tween: [ "style", "${_status_executing_01Copy}", "opacity", '1', { fromValue: '0'}], position: 3000, duration: 0, easing: "easeOutQuad" },
+                { id: "eid1151", tween: [ "style", "${_status_done_01Copy}", "opacity", '0', { fromValue: '0'}], position: 1002, duration: 0, easing: "easeOutQuad" },
+                { id: "eid1152", tween: [ "style", "${_status_done_01Copy}", "opacity", '0', { fromValue: '0'}], position: 2000, duration: 0, easing: "easeOutQuad" },
+                { id: "eid1153", tween: [ "style", "${_status_done_01Copy}", "opacity", '0', { fromValue: '0'}], position: 3000, duration: 0, easing: "easeOutQuad" }            ]
         }
     }
 },
@@ -1953,41 +2029,41 @@ var symbols = {
     content: {
             dom: [
                 {
-                    type: 'text',
                     rect: ['auto', 'auto', 'auto', 'auto', '311px', '201px'],
+                    font: ['Lucida Sans Unicode, Lucida Grande, sans-serif', 27, 'rgba(132,132,132,1.00)', '400', 'none', 'normal'],
                     id: 'Console',
                     text: 'Unibot Management Console',
                     align: 'center',
-                    font: ['Lucida Sans Unicode, Lucida Grande, sans-serif', 27, 'rgba(132,132,132,1.00)', '400', 'none', 'normal']
+                    type: 'text'
                 },
                 {
-                    type: 'text',
                     rect: ['auto', 'auto', 'auto', 'auto', '311px', '201px'],
-                    opacity: 0.49253683943089,
-                    id: 'UMC',
-                    text: 'UMC',
+                    font: ['Lucida Sans Unicode, Lucida Grande, sans-serif', 61, 'rgba(180,180,180,1.00)', '400', 'none', 'normal'],
                     align: 'center',
-                    font: ['Lucida Sans Unicode, Lucida Grande, sans-serif', 61, 'rgba(180,180,180,1.00)', '400', 'none', 'normal']
+                    id: 'UMC',
+                    opacity: 0.49253683943089,
+                    text: 'UMC',
+                    type: 'text'
                 },
                 {
-                    transform: [[0, 0], ['-37'], [], ['1.34615']],
                     rect: ['-11%', '44.1%', '111%', '0.7%', 'auto', 'auto'],
+                    transform: [[0, 0], ['-37'], [], ['1.34615']],
                     id: 'Rectangle',
                     stroke: [0, 'rgb(0, 0, 0)', 'none'],
                     type: 'rect',
                     fill: ['rgba(231,111,111,1.00)']
                 },
                 {
-                    transform: [[0, 0], ['-37'], [], ['1.34615']],
                     rect: ['-7.6%', '47.8%', '111%', '0.7%', 'auto', 'auto'],
+                    transform: [[0, 0], ['-37'], [], ['1.34615']],
                     id: 'RectangleCopy',
                     stroke: [0, 'rgb(0, 0, 0)', 'none'],
                     type: 'rect',
                     fill: ['rgba(231,111,111,1.00)']
                 },
                 {
-                    transform: [[0, 0], ['-37'], [], ['1.34615']],
                     rect: ['0.1%', '55.3%', '111%', '0.7%', 'auto', 'auto'],
+                    transform: [[0, 0], ['-37'], [], ['1.34615']],
                     id: 'RectangleCopy2',
                     stroke: [0, 'rgb(0, 0, 0)', 'none'],
                     type: 'rect',
@@ -2010,14 +2086,14 @@ var symbols = {
                 ["transform", "skewX", '0deg'],
                 ["style", "height", '64px'],
                 ["style", "font-family", 'Lucida Sans Unicode, Lucida Grande, sans-serif'],
-                ["style", "width", 'auto'],
-                ["style", "opacity", '0.49253683943089']
+                ["style", "opacity", '0.49253683943089'],
+                ["style", "width", 'auto']
             ],
             "${_RectangleCopy}": [
-                ["color", "background-color", 'rgba(231,111,111,1.00)'],
-                ["transform", "rotateZ", '-37deg'],
                 ["style", "top", '47.84%'],
                 ["style", "bottom", 'auto'],
+                ["color", "background-color", 'rgba(231,111,111,1.00)'],
+                ["transform", "rotateZ", '-37deg'],
                 ["transform", "scaleX", '1.34615'],
                 ["style", "right", 'auto'],
                 ["style", "left", '-7.6%'],
@@ -2028,23 +2104,13 @@ var symbols = {
                 ["style", "width", '99.15%']
             ],
             "${_Rectangle}": [
-                ["style", "top", '44.06%'],
-                ["transform", "rotateZ", '-37deg'],
                 ["color", "background-color", 'rgba(231,111,111,1.00)'],
                 ["style", "bottom", 'auto'],
+                ["style", "top", '44.06%'],
+                ["transform", "rotateZ", '-37deg'],
                 ["transform", "scaleX", '1.34615'],
                 ["style", "right", 'auto'],
                 ["style", "left", '-11.03%'],
-                ["style", "width", '110.95%']
-            ],
-            "${_RectangleCopy2}": [
-                ["style", "top", '55.29%'],
-                ["transform", "rotateZ", '-37deg'],
-                ["color", "background-color", 'rgba(231,111,111,1.00)'],
-                ["style", "bottom", 'auto'],
-                ["transform", "scaleX", '1.34615'],
-                ["style", "right", 'auto'],
-                ["style", "left", '0.08%'],
                 ["style", "width", '110.95%']
             ],
             "${_Console}": [
@@ -2059,6 +2125,16 @@ var symbols = {
                 ["style", "height", '64px'],
                 ["style", "font-family", 'Lucida Sans Unicode, Lucida Grande, sans-serif'],
                 ["style", "width", 'auto']
+            ],
+            "${_RectangleCopy2}": [
+                ["color", "background-color", 'rgba(231,111,111,1.00)'],
+                ["style", "bottom", 'auto'],
+                ["style", "top", '55.29%'],
+                ["transform", "rotateZ", '-37deg'],
+                ["transform", "scaleX", '1.34615'],
+                ["style", "right", 'auto'],
+                ["style", "left", '0.08%'],
+                ["style", "width", '110.95%']
             ]
         }
     },
@@ -2091,26 +2167,26 @@ var symbols = {
                 { id: "eid753", tween: [ "style", "${_UMC}", "right", '10px', { fromValue: '27px'}], position: 1787, duration: 796, easing: "swing" },
                 { id: "eid757", tween: [ "style", "${_UMC}", "right", '8px', { fromValue: '10px'}], position: 2583, duration: 667, easing: "swing" },
                 { id: "eid754", tween: [ "style", "${_UMC}", "right", '26px', { fromValue: '8px'}], position: 3250, duration: 750, easing: "swing" },
-                { id: "eid561", tween: [ "style", "${_Rectangle}", "left", '-13.22%', { fromValue: '-11.03%'}], position: 0, duration: 1387, easing: "swing" },
-                { id: "eid562", tween: [ "style", "${_Rectangle}", "left", '-9.99%', { fromValue: '-13.22%'}], position: 1387, duration: 1196, easing: "swing" },
-                { id: "eid563", tween: [ "style", "${_Rectangle}", "left", '-11.49%', { fromValue: '-9.99%'}], position: 2584, duration: 1089, easing: "swing" },
-                { id: "eid564", tween: [ "style", "${_Rectangle}", "left", '-11.03%', { fromValue: '-11.49%'}], position: 3673, duration: 327, easing: "swing" },
+                { id: "eid565", tween: [ "style", "${_Rectangle}", "top", '41.7%', { fromValue: '44.06%'}], position: 0, duration: 435, easing: "swing" },
+                { id: "eid566", tween: [ "style", "${_Rectangle}", "top", '44.82%', { fromValue: '41.7%'}], position: 435, duration: 1200, easing: "swing" },
+                { id: "eid567", tween: [ "style", "${_Rectangle}", "top", '38.6%', { fromValue: '44.82%'}], position: 1635, duration: 1179, easing: "swing" },
+                { id: "eid568", tween: [ "style", "${_Rectangle}", "top", '44.06%', { fromValue: '38.6%'}], position: 2814, duration: 1186, easing: "swing" },
                 { id: "eid573", tween: [ "style", "${_RectangleCopy}", "top", '49.68%', { fromValue: '47.84%'}], position: 0, duration: 750, easing: "swing" },
                 { id: "eid574", tween: [ "style", "${_RectangleCopy}", "top", '44.82%', { fromValue: '49.68%'}], position: 750, duration: 1447, easing: "swing" },
                 { id: "eid575", tween: [ "style", "${_RectangleCopy}", "top", '50.37%', { fromValue: '44.82%'}], position: 2197, duration: 711, easing: "swing" },
                 { id: "eid576", tween: [ "style", "${_RectangleCopy}", "top", '47.84%', { fromValue: '50.37%'}], position: 2908, duration: 1092, easing: "swing" },
-                { id: "eid569", tween: [ "style", "${_RectangleCopy}", "left", '-5.47%', { fromValue: '-7.6%'}], position: 0, duration: 553, easing: "swing" },
-                { id: "eid570", tween: [ "style", "${_RectangleCopy}", "left", '-6.67%', { fromValue: '-5.47%'}], position: 553, duration: 1835, easing: "swing" },
-                { id: "eid571", tween: [ "style", "${_RectangleCopy}", "left", '-4.7%', { fromValue: '-6.67%'}], position: 2388, duration: 698, easing: "swing" },
-                { id: "eid572", tween: [ "style", "${_RectangleCopy}", "left", '-7.6%', { fromValue: '-4.7%'}], position: 3086, duration: 914, easing: "swing" },
                 { id: "eid499", tween: [ "style", "${_Console}", "right", '31px', { fromValue: '11px'}], position: 0, duration: 1167, easing: "swing" },
                 { id: "eid500", tween: [ "style", "${_Console}", "right", '13px', { fromValue: '31px'}], position: 1167, duration: 620, easing: "swing" },
                 { id: "eid516", tween: [ "style", "${_Console}", "right", '0px', { fromValue: '13px'}], position: 1787, duration: 1463, easing: "swing" },
                 { id: "eid528", tween: [ "style", "${_Console}", "right", '11px', { fromValue: '0px'}], position: 3250, duration: 750, easing: "swing" },
-                { id: "eid565", tween: [ "style", "${_Rectangle}", "top", '41.7%', { fromValue: '44.06%'}], position: 0, duration: 435, easing: "swing" },
-                { id: "eid566", tween: [ "style", "${_Rectangle}", "top", '44.82%', { fromValue: '41.7%'}], position: 435, duration: 1200, easing: "swing" },
-                { id: "eid567", tween: [ "style", "${_Rectangle}", "top", '38.6%', { fromValue: '44.82%'}], position: 1635, duration: 1179, easing: "swing" },
-                { id: "eid568", tween: [ "style", "${_Rectangle}", "top", '44.06%', { fromValue: '38.6%'}], position: 2814, duration: 1186, easing: "swing" }            ]
+                { id: "eid569", tween: [ "style", "${_RectangleCopy}", "left", '-5.47%', { fromValue: '-7.6%'}], position: 0, duration: 553, easing: "swing" },
+                { id: "eid570", tween: [ "style", "${_RectangleCopy}", "left", '-6.67%', { fromValue: '-5.47%'}], position: 553, duration: 1835, easing: "swing" },
+                { id: "eid571", tween: [ "style", "${_RectangleCopy}", "left", '-4.7%', { fromValue: '-6.67%'}], position: 2388, duration: 698, easing: "swing" },
+                { id: "eid572", tween: [ "style", "${_RectangleCopy}", "left", '-7.6%', { fromValue: '-4.7%'}], position: 3086, duration: 914, easing: "swing" },
+                { id: "eid561", tween: [ "style", "${_Rectangle}", "left", '-13.22%', { fromValue: '-11.03%'}], position: 0, duration: 1387, easing: "swing" },
+                { id: "eid562", tween: [ "style", "${_Rectangle}", "left", '-9.99%', { fromValue: '-13.22%'}], position: 1387, duration: 1196, easing: "swing" },
+                { id: "eid563", tween: [ "style", "${_Rectangle}", "left", '-11.49%', { fromValue: '-9.99%'}], position: 2584, duration: 1089, easing: "swing" },
+                { id: "eid564", tween: [ "style", "${_Rectangle}", "left", '-11.03%', { fromValue: '-11.49%'}], position: 3673, duration: 327, easing: "swing" }            ]
         }
     }
 },
@@ -2195,20 +2271,20 @@ var symbols = {
                     fill: ['rgba(0,0,0,0)', 'images/bot_speechbubble_01.png', '0px', '0px']
                 },
                 {
-                    rect: ['54px', '107px', '169px', '120px', 'auto', 'auto'],
                     font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
+                    type: 'text',
                     id: 'Text3',
                     text: 'Nice! Hold on <br>while I build that desktop for you.',
                     align: 'center',
-                    type: 'text'
+                    rect: ['54px', '107px', '169px', '120px', 'auto', 'auto']
                 },
                 {
-                    rect: ['54px', '103px', '169px', '120px', 'auto', 'auto'],
                     font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
+                    type: 'text',
                     id: 'Text3Copy',
                     text: 'That was easy. <br>But what about managing that desktop?',
                     align: 'center',
-                    type: 'text'
+                    rect: ['54px', '103px', '169px', '120px', 'auto', 'auto']
                 }
             ],
             symbolInstances: [
@@ -2285,29 +2361,29 @@ var symbols = {
                 ["style", "left", '524px'],
                 ["style", "width", '169px']
             ],
-            "${_OS}": [
-                ["style", "top", '80.73%'],
+            "${_Personalization}": [
+                ["style", "top", '45.83%'],
                 ["transform", "scaleY", '0.56219'],
                 ["transform", "scaleX", '0.56219'],
                 ["style", "opacity", '0'],
                 ["style", "left", '5.86%']
             ],
-            "${_Layer4}": [
-                ["style", "top", '52.86%'],
+            "${_Layer3}": [
+                ["style", "top", '59.9%'],
                 ["transform", "scaleY", '0.56219'],
                 ["transform", "scaleX", '0.56219'],
                 ["style", "opacity", '0'],
                 ["style", "left", '5.47%']
             ],
             "${_bot_01}": [
-                ["style", "height", '283px'],
                 ["style", "top", '85px'],
+                ["style", "height", '283px'],
                 ["style", "left", '610px'],
                 ["style", "width", '395px']
             ],
             "${_desktop_bg_01}": [
-                ["style", "height", '284px'],
                 ["style", "top", '78px'],
+                ["style", "height", '284px'],
                 ["style", "left", '31px'],
                 ["style", "width", '129px']
             ],
@@ -2325,16 +2401,12 @@ var symbols = {
                 ["style", "left", '521px'],
                 ["style", "width", '176px']
             ],
-            "${_Layer3}": [
-                ["style", "top", '59.9%'],
+            "${_Layer4}": [
+                ["style", "top", '52.86%'],
                 ["transform", "scaleY", '0.56219'],
                 ["transform", "scaleX", '0.56219'],
                 ["style", "opacity", '0'],
                 ["style", "left", '5.47%']
-            ],
-            "${symbolSelector}": [
-                ["style", "height", '100%'],
-                ["style", "width", '100%']
             ],
             "${_Desktop}": [
                 ["style", "top", '22.14%'],
@@ -2343,6 +2415,10 @@ var symbols = {
                 ["style", "left", '3.91%'],
                 ["style", "display", 'block']
             ],
+            "${symbolSelector}": [
+                ["style", "height", '100%'],
+                ["style", "width", '100%']
+            ],
             "${_Layer1}": [
                 ["style", "top", '73.7%'],
                 ["transform", "scaleY", '0.56219'],
@@ -2350,8 +2426,8 @@ var symbols = {
                 ["style", "opacity", '0'],
                 ["style", "left", '5.47%']
             ],
-            "${_Personalization}": [
-                ["style", "top", '45.83%'],
+            "${_OS}": [
+                ["style", "top", '80.73%'],
                 ["transform", "scaleY", '0.56219'],
                 ["transform", "scaleX", '0.56219'],
                 ["style", "opacity", '0'],
@@ -2379,29 +2455,29 @@ var symbols = {
                 { id: "eid643", tween: [ "style", "${_Desktop}", "opacity", '1', { fromValue: '0'}], position: 1000, duration: 500, easing: "easeInQuad" },
                 { id: "eid653", tween: [ "style", "${_Desktop}", "opacity", '0', { fromValue: '1'}], position: 3500, duration: 500, easing: "easeOutQuad" },
                 { id: "eid901", tween: [ "style", "${_loadingcircle2}", "left", '197px', { fromValue: '197px'}], position: 1000, duration: 0 },
-                { id: "eid868", tween: [ "style", "${_bot_speechbubble_01}", "top", '85px', { fromValue: '85px'}], position: 1000, duration: 0, easing: "easeInOutQuad" },
-                { id: "eid869", tween: [ "style", "${_bot_speechbubble_01}", "top", '86px', { fromValue: '85px'}], position: 7000, duration: 0, easing: "easeInOutQuad" },
+                { id: "eid882", tween: [ "style", "${_loadingcircle2}", "opacity", '0', { fromValue: '1'}], position: 3500, duration: 250 },
                 { id: "eid637", tween: [ "style", "${_Layer1}", "opacity", '1', { fromValue: '0'}], position: 1000, duration: 500, easing: "easeInQuad" },
                 { id: "eid899", tween: [ "style", "${_bot_speechbubble_01}", "left", '169px', { fromValue: '521px'}], position: 1000, duration: 500, easing: "easeInOutQuad" },
                 { id: "eid909", tween: [ "style", "${_bot_speechbubble_01}", "left", '521px', { fromValue: '169px'}], position: 6500, duration: 500 },
-                { id: "eid882", tween: [ "style", "${_loadingcircle2}", "opacity", '0', { fromValue: '1'}], position: 3500, duration: 250 },
+                { id: "eid898", tween: [ "style", "${_Text3}", "left", '175px', { fromValue: '524px'}], position: 1000, duration: 500, easing: "easeInOutQuad" },
                 { id: "eid649", tween: [ "style", "${_Layer2}", "opacity", '1', { fromValue: '0'}], position: 1000, duration: 500, easing: "easeInQuad" },
-                { id: "eid959", tween: [ "style", "${_bot_speechbubble_01}", "opacity", '0', { fromValue: '1'}], position: 2750, duration: 500 },
-                { id: "eid961", tween: [ "style", "${_bot_speechbubble_01}", "opacity", '0', { fromValue: '0'}], position: 3500, duration: 0 },
-                { id: "eid968", tween: [ "style", "${_bot_speechbubble_01}", "opacity", '1', { fromValue: '0'}], position: 3522, duration: 58 },
-                { id: "eid645", tween: [ "style", "${_OS}", "opacity", '1', { fromValue: '0'}], position: 1000, duration: 500, easing: "easeInQuad" },
-                { id: "eid876", tween: [ "style", "${_bot_01}", "top", '85px', { fromValue: '85px'}], position: 1000, duration: 0, easing: "easeInOutQuad" },
-                { id: "eid878", tween: [ "style", "${_bot_01}", "top", '85px', { fromValue: '85px'}], position: 7000, duration: 0, easing: "easeInOutQuad" },
+                { id: "eid904", tween: [ "style", "${_loadingcircle2}", "top", '262px', { fromValue: '364px'}], position: 1000, duration: 500 },
+                { id: "eid922", tween: [ "style", "${_Text3Copy}", "opacity", '0', { fromValue: '0'}], position: 1000, duration: 0 },
+                { id: "eid967", tween: [ "style", "${_Text3Copy}", "opacity", '1', { fromValue: '0'}], position: 3522, duration: 58 },
+                { id: "eid919", tween: [ "style", "${_Text3Copy}", "left", '524px', { fromValue: '174px'}], position: 6500, duration: 500 },
                 { id: "eid924", tween: [ "style", "${_Text3}", "opacity", '1', { fromValue: '1'}], position: 1000, duration: 0 },
                 { id: "eid958", tween: [ "style", "${_Text3}", "opacity", '0', { fromValue: '1'}], position: 2750, duration: 500 },
                 { id: "eid921", tween: [ "style", "${_Text3}", "opacity", '0', { fromValue: '0'}], position: 3500, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid647", tween: [ "style", "${_Layer4}", "opacity", '1', { fromValue: '0'}], position: 1000, duration: 500, easing: "easeInQuad" },
+                { id: "eid876", tween: [ "style", "${_bot_01}", "top", '85px', { fromValue: '85px'}], position: 1000, duration: 0, easing: "easeInOutQuad" },
+                { id: "eid878", tween: [ "style", "${_bot_01}", "top", '85px', { fromValue: '85px'}], position: 7000, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid879", tween: [ "style", "${_Desktop}", "display", 'none', { fromValue: 'block'}], position: 1000, duration: 0 },
-                { id: "eid919", tween: [ "style", "${_Text3Copy}", "left", '524px', { fromValue: '174px'}], position: 6500, duration: 500 },
-                { id: "eid922", tween: [ "style", "${_Text3Copy}", "opacity", '0', { fromValue: '0'}], position: 1000, duration: 0 },
-                { id: "eid967", tween: [ "style", "${_Text3Copy}", "opacity", '1', { fromValue: '0'}], position: 3522, duration: 58 },
-                { id: "eid904", tween: [ "style", "${_loadingcircle2}", "top", '262px', { fromValue: '364px'}], position: 1000, duration: 500 },
-                { id: "eid898", tween: [ "style", "${_Text3}", "left", '175px', { fromValue: '524px'}], position: 1000, duration: 500, easing: "easeInOutQuad" },
+                { id: "eid959", tween: [ "style", "${_bot_speechbubble_01}", "opacity", '0', { fromValue: '1'}], position: 2750, duration: 500 },
+                { id: "eid961", tween: [ "style", "${_bot_speechbubble_01}", "opacity", '0', { fromValue: '0'}], position: 3500, duration: 0 },
+                { id: "eid968", tween: [ "style", "${_bot_speechbubble_01}", "opacity", '1', { fromValue: '0'}], position: 3522, duration: 58 },
+                { id: "eid645", tween: [ "style", "${_OS}", "opacity", '1', { fromValue: '0'}], position: 1000, duration: 500, easing: "easeInQuad" },
+                { id: "eid868", tween: [ "style", "${_bot_speechbubble_01}", "top", '85px', { fromValue: '85px'}], position: 1000, duration: 0, easing: "easeInOutQuad" },
+                { id: "eid869", tween: [ "style", "${_bot_speechbubble_01}", "top", '86px', { fromValue: '85px'}], position: 7000, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid883", trigger: [ function executeSymbolFunction(e, data) { this._executeSymbolAction(e, data); }, ['play', '${_loadingcircle2}', [] ], ""], position: 1000 }            ]
         }
     }
@@ -2427,12 +2503,12 @@ var symbols = {
                     fill: ['rgba(192,192,192,1)']
                 },
                 {
-                    rect: ['23.6%', '19.4%', 'auto', 'auto', 'auto', 'auto'],
                     font: ['Arial, Helvetica, sans-serif', 25, 'rgba(0,0,0,1.00)', '400', 'none', 'normal'],
+                    type: 'text',
                     id: 'Text',
                     text: 'Which controller is this?',
                     align: 'center',
-                    type: 'text'
+                    rect: ['23.6%', '19.4%', 'auto', 'auto', 'auto', 'auto']
                 },
                 {
                     id: 'One',
@@ -2450,20 +2526,20 @@ var symbols = {
                     rect: ['40.4%', '51.2%', 'auto', 'auto', 'auto', 'auto']
                 },
                 {
-                    rect: ['23.6%', '74.2%', '52.5%', '7%', 'auto', 'auto'],
                     font: ['Arial, Helvetica, sans-serif', 24, 'rgba(0,0,0,1)', '400', 'none', 'normal'],
+                    type: 'text',
                     id: 'RobotAddress',
                     text: '[ROBOT ADDRESS]',
                     align: 'left',
-                    type: 'text'
+                    rect: ['23.6%', '74.2%', '52.5%', '7%', 'auto', 'auto']
                 },
                 {
-                    rect: ['23.6%', '64.9%', '52.5%', '7.3%', 'auto', 'auto'],
                     font: ['Arial, Helvetica, sans-serif', 24, 'rgba(0,0,0,1)', '400', 'none', 'normal'],
+                    type: 'text',
                     id: 'UseSimulatorCheckbox',
                     text: '[USE SIMULATOR]',
                     align: 'left',
-                    type: 'text'
+                    rect: ['23.6%', '64.9%', '52.5%', '7.3%', 'auto', 'auto']
                 }
             ],
             symbolInstances: [
@@ -2492,26 +2568,26 @@ var symbols = {
     states: {
         "Base State": {
             "${_RobotAddress}": [
-                ["style", "height", '7.03%'],
                 ["style", "top", '74.22%'],
+                ["style", "height", '7.03%'],
                 ["style", "left", '23.63%'],
                 ["style", "width", '52.54%']
             ],
             "${_RoundRect}": [
-                ["style", "height", '71.88%'],
                 ["style", "top", '15.36%'],
+                ["style", "height", '71.88%'],
                 ["style", "left", '17.38%'],
                 ["style", "width", '65.24%']
             ],
             "${_Text}": [
-                ["style", "top", '19.41%'],
                 ["color", "color", 'rgba(0,0,0,1.00)'],
+                ["style", "top", '19.41%'],
                 ["style", "left", '23.63%'],
                 ["style", "font-size", '25px']
             ],
             "${_UseSimulatorCheckbox}": [
-                ["style", "top", '64.85%'],
                 ["style", "height", '7.29%'],
+                ["style", "top", '64.85%'],
                 ["style", "left", '23.63%'],
                 ["style", "width", '52.54%']
             ],
@@ -2519,17 +2595,17 @@ var symbols = {
                 ["style", "left", '40.43%'],
                 ["style", "top", '41.28%']
             ],
-            "${_One}": [
-                ["style", "left", '40.43%'],
-                ["style", "top", '31.39%']
+            "${symbolSelector}": [
+                ["style", "height", '100%'],
+                ["style", "width", '100%']
             ],
             "${_None}": [
                 ["style", "left", '40.43%'],
                 ["style", "top", '51.18%']
             ],
-            "${symbolSelector}": [
-                ["style", "height", '100%'],
-                ["style", "width", '100%']
+            "${_One}": [
+                ["style", "left", '40.43%'],
+                ["style", "top", '31.39%']
             ]
         }
     },
@@ -2561,37 +2637,29 @@ var symbols = {
             dom: [
                 {
                     rect: ['145px', '257px', 'auto', 'auto', 'auto', 'auto'],
-                    display: 'none',
-                    transform: [[0, 0], [], [], ['0.49793', '0.49793']],
                     id: 'OptionDesktopRepair',
+                    transform: [[], [], [], ['0.49793', '0.49793']],
+                    display: 'none',
                     type: 'rect'
                 },
                 {
                     rect: ['145px', '156px', 'auto', 'auto', 'auto', 'auto'],
-                    display: 'none',
-                    transform: [[0, 0], [], [], ['0.49793', '0.49793']],
                     id: 'OptionUpgradeApp',
+                    transform: [[], [], [], ['0.49793', '0.49793']],
+                    display: 'none',
                     type: 'rect'
                 },
                 {
                     rect: ['145px', '85px', 'auto', 'auto', 'auto', 'auto'],
-                    display: 'none',
-                    transform: [[0, 0], [], [], ['0.49793', '0.49793']],
                     id: 'OptionUpgradeOS',
+                    transform: [[], [], [], ['0.49793', '0.49793']],
+                    display: 'none',
                     type: 'rect'
                 },
                 {
                     id: 'DoneButton',
                     type: 'rect',
                     rect: ['206px', '322px', 'auto', 'auto', 'auto', 'auto']
-                },
-                {
-                    rect: ['205px', '325px', '105px', '29px', 'auto', 'auto'],
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(255,255,255,1.00)', '300', 'none', ''],
-                    id: 'TextCopy',
-                    text: 'Done',
-                    align: 'center',
-                    type: 'text'
                 },
                 {
                     id: 'desktop_bg_01Copy',
@@ -2646,10 +2714,6 @@ var symbols = {
                 ["style", "left", '465px'],
                 ["style", "display", 'none']
             ],
-            "${symbolSelector}": [
-                ["style", "height", '100%'],
-                ["style", "width", '100%']
-            ],
             "${_OptionUpgradeOS}": [
                 ["style", "top", '79px'],
                 ["transform", "scaleY", '0.49793'],
@@ -2658,22 +2722,14 @@ var symbols = {
                 ["transform", "scaleX", '0.49793']
             ],
             "${_desktop_bg_01Copy}": [
-                ["style", "top", '78px'],
                 ["style", "height", '284px'],
+                ["style", "top", '78px'],
                 ["style", "left", '31px'],
                 ["style", "width", '129px']
             ],
-            "${_TextCopy}": [
-                ["color", "color", 'rgba(255,255,255,1)'],
-                ["style", "font-weight", '300'],
-                ["style", "left", '205px'],
-                ["style", "font-size", '18px'],
-                ["style", "top", '325px'],
-                ["style", "text-align", 'center'],
-                ["style", "height", '29px'],
-                ["style", "font-family", 'Roboto, Arial, sans-serif'],
-                ["style", "opacity", '1'],
-                ["style", "width", '105px']
+            "${symbolSelector}": [
+                ["style", "height", '100%'],
+                ["style", "width", '100%']
             ],
             "${_DoneButton}": [
                 ["style", "left", '206px'],
@@ -2685,7 +2741,7 @@ var symbols = {
         "Default Timeline": {
             fromState: "Base State",
             toState: "",
-            duration: 2750,
+            duration: 2500,
             autoPlay: false,
             labels: {
                 "Start": 0,
@@ -2694,21 +2750,21 @@ var symbols = {
                 "TwoOptions": 2000
             },
             timeline: [
-                { id: "eid934", tween: [ "style", "${_OptionUpgradeOS}", "left", '145px', { fromValue: '465px'}], position: 1000, duration: 500 },
-                { id: "eid949", tween: [ "style", "${_OptionUpgradeOS}", "left", '465px', { fromValue: '145px'}], position: 1957, duration: 43 },
-                { id: "eid950", tween: [ "style", "${_OptionUpgradeOS}", "left", '145px', { fromValue: '465px'}], position: 2000, duration: 500 },
+                { id: "eid936", tween: [ "style", "${_OptionUpgradeApp}", "left", '146px', { fromValue: '465px'}], position: 1116, duration: 500 },
                 { id: "eid708", tween: [ "style", "${_OptionUpgradeOS}", "top", '79px', { fromValue: '79px'}], position: 1000, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid711", tween: [ "style", "${_OptionUpgradeOS}", "top", '129px', { fromValue: '79px'}], position: 2000, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid703", tween: [ "style", "${_OptionDesktopRepair}", "display", 'block', { fromValue: 'none'}], position: 1000, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid701", tween: [ "style", "${_OptionUpgradeOS}", "display", 'block', { fromValue: 'none'}], position: 1000, duration: 0, easing: "easeInOutQuad" },
+                { id: "eid702", tween: [ "style", "${_OptionUpgradeApp}", "display", 'block', { fromValue: 'none'}], position: 1000, duration: 0, easing: "easeInOutQuad" },
+                { id: "eid707", tween: [ "style", "${_OptionUpgradeApp}", "display", 'none', { fromValue: 'block'}], position: 2000, duration: 0, easing: "easeInOutQuad" },
+                { id: "eid710", tween: [ "style", "${_OptionDesktopRepair}", "top", '231px', { fromValue: '231px'}], position: 1000, duration: 0, easing: "easeInOutQuad" },
+                { id: "eid712", tween: [ "style", "${_OptionDesktopRepair}", "top", '203px', { fromValue: '231px'}], position: 2000, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid937", tween: [ "style", "${_OptionDesktopRepair}", "left", '145px', { fromValue: '465px'}], position: 1250, duration: 500 },
                 { id: "eid951", tween: [ "style", "${_OptionDesktopRepair}", "left", '465px', { fromValue: '145px'}], position: 1957, duration: 43 },
                 { id: "eid952", tween: [ "style", "${_OptionDesktopRepair}", "left", '145px', { fromValue: '465px'}], position: 2000, duration: 500 },
-                { id: "eid710", tween: [ "style", "${_OptionDesktopRepair}", "top", '231px', { fromValue: '231px'}], position: 1000, duration: 0, easing: "easeInOutQuad" },
-                { id: "eid712", tween: [ "style", "${_OptionDesktopRepair}", "top", '203px', { fromValue: '231px'}], position: 2000, duration: 0, easing: "easeInOutQuad" },
-                { id: "eid702", tween: [ "style", "${_OptionUpgradeApp}", "display", 'block', { fromValue: 'none'}], position: 1000, duration: 0, easing: "easeInOutQuad" },
-                { id: "eid707", tween: [ "style", "${_OptionUpgradeApp}", "display", 'none', { fromValue: 'block'}], position: 2000, duration: 0, easing: "easeInOutQuad" },
-                { id: "eid936", tween: [ "style", "${_OptionUpgradeApp}", "left", '146px', { fromValue: '465px'}], position: 1116, duration: 500 }            ]
+                { id: "eid934", tween: [ "style", "${_OptionUpgradeOS}", "left", '145px', { fromValue: '465px'}], position: 1000, duration: 500 },
+                { id: "eid949", tween: [ "style", "${_OptionUpgradeOS}", "left", '465px', { fromValue: '145px'}], position: 1957, duration: 43 },
+                { id: "eid950", tween: [ "style", "${_OptionUpgradeOS}", "left", '145px', { fromValue: '465px'}], position: 2000, duration: 500 }            ]
         }
     }
 },
@@ -2745,13 +2801,13 @@ var symbols = {
             "${_Button}": [
                 ["style", "opacity", '1']
             ],
-            "${_update_brokendesktop_01}": [
-                ["style", "left", '0px'],
-                ["style", "top", '0px']
-            ],
             "${symbolSelector}": [
                 ["style", "height", '63px'],
                 ["style", "width", '241px']
+            ],
+            "${_update_brokendesktop_01}": [
+                ["style", "left", '0px'],
+                ["style", "top", '0px']
             ]
         }
     },
@@ -2929,12 +2985,12 @@ var symbols = {
                     fill: ['rgba(0,0,0,0)', 'images/bot_speechbubble_01.png', '0px', '0px']
                 },
                 {
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     type: 'text',
+                    rect: ['54px', '94px', '169px', '135px', 'auto', 'auto'],
                     id: 'Text3Copy4',
                     text: 'Thanks. Lipsum sed colorem dorm sed call to action!',
                     align: 'center',
-                    rect: ['54px', '94px', '169px', '135px', 'auto', 'auto']
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
                 }
             ],
             symbolInstances: [
@@ -2970,8 +3026,8 @@ var symbols = {
                 ["style", "width", '169px']
             ],
             "${_bot_01Copy4}": [
-                ["style", "top", '83px'],
                 ["style", "height", '283px'],
+                ["style", "top", '83px'],
                 ["style", "left", '610px'],
                 ["style", "width", '395px']
             ],
@@ -2998,14 +3054,14 @@ var symbols = {
             timeline: [
                 { id: "eid1125", tween: [ "style", "${_Text3Copy4}", "left", '50px', { fromValue: '524px'}], position: 0, duration: 500, easing: "easeInOutQuad" },
                 { id: "eid1138", tween: [ "style", "${_Text3Copy4}", "left", '525px', { fromValue: '50px'}], position: 3500, duration: 500, easing: "easeOutQuad" },
-                { id: "eid1134", tween: [ "style", "${_bot_01Copy4}", "left", '158px', { fromValue: '610px'}], position: 0, duration: 500, easing: "easeInOutQuad" },
-                { id: "eid1135", tween: [ "style", "${_bot_01Copy4}", "left", '610px', { fromValue: '158px'}], position: 3500, duration: 500, easing: "easeOutQuad" },
                 { id: "eid1128", tween: [ "style", "${_bot_speechbubble_01Copy4}", "top", '53px', { fromValue: '53px'}], position: 0, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid1129", tween: [ "style", "${_bot_speechbubble_01Copy4}", "top", '86px', { fromValue: '53px'}], position: 4000, duration: 0, easing: "easeInOutQuad" },
-                { id: "eid1130", tween: [ "style", "${_bot_speechbubble_01Copy4}", "left", '23px', { fromValue: '521px'}], position: 0, duration: 500, easing: "easeInOutQuad" },
-                { id: "eid1131", tween: [ "style", "${_bot_speechbubble_01Copy4}", "left", '521px', { fromValue: '23px'}], position: 3500, duration: 500, easing: "easeOutQuad" },
                 { id: "eid1132", tween: [ "style", "${_bot_01Copy4}", "top", '83px', { fromValue: '83px'}], position: 0, duration: 0, easing: "easeInOutQuad" },
-                { id: "eid1133", tween: [ "style", "${_bot_01Copy4}", "top", '83px', { fromValue: '83px'}], position: 4000, duration: 0, easing: "easeInOutQuad" }            ]
+                { id: "eid1133", tween: [ "style", "${_bot_01Copy4}", "top", '83px', { fromValue: '83px'}], position: 4000, duration: 0, easing: "easeInOutQuad" },
+                { id: "eid1134", tween: [ "style", "${_bot_01Copy4}", "left", '158px', { fromValue: '610px'}], position: 0, duration: 500, easing: "easeInOutQuad" },
+                { id: "eid1135", tween: [ "style", "${_bot_01Copy4}", "left", '610px', { fromValue: '158px'}], position: 3500, duration: 500, easing: "easeOutQuad" },
+                { id: "eid1130", tween: [ "style", "${_bot_speechbubble_01Copy4}", "left", '23px', { fromValue: '521px'}], position: 0, duration: 500, easing: "easeInOutQuad" },
+                { id: "eid1131", tween: [ "style", "${_bot_speechbubble_01Copy4}", "left", '521px', { fromValue: '23px'}], position: 3500, duration: 500, easing: "easeOutQuad" }            ]
         }
     }
 },
@@ -3022,12 +3078,12 @@ var symbols = {
     content: {
             dom: [
                 {
-                    font: ['Arial, Helvetica, sans-serif', 44, 'rgba(255,0,0,1)', '400', 'none', 'normal'],
                     type: 'text',
+                    rect: ['91px', '-80px', 'auto', 'auto', 'auto', 'auto'],
                     id: 'Title',
                     text: 'Repair desktop...',
                     align: 'center',
-                    rect: ['91px', '-80px', 'auto', 'auto', 'auto', 'auto']
+                    font: ['Arial, Helvetica, sans-serif', 44, 'rgba(255,0,0,1)', '400', 'none', 'normal']
                 },
                 {
                     id: 'bot_01Copy',
@@ -3042,39 +3098,39 @@ var symbols = {
                     fill: ['rgba(0,0,0,0)', 'images/bot_speechbubble_01.png', '0px', '0px']
                 },
                 {
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     type: 'text',
+                    rect: ['54px', '116px', '169px', '135px', 'auto', 'auto'],
                     id: 'Text3Copy',
                     text: 'Upgrading the OS...',
                     align: 'center',
-                    rect: ['54px', '116px', '169px', '135px', 'auto', 'auto']
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
                 },
                 {
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     type: 'text',
-                    display: 'block',
+                    rect: ['-120px', '111px', '508px', 'auto', 'auto', 'auto'],
+                    align: 'center',
                     id: 'WaitingCopy2',
                     text: 'Waiting...',
-                    align: 'center',
-                    rect: ['-120px', '111px', '508px', 'auto', 'auto', 'auto']
+                    display: 'block',
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
                 },
                 {
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     type: 'text',
-                    display: 'block',
+                    rect: ['-119px', '111px', '508px', 'auto', 'auto', 'auto'],
+                    align: 'center',
                     id: 'RunningCopy2',
                     text: 'Running...',
-                    align: 'center',
-                    rect: ['-119px', '111px', '508px', 'auto', 'auto', 'auto']
+                    display: 'block',
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
                 },
                 {
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     type: 'text',
-                    display: 'block',
+                    rect: ['-119px', '111px', '508px', 'auto', 'auto', 'auto'],
+                    align: 'center',
                     id: 'DoneCopy2',
                     text: 'Done!',
-                    align: 'center',
-                    rect: ['-119px', '111px', '508px', 'auto', 'auto', 'auto']
+                    display: 'block',
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
                 }
             ],
             symbolInstances: [
@@ -3082,33 +3138,50 @@ var symbols = {
         },
     states: {
         "Base State": {
-            "${_WaitingCopy2}": [
-                ["style", "top", '111px'],
-                ["style", "font-size", '18px'],
-                ["color", "color", 'rgba(183,18,52,1.00)'],
-                ["style", "font-weight", '300'],
-                ["style", "display", 'block'],
-                ["style", "font-family", 'Roboto, Arial, sans-serif'],
-                ["style", "left", '-120px'],
-                ["style", "width", '508px']
-            ],
             "${_Title}": [
                 ["style", "left", '91px'],
                 ["style", "top", '-80px']
             ],
-            "${_DoneCopy2}": [
+            "${_WaitingCopy2}": [
                 ["style", "top", '111px'],
-                ["style", "font-size", '18px'],
-                ["color", "color", 'rgba(183,18,52,1.00)'],
-                ["style", "font-weight", '300'],
+                ["style", "width", '508px'],
                 ["style", "display", 'block'],
                 ["style", "font-family", 'Roboto, Arial, sans-serif'],
+                ["color", "color", 'rgba(183,18,52,1.00)'],
+                ["style", "font-weight", '300'],
+                ["style", "left", '-120px'],
+                ["style", "font-size", '18px']
+            ],
+            "${_DoneCopy2}": [
+                ["style", "top", '111px'],
+                ["style", "width", '508px'],
+                ["style", "display", 'block'],
+                ["style", "font-family", 'Roboto, Arial, sans-serif'],
+                ["color", "color", 'rgba(183,18,52,1.00)'],
+                ["style", "font-weight", '300'],
                 ["style", "left", '-119px'],
-                ["style", "width", '508px']
+                ["style", "font-size", '18px']
             ],
             "${symbolSelector}": [
                 ["style", "height", '100%'],
                 ["style", "width", '100%']
+            ],
+            "${_RunningCopy2}": [
+                ["style", "top", '111px'],
+                ["style", "font-size", '18px'],
+                ["style", "display", 'block'],
+                ["style", "font-family", 'Roboto, Arial, sans-serif'],
+                ["color", "color", 'rgba(183,18,52,1.00)'],
+                ["style", "font-weight", '300'],
+                ["style", "left", '-119px'],
+                ["style", "width", '508px']
+            ],
+            "${_bot_speechbubble_01Copy}": [
+                ["style", "top", '53px'],
+                ["style", "height", '151px'],
+                ["style", "opacity", '1'],
+                ["style", "left", '521px'],
+                ["style", "width", '222px']
             ],
             "${_Text3Copy}": [
                 ["style", "top", '116px'],
@@ -3118,26 +3191,9 @@ var symbols = {
                 ["style", "left", '524px'],
                 ["style", "width", '169px']
             ],
-            "${_bot_speechbubble_01Copy}": [
-                ["style", "top", '53px'],
-                ["style", "height", '151px'],
-                ["style", "opacity", '1'],
-                ["style", "left", '521px'],
-                ["style", "width", '222px']
-            ],
-            "${_RunningCopy2}": [
-                ["style", "top", '111px'],
-                ["style", "width", '508px'],
-                ["color", "color", 'rgba(183,18,52,1.00)'],
-                ["style", "font-weight", '300'],
-                ["style", "display", 'block'],
-                ["style", "font-family", 'Roboto, Arial, sans-serif'],
-                ["style", "left", '-119px'],
-                ["style", "font-size", '18px']
-            ],
             "${_bot_01Copy}": [
-                ["style", "height", '283px'],
                 ["style", "top", '83px'],
+                ["style", "height", '283px'],
                 ["style", "left", '610px'],
                 ["style", "width", '395px']
             ]
@@ -3169,14 +3225,14 @@ var symbols = {
                 { id: "eid1100", tween: [ "style", "${_bot_01Copy}", "left", '610px', { fromValue: '158px'}], position: 7500, duration: 500, easing: "easeOutQuad" },
                 { id: "eid1101", tween: [ "style", "${_bot_01Copy}", "top", '83px', { fromValue: '83px'}], position: 1000, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid1102", tween: [ "style", "${_bot_01Copy}", "top", '83px', { fromValue: '83px'}], position: 8000, duration: 0, easing: "easeInOutQuad" },
-                { id: "eid1083", tween: [ "style", "${_DoneCopy2}", "left", '356px', { fromValue: '-119px'}], position: 7500, duration: 500, easing: "easeOutQuad" },
+                { id: "eid1086", tween: [ "style", "${_RunningCopy2}", "display", 'none', { fromValue: 'block'}], position: 1000, duration: 0, easing: "easeInOutQuad" },
+                { id: "eid1087", tween: [ "style", "${_RunningCopy2}", "display", 'block', { fromValue: 'none'}], position: 5000, duration: 0, easing: "easeInOutQuad" },
+                { id: "eid1088", tween: [ "style", "${_RunningCopy2}", "display", 'none', { fromValue: 'block'}], position: 6000, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid1089", tween: [ "style", "${_WaitingCopy2}", "display", 'none', { fromValue: 'block'}], position: 1000, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid1090", tween: [ "style", "${_WaitingCopy2}", "display", 'block', { fromValue: 'none'}], position: 4000, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid1091", tween: [ "style", "${_WaitingCopy2}", "display", 'none', { fromValue: 'block'}], position: 5000, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid1092", tween: [ "style", "${_Text3Copy}", "left", '50px', { fromValue: '524px'}], position: 1000, duration: 500, easing: "easeInOutQuad" },
-                { id: "eid1086", tween: [ "style", "${_RunningCopy2}", "display", 'none', { fromValue: 'block'}], position: 1000, duration: 0, easing: "easeInOutQuad" },
-                { id: "eid1087", tween: [ "style", "${_RunningCopy2}", "display", 'block', { fromValue: 'none'}], position: 5000, duration: 0, easing: "easeInOutQuad" },
-                { id: "eid1088", tween: [ "style", "${_RunningCopy2}", "display", 'none', { fromValue: 'block'}], position: 6000, duration: 0, easing: "easeInOutQuad" }            ]
+                { id: "eid1083", tween: [ "style", "${_DoneCopy2}", "left", '356px', { fromValue: '-119px'}], position: 7500, duration: 500, easing: "easeOutQuad" }            ]
         }
     }
 },
@@ -3193,12 +3249,12 @@ var symbols = {
     content: {
             dom: [
                 {
-                    font: ['Arial, Helvetica, sans-serif', 44, 'rgba(255,0,0,1)', '400', 'none', 'normal'],
                     type: 'text',
+                    rect: ['0px', '-89px', '512px', 'auto', 'auto', 'auto'],
                     id: 'Title',
                     text: 'Upgrade OS',
                     align: 'center',
-                    rect: ['0px', '-89px', '512px', 'auto', 'auto', 'auto']
+                    font: ['Arial, Helvetica, sans-serif', 44, 'rgba(255,0,0,1)', '400', 'none', 'normal']
                 },
                 {
                     id: 'bot_01',
@@ -3213,39 +3269,39 @@ var symbols = {
                     fill: ['rgba(0,0,0,0)', 'images/bot_speechbubble_01.png', '0px', '0px']
                 },
                 {
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     type: 'text',
+                    rect: ['54px', '116px', '169px', '135px', 'auto', 'auto'],
                     id: 'Text3Copy2',
                     text: 'Upgrading the OS...',
                     align: 'center',
-                    rect: ['54px', '116px', '169px', '135px', 'auto', 'auto']
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
                 },
                 {
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     type: 'text',
-                    display: 'block',
+                    rect: ['-120px', '111px', '508px', 'auto', 'auto', 'auto'],
+                    align: 'center',
                     id: 'Waiting',
                     text: 'Waiting...',
-                    align: 'center',
-                    rect: ['-120px', '111px', '508px', 'auto', 'auto', 'auto']
+                    display: 'block',
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
                 },
                 {
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     type: 'text',
-                    display: 'block',
+                    rect: ['-119px', '111px', '508px', 'auto', 'auto', 'auto'],
+                    align: 'center',
                     id: 'Running',
                     text: 'Running...',
-                    align: 'center',
-                    rect: ['-119px', '111px', '508px', 'auto', 'auto', 'auto']
+                    display: 'block',
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
                 },
                 {
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     type: 'text',
-                    display: 'block',
+                    rect: ['-119px', '111px', '508px', 'auto', 'auto', 'auto'],
+                    align: 'center',
                     id: 'Done',
                     text: 'Done!',
-                    align: 'center',
-                    rect: ['-119px', '111px', '508px', 'auto', 'auto', 'auto']
+                    display: 'block',
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
                 }
             ],
             symbolInstances: [
@@ -3253,15 +3309,11 @@ var symbols = {
         },
     states: {
         "Base State": {
-            "${_Done}": [
-                ["style", "top", '111px'],
-                ["style", "width", '508px'],
-                ["style", "display", 'block'],
-                ["style", "font-family", 'Roboto, Arial, sans-serif'],
-                ["color", "color", 'rgba(183,18,52,1.00)'],
-                ["style", "font-weight", '300'],
-                ["style", "left", '-119px'],
-                ["style", "font-size", '18px']
+            "${_bot_01}": [
+                ["style", "height", '283px'],
+                ["style", "top", '83px'],
+                ["style", "left", '610px'],
+                ["style", "width", '395px']
             ],
             "${_Title}": [
                 ["style", "top", '-89px'],
@@ -3281,13 +3333,13 @@ var symbols = {
             ],
             "${_Running}": [
                 ["style", "top", '111px'],
-                ["style", "font-size", '18px'],
-                ["style", "display", 'block'],
-                ["style", "font-family", 'Roboto, Arial, sans-serif'],
+                ["style", "width", '508px'],
                 ["color", "color", 'rgba(183,18,52,1.00)'],
                 ["style", "font-weight", '300'],
+                ["style", "display", 'block'],
+                ["style", "font-family", 'Roboto, Arial, sans-serif'],
                 ["style", "left", '-119px'],
-                ["style", "width", '508px']
+                ["style", "font-size", '18px']
             ],
             "${_Text3Copy2}": [
                 ["style", "top", '116px'],
@@ -3299,19 +3351,23 @@ var symbols = {
             ],
             "${_Waiting}": [
                 ["style", "top", '111px'],
-                ["style", "width", '508px'],
-                ["style", "display", 'block'],
-                ["style", "font-family", 'Roboto, Arial, sans-serif'],
+                ["style", "font-size", '18px'],
                 ["color", "color", 'rgba(183,18,52,1.00)'],
                 ["style", "font-weight", '300'],
+                ["style", "display", 'block'],
+                ["style", "font-family", 'Roboto, Arial, sans-serif'],
                 ["style", "left", '-120px'],
-                ["style", "font-size", '18px']
+                ["style", "width", '508px']
             ],
-            "${_bot_01}": [
-                ["style", "top", '83px'],
-                ["style", "height", '283px'],
-                ["style", "left", '610px'],
-                ["style", "width", '395px']
+            "${_Done}": [
+                ["style", "top", '111px'],
+                ["style", "font-size", '18px'],
+                ["color", "color", 'rgba(183,18,52,1.00)'],
+                ["style", "font-weight", '300'],
+                ["style", "display", 'block'],
+                ["style", "font-family", 'Roboto, Arial, sans-serif'],
+                ["style", "left", '-119px'],
+                ["style", "width", '508px']
             ]
         }
     },
@@ -3343,12 +3399,12 @@ var symbols = {
                 { id: "eid974", tween: [ "style", "${_bot_speechbubble_01Copy2}", "top", '86px', { fromValue: '53px'}], position: 8000, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid982", tween: [ "style", "${_bot_01}", "top", '83px', { fromValue: '83px'}], position: 1000, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid983", tween: [ "style", "${_bot_01}", "top", '83px', { fromValue: '83px'}], position: 8000, duration: 0, easing: "easeInOutQuad" },
-                { id: "eid721", tween: [ "style", "${_Running}", "display", 'none', { fromValue: 'block'}], position: 1000, duration: 0, easing: "easeInOutQuad" },
-                { id: "eid727", tween: [ "style", "${_Running}", "display", 'block', { fromValue: 'none'}], position: 5000, duration: 0, easing: "easeInOutQuad" },
-                { id: "eid728", tween: [ "style", "${_Running}", "display", 'none', { fromValue: 'block'}], position: 6000, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid722", tween: [ "style", "${_Waiting}", "display", 'none', { fromValue: 'block'}], position: 1000, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid725", tween: [ "style", "${_Waiting}", "display", 'block', { fromValue: 'none'}], position: 4000, duration: 0, easing: "easeInOutQuad" },
-                { id: "eid726", tween: [ "style", "${_Waiting}", "display", 'none', { fromValue: 'block'}], position: 5000, duration: 0, easing: "easeInOutQuad" }            ]
+                { id: "eid726", tween: [ "style", "${_Waiting}", "display", 'none', { fromValue: 'block'}], position: 5000, duration: 0, easing: "easeInOutQuad" },
+                { id: "eid721", tween: [ "style", "${_Running}", "display", 'none', { fromValue: 'block'}], position: 1000, duration: 0, easing: "easeInOutQuad" },
+                { id: "eid727", tween: [ "style", "${_Running}", "display", 'block', { fromValue: 'none'}], position: 5000, duration: 0, easing: "easeInOutQuad" },
+                { id: "eid728", tween: [ "style", "${_Running}", "display", 'none', { fromValue: 'block'}], position: 6000, duration: 0, easing: "easeInOutQuad" }            ]
         }
     }
 },
@@ -3365,13 +3421,13 @@ var symbols = {
     content: {
             dom: [
                 {
-                    font: ['Arial, Helvetica, sans-serif', 44, 'rgba(255,0,0,1)', '400', 'none', 'normal'],
                     type: 'text',
-                    display: 'block',
+                    rect: ['4px', '-82px', '508px', 'auto', 'auto', 'auto'],
+                    align: 'center',
                     id: 'Title',
                     text: 'Upgrade app',
-                    align: 'center',
-                    rect: ['4px', '-82px', '508px', 'auto', 'auto', 'auto']
+                    display: 'block',
+                    font: ['Arial, Helvetica, sans-serif', 44, 'rgba(255,0,0,1)', '400', 'none', 'normal']
                 },
                 {
                     id: 'bot_01',
@@ -3386,39 +3442,39 @@ var symbols = {
                     fill: ['rgba(0,0,0,0)', 'images/bot_speechbubble_01.png', '0px', '0px']
                 },
                 {
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     type: 'text',
+                    rect: ['54px', '116px', '189px', '135px', 'auto', 'auto'],
                     id: 'Text3',
                     text: 'Upgrading Application...',
                     align: 'center',
-                    rect: ['54px', '116px', '189px', '135px', 'auto', 'auto']
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
                 },
                 {
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     type: 'text',
-                    display: 'block',
+                    rect: ['-120px', '111px', '508px', 'auto', 'auto', 'auto'],
+                    align: 'center',
                     id: 'WaitingCopy',
                     text: 'Waiting...',
-                    align: 'center',
-                    rect: ['-120px', '111px', '508px', 'auto', 'auto', 'auto']
+                    display: 'block',
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
                 },
                 {
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     type: 'text',
-                    display: 'block',
+                    rect: ['-119px', '111px', '508px', 'auto', 'auto', 'auto'],
+                    align: 'center',
                     id: 'RunningCopy',
                     text: 'Running...',
-                    align: 'center',
-                    rect: ['-119px', '111px', '508px', 'auto', 'auto', 'auto']
+                    display: 'block',
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
                 },
                 {
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     type: 'text',
-                    display: 'block',
+                    rect: ['-119px', '111px', '508px', 'auto', 'auto', 'auto'],
+                    align: 'center',
                     id: 'DoneCopy',
                     text: 'Done!',
-                    align: 'center',
-                    rect: ['-119px', '111px', '508px', 'auto', 'auto', 'auto']
+                    display: 'block',
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
                 }
             ],
             symbolInstances: [
@@ -3426,15 +3482,11 @@ var symbols = {
         },
     states: {
         "Base State": {
-            "${_DoneCopy}": [
-                ["style", "top", '111px'],
-                ["style", "font-size", '18px'],
-                ["color", "color", 'rgba(183,18,52,1.00)'],
-                ["style", "font-weight", '300'],
-                ["style", "display", 'block'],
-                ["style", "font-family", 'Roboto, Arial, sans-serif'],
-                ["style", "left", '-119px'],
-                ["style", "width", '508px']
+            "${_bot_01}": [
+                ["style", "top", '83px'],
+                ["style", "height", '283px'],
+                ["style", "left", '610px'],
+                ["style", "width", '395px']
             ],
             "${_Title}": [
                 ["style", "top", '-82px'],
@@ -3452,13 +3504,13 @@ var symbols = {
             ],
             "${_RunningCopy}": [
                 ["style", "top", '111px'],
-                ["style", "width", '508px'],
-                ["color", "color", 'rgba(183,18,52,1.00)'],
-                ["style", "font-weight", '300'],
+                ["style", "font-size", '18px'],
                 ["style", "display", 'block'],
                 ["style", "font-family", 'Roboto, Arial, sans-serif'],
+                ["color", "color", 'rgba(183,18,52,1.00)'],
+                ["style", "font-weight", '300'],
                 ["style", "left", '-119px'],
-                ["style", "font-size", '18px']
+                ["style", "width", '508px']
             ],
             "${_Text3}": [
                 ["style", "top", '116px'],
@@ -3468,25 +3520,29 @@ var symbols = {
                 ["style", "left", '524px'],
                 ["style", "width", '189px']
             ],
+            "${_WaitingCopy}": [
+                ["style", "top", '111px'],
+                ["style", "width", '508px'],
+                ["style", "display", 'block'],
+                ["style", "font-family", 'Roboto, Arial, sans-serif'],
+                ["color", "color", 'rgba(183,18,52,1.00)'],
+                ["style", "font-weight", '300'],
+                ["style", "left", '-120px'],
+                ["style", "font-size", '18px']
+            ],
             "${symbolSelector}": [
                 ["style", "height", '100%'],
                 ["style", "width", '100%']
             ],
-            "${_WaitingCopy}": [
+            "${_DoneCopy}": [
                 ["style", "top", '111px'],
-                ["style", "font-size", '18px'],
-                ["color", "color", 'rgba(183,18,52,1.00)'],
-                ["style", "font-weight", '300'],
+                ["style", "width", '508px'],
                 ["style", "display", 'block'],
                 ["style", "font-family", 'Roboto, Arial, sans-serif'],
-                ["style", "left", '-120px'],
-                ["style", "width", '508px']
-            ],
-            "${_bot_01}": [
-                ["style", "height", '283px'],
-                ["style", "top", '83px'],
-                ["style", "left", '610px'],
-                ["style", "width", '395px']
+                ["color", "color", 'rgba(183,18,52,1.00)'],
+                ["style", "font-weight", '300'],
+                ["style", "left", '-119px'],
+                ["style", "font-size", '18px']
             ]
         }
     },
@@ -3519,11 +3575,11 @@ var symbols = {
                 { id: "eid1080", tween: [ "style", "${_bot_01}", "top", '83px', { fromValue: '83px'}], position: 1000, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid1081", tween: [ "style", "${_bot_01}", "top", '83px', { fromValue: '83px'}], position: 8000, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid1062", tween: [ "style", "${_DoneCopy}", "left", '356px', { fromValue: '-119px'}], position: 7500, duration: 500, easing: "easeOutQuad" },
-                { id: "eid1061", tween: [ "style", "${_DoneCopy}", "top", '111px', { fromValue: '111px'}], position: 7500, duration: 0, easing: "easeInOutQuad" },
+                { id: "eid1076", tween: [ "style", "${_bot_speechbubble_01}", "top", '53px', { fromValue: '53px'}], position: 1000, duration: 0, easing: "easeInOutQuad" },
+                { id: "eid1077", tween: [ "style", "${_bot_speechbubble_01}", "top", '86px', { fromValue: '53px'}], position: 8000, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid1074", tween: [ "style", "${_bot_speechbubble_01}", "left", '23px', { fromValue: '521px'}], position: 1000, duration: 500, easing: "easeInOutQuad" },
                 { id: "eid1075", tween: [ "style", "${_bot_speechbubble_01}", "left", '521px', { fromValue: '23px'}], position: 7500, duration: 500, easing: "easeOutQuad" },
-                { id: "eid1076", tween: [ "style", "${_bot_speechbubble_01}", "top", '53px', { fromValue: '53px'}], position: 1000, duration: 0, easing: "easeInOutQuad" },
-                { id: "eid1077", tween: [ "style", "${_bot_speechbubble_01}", "top", '86px', { fromValue: '53px'}], position: 8000, duration: 0, easing: "easeInOutQuad" }            ]
+                { id: "eid1061", tween: [ "style", "${_DoneCopy}", "top", '111px', { fromValue: '111px'}], position: 7500, duration: 0, easing: "easeInOutQuad" }            ]
         }
     }
 },
@@ -3540,9 +3596,9 @@ var symbols = {
     content: {
             dom: [
                 {
-                    rect: ['-72.8%', '319%', '12px', '15px', 'auto', 'auto'],
-                    borderRadius: ['10px', '10px', '10px', '10px'],
                     type: 'rect',
+                    borderRadius: ['10px', '10px', '10px', '10px'],
+                    rect: ['-72.8%', '319%', '12px', '15px', 'auto', 'auto'],
                     id: 'Timer',
                     stroke: [0, 'rgba(0,0,0,1)', 'none'],
                     display: 'none',
@@ -3554,6 +3610,10 @@ var symbols = {
         },
     states: {
         "Base State": {
+            "${symbolSelector}": [
+                ["style", "height", '79px'],
+                ["style", "width", '136px']
+            ],
             "${_Timer}": [
                 ["style", "top", '318.99%'],
                 ["style", "height", '15px'],
@@ -3561,10 +3621,6 @@ var symbols = {
                 ["style", "opacity", '0'],
                 ["style", "left", '-72.71%'],
                 ["style", "width", '12px']
-            ],
-            "${symbolSelector}": [
-                ["style", "height", '79px'],
-                ["style", "width", '136px']
             ]
         }
     },
@@ -3611,15 +3667,15 @@ var symbols = {
         },
     states: {
         "Base State": {
+            "${symbolSelector}": [
+                ["style", "height", '73px'],
+                ["style", "width", '140px']
+            ],
             "${_Monitor}": [
                 ["color", "background-color", 'rgba(205,104,104,1.00)'],
                 ["style", "opacity", '0'],
                 ["style", "left", '0px'],
                 ["style", "top", '0px']
-            ],
-            "${symbolSelector}": [
-                ["style", "height", '73px'],
-                ["style", "width", '140px']
             ]
         }
     },
@@ -3656,12 +3712,12 @@ var symbols = {
                     fill: ['rgba(0,0,0,0)', 'images/bender-smoking.jpg', '0%', '0%', '100%', 'auto']
                 },
                 {
-                    rect: ['auto', '1.8%', '100%', '18%', '0%', 'auto'],
                     font: ['Arial, Helvetica, sans-serif', 23, 'rgba(50,50,50,1.00)', '400', 'none', 'normal'],
+                    type: 'text',
                     id: 'Text',
                     text: 'Our robot appears to have decided<br>to take a short break...',
                     align: 'center',
-                    type: 'text'
+                    rect: ['auto', '1.8%', '100%', '18%', '0%', 'auto']
                 }
             ],
             symbolInstances: [
@@ -3679,13 +3735,13 @@ var symbols = {
             ],
             "${_Text}": [
                 ["style", "top", '1.79%'],
-                ["style", "width", '100%'],
-                ["style", "height", '17.97%'],
-                ["style", "right", '0%'],
+                ["style", "font-size", '23px'],
                 ["color", "color", 'rgba(50,50,50,1.00)'],
                 ["style", "opacity", '0'],
+                ["style", "height", '17.97%'],
+                ["style", "right", '0%'],
                 ["style", "left", 'auto'],
-                ["style", "font-size", '23px']
+                ["style", "width", '100%']
             ],
             "${symbolSelector}": [
                 ["style", "height", '100%'],
@@ -3705,10 +3761,10 @@ var symbols = {
                 "Exit": 3500
             },
             timeline: [
-                { id: "eid765", tween: [ "style", "${_bender-smoking}", "opacity", '1', { fromValue: '0'}], position: 0, duration: 500, easing: "easeInOutQuad" },
-                { id: "eid766", tween: [ "style", "${_bender-smoking}", "opacity", '0', { fromValue: '1'}], position: 3500, duration: 500, easing: "easeInOutQuad" },
                 { id: "eid714", tween: [ "style", "${_Text}", "opacity", '1', { fromValue: '0'}], position: 0, duration: 500, easing: "easeInOutQuad" },
-                { id: "eid715", tween: [ "style", "${_Text}", "opacity", '0', { fromValue: '1'}], position: 3500, duration: 500, easing: "easeInOutQuad" }            ]
+                { id: "eid715", tween: [ "style", "${_Text}", "opacity", '0', { fromValue: '1'}], position: 3500, duration: 500, easing: "easeInOutQuad" },
+                { id: "eid765", tween: [ "style", "${_bender-smoking}", "opacity", '1', { fromValue: '0'}], position: 0, duration: 500, easing: "easeInOutQuad" },
+                { id: "eid766", tween: [ "style", "${_bender-smoking}", "opacity", '0', { fromValue: '1'}], position: 3500, duration: 500, easing: "easeInOutQuad" }            ]
         }
     }
 },
@@ -3725,9 +3781,9 @@ var symbols = {
     content: {
             dom: [
                 {
-                    rect: ['-72.8%', '319%', '12px', '15px', 'auto', 'auto'],
-                    borderRadius: ['10px', '10px', '10px', '10px'],
                     type: 'rect',
+                    borderRadius: ['10px', '10px', '10px', '10px'],
+                    rect: ['-72.8%', '319%', '12px', '15px', 'auto', 'auto'],
                     id: 'Timer',
                     stroke: [0, 'rgba(0,0,0,1)', 'none'],
                     display: 'block',
@@ -3739,6 +3795,10 @@ var symbols = {
         },
     states: {
         "Base State": {
+            "${symbolSelector}": [
+                ["style", "height", '79px'],
+                ["style", "width", '136px']
+            ],
             "${_Timer}": [
                 ["style", "top", '318.99%'],
                 ["style", "height", '15px'],
@@ -3746,10 +3806,6 @@ var symbols = {
                 ["style", "opacity", '0'],
                 ["style", "left", '-72.71%'],
                 ["style", "width", '12px']
-            ],
-            "${symbolSelector}": [
-                ["style", "height", '79px'],
-                ["style", "width", '136px']
             ]
         }
     },
@@ -3793,8 +3849,8 @@ var symbols = {
     states: {
         "Base State": {
             "${_buttonbg_02}": [
-                ["style", "top", '0px'],
                 ["style", "height", '32px'],
+                ["style", "top", '0px'],
                 ["style", "left", '0px'],
                 ["style", "width", '105px']
             ],
@@ -3846,12 +3902,12 @@ var symbols = {
                     fill: ['rgba(0,0,0,0)', 'images/loading_circle_01a.png', '0px', '0px']
                 },
                 {
-                    rect: ['16px', '120px', 'auto', '24px', 'auto', 'auto'],
                     font: ['Roboto, Arial, sans-serif', 24, 'rgba(149,165,166,1.00)', '300', 'none', 'normal'],
+                    type: 'text',
                     id: 'Text',
                     text: 'Working',
                     align: 'center',
-                    type: 'text'
+                    rect: ['16px', '120px', 'auto', '24px', 'auto', 'auto']
                 }
             ],
             symbolInstances: [
@@ -3895,8 +3951,8 @@ var symbols = {
             duration: 6000,
             autoPlay: true,
             timeline: [
-                { id: "eid861", tween: [ "transform", "${_loading_circle_01a}", "rotateZ", '1440deg', { fromValue: '0deg'}], position: 0, duration: 6000 },
                 { id: "eid863", tween: [ "transform", "${_loading_circle_01c}", "rotateZ", '360deg', { fromValue: '0deg'}], position: 0, duration: 6000 },
+                { id: "eid861", tween: [ "transform", "${_loading_circle_01a}", "rotateZ", '1440deg', { fromValue: '0deg'}], position: 0, duration: 6000 },
                 { id: "eid862", tween: [ "transform", "${_loading_circle_01b}", "rotateZ", '720deg', { fromValue: '0deg'}], position: 0, duration: 6000 }            ]
         }
     }
