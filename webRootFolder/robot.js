@@ -67,9 +67,9 @@ function r12reload(name) {
         r12(cmd);
     }
     function r12move(cabinet, shelf) {
-        if (cabinet == null)
+        if ( (cabinet == null) || (cabinet == "") )
             cabinet = prompt('Which cabinet (CPL, CPM, CPR, D1, or D2)?');
-        if (shelf == null)
+        if ( (shelf == null) || (shelf == -1) )
             shelf = prompt('Which shelf?');
         cmd = 'ENQUEUE?queue=0&status=0&command=POSITION&cabinet=' + cabinet + '&shelf=' + shelf;
         r12(cmd);

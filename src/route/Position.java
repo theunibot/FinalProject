@@ -326,5 +326,40 @@ public class Position
     public boolean hasDelta() {
         return xDelta || yDelta || zDelta || pitchDelta || yawDelta || rollDelta;
     }
+    
+    /**
+     * Compares two positions for value equality.  Ignores name - looks only at actual position values
+     * 
+     * @param other other position to compare
+     * @return true if equal, false if not
+     */
+    public boolean equals(Position other) {
+        if ((x != other.x) || (y != other.y) || (z != other.z))
+            return false;
+        
+        if ((pitch != other.pitch) || (yaw != other.yaw) || (roll != other.roll))
+            return false;
+        
+        if ((xDelta != other.xDelta) || (yDelta != other.yDelta) || (zDelta != other.zDelta))
+            return false;
+        
+        if ((pitchDelta != other.pitchDelta) || (yawDelta != other.yawDelta) || (rollDelta != other.rollDelta))
+            return false;
+        
+        if (xDelta && (xDeltaForward != other.xDeltaForward))
+            return false;
+        if (yDelta && (yDeltaForward != other.yDeltaForward))
+            return false;
+        if (zDelta && (zDeltaForward != other.zDeltaForward))
+            return false;
+        if (pitchDelta && (pitchDeltaForward != other.pitchDeltaForward))
+            return false;
+        if (yawDelta && (yawDeltaForward != other.yawDeltaForward))
+            return false;
+        if (rollDelta && (rollDeltaForward != other.rollDeltaForward))
+            return false;
+        
+        return true;
+    }
 
 }
