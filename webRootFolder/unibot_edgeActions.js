@@ -20,17 +20,17 @@
 		window.showNowSign = '03';
 		window.playWithMeSign = '04';
 		
-		window.os = { v1: '10', v2: '20' };
+		window.os = { v1: '00', v2: '10' };
 		
 		window.personalization = { u1: '14', u2: '24' };
 		
 		window.app = { 
-			a1: { v1: '11', v2: '13' },
-			a2: { v1: '21', v2: '32' },
-			a3: { v1: '33', v2: '13' },
-			a4: { v1: '23' },
-			a5: { v1: '22' },
-			a6: { v1: '30' }
+			a1: { v1: '32', v2: '23' },
+			a2: { v1: '33', v2: '20' },
+			a3: { v1: '11', v2: '13' },
+			a4: { v1: '30' },
+			a5: { v1: '31' },
+			a6: { v1: '21' }
 		};
 		
 		// define a sequencing function to manage the order of the scenes
@@ -413,12 +413,12 @@
 	
 	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 500, function(sym, e) {
 	         // fix up layer names
-	         sym.getSymbol('Layer1').$('Layername').html('Skype');
+	         sym.getSymbol('Layer1').$('Layername').html('Office');
 	         sym.getSymbol('Layer2').$('Layername').html('Adobe');
-	         sym.getSymbol('Layer3').$('Layername').html('Office');
-	         sym.getSymbol('Layer4').$('Layername').html('ArcGIS');
-	         sym.getSymbol('Layer5').$('Layername').html('Epic');
-	         sym.getSymbol('Layer6').$('Layername').html('Printer');
+	         sym.getSymbol('Layer3').$('Layername').html('Symantec SEP');
+	         sym.getSymbol('Layer4').$('Layername').html('VisualStudio');
+	         sym.getSymbol('Layer5').$('Layername').html('Skype');
+	         sym.getSymbol('Layer6').$('Layername').html('Shared apps and drivers');
 	         
 	         // set layer start points
 	         sym.getSymbol('Layer1').play('Deployed');

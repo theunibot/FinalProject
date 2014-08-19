@@ -1500,7 +1500,7 @@
 	"pref__general__FilterNonAnimatedElements":"false",
 	"OptionDesktopRepair-Default Timeline_playhead_ms":"0",
 	"expanded:images/temp_layer_blue_01.png":"nil",
-	"pixelsPerMs":"0.53031270850117",
+	"pixelsPerMs":"0.023056571184128",
 	"expanded:images/banner_top_01.svg":"nil",
 	"expanded:images/bg_gradient_01.jpg":"nil",
 	"expanded:images/temp_rod_01.2.svg":"nil",
@@ -1726,7 +1726,7 @@
 	"expanded:images/bot_speechbubble_01.png":"nil",
 	"OptionUpgradeOS-Default Timeline_playhead_ms":"0",
 	"expanded:images/status_executing_01.png":"nil",
-	"viewStartMs":"-9.4283990859985",
+	"viewStartMs":"-216.8579169934",
 	"expanded:images/banner_topandbottom_022.png":"nil",
 	"symbol_OptionUpgradeApp":{
 		"element_${_update_updateapp_012}":{

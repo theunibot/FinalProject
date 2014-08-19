@@ -2209,8 +2209,8 @@ var symbols = {
                     fill: ['rgba(0,0,0,0)', 'images/desktop_bg_01.png', '0px', '0px']
                 },
                 {
-                    type: 'rect',
                     rect: ['3.9%', '22.1%', '33.6%', '63%', 'auto', 'auto'],
+                    type: 'rect',
                     id: 'Desktop',
                     stroke: [0, 'rgb(0, 0, 0)', 'none'],
                     display: 'block',
@@ -2219,44 +2219,44 @@ var symbols = {
                 {
                     id: 'OS',
                     type: 'rect',
-                    rect: ['5.9%', '80.7%', 'auto', 'auto', 'auto', 'auto'],
-                    transform: [[0, 0], [], [], ['0.56219', '0.56219']]
+                    transform: [[], [], [], ['0.56219', '0.56219']],
+                    rect: ['5.9%', '80.7%', 'auto', 'auto', 'auto', 'auto']
                 },
                 {
                     id: 'Layer1',
                     type: 'rect',
-                    rect: ['5.5%', '73.7%', 'auto', 'auto', 'auto', 'auto'],
-                    transform: [[0, 0], [], [], ['0.56219', '0.56219']]
+                    transform: [[], [], [], ['0.56219', '0.56219']],
+                    rect: ['5.5%', '73.7%', 'auto', 'auto', 'auto', 'auto']
                 },
                 {
                     id: 'Layer2',
                     type: 'rect',
-                    rect: ['5.5%', '66.7%', 'auto', 'auto', 'auto', 'auto'],
-                    transform: [[0, 0], [], [], ['0.56219', '0.56219']]
+                    transform: [[], [], [], ['0.56219', '0.56219']],
+                    rect: ['5.5%', '66.7%', 'auto', 'auto', 'auto', 'auto']
                 },
                 {
                     id: 'Layer3',
                     type: 'rect',
-                    rect: ['5.5%', '59.9%', 'auto', 'auto', 'auto', 'auto'],
-                    transform: [[0, 0], [], [], ['0.56219', '0.56219']]
+                    transform: [[], [], [], ['0.56219', '0.56219']],
+                    rect: ['5.5%', '59.9%', 'auto', 'auto', 'auto', 'auto']
                 },
                 {
                     id: 'Layer4',
                     type: 'rect',
-                    rect: ['5.5%', '52.9%', 'auto', 'auto', 'auto', 'auto'],
-                    transform: [[0, 0], [], [], ['0.56219', '0.56219']]
+                    transform: [[], [], [], ['0.56219', '0.56219']],
+                    rect: ['5.5%', '52.9%', 'auto', 'auto', 'auto', 'auto']
                 },
                 {
                     id: 'Personalization',
                     type: 'rect',
-                    rect: ['5.9%', '45.8%', 'auto', 'auto', 'auto', 'auto'],
-                    transform: [[0, 0], [], [], ['0.56219', '0.56219']]
+                    transform: [[], [], [], ['0.56219', '0.56219']],
+                    rect: ['5.9%', '45.8%', 'auto', 'auto', 'auto', 'auto']
                 },
                 {
                     id: 'loadingcircle2',
                     type: 'rect',
-                    rect: ['197px', '262px', 'auto', 'auto', 'auto', 'auto'],
-                    transform: [[0, 0], [], [], ['0.5', '0.5']]
+                    transform: [[], [], [], ['0.5', '0.5']],
+                    rect: ['197px', '262px', 'auto', 'auto', 'auto', 'auto']
                 },
                 {
                     id: 'bot_01',
@@ -2271,20 +2271,20 @@ var symbols = {
                     fill: ['rgba(0,0,0,0)', 'images/bot_speechbubble_01.png', '0px', '0px']
                 },
                 {
+                    rect: ['54px', '107px', '169px', '120px', 'auto', 'auto'],
                     font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
-                    type: 'text',
                     id: 'Text3',
                     text: 'Nice! Hold on <br>while I build that desktop for you.',
                     align: 'center',
-                    rect: ['54px', '107px', '169px', '120px', 'auto', 'auto']
+                    type: 'text'
                 },
                 {
+                    rect: ['54px', '103px', '169px', '120px', 'auto', 'auto'],
                     font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
-                    type: 'text',
                     id: 'Text3Copy',
                     text: 'That was easy. <br>But what about managing that desktop?',
                     align: 'center',
-                    rect: ['54px', '103px', '169px', '120px', 'auto', 'auto']
+                    type: 'text'
                 }
             ],
             symbolInstances: [
@@ -3902,12 +3902,12 @@ var symbols = {
                     fill: ['rgba(0,0,0,0)', 'images/loading_circle_01a.png', '0px', '0px']
                 },
                 {
+                    rect: ['16px', '120px', 'auto', '24px', 'auto', 'auto'],
                     font: ['Roboto, Arial, sans-serif', 24, 'rgba(149,165,166,1.00)', '300', 'none', 'normal'],
-                    type: 'text',
                     id: 'Text',
                     text: 'Working',
                     align: 'center',
-                    rect: ['16px', '120px', 'auto', '24px', 'auto', 'auto']
+                    type: 'text'
                 }
             ],
             symbolInstances: [
