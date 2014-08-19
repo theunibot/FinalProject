@@ -24,5 +24,7 @@ package enums;
  */
 public enum CabinetType
 {
-    D1, D2, CPL, CPM, CPR, HOME, UNKNOWN, SAFEL, SAFER
+    D1, D2, CPL, CPM, CPR, HOME, UNKNOWN, 
+    // special cabinets used just for point storage
+    SCL, SCM, SCR
 }

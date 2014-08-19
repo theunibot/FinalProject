@@ -36,10 +36,10 @@ import utils.Result;
 public class ArmOperations
 {
 
-    private final boolean armOpsSimulated = true;
-    private final boolean r12OpsSimulated = true;
+    private final boolean armOpsSimulated = false;
+    private final boolean r12OpsSimulated = false;
 
-    public final static int ARM_MAX_SPEED = 5000;
+    public final static int ARM_MAX_SPEED = 30000;
     private int armSpeed = ARM_MAX_SPEED;
 
     private final boolean armOpsLogging = true;
@@ -186,7 +186,7 @@ public class ArmOperations
                     curPos = route.get(routeIndex).getPosition();
                 
 //System.out.println("***** Processing " + routeIndex + ": " + curPos);
-                if (curPos.hasDelta()) {
+                if ( (curPos != null) && (curPos.hasDelta()) ) {
 //System.out.println("***** Has delta");
                     // determine prior position
                     Position nextPos;
@@ -220,7 +220,7 @@ public class ArmOperations
 
             // run the route
             int routeSpeed = route.getRouteProperties().getRouteSpeed();
-            String runRoute = Integer.toString((armSpeed < routeSpeed) ? armSpeed : routeSpeed) + " SPEED ! CONTINUOUS ADJUST " + route.getRouteProperties().getRouteIDName() + " RUN";
+            String runRoute = Integer.toString((armSpeed < routeSpeed) ? armSpeed : routeSpeed) + " SPEED !  ADJUST " + route.getRouteProperties().getRouteIDName() + " RUN";
             Result result = runRobotCommand(runRoute);
             if (!result.success())
                 return result;

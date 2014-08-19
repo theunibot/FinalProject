@@ -54,7 +54,7 @@ public class CommandCalibrateAdjust extends CommandInterface {
      * @return true to indicate we should run even during errors
      */
     public boolean ignoreErrors() {
-        return true;
+        return false;
     }    
 
 }

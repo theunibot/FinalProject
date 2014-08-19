@@ -46,9 +46,9 @@ public class CommandCalibratePosition extends CommandInterface {
     }
     
     public Result execute(CommandArguments args) {
-        Result result = movePosition(args, cabinet, shelf, RouteEffectType.EFFICIENT);
-        if (!result.success())
-            return result;
+//        Result result = movePosition(args, cabinet, shelf, RouteEffectType.EFFICIENT);
+//        if (!result.success())
+//            return result;
         
         ArmOperations ao = ArmOperations.getInstance();
         return ao.calibratePoint(cabinet, shelf, plunge, depth, speed);
@@ -64,7 +64,7 @@ public class CommandCalibratePosition extends CommandInterface {
      * @return true to indicate we should run even during errors
      */
     public boolean ignoreErrors() {
-        return true;
+        return false;
     }    
 
 }

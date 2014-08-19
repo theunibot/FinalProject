@@ -4,35 +4,26 @@
  * and open the template in the editor.
  */
 
-var calCabinet = "";
-var calShelf = "";
-var calDepth = "1";
-var calSpeed = "300";
+var routeFromCabinet = "";
+var routeToCabinet = "";
+var routeFromShelf = 0;
+var routeToShelf = 0;
+var routeEffect = "EFFICIENT";
+var calDepth = 1;
+var calSpeed = 500;
+var calPlunge = 1;
 
-function setCalibrate(cabinet, shelf, depth, speed) {
-    if (cabinet == null)
-        if ((cabinet = prompt("Cabinet to calibrate (D1, D2, CPL, CPM, CPR)?", calCabinet)) == null)
-            return;
-    if (shelf == -1)
-        if ((shelf = prompt("Shelf to calibrate (00-34)?", calShelf)) == null)
-            return;
+function setCalibrate(depth, speed) {
     if (depth == -1)
         if ((depth = prompt("Depth of plunge (1 for desktop; 1 (bottom) or 2 (top) disc in CP)?", calDepth)) == null)
             return;
     if (speed == -1)
         if ((speed = prompt("Speed to run arm at during calibration?", calSpeed)) == null)
             return;
-    calCabinet = cabinet;
-    calShelf = shelf;
     calDepth = depth;
     calSpeed = speed;
 }
 
-var routeFromCabinet = "";
-var routeToCabinet = "";
-var routeFromShelf = 0;
-var routeToShelf = 0;
-var routeEffect = "EFFICIENT";
 
 function r12runRoute(fromCabinet, fromShelf, toCabinet, toShelf, effect) {
     if (fromCabinet == '' || fromCabinet == null)
@@ -65,7 +56,7 @@ function r12move(cabinet, shelf, effect) {
         if ((cabinet = prompt('Which cabinet (CPL, CPM, CPR, D1, or D2)?', routeToCabinet)) == null)
             return;
     if ( (shelf == null) || (shelf == -1) )
-        if ((shelf = prompt('Which shelf?', routeToCabinet)) == null)
+        if ((shelf = prompt('Which shelf?', routeToShelf)) == null)
             return;
     if ( (effect == null) || (effect == "") )
         if ((effect = prompt('Which effect?', routeEffect)) == null)
@@ -74,16 +65,20 @@ function r12move(cabinet, shelf, effect) {
     routeToCabinet = cabinet;
     routeToShelf = shelf;
     routeEffect = effect;
+    console.log('r12move: moving to ' + cmd);
     r12(cmd);
+    console.log('r12move: now setting cal position: ' + cmd);
+    r12CalPosition('out-top');
 }
 
 function r12CalPosition(plunge) {
     if ( (plunge == null) || (plunge == -1) || (plunge == "") )
-        if ((plunge = prompt('Plunge position?')) == null)
+        if ((plunge = prompt('Plunge position?', calPlunge)) == null)
             return;
-    cmd = "ENQUEUE?queue=0&status=0&command=POSITION-CALIBRATE&option=move&cabinet=" + calCabinet +
-            "&shelf=" + calShelf + "&plunge=" + plunge + "&depth=" + calDepth + "&speed=" + calSpeed;
+    cmd = "ENQUEUE?queue=0&status=0&command=POSITION-CALIBRATE&option=move&cabinet=" + routeToCabinet +
+            "&shelf=" + routeToShelf + "&plunge=" + plunge + "&depth=" + calDepth + "&speed=" + calSpeed;
     r12(cmd);
+    calPlunge = plunge;
 }
 
 function r12CalAdjust(axis, distance) {
@@ -132,6 +127,13 @@ function r12debug(cmd) {
 }
 
 function r12(str) {
-    $.getJSON('/unibot/' + str);
-}
+    console.log('Sending r12 command: ' + str);
+    $.ajax({
+      url: '/unibot/' + str,
+      dataType: 'json',
+      async: false,
+      success: function(data) {
+          console.log('r12 command complete');
+      }
+});}
 

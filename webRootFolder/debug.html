@@ -166,16 +166,9 @@ and open the template in the editor.
             <div id='calibration' class="section">
                 <div class="header">POSITION CALIBRATION</div>
                 <div class="commands">
-                    <div><a onclick="setCalibrate('D1', -1, -1, -1)">Calibrate D1 (right)</a></div>
-                    <div><a onclick="setCalibrate('D2', -1, -1, -1)">Calibrate D2 (left)</a></div>
-                    <div></div>
-                    <div><a onclick="setCalibrate('CPL', -1, -1, -1)">Calibrate CPL</a></div>
-                    <div><a onclick="setCalibrate('CPM', -1, -1, -1)">Calibrate CPM</a></div>
-                    <div><a onclick="setCalibrate('CPR', -1, -1, -1)">Calibrate CPR</a></div>
-                    <div><a onclick="setCalibrate('SAFEL', 0, 1, -1)">Calibrate SAFEL</a></div>
-                    <div><a onclick="setCalibrate('SAFER', 0, 1, -1)">Calibrate SAFER</a></div>
-                    <div></div>
                     <div><a onclick="r12move(null, -1);">Move to a position</a></div>
+                    <div><a onclick="setCalibrate(-1, -1)">Set calibrate depth & speed</a></div>
+                    <div></div>
                     <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=ARM-GRIP&grip=o');">Ungrip</a></div>
                     <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=ARM-GRIP&grip=c');">Grip</a></div>
                     <div></div>

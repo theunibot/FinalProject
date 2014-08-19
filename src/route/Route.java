@@ -90,6 +90,7 @@ public class Route
         ArrayList<String> commandStrings;
         commandStrings = new ArrayList<>();
         commandStrings.add("ROUTE " + this.routeProperties.getRouteIDName());
+        commandStrings.add("ERASE");
         commandStrings.add(commands.size() + " RESERVE");
         for (RoutePosition o : commands)
         {

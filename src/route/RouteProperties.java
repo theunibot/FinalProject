@@ -58,7 +58,7 @@ public class RouteProperties
     }
     
     public String getRouteIDName() {
-        return utils.Utils.hash(getRouteFriendlyName(), 5);
+        return 'R' + utils.Utils.hash(getRouteFriendlyName(), 4);
     }
 
     public CabinetType getTo() {
