@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 17.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 266 612 260" enable-background="new 0 266 612 260" xml:space="preserve">
+<g>
+	
+		<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="110.3005" y1="788.6" x2="110.3005" y2="706.8" gradientTransform="matrix(2.7818 0 0 -2.7818 0 2474.0181)">
+		<stop  offset="0" style="stop-color:#B71F37"/>
+		<stop  offset="1" style="stop-color:#831618"/>
+	</linearGradient>
+	<path fill="url(#SVGID_1_)" d="M558.3,280.3H55.6c-26.1,0-47.3,21.1-47.3,47.3v133c0,26.1,21.1,47.3,47.3,47.3H558
+		c26.1,0,47.3-21.1,47.3-47.3v-133C605.6,301.4,584.5,280.3,558.3,280.3z"/>
+	
+		<text transform="matrix(1 0 0 1 49.9123 439.5548)" fill="#FFFFFF" font-family="'Roboto-Light'" font-size="138.0736" letter-spacing="-2">Done</text>
+	<g>
+		<g>
+			<polygon fill="#FFFFFF" points="564.4,394.9 492.7,466.7 492.7,322.8 			"/>
+			<rect x="393.9" y="354.8" fill="#FFFFFF" width="101.8" height="80.1"/>
+		</g>
+	</g>
+</g>
+</svg>

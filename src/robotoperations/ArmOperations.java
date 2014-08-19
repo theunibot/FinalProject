@@ -39,7 +39,7 @@ public class ArmOperations
     private final boolean armOpsSimulated = false;
     private final boolean r12OpsSimulated = false;
 
-    public final static int ARM_MAX_SPEED = 30000;
+    public final static int ARM_MAX_SPEED = 2000;
     private int armSpeed = ARM_MAX_SPEED;
 
     private final boolean armOpsLogging = true;
@@ -268,7 +268,8 @@ public class ArmOperations
         }
 
         // set speed for all actions
-        armSpeed = speed;
+        if (armSpeed < ARM_MAX_SPEED)
+            armSpeed = speed;
         // determine our move position, our adjustments to alter, and the various plunge positions
         calibratePosition = PositionLookup.getInstance().shelfToPosition(cabinet, shelf);
         if (calibratePosition == null)
