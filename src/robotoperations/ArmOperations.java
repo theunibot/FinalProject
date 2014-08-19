@@ -38,7 +38,7 @@ public class ArmOperations
 {
 
     private final boolean armOpsSimulated = true;
-    private final boolean r12OpsSimulated = true;
+    private final boolean r12OpsSimulated = false;
 
     public final static int ARM_MAX_SPEED = 30000;
     private int armSpeed = ARM_MAX_SPEED;
