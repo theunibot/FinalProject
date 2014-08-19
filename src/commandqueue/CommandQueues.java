@@ -115,6 +115,7 @@ public class CommandQueues
             int count = 0;
             for (int scan = 0; scan < 3; ++scan)
                 count += queues[scan].queueDepth();
+
             return count;
         }
     }

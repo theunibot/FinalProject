@@ -220,7 +220,8 @@ public class ArmOperations
 
             // run the route
             int routeSpeed = route.getRouteProperties().getRouteSpeed();
-            String runRoute = Integer.toString((armSpeed < routeSpeed) ? armSpeed : routeSpeed) + " SPEED !  ADJUST " + route.getRouteProperties().getRouteIDName() + " RUN";
+            System.out.println("ArmSpeed is " + armSpeed + ", routeSpeed is " + routeSpeed);
+            String runRoute = Integer.toString((armSpeed < routeSpeed) ? armSpeed : routeSpeed) + " SPEED !  CONTINUOUS ADJUST " + route.getRouteProperties().getRouteIDName() + " RUN";
             Result result = runRobotCommand(runRoute);
             if (!result.success())
                 return result;
