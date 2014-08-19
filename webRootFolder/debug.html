@@ -71,8 +71,8 @@ and open the template in the editor.
     <body>
         <div class="menu">
             <div class="menu-item" onclick="menu('arm-management');">Arm Management</div>
-            <div class="menu-item" onclick="menu('empty-inventory');">Empty desktop / inventory</div>
             <div class="menu-item" onclick="menu('layer-management');">Layer management</div>
+            <div class="menu-item" onclick="menu('empty-inventory');">Empty desktop / inventory</div>
             <div class="menu-item" onclick="menu('sign-management');">Sign management</div>
             <div class="menu-item" onclick="menu('calibration');">Calibration</div>
             <div class="menu-item" onclick="menu('debugger');">Debugger</div>
@@ -97,16 +97,7 @@ and open the template in the editor.
                     <div><a onclick="r12reload('')">Reprogram routes</a></div>
                 </div>
             </div>
-            <div id="empty-inventory" class="section">
-                <div class="header">EMPTY DESKTOP / INVENTORY</div>
-                <div class="commands">
-                    <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=EMPTY-DESKTOP&queue=1&desktop=1')">Empty desktop right [1]</a></div>
-                    <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=EMPTY-DESKTOP&queue=2&desktop=2')">Empty desktop left [2]</a></div>
-                    <div></div>
-                    <div><a onclick="r12('INVENTORY')">Inventory</a></div>                
-                </div>
-            </div>
-            <div id="layer-management" class="section">
+            <div id="layer-management" class="section default">
                 <div class="header">LAYER MANAGEMENT (D1 [right])</div>
                 <div class="commands">
                     <div><a onclick="r12mount(1, 10, -1)">CPL BL to DR: Layer 10</a></div>
@@ -147,6 +138,15 @@ and open the template in the editor.
                 <div class="commands">
                     <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=SHOW-LAYER&desktop=1&shelf=5&effect=shake');">Repair desktop 1</a></div>
                     <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=SHOW-LAYER&desktop=2&shelf=5&effect=shake');">Repair desktop 2</a></div>
+                </div>
+            </div>
+            <div id="empty-inventory" class="section default">
+                <div class="header">EMPTY DESKTOP / INVENTORY</div>
+                <div class="commands">
+                    <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=EMPTY-DESKTOP&queue=1&desktop=1')">Empty desktop right [1]</a></div>
+                    <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=EMPTY-DESKTOP&queue=2&desktop=2')">Empty desktop left [2]</a></div>
+                    <div></div>
+                    <div><a onclick="r12('INVENTORY')">Inventory</a></div>                
                 </div>
             </div>
             <div id="sign-management" class="section">
