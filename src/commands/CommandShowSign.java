@@ -57,7 +57,7 @@ public class CommandShowSign extends CommandInterface
         // first, if sign is continuous -- make sure it is on queue 0 (priority).  If not, it isn't allowed because
         // other queue actions could override and we wouldn't know where the sign is...
         if ( (effect == RouteEffectType.CONTINUOUS) && (getQueueIndex() != 0) )
-            effect = RouteEffectType.EFFICIENT;
+            effect = RouteEffectType.SIGN;
         
         // are we doing a continuous sign?
         if (effect == RouteEffectType.CONTINUOUS) {
