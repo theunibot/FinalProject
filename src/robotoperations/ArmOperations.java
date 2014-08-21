@@ -37,8 +37,8 @@ import utils.Utils;
 public class ArmOperations
 {
 
-    private final boolean armOpsSimulated = false;
-    private final boolean r12OpsSimulated = false;
+    private final boolean armOpsSimulated = true;
+    private final boolean r12OpsSimulated = true;
 
     public final static int ARM_MAX_SPEED = 20000;
     private int armSpeed = ARM_MAX_SPEED;
