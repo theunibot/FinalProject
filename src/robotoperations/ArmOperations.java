@@ -38,7 +38,7 @@ public class ArmOperations
 {
 
     private final boolean armOpsSimulated = true;
-    private final boolean r12OpsSimulated = true;
+    private final boolean r12OpsSimulated = false;
 
     public final static int ARM_MAX_SPEED = 20000;
     private int armSpeed = ARM_MAX_SPEED;
@@ -92,10 +92,14 @@ public class ArmOperations
         plt = PositionLookup.getInstance();
         rh = RouteHolder.getInstance();
 
-        Result result = r12o.init(r12OpsSimulated);
-        if (!result.success())
-        {
-            return result;
+        Result result;
+        
+        if (!(armOpsSimulated && !r12OpsSimulated)) {
+            result = r12o.init(r12OpsSimulated);
+            if (!result.success())
+            {
+                return result;
+            }
         }
 
         result = runInitCommands();
@@ -152,7 +156,7 @@ public class ArmOperations
                     + ((end != null) ? end.getName() : "undefined"));
 
         if (armOpsSimulated && !r12OpsSimulated){            
-            Utils.sleep(4000);
+            Utils.sleep(2000);
             return new Result();
         }
 
@@ -393,7 +397,7 @@ public class ArmOperations
             return new Result("Invalid stackPosition of " + stackPosition + " passed to pick");
 
         if (armOpsSimulated && !r12OpsSimulated){
-            Utils.sleep(1500);
+            Utils.sleep(1000);
             return new Result();
         }
 
@@ -452,7 +456,7 @@ public class ArmOperations
             return new Result("Invalid stackPosition of " + stackPosition + " passed to drop");
 
         if (armOpsSimulated && !r12OpsSimulated){
-            Utils.sleep(1500);
+            Utils.sleep(1000);
             return new Result();
         }
 
@@ -627,7 +631,7 @@ public class ArmOperations
 
         if (armOpsSimulated && !r12OpsSimulated)
         {
-            Utils.sleep(8000);
+            Utils.sleep(2000);
             return new Result();
         }
 
@@ -649,7 +653,7 @@ public class ArmOperations
 
         if (armOpsSimulated && !r12OpsSimulated)
         {
-            Utils.sleep(2500);
+            Utils.sleep(1000);
             return new Result();
         }
 
@@ -714,7 +718,7 @@ public class ArmOperations
 
         if (armOpsSimulated && !r12OpsSimulated)
         {
-            Utils.sleep(3000);
+            Utils.sleep(1000);
             return new Result();
         }
 
@@ -765,7 +769,6 @@ public class ArmOperations
 
         if (armOpsSimulated && !r12OpsSimulated)
         {
-            Utils.sleep(3000);
             return new Result();
         }
 
@@ -798,7 +801,7 @@ public class ArmOperations
 
         if (armOpsSimulated && !r12OpsSimulated)
         {
-            Utils.sleep(1000);
+            Utils.sleep(100);
             return new Result();
         }
 
@@ -819,7 +822,7 @@ public class ArmOperations
 
         if (armOpsSimulated && !r12OpsSimulated)
         {
-            Utils.sleep(1000);
+            Utils.sleep(100);
             return new Result();
         }
 
@@ -840,7 +843,7 @@ public class ArmOperations
 
         if (armOpsSimulated && !r12OpsSimulated)
         {
-            Utils.sleep(1000);
+            Utils.sleep(100);
             return new Result();
         }
 
@@ -1094,12 +1097,14 @@ public class ArmOperations
         }
 
         // we got a command - go execute it
-        r12o.write(commandString);
-        ResponseObject response = r12o.getResponse(commandString);
+        if (!(armOpsSimulated && !r12OpsSimulated)) {
+            r12o.write(commandString);
+            ResponseObject response = r12o.getResponse(commandString);
 
-        if (!response.isSuccessful())
-        {
-            return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+            if (!response.isSuccessful())
+            {
+                return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+            }
         }
         return new Result();
     }
