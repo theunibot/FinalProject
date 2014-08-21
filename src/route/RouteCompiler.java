@@ -84,7 +84,7 @@ public class RouteCompiler
         rh = RouteHolder.getInstance();
         rh.clearRoutes();
         ArrayList<String> lines = FileUtils.readCommandFileOrGenEmpty(ROUTE_FILE_BASENAME, ROUTE_COMPILER_FILE_CONTENTS);
-        System.out.println("Read " + lines.size() + " line(s) from route compiler file.");
+        System.out.println("Read " + lines.size() + " line(s) from route compiler file " + ROUTE_FILE_BASENAME);
         Result parseResult = parseLines(lines);
         if (!parseResult.success())
         {
@@ -154,7 +154,9 @@ public class RouteCompiler
                     String[] tempHolder = new String[chunks.length - 1];
                     try
                     {
-                        routeSpeed = Integer.parseInt(chunks[chunks.length - 1].replace("@", ""));
+                        int speed = Integer.parseInt(chunks[chunks.length - 1].replace("@", ""));
+                        if (speed < ArmOperations.ARM_MAX_SPEED)
+                            routeSpeed = speed;
                     }
                     catch (NumberFormatException ignored)
                     {
