@@ -114,7 +114,7 @@ public class ArmOperations
         //if init command file exists, read all the commands and write them out to the 
         initCommands = FileUtils.readCommandFileOrGenEmpty(INIT_COMMANDS_FILEPATH, INIT_FILE_HEADER);
 
-        System.out.println("Read " + initCommands.size() + " command(s) from init commands file.");
+        System.out.println("Read " + initCommands.size() + " command(s) from init commands file " + INIT_COMMANDS_FILEPATH);
 
         for (String command : initCommands)//runs every command in the file
         {

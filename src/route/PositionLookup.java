@@ -236,7 +236,7 @@ public class PositionLookup
         ArrayList<String> lines = FileUtils.readCommandFileOrGenEmpty(FileUtils.getFilesFolderString() + fileName, defaultHeader);
         if (lines != null)
         {
-            System.out.println("Read " + lines.size() + " line(s) from " + fileName);
+            System.out.println("Read " + lines.size() + " line(s) from " + FileUtils.getFilesFolderString() + fileName);
 
             Position prevPosition = new Position("None");
 
