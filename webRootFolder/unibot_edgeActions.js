@@ -229,6 +229,16 @@
 		};
 		sym.unibot.status = function(id, autoRedirect) { 
 			var response;
+			if (typeof(id) === 'undefined') {
+				console.log('Status request with ID undefined; internal failure');
+				sym.done(sym, 'Error');
+				return;
+			}
+			if (id.toString().toLowerCase() == 'unknown') {
+				console.log('Status request with ID of ' + id + '; internal failure');
+				sym.done(sym, 'Error');
+				return;
+			}
 			if (typeof(autoRedirect) === 'undefined')
 				autoRedirect = true;
 			if (sym.unibot.simulated) {
@@ -302,7 +312,7 @@
 			sym.unibot.simulated = ($.cookie('unibot-simulated') == '1');
 	
 		if (typeof($.cookie('unibot-url')) === 'undefined')
-			sym.unibot.url = 'http://unibot.perf.local';
+			sym.unibot.url = '';
 		else
 			sym.unibot.url = $.cookie('unibot-url');
 	
@@ -415,10 +425,10 @@
 	         // fix up layer names
 	         sym.getSymbol('Layer1').$('Layername').html('Office');
 	         sym.getSymbol('Layer2').$('Layername').html('Adobe');
-	         sym.getSymbol('Layer3').$('Layername').html('Symantec SEP');
+	         sym.getSymbol('Layer3').$('Layername').html('Symantec');
 	         sym.getSymbol('Layer4').$('Layername').html('VisualStudio');
 	         sym.getSymbol('Layer5').$('Layername').html('Skype');
-	         sym.getSymbol('Layer6').$('Layername').html('Shared apps and drivers');
+	         sym.getSymbol('Layer6').$('Layername').html('Shared Apps & Drivers');
 	         
 	         // set layer start points
 	         sym.getSymbol('Layer1').play('Deployed');
@@ -569,7 +579,7 @@
 	         var inShow = (stage.unibot.getVariable('inShow') == 'show');
 	         if (!inShow) {
 	         	stage.showTimer = 0;
-	         	stage.unibot.enqueue('SHOW-SIGN', { queue: 0, status: 0, layer: window.playWithMeSign, effect: '' });
+ 				stage.homeResponse = stage.unibot.enqueue('ARM-HOME', { queue: 0, status: 0 });
 	         	sym.play('Start');
 	         }
 	         else 
@@ -591,7 +601,7 @@
 	         		// if this is the first second, bring up the sign
 	         		switch (stage.showTimer) {
 	         			case 0:
-	         				stage.signResponse = stage.unibot.enqueue('SHOW-SIGN', { queue: 0, status: 1, layer: window.showNowSign, effect: '' });
+	         				stage.signResponse = stage.unibot.enqueue('SHOW-SIGN', { queue: 0, status: 1, layer: window.showNowSign, effect: 'CONTINUOUS' });
 	         				break;
 	         			case 1:
 	         				var inquiry = stage.unibot.status(stage.signResponse.id, true);
@@ -813,7 +823,7 @@
 				sym.getSymbol('ShowInFiveButton').setVariable('activate', function(sym, execFlag) { 
 					var stage = sym.getComposition().getStage();
 					if (execFlag) {
-						stage.showInFiveResponse = stage.unibot.enqueue('SHOW-SIGN', { queue: 0, status: 0, layer: window.showInFiveSign, effect: 'broad' });
+						stage.showInFiveResponse = stage.unibot.enqueue('SHOW-SIGN', { queue: 0, status: 1, layer: window.showInFiveSign, effect: 'sign' });
 						return false;
 					} else {
 						inquiry = stage.unibot.status(stage.showInFiveResponse.id, false);
@@ -939,7 +949,7 @@
 	   //Edge symbol: 'OpButton'
 	   (function(symbolName) {   
 	   
-	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 0, function(sym, e) {
+	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 21, function(sym, e) {
 	         sym.stop();
 	
 	      });
@@ -949,10 +959,10 @@
 	         	var activate = sym.getVariable('activate');
 	         	if (activate) {
 	         		if (activate(sym, false))
-	         			sym.stop();
+	         			sym.play('Start');		
 	         	} else
 	         		sym.stop();
-	
+
 	      });
 	      //Edge binding end
 	
@@ -1060,7 +1070,7 @@
 	   //Edge symbol: 'Intro_1'
 	   (function(symbolName) {   
 	
-	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 4000, function(sym, e) {
+	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 7000, function(sym, e) {
 	         sym.getComposition().getStage().done(sym, 'BuildDesktop');
 	
 	      });
@@ -1263,6 +1273,11 @@
 	         var bom = stage.bom;
 	         stage.upgradeLayer = null;
 	         
+	         // make sure all app logos are hidden until we know the right one
+	         sym.getSymbol('OptionUpgradeApp').$('AppLogo1').hide();
+	         sym.getSymbol('OptionUpgradeApp').$('AppLogo2').hide();
+	         sym.getSymbol('OptionUpgradeApp').$('AppLogo3').hide();
+	         
 	         // set up the callbacks for the buttons
 	         sym.getSymbol('OptionUpgradeOS').setVariable('activate', function(buttonSym){buttonSym.disabled = true; buttonSym.getComposition().getStage().done(sym, 'ChangeOptions.ActionUpgradeOS');});
 	         sym.getSymbol('OptionUpgradeApp').setVariable('activate', function(buttonSym){buttonSym.disabled = true; buttonSym.getComposition().getStage().done(sym, 'ChangeOptions.ActionUpgradeApp');});
@@ -1273,7 +1288,10 @@
 	         	if ( (bom[slotNum] == 1) ||
 	         		(bom[slotNum] == 2) ||
 	         		(bom[slotNum] == 3) ) {
-	         			stage.upgradeLayer = { layer: bom[slotNum], slot: slotNum, name: stage.getSymbol('AssignLayers').getSymbol('Layer' + bom[slotNum]).$('Layername').html() };
+	         			var upgradeName = stage.getSymbol('AssignLayers').getSymbol('Layer' + bom[slotNum]).$('Layername').html();
+	         			stage.upgradeLayer = { layer: bom[slotNum], slot: slotNum, name: upgradeName };
+	         			sym.getSymbol('OptionUpgradeApp').$('Text3').html('A new version is out!<br>Upgrade ' + upgradeName + '!');
+	         			sym.getSymbol('OptionUpgradeApp').$('AppLogo' + bom[slotNum]).show();
 	         			break;
 	         	}
 	         }
@@ -1296,7 +1314,7 @@
 	         		sym.play('TwoOptions');
 	         	}
 	         }
-	
+
 	      });
 	         //Edge binding end
 	
@@ -1305,7 +1323,37 @@
 	         sym.getSymbol('OptionUpgradeOS').disabled = false;
 	         sym.getSymbol('OptionUpgradeApp').disabled = false;
 	         sym.getSymbol('OptionDesktopRepair').disabled = false;
-	
+	         
+	         // initialize the layers
+	         var stage = sym.getComposition().getStage();
+	         var bom = stage.bom;
+	         var pending = {};
+	         
+	         // set layer names and state
+	         for (desktop = 0; desktop < 1; ++desktop) {
+	         	for (slotNum = 1; slotNum <= 4; ++slotNum) {
+	         		if (bom[slotNum] != 0) {
+	         			// set the assigned layer name
+	         			var layerName = stage.getSymbol('AssignLayers').getSymbol('Layer' + bom[slotNum]).$('Layername').html();
+	         			sym.getSymbol('Layer' + slotNum).$('Layername').html(layerName);
+	         			sym.getSymbol('Layer' + slotNum).play('Deployed');
+	         		} else {
+	         			// set it to unknown
+	         			sym.getSymbol('Layer' + slotNum).$('Layername').html('');
+	         			sym.getSymbol('Layer' + slotNum).play('Unused');
+	         		}
+	         		sym.getSymbol('Layer' + slotNum).getSymbolElement().show();
+	         	}
+	         }
+	         
+	         // set OS and personalization
+	         sym.getSymbol('OS').play('Deployed');
+	         sym.getSymbol('OS').getSymbolElement().show();
+	         sym.getSymbol('Personalization').play('Deployed');
+	         sym.getSymbol('Personalization').getSymbolElement().show();
+	         
+	         
+
 	      });
 	      //Edge binding end
 	
@@ -1600,7 +1648,7 @@
 	      });
 	            //Edge binding end
 	
-	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 6000, function(sym, e) {
+	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 8000, function(sym, e) {
 	         sym.getComposition().getStage().done(sym, 'ActionDesktopRepair');
 	
 	      });
@@ -1612,13 +1660,13 @@
 	      });
 	      //Edge binding end
 	
-	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 1517, function(sym, e) {
-	         sym.play('Pending');
-	
+	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 4054, function(sym, e) {
+	         sym.process('Pending');
+
 	      });
 	      //Edge binding end
 	
-	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 3065, function(sym, e) {
+	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 5058, function(sym, e) {
 	         sym.process('Executing');
 	
 	      });
@@ -1675,19 +1723,19 @@
 	      });
 	      //Edge binding end
 	
-	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 2060, function(sym, e) {
+	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 4054, function(sym, e) {
 	         sym.process('Pending');
 	
 	      });
 	      //Edge binding end
 	
-	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 3065, function(sym, e) {
-	         sym.process('EXECUTING');
-	
+	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 5053, function(sym, e) {
+	         sym.process('Executing');
+
 	      });
 	      //Edge binding end
 	
-	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 6000, function(sym, e) {
+	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 8000, function(sym, e) {
 	         sym.getComposition().getStage().done(sym, 'ActionUpgradeOS');
 	
 	      });
@@ -1745,19 +1793,19 @@
 	      });
 	      //Edge binding end
 	
-	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 2060, function(sym, e) {
+	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 4071, function(sym, e) {
 	         sym.process('Pending');
 	
 	      });
 	      //Edge binding end
 	
-	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 3065, function(sym, e) {
+	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 5060, function(sym, e) {
 	         sym.process('Executing');
 	
 	      });
 	      //Edge binding end
 	
-	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 6000, function(sym, e) {
+	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 8000, function(sym, e) {
 	         sym.getComposition().getStage().done(sym, 'ActionUpgradeApp');
 	
 	      });
@@ -1867,5 +1915,23 @@
 	
 	      })("ErrorMonitor");
    //Edge symbol end:'ErrorMonitor'
+
+   //=========================================================
+   
+   //Edge symbol: 'loadingcircle'
+   (function(symbolName) {   
+   
+      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 6000, function(sym, e) {
+         
+         // Play the timeline at a label or specific time. For example:
+         // sym.play(500); or sym.play("myLabel");
+         sym.play(0);
+         
+
+      });
+      //Edge binding end
+
+   })("loadingcircle");
+   //Edge symbol end:'loadingcircle'
 
 })(jQuery, AdobeEdge, "EDGE-736525547");
