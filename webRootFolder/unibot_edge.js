@@ -1389,6 +1389,15 @@ var symbols = {
                     type: 'rect',
                     rect: ['27.9%', '32.3%', 'auto', 'auto', 'auto', 'auto'],
                     id: 'ShowInFiveButton'
+                },
+                {
+                    rect: ['143', '268', '225px', '52px', 'auto', 'auto'],
+                    font: ['Roboto, Arial, sans-serif', 13, 'rgba(186,0,0,1.00)', '500', 'none', 'normal'],
+                    align: 'center',
+                    id: 'ErrorMessage',
+                    opacity: 1,
+                    text: 'MULTIPLE LINE ERROR MESSAGE WILL APPEAR IN THIS SPACE',
+                    type: 'text'
                 }
             ],
             symbolInstances: [
@@ -1533,6 +1542,14 @@ var symbols = {
                 ["style", "height", '100%'],
                 ["style", "width", '100%']
             ],
+            "${_ErrorMessage}": [
+                ["color", "color", 'rgba(186,0,0,1.00)'],
+                ["style", "font-weight", '500'],
+                ["style", "height", '52px'],
+                ["style", "opacity", '0'],
+                ["style", "width", '225px'],
+                ["style", "font-size", '13px']
+            ],
             "${_RestartUIButton}": [
                 ["style", "display", 'none'],
                 ["style", "opacity", '0'],
@@ -1569,7 +1586,7 @@ var symbols = {
                 ["color", "background-color", 'rgba(255,255,255,1.00)'],
                 ["style", "min-width", '0px'],
                 ["style", "max-width", 'none'],
-                ["style", "height", '65.55%'],
+                ["style", "height", '73.68%'],
                 ["transform", "scaleY", '1'],
                 ["style", "border-width", '14px'],
                 ["style", "opacity", '0']
@@ -1651,7 +1668,7 @@ var symbols = {
                 { id: "eid350", tween: [ "style", "${_ShowInFiveButton}", "display", 'block', { fromValue: 'none'}], position: 3000, duration: 0 },
                 { id: "eid305", tween: [ "style", "${_PasswordButton1}", "opacity", '1', { fromValue: '0'}], position: 1000, duration: 250 },
                 { id: "eid299", tween: [ "style", "${_PasswordButton1}", "opacity", '0', { fromValue: '1'}], position: 2000, duration: 250 },
-                { id: "eid1331", tween: [ "style", "${_Frame}", "height", '65.55%', { fromValue: '65.55%'}], position: 3250, duration: 0 },
+                { id: "eid1331", tween: [ "style", "${_Frame}", "height", '73.68%', { fromValue: '73.68%'}], position: 3250, duration: 0 },
                 { id: "eid337", tween: [ "style", "${_CalibrateButton}", "opacity", '1', { fromValue: '0'}], position: 3000, duration: 250 },
                 { id: "eid736", tween: [ "style", "${_GripButton}", "display", 'block', { fromValue: 'none'}], position: 3000, duration: 0 },
                 { id: "eid1349", tween: [ "style", "${_RestartUIButton}", "top", '57.03%', { fromValue: '57.03%'}], position: 3250, duration: 0 },
@@ -1673,6 +1690,8 @@ var symbols = {
                 { id: "eid735", tween: [ "style", "${_GripButton}", "opacity", '1', { fromValue: '0'}], position: 3000, duration: 250 },
                 { id: "eid354", tween: [ "style", "${_ShowNowButton}", "top", '16.41%', { fromValue: '16.41%'}], position: 3250, duration: 0 },
                 { id: "eid742", tween: [ "style", "${_EnergizeButton}", "opacity", '1', { fromValue: '0'}], position: 3000, duration: 250 },
+                { id: "eid1357", tween: [ "style", "${_ErrorMessage}", "opacity", '0', { fromValue: '0'}], position: 3000, duration: 0 },
+                { id: "eid1358", tween: [ "style", "${_ErrorMessage}", "opacity", '1', { fromValue: '0'}], position: 3250, duration: 0 },
                 { id: "eid1333", tween: [ "style", "${_Frame}", "width", '56.25%', { fromValue: '56.25%'}], position: 3250, duration: 0 },
                 { id: "eid1337", tween: [ "style", "${_CalibrateButton}", "top", '36.46%', { fromValue: '36.46%'}], position: 3250, duration: 0 },
                 { id: "eid1342", tween: [ "style", "${_PasswordButton2}", "top", '39.84%', { fromValue: '39.84%'}], position: 1452, duration: 0 },

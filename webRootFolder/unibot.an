@@ -813,7 +813,7 @@
 			"animationEnabled":"false",
 			"timelineColor":"0x91c767"},
 		"defaultStageParentHeight":"384px"},
-	"TransitionIdCounter":"1350",
+	"TransitionIdCounter":"1359",
 	"viewStartY":"0",
 	"expanded:images/update_patchos-blank_01.png":"nil",
 	"ActionUpgradeOS-Default Timeline_playhead_ms":"0",
@@ -1431,7 +1431,7 @@
 	"expanded:images/desktop_bg_01.png":"nil",
 	"PasswordButton-Default Timeline_playhead_ms":"0",
 	"expanded:images/cachepoint_bg_01.png":"nil",
-	"pref__general__AutoKeyframeProperties":"true",
+	"pref__general__AutoKeyframeProperties":"false",
 	"Goodbye-Default Timeline_mark_ms":"-1",
 	"pixelsPerMs":"0.13764127850645",
 	"AssignLayers-Default Timeline_playhead_ms":"0",
@@ -1480,18 +1480,12 @@
 	"HTMLFileName":"unibot.html",
 	"OptionUpgradeApp-Default Timeline_mark_ms":"-1",
 	"symbol_PasswordWindow":{
-		"element_${_BtnCalibrate}":{
-			"timelineColor2":"0x326a96",
-			"timelineColor3":"0x385063",
-			"animationEnabled":"false",
-			"timelineColor":"0x2f73ad"},
 		"dummyStageParentWidth":"512px",
-		"element_${_PasswordButton5}":{
-			"timelineColor2":"0xba5b89",
-			"timelineColor3":"0x734a5f",
-			"timelineColor":"0xdb619d",
-			"timelineTreeOpened":"false",
-			"animationEnabled":"true"},
+		"element_${_txtCalibrate}":{
+			"timelineColor2":"0x168c84",
+			"timelineColor3":"0x2a605c",
+			"animationEnabled":"false",
+			"timelineColor":"0x00a096"},
 		"dummyStageParentHeight":"384px",
 		"element_${_SuspendButton}":{
 			"timelineColor2":"0x1095d2",
@@ -1499,12 +1493,11 @@
 			"timelineColor":"0x00a9fa",
 			"timelineTreeOpened":"false",
 			"animationEnabled":"true"},
-		"element_${_UngripButton}":{
-			"timelineColor2":"0x1aa38f",
-			"timelineColor3":"0x2a6a61",
-			"timelineColor":"0x00bda4",
-			"timelineTreeOpened":"false",
-			"animationEnabled":"true"},
+		"element_${_ErrorMessage}":{
+			"timelineColor2":"0x5a558a",
+			"timelineColor3":"0x4a485e",
+			"animationEnabled":"true",
+			"timelineColor":"0x63599f"},
 		"element_${_ShowNowButton}":{
 			"timelineColor2":"0xd35d6e",
 			"timelineColor3":"0x7e4b52",
@@ -1517,6 +1510,35 @@
 			"timelineColor":"0xceaef4",
 			"timelineTreeOpened":"false",
 			"animationEnabled":"true"},
+		"element_${_PasswordButton4}":{
+			"timelineColor2":"0xcbbd71",
+			"timelineColor3":"0x7b7652",
+			"timelineColor":"0xeedf79",
+			"timelineTreeOpened":"false",
+			"animationEnabled":"true"},
+		"element_${_BtnCalibrate}":{
+			"timelineColor2":"0x326a96",
+			"timelineColor3":"0x385063",
+			"animationEnabled":"false",
+			"timelineColor":"0x2f73ad"},
+		"element_${_PasswordButton5}":{
+			"timelineColor2":"0xba5b89",
+			"timelineColor3":"0x734a5f",
+			"timelineColor":"0xdb619d",
+			"timelineTreeOpened":"false",
+			"animationEnabled":"true"},
+		"element_${_UngripButton}":{
+			"timelineColor2":"0x1aa38f",
+			"timelineColor3":"0x2a6a61",
+			"timelineColor":"0x00bda4",
+			"timelineTreeOpened":"false",
+			"animationEnabled":"true"},
+		"element_${_RestartUIButton}":{
+			"timelineColor2":"0x107faa",
+			"timelineColor3":"0x295a6d",
+			"timelineColor":"0x008dc8",
+			"timelineTreeOpened":"false",
+			"animationEnabled":"true"},
 		"element_${_Background}":{
 			"timelineColor2":"0x326a96",
 			"timelineColor3":"0x385063",
@@ -1524,21 +1546,15 @@
 			"timelineTreeOpened":"false",
 			"animationEnabled":"false",
 			"invisible":"false"},
-		"element_${_PasswordButton4}":{
-			"timelineColor2":"0xcbbd71",
-			"timelineColor3":"0x7b7652",
-			"timelineColor":"0xeedf79",
-			"timelineTreeOpened":"false",
-			"animationEnabled":"true"},
-		"element_${_txtCalibrate}":{
-			"timelineColor2":"0x168c84",
-			"timelineColor3":"0x2a605c",
+		"element_${_RoundRect}":{
+			"timelineColor2":"0x5a558a",
+			"timelineColor3":"0x4a485e",
 			"animationEnabled":"false",
-			"timelineColor":"0x00a096"},
-		"element_${_RestartUIButton}":{
-			"timelineColor2":"0x107faa",
-			"timelineColor3":"0x295a6d",
-			"timelineColor":"0x008dc8",
+			"timelineColor":"0x63599f"},
+		"element_${_HomeButton}":{
+			"timelineColor2":"0x1aa38f",
+			"timelineColor3":"0x2a6a61",
+			"timelineColor":"0x00bda4",
 			"timelineTreeOpened":"false",
 			"animationEnabled":"true"},
 		"element_${_FrameContainer}":{
@@ -1546,22 +1562,6 @@
 			"timelineColor3":"0x2a6a61",
 			"animationEnabled":"false",
 			"timelineColor":"0x00bda4"},
-		"element_${_RoundRect}":{
-			"timelineColor2":"0x5a558a",
-			"timelineColor3":"0x4a485e",
-			"animationEnabled":"false",
-			"timelineColor":"0x63599f"},
-		"element_${_FrameDiv}":{
-			"timelineColor2":"0x168c84",
-			"timelineColor3":"0x2a605c",
-			"animationEnabled":"false",
-			"timelineColor":"0x00a096"},
-		"element_${_ResumeButton}":{
-			"timelineColor2":"0x5a558a",
-			"timelineColor3":"0x4a485e",
-			"timelineColor":"0x63599f",
-			"timelineTreeOpened":"false",
-			"animationEnabled":"false"},
 		"element_${_ShowInFiveButton}":{
 			"timelineColor2":"0xba5b89",
 			"timelineColor3":"0x734a5f",
@@ -1606,13 +1606,18 @@
 			"timelineColor":"0x63599f",
 			"timelineTreeOpened":"false",
 			"animationEnabled":"true"},
-		"element_${_HomeButton}":{
-			"timelineColor2":"0x1aa38f",
-			"timelineColor3":"0x2a6a61",
-			"timelineColor":"0x00bda4",
-			"timelineTreeOpened":"false",
-			"animationEnabled":"true"},
+		"element_${_FrameDiv}":{
+			"timelineColor2":"0x168c84",
+			"timelineColor3":"0x2a605c",
+			"animationEnabled":"false",
+			"timelineColor":"0x00a096"},
 		"defaultStageParentWidth":"512px",
+		"element_${_ResumeButton}":{
+			"timelineColor2":"0x5a558a",
+			"timelineColor3":"0x4a485e",
+			"timelineColor":"0x63599f",
+			"timelineTreeOpened":"false",
+			"animationEnabled":"false"},
 		"element_${_CalibrateButton}":{
 			"timelineColor2":"0x107faa",
 			"timelineColor3":"0x295a6d",
@@ -1757,7 +1762,7 @@
 			"animationEnabled":"true",
 			"timelineColor":"0x91c767"}},
 	"expanded:images/temp_layer_gold_01.png":"nil",
-	"nextElementColorIndex":"9",
+	"nextElementColorIndex":"10",
 	"expanded:images/bot_speechbubble_01.png":"nil",
 	"symbol_AppLogo3":{
 		"dummyStageParentWidth":"137px",

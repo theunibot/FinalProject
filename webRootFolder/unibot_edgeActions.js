@@ -921,17 +921,21 @@
 				});
 			
 				var errorMessage = stage.unibot.getVariable('hasError');
-				if (errorMessage == '')
+				if (errorMessage == '') {
 					sym.getSymbol('SuspendButton').$('ButtonLabel').html('Suspend');
-				else
-					sym.getSymbol('SuspendButton').$('ButtonLabel').html('Resume (' + errorMessage + ')');
+					sym.$('ErrorMessage').html('No errors detected');
+				}
+				else {
+					sym.getSymbol('SuspendButton').$('ButtonLabel').html('Resume');
+					sym.$('ErrorMessage').html(errorMessage);
+				}
 				sym.getSymbol('SuspendButton').setVariable('activate', function(sym, execFlag) { 
 					var stage = sym.getComposition().getStage();
 					if (!execFlag) {
 					var errorMessage = stage.unibot.getVariable('hasError');
 						if (errorMessage == '') {
 							// suspend
-							sym.$('ButtonLabel').html('Resume (Manually suspended from console)');
+							sym.$('ButtonLabel').html('Resume');
 						stage.unibot.setVariable('hasError', 'Manually suspended from console');
 						} else {
 							// resume
