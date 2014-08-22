@@ -22,6 +22,7 @@ import enums.CabinetType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
+import route.DynamicRoute;
 import route.Position;
 import route.PositionLookup;
 import route.Route;
@@ -38,7 +39,7 @@ public class ArmOperations
 {
 
     private final boolean armOpsSimulated = true;
-    private final boolean r12OpsSimulated = false;
+    private final boolean r12OpsSimulated = true;
 
     public final static int ARM_MAX_SPEED = 20000;
     private int armSpeed = ARM_MAX_SPEED;
@@ -141,14 +142,27 @@ public class ArmOperations
     }
 
     /**
-     * Run a route, with a modified starting and ending Position coordinates
+     * Front-end for running routes, to make it easy to switch between dynamic and static routes
+     * 
+     * @param route the route to run
+     * @param start the starting coordinate to use on the route
+     * @param end the ending coordinate to use on the route
+     * @return Result with success of failure information)
+     */
+    public Result runRoute(Route route, Position start, Position end) {
+//        return runDynamicRoute(route, start, end);
+        return runStaticRoute(route, start, end);
+    }
+
+    /**
+     * Run a static route, with a modified starting and ending Position coordinates
      *
      * @param route the route to run
      * @param start the starting coordinate to use on the route
      * @param end the ending coordinate to use on the route
      * @return Result with success of failure information)
      */
-    public Result runRoute(Route route, Position start, Position end)
+    public Result runStaticRoute(Route route, Position start, Position end)
     {
         if (armOpsLogging)
             System.out.println("    ArmOperations: runRoute " + route.getRouteProperties().getRouteFriendlyName()
@@ -227,7 +241,6 @@ public class ArmOperations
 
             // run the route
             int routeSpeed = route.getRouteProperties().getRouteSpeed();
-            System.out.println("ArmSpeed is " + armSpeed + ", routeSpeed is " + routeSpeed);
             String runRoute = Integer.toString((armSpeed < routeSpeed) ? armSpeed : routeSpeed) + " SPEED !  CONTINUOUS ADJUST " + route.getRouteProperties().getRouteIDName() + " RUN";
             Result result = runRobotCommand(runRoute);
             if (!result.success())
@@ -240,6 +253,77 @@ public class ArmOperations
             return new Result("Route named " + route.getRouteProperties().getRouteFriendlyName() + " has " + route.size() + " coordinates; must have at least two (start and end)");
         }
     }
+    
+    
+    /**
+     * Run a dynamic route (one not previously programmed)
+     *
+     * @param route the route to run
+     * @param start the starting coordinate to use on the route
+     * @param end the ending coordinate to use on the route
+     * @return Result with success of failure information)
+     */
+    public Result runDynamicRoute(Route route, Position start, Position end)
+    {
+        
+        if (armOpsLogging)
+            System.out.println("    ArmOperations: runDynamicRoute " + route.getRouteProperties().getRouteFriendlyName()
+                    + " from " + ((start != null) ? start.getName() : "undefined") + " to "
+                    + ((end != null) ? end.getName() : "undefined"));
+
+        if (armOpsSimulated && !r12OpsSimulated){            
+            Utils.sleep(2000);
+            return new Result();
+        }
+        // set up our dynamic route for tracking all positions
+        DynamicRoute dr = new DynamicRoute();
+
+        // see if any positions in the route require delta adjustment
+        Position priorPos = null;
+        for (int routeIndex = 0; routeIndex < route.size(); ++routeIndex) {
+            Position curPos;
+
+            // determine the current route position in the route, modifying for the custom start/end positions
+            if (routeIndex == 0)
+                curPos = start;
+            else if (routeIndex == (route.size() - 1))
+                curPos = end;
+            else
+                curPos = route.get(routeIndex).getPosition();
+
+            // do we need to adjust the position relative to other ones? 
+            if ( (curPos != null) && (curPos.hasDelta()) ) {
+                // determine prior position
+                Position nextPos;
+
+                if (routeIndex >= (route.size() - 2))
+                    nextPos = end;
+                else
+                    nextPos = route.get(routeIndex + 1).getPosition();
+
+                // this line is a delta - so compute the varient position
+                if (route.getRouteProperties().getReverse())
+                    curPos = curPos.getDeltaPosition(nextPos, priorPos);
+                else
+                    curPos = curPos.getDeltaPosition(priorPos, nextPos);
+            }
+            // add to the dynamic route
+            dr.addPosition(curPos);
+            
+            // save our current position for next time
+            priorPos = curPos;
+        }
+
+        // run the route
+        int routeSpeed = route.getRouteProperties().getRouteSpeed();
+        String runRoute = Integer.toString((armSpeed < routeSpeed) ? armSpeed : routeSpeed) + " SPEED ! " + dr.routeCommand();
+        Result result = runRobotCommand(runRoute);
+        if (!result.success())
+            return result;
+
+        return new Result();
+    }
+
 
     /**
      * Executes calibration services for the arm for a specific point. Moves the
