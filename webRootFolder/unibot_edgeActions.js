@@ -923,11 +923,11 @@
 				var errorMessage = stage.unibot.getVariable('hasError');
 				if (errorMessage == '') {
 					sym.getSymbol('SuspendButton').$('ButtonLabel').html('Suspend');
-					sym.$('ErrorMessage').html('No errors detected');
+					sym.getSymbol('ErrorMessage').$('ErrorMessageText').html('No errors detected');
 				}
 				else {
 					sym.getSymbol('SuspendButton').$('ButtonLabel').html('Resume');
-					sym.$('ErrorMessage').html(errorMessage);
+					sym.getSymbol('ErrorMessage').$('ErrorMessageText').html(errorMessage);
 				}
 				sym.getSymbol('SuspendButton').setVariable('activate', function(sym, execFlag) { 
 					var stage = sym.getComposition().getStage();
@@ -1188,7 +1188,7 @@
 	         	pending[desktop] = construction;
 	         }
 	         stage.pending = pending;
-	
+
 	      });
 	      //Edge binding end
 	
@@ -1714,11 +1714,7 @@
 	      });
 	            //Edge binding end
 	
-	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 2060, function(sym, e) {
-	         sym.process('Pending');
-	
-	      });
-	      //Edge binding end
+	      
 	
 	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 4054, function(sym, e) {
 	         sym.process('Pending');
@@ -1777,11 +1773,7 @@
 	      });
 	               //Edge binding end
 	
-	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 1517, function(sym, e) {
-	         sym.play('Pending');
-	
-	      });
-	      //Edge binding end
+	      
 	
 	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 4054, function(sym, e) {
 	         sym.process('Pending');
@@ -1818,7 +1810,7 @@
 	         var response = stage.unibot.enqueue('REPLACE-LAYER', {queue: stage.controller, status: 1, layer: window.app['a' + stage.upgradeLayer.layer].v2, shelf: stage.upgradeLayer.slot, desktop: stage.controller, effect: 'fancy' });
 	         sym.actionId = response.id;
 	         sym.status = 'PENDING';
-	         sym.$('Title').html('Upgrade ' + stage.upgradeLayer.name);
+	         sym.$('Text3').html('Upgrading ' + stage.upgradeLayer.name + '...');
 	         
 	         sym.process = function(label) {
 	         	var response = stage.unibot.status(sym.actionId);
@@ -1843,15 +1835,11 @@
 	         	} else
 	         		sym.play(label);
 	         }
-	
+
 	      });
 	               //Edge binding end
 	
-	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 1517, function(sym, e) {
-	         sym.play('Pending');
-	
-	      });
-	      //Edge binding end
+	      
 	
 	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 4071, function(sym, e) {
 	         sym.process('Pending');
@@ -2004,5 +1992,13 @@
 
    })("loadingcircle");
    //Edge symbol end:'loadingcircle'
+
+   //=========================================================
+   
+   //Edge symbol: 'ErrorMessage'
+   (function(symbolName) {   
+   
+   })("ErrorMessage");
+   //Edge symbol end:'ErrorMessage'
 
 })(jQuery, AdobeEdge, "EDGE-736525547");

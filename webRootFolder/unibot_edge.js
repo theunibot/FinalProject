@@ -1303,32 +1303,32 @@ var symbols = {
                 {
                     id: 'PasswordButton6',
                     type: 'rect',
-                    rect: ['53.5%', '60.6%', 'auto', 'auto', 'auto', 'auto']
+                    rect: ['53.5%', '63.5%', 'auto', 'auto', 'auto', 'auto']
                 },
                 {
                     id: 'PasswordButton5',
                     type: 'rect',
-                    rect: ['53.5%', '43.6%', 'auto', 'auto', 'auto', 'auto']
+                    rect: ['53.5%', '46.6%', 'auto', 'auto', 'auto', 'auto']
                 },
                 {
                     id: 'PasswordButton4',
                     type: 'rect',
-                    rect: ['53.5%', '26.7%', 'auto', 'auto', 'auto', 'auto']
+                    rect: ['53.5%', '29.7%', 'auto', 'auto', 'auto', 'auto']
                 },
                 {
                     id: 'PasswordButton3',
                     type: 'rect',
-                    rect: ['31.5%', '60.6%', 'auto', 'auto', 'auto', 'auto']
+                    rect: ['31.5%', '63.5%', 'auto', 'auto', 'auto', 'auto']
                 },
                 {
                     id: 'PasswordButton2',
                     type: 'rect',
-                    rect: ['31.5%', '43.6%', 'auto', 'auto', 'auto', 'auto']
+                    rect: ['31.5%', '46.6%', 'auto', 'auto', 'auto', 'auto']
                 },
                 {
                     id: 'PasswordButton1',
                     type: 'rect',
-                    rect: ['31.5%', '26.7%', 'auto', 'auto', 'auto', 'auto']
+                    rect: ['31.5%', '29.7%', 'auto', 'auto', 'auto', 'auto']
                 },
                 {
                     display: 'none',
@@ -1391,37 +1391,14 @@ var symbols = {
                     id: 'ShowInFiveButton'
                 },
                 {
-                    rect: ['143', '268', '225px', '52px', 'auto', 'auto'],
-                    font: ['Roboto, Arial, sans-serif', 13, 'rgba(186,0,0,1.00)', '500', 'none', 'normal'],
-                    align: 'center',
+                    rect: ['130', '258', 'auto', 'auto', 'auto', 'auto'],
                     id: 'ErrorMessage',
-                    opacity: 1,
-                    text: 'MULTIPLE LINE ERROR MESSAGE WILL APPEAR IN THIS SPACE',
-                    type: 'text'
+                    opacity: 0,
+                    display: 'none',
+                    type: 'rect'
                 }
             ],
             symbolInstances: [
-            {
-                id: 'ShowInFiveButton',
-                symbolName: 'OpButton',
-                autoPlay: {
-
-               }
-            },
-            {
-                id: 'ShowNowButton',
-                symbolName: 'OpButton',
-                autoPlay: {
-
-               }
-            },
-            {
-                id: 'EnergizeButton',
-                symbolName: 'OpButton',
-                autoPlay: {
-
-               }
-            },
             {
                 id: 'UngripButton',
                 symbolName: 'OpButton',
@@ -1430,15 +1407,8 @@ var symbols = {
                }
             },
             {
-                id: 'DeEnergizeButton',
+                id: 'CalibrateButton',
                 symbolName: 'OpButton',
-                autoPlay: {
-
-               }
-            },
-            {
-                id: 'PasswordButton5',
-                symbolName: 'PasswordButton',
                 autoPlay: {
 
                }
@@ -1458,14 +1428,7 @@ var symbols = {
                }
             },
             {
-                id: 'PasswordButton1',
-                symbolName: 'PasswordButton',
-                autoPlay: {
-
-               }
-            },
-            {
-                id: 'PasswordButton2',
+                id: 'PasswordButton3',
                 symbolName: 'PasswordButton',
                 autoPlay: {
 
@@ -1479,7 +1442,35 @@ var symbols = {
                }
             },
             {
-                id: 'CalibrateButton',
+                id: 'ErrorMessage',
+                symbolName: 'ErrorMessage',
+                autoPlay: {
+
+               }
+            },
+            {
+                id: 'SuspendButton',
+                symbolName: 'OpButton',
+                autoPlay: {
+
+               }
+            },
+            {
+                id: 'ShowNowButton',
+                symbolName: 'OpButton',
+                autoPlay: {
+
+               }
+            },
+            {
+                id: 'PasswordButton1',
+                symbolName: 'PasswordButton',
+                autoPlay: {
+
+               }
+            },
+            {
+                id: 'DeEnergizeButton',
                 symbolName: 'OpButton',
                 autoPlay: {
 
@@ -1493,7 +1484,21 @@ var symbols = {
                }
             },
             {
-                id: 'PasswordButton3',
+                id: 'ShowInFiveButton',
+                symbolName: 'OpButton',
+                autoPlay: {
+
+               }
+            },
+            {
+                id: 'EnergizeButton',
+                symbolName: 'OpButton',
+                autoPlay: {
+
+               }
+            },
+            {
+                id: 'PasswordButton5',
                 symbolName: 'PasswordButton',
                 autoPlay: {
 
@@ -1507,8 +1512,8 @@ var symbols = {
                }
             },
             {
-                id: 'SuspendButton',
-                symbolName: 'OpButton',
+                id: 'PasswordButton2',
+                symbolName: 'PasswordButton',
                 autoPlay: {
 
                }
@@ -1517,7 +1522,7 @@ var symbols = {
     states: {
         "Base State": {
             "${_PasswordButton5}": [
-                ["style", "top", '39.84%'],
+                ["style", "top", '46.61%'],
                 ["style", "opacity", '0'],
                 ["style", "left", '53.52%']
             ],
@@ -1528,7 +1533,7 @@ var symbols = {
                 ["style", "top", '46.88%']
             ],
             "${_PasswordButton1}": [
-                ["style", "top", '22.92%'],
+                ["style", "top", '29.69%'],
                 ["style", "opacity", '0'],
                 ["style", "left", '31.45%']
             ],
@@ -1543,28 +1548,8 @@ var symbols = {
                 ["style", "width", '100%']
             ],
             "${_ErrorMessage}": [
-                ["color", "color", 'rgba(186,0,0,1.00)'],
-                ["style", "font-weight", '500'],
-                ["style", "height", '52px'],
-                ["style", "opacity", '0'],
-                ["style", "width", '225px'],
-                ["style", "font-size", '13px']
-            ],
-            "${_RestartUIButton}": [
                 ["style", "display", 'none'],
-                ["style", "opacity", '0'],
-                ["style", "left", '51.37%'],
-                ["style", "top", '57.03%']
-            ],
-            "${_PasswordButton4}": [
-                ["style", "top", '22.92%'],
-                ["style", "opacity", '0'],
-                ["style", "left", '53.52%']
-            ],
-            "${_PasswordButton2}": [
-                ["style", "top", '39.84%'],
-                ["style", "opacity", '0'],
-                ["style", "left", '31.45%']
+                ["style", "opacity", '0']
             ],
             "${_ShowInFiveButton}": [
                 ["style", "display", 'none'],
@@ -1582,7 +1567,7 @@ var symbols = {
                 ["style", "border-style", 'none'],
                 ["style", "left", '21.88%'],
                 ["style", "width", '56.25%'],
-                ["style", "top", '13.17%'],
+                ["style", "top", '14.7%'],
                 ["color", "background-color", 'rgba(255,255,255,1.00)'],
                 ["style", "min-width", '0px'],
                 ["style", "max-width", 'none'],
@@ -1609,14 +1594,30 @@ var symbols = {
                 ["style", "left", '51.37%'],
                 ["style", "top", '46.88%']
             ],
+            "${_RestartUIButton}": [
+                ["style", "display", 'none'],
+                ["style", "opacity", '0'],
+                ["style", "left", '51.37%'],
+                ["style", "top", '57.03%']
+            ],
+            "${_PasswordButton4}": [
+                ["style", "top", '29.69%'],
+                ["style", "opacity", '0'],
+                ["style", "left", '53.52%']
+            ],
             "${_ShowNowButton}": [
                 ["style", "display", 'none'],
                 ["style", "opacity", '0'],
                 ["style", "left", '51.37%'],
                 ["style", "top", '16.41%']
             ],
+            "${_PasswordButton2}": [
+                ["style", "top", '46.61%'],
+                ["style", "opacity", '0'],
+                ["style", "left", '31.45%']
+            ],
             "${_PasswordButton6}": [
-                ["style", "top", '56.77%'],
+                ["style", "top", '63.54%'],
                 ["style", "opacity", '0'],
                 ["style", "left", '53.52%']
             ],
@@ -1633,7 +1634,7 @@ var symbols = {
                 ["style", "top", '26.82%']
             ],
             "${_PasswordButton3}": [
-                ["style", "top", '56.77%'],
+                ["style", "top", '63.54%'],
                 ["style", "opacity", '0'],
                 ["style", "left", '31.45%']
             ],
@@ -1661,11 +1662,15 @@ var symbols = {
                 "ValidPW": 3000
             },
             timeline: [
+                { id: "eid620", tween: [ "style", "${_UngripButton}", "top", '46.88%', { fromValue: '46.88%'}], position: 3250, duration: 0 },
                 { id: "eid348", tween: [ "style", "${_ShowNowButton}", "left", '51.37%', { fromValue: '51.37%'}], position: 3250, duration: 0 },
-                { id: "eid1340", tween: [ "style", "${_PasswordButton3}", "top", '56.77%', { fromValue: '56.77%'}], position: 1452, duration: 0 },
                 { id: "eid1335", tween: [ "style", "${_DeEnergizeButton}", "top", '26.56%', { fromValue: '26.56%'}], position: 3250, duration: 0 },
                 { id: "eid353", tween: [ "style", "${_ShowInFiveButton}", "top", '16.67%', { fromValue: '16.67%'}], position: 3250, duration: 0 },
+                { id: "eid301", tween: [ "style", "${_PasswordButton2}", "opacity", '1', { fromValue: '0'}], position: 1000, duration: 250 },
+                { id: "eid295", tween: [ "style", "${_PasswordButton2}", "opacity", '0', { fromValue: '1'}], position: 2000, duration: 250 },
+                { id: "eid315", tween: [ "style", "${_PasswordButton2}", "opacity", '0', { fromValue: '1'}], position: 3002, duration: 248 },
                 { id: "eid350", tween: [ "style", "${_ShowInFiveButton}", "display", 'block', { fromValue: 'none'}], position: 3000, duration: 0 },
+                { id: "eid1363", tween: [ "style", "${_ErrorMessage}", "display", 'block', { fromValue: 'none'}], position: 3000, duration: 0 },
                 { id: "eid305", tween: [ "style", "${_PasswordButton1}", "opacity", '1', { fromValue: '0'}], position: 1000, duration: 250 },
                 { id: "eid299", tween: [ "style", "${_PasswordButton1}", "opacity", '0', { fromValue: '1'}], position: 2000, duration: 250 },
                 { id: "eid1331", tween: [ "style", "${_Frame}", "height", '73.68%', { fromValue: '73.68%'}], position: 3250, duration: 0 },
@@ -1680,8 +1685,7 @@ var symbols = {
                 { id: "eid1347", tween: [ "style", "${_RestartUIButton}", "display", 'block', { fromValue: 'none'}], position: 3000, duration: 0 },
                 { id: "eid619", tween: [ "style", "${_UngripButton}", "opacity", '1', { fromValue: '0'}], position: 3000, duration: 250 },
                 { id: "eid618", tween: [ "style", "${_UngripButton}", "display", 'block', { fromValue: 'none'}], position: 3000, duration: 0 },
-                { id: "eid620", tween: [ "style", "${_UngripButton}", "top", '46.88%', { fromValue: '46.88%'}], position: 3250, duration: 0 },
-                { id: "eid1332", tween: [ "style", "${_Frame}", "top", '13.17%', { fromValue: '13.17%'}], position: 3250, duration: 0 },
+                { id: "eid1332", tween: [ "style", "${_Frame}", "top", '14.7%', { fromValue: '14.7%'}], position: 3250, duration: 0 },
                 { id: "eid303", tween: [ "style", "${_PasswordButton4}", "opacity", '1', { fromValue: '0'}], position: 1000, duration: 250 },
                 { id: "eid297", tween: [ "style", "${_PasswordButton4}", "opacity", '0', { fromValue: '1'}], position: 2000, duration: 250 },
                 { id: "eid314", tween: [ "style", "${_PasswordButton4}", "opacity", '0', { fromValue: '1'}], position: 3002, duration: 248 },
@@ -1690,17 +1694,11 @@ var symbols = {
                 { id: "eid735", tween: [ "style", "${_GripButton}", "opacity", '1', { fromValue: '0'}], position: 3000, duration: 250 },
                 { id: "eid354", tween: [ "style", "${_ShowNowButton}", "top", '16.41%', { fromValue: '16.41%'}], position: 3250, duration: 0 },
                 { id: "eid742", tween: [ "style", "${_EnergizeButton}", "opacity", '1', { fromValue: '0'}], position: 3000, duration: 250 },
-                { id: "eid1357", tween: [ "style", "${_ErrorMessage}", "opacity", '0', { fromValue: '0'}], position: 3000, duration: 0 },
-                { id: "eid1358", tween: [ "style", "${_ErrorMessage}", "opacity", '1', { fromValue: '0'}], position: 3250, duration: 0 },
+                { id: "eid1365", tween: [ "style", "${_ErrorMessage}", "opacity", '1', { fromValue: '0'}], position: 3006, duration: 244 },
                 { id: "eid1333", tween: [ "style", "${_Frame}", "width", '56.25%', { fromValue: '56.25%'}], position: 3250, duration: 0 },
                 { id: "eid1337", tween: [ "style", "${_CalibrateButton}", "top", '36.46%', { fromValue: '36.46%'}], position: 3250, duration: 0 },
-                { id: "eid1342", tween: [ "style", "${_PasswordButton2}", "top", '39.84%', { fromValue: '39.84%'}], position: 1452, duration: 0 },
                 { id: "eid1344", tween: [ "style", "${_SuspendButton}", "top", '57.03%', { fromValue: '57.03%'}], position: 3250, duration: 0 },
-                { id: "eid301", tween: [ "style", "${_PasswordButton2}", "opacity", '1', { fromValue: '0'}], position: 1000, duration: 250 },
-                { id: "eid295", tween: [ "style", "${_PasswordButton2}", "opacity", '0', { fromValue: '1'}], position: 2000, duration: 250 },
-                { id: "eid315", tween: [ "style", "${_PasswordButton2}", "opacity", '0', { fromValue: '1'}], position: 3002, duration: 248 },
                 { id: "eid745", tween: [ "style", "${_DeEnergizeButton}", "left", '51.37%', { fromValue: '51.37%'}], position: 3250, duration: 0 },
-                { id: "eid1343", tween: [ "style", "${_PasswordButton4}", "top", '22.92%', { fromValue: '22.92%'}], position: 1452, duration: 0 },
                 { id: "eid333", tween: [ "style", "${_HomeButton}", "display", 'block', { fromValue: 'none'}], position: 3000, duration: 0 },
                 { id: "eid1345", tween: [ "style", "${_SuspendButton}", "opacity", '1', { fromValue: '0'}], position: 3000, duration: 250 },
                 { id: "eid741", tween: [ "style", "${_EnergizeButton}", "display", 'block', { fromValue: 'none'}], position: 3000, duration: 0 },
@@ -1709,19 +1707,16 @@ var symbols = {
                 { id: "eid296", tween: [ "style", "${_PasswordButton5}", "opacity", '0', { fromValue: '1'}], position: 2000, duration: 250 },
                 { id: "eid279", tween: [ "style", "${_Frame}", "opacity", '0.75168320528455', { fromValue: '0'}], position: 1000, duration: 250 },
                 { id: "eid280", tween: [ "style", "${_Frame}", "opacity", '0', { fromValue: '0.75168320528455'}], position: 2000, duration: 250 },
-                { id: "eid293", tween: [ "style", "${_Frame}", "opacity", '0.74523669918699', { fromValue: '0'}], position: 3000, duration: 0 },
+                { id: "eid293", tween: [ "style", "${_Frame}", "opacity", '0.74749110772358', { fromValue: '0'}], position: 3000, duration: 0 },
                 { id: "eid300", tween: [ "style", "${_PasswordButton3}", "opacity", '1', { fromValue: '0'}], position: 1000, duration: 250 },
                 { id: "eid294", tween: [ "style", "${_PasswordButton3}", "opacity", '0', { fromValue: '1'}], position: 2000, duration: 250 },
                 { id: "eid743", tween: [ "style", "${_DeEnergizeButton}", "display", 'block', { fromValue: 'none'}], position: 3000, duration: 0 },
-                { id: "eid1339", tween: [ "style", "${_PasswordButton5}", "top", '39.84%', { fromValue: '39.84%'}], position: 1452, duration: 0 },
-                { id: "eid1341", tween: [ "style", "${_PasswordButton6}", "top", '56.77%', { fromValue: '56.77%'}], position: 1452, duration: 0 },
                 { id: "eid1346", tween: [ "style", "${_SuspendButton}", "display", 'block', { fromValue: 'none'}], position: 3000, duration: 0 },
                 { id: "eid338", tween: [ "style", "${_CalibrateButton}", "left", '51.37%', { fromValue: '51.37%'}], position: 3250, duration: 0 },
                 { id: "eid336", tween: [ "style", "${_CalibrateButton}", "display", 'block', { fromValue: 'none'}], position: 3000, duration: 0 },
                 { id: "eid351", tween: [ "style", "${_ShowInFiveButton}", "opacity", '1', { fromValue: '0'}], position: 3000, duration: 250 },
                 { id: "eid1336", tween: [ "style", "${_EnergizeButton}", "top", '26.82%', { fromValue: '26.82%'}], position: 3250, duration: 0 },
-                { id: "eid335", tween: [ "style", "${_HomeButton}", "opacity", '1', { fromValue: '0'}], position: 3000, duration: 250 },
-                { id: "eid1338", tween: [ "style", "${_PasswordButton1}", "top", '22.92%', { fromValue: '22.92%'}], position: 1452, duration: 0 }            ]
+                { id: "eid335", tween: [ "style", "${_HomeButton}", "opacity", '1', { fromValue: '0'}], position: 3000, duration: 250 }            ]
         }
     }
 },
@@ -2332,43 +2327,43 @@ var symbols = {
                 {
                     id: 'OS',
                     type: 'rect',
-                    transform: [[0, 0], [], [], ['0.56219', '0.56219']],
+                    transform: [[], [], [], ['0.56219', '0.56219']],
                     rect: ['5.9%', '80.7%', 'auto', 'auto', 'auto', 'auto']
                 },
                 {
                     id: 'Layer1',
                     type: 'rect',
-                    transform: [[0, 0], [], [], ['0.56219', '0.56219']],
+                    transform: [[], [], [], ['0.56219', '0.56219']],
                     rect: ['5.5%', '73.7%', 'auto', 'auto', 'auto', 'auto']
                 },
                 {
                     id: 'Layer2',
                     type: 'rect',
-                    transform: [[0, 0], [], [], ['0.56219', '0.56219']],
+                    transform: [[], [], [], ['0.56219', '0.56219']],
                     rect: ['5.5%', '66.7%', 'auto', 'auto', 'auto', 'auto']
                 },
                 {
                     id: 'Layer3',
                     type: 'rect',
-                    transform: [[0, 0], [], [], ['0.56219', '0.56219']],
+                    transform: [[], [], [], ['0.56219', '0.56219']],
                     rect: ['5.5%', '59.9%', 'auto', 'auto', 'auto', 'auto']
                 },
                 {
                     id: 'Layer4',
                     type: 'rect',
-                    transform: [[0, 0], [], [], ['0.56219', '0.56219']],
+                    transform: [[], [], [], ['0.56219', '0.56219']],
                     rect: ['5.5%', '52.9%', 'auto', 'auto', 'auto', 'auto']
                 },
                 {
                     id: 'Personalization',
                     type: 'rect',
-                    transform: [[0, 0], [], [], ['0.56219', '0.56219']],
+                    transform: [[], [], [], ['0.56219', '0.56219']],
                     rect: ['5.9%', '45.8%', 'auto', 'auto', 'auto', 'auto']
                 },
                 {
                     id: 'loadingcircle2',
                     type: 'rect',
-                    transform: [[0, 0], [], [], ['0.5', '0.5']],
+                    transform: [[], [], [], ['0.5', '0.5']],
                     rect: ['197px', '262px', 'auto', 'auto', 'auto', 'auto']
                 },
                 {
@@ -2383,20 +2378,20 @@ var symbols = {
                     fill: ['rgba(0,0,0,0)', 'images/bot_01.png', '0px', '0px']
                 },
                 {
-                    type: 'text',
                     rect: ['54px', '107px', '169px', '120px', 'auto', 'auto'],
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     id: 'speechbubble_text_1',
                     text: 'Nice! Hold on <br>while I build that desktop for you.',
                     align: 'center',
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
+                    type: 'text'
                 },
                 {
-                    type: 'text',
                     rect: ['54px', '103px', '169px', '120px', 'auto', 'auto'],
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     id: 'speechbubble_text_2',
                     text: 'That was easy. <br>But what about managing that desktop?',
                     align: 'center',
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
+                    type: 'text'
                 }
             ],
             symbolInstances: [
@@ -2566,7 +2561,7 @@ var symbols = {
         "Default Timeline": {
             fromState: "Base State",
             toState: "",
-            duration: 8000,
+            duration: 7000,
             autoPlay: false,
             labels: {
                 "Start": 1000,
@@ -3459,12 +3454,12 @@ var symbols = {
     content: {
             dom: [
                 {
-                    type: 'text',
                     rect: ['91px', '-80px', 'auto', 'auto', 'auto', 'auto'],
+                    font: ['Arial, Helvetica, sans-serif', 44, 'rgba(255,0,0,1)', '400', 'none', 'normal'],
                     id: 'Title',
                     text: 'Repair desktop...',
                     align: 'center',
-                    font: ['Arial, Helvetica, sans-serif', 44, 'rgba(255,0,0,1)', '400', 'none', 'normal']
+                    type: 'text'
                 },
                 {
                     id: 'bot_01Copy',
@@ -3479,39 +3474,39 @@ var symbols = {
                     fill: ['rgba(0,0,0,0)', 'images/bot_speechbubble_01.png', '0px', '0px']
                 },
                 {
-                    type: 'text',
-                    rect: ['54px', '116px', '169px', '135px', 'auto', 'auto'],
+                    rect: ['54px', '101px', '169px', '135px', 'auto', 'auto'],
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     id: 'Text3Copy',
-                    text: 'Upgrading the OS...',
+                    text: 'Repairing the desktop...',
                     align: 'center',
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
+                    type: 'text'
                 },
                 {
-                    type: 'text',
                     rect: ['-120px', '111px', '508px', 'auto', 'auto', 'auto'],
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     align: 'center',
                     id: 'WaitingCopy2',
                     text: 'Waiting...',
                     display: 'block',
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
+                    type: 'text'
                 },
                 {
-                    type: 'text',
                     rect: ['-119px', '111px', '508px', 'auto', 'auto', 'auto'],
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     align: 'center',
                     id: 'RunningCopy2',
                     text: 'Running...',
                     display: 'block',
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
+                    type: 'text'
                 },
                 {
-                    type: 'text',
                     rect: ['-119px', '111px', '508px', 'auto', 'auto', 'auto'],
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     align: 'center',
                     id: 'DoneCopy2',
                     text: 'Done!',
                     display: 'block',
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
+                    type: 'text'
                 }
             ],
             symbolInstances: [
@@ -3522,6 +3517,41 @@ var symbols = {
             "${_Title}": [
                 ["style", "left", '91px'],
                 ["style", "top", '-80px']
+            ],
+            "${_Text3Copy}": [
+                ["style", "top", '101px'],
+                ["style", "height", '135px'],
+                ["color", "color", 'rgba(183,18,52,1.00)'],
+                ["style", "opacity", '1'],
+                ["style", "left", '547px'],
+                ["style", "width", '169px']
+            ],
+            "${_bot_speechbubble_01Copy}": [
+                ["style", "top", '53px'],
+                ["style", "height", '151px'],
+                ["style", "opacity", '1'],
+                ["style", "left", '521px'],
+                ["style", "width", '222px']
+            ],
+            "${_bot_01Copy}": [
+                ["style", "height", '283px'],
+                ["style", "top", '83px'],
+                ["style", "left", '610px'],
+                ["style", "width", '395px']
+            ],
+            "${_WaitingCopy2}": [
+                ["style", "top", '111px'],
+                ["style", "font-size", '18px'],
+                ["color", "color", 'rgba(183,18,52,1.00)'],
+                ["style", "font-weight", '300'],
+                ["style", "display", 'block'],
+                ["style", "font-family", 'Roboto, Arial, sans-serif'],
+                ["style", "left", '-120px'],
+                ["style", "width", '508px']
+            ],
+            "${symbolSelector}": [
+                ["style", "height", '100%'],
+                ["style", "width", '100%']
             ],
             "${_RunningCopy2}": [
                 ["style", "top", '111px'],
@@ -3542,41 +3572,6 @@ var symbols = {
                 ["style", "font-family", 'Roboto, Arial, sans-serif'],
                 ["style", "left", '-119px'],
                 ["style", "width", '508px']
-            ],
-            "${symbolSelector}": [
-                ["style", "height", '100%'],
-                ["style", "width", '100%']
-            ],
-            "${_WaitingCopy2}": [
-                ["style", "top", '111px'],
-                ["style", "font-size", '18px'],
-                ["color", "color", 'rgba(183,18,52,1.00)'],
-                ["style", "font-weight", '300'],
-                ["style", "display", 'block'],
-                ["style", "font-family", 'Roboto, Arial, sans-serif'],
-                ["style", "left", '-120px'],
-                ["style", "width", '508px']
-            ],
-            "${_bot_speechbubble_01Copy}": [
-                ["style", "top", '53px'],
-                ["style", "height", '151px'],
-                ["style", "opacity", '1'],
-                ["style", "left", '521px'],
-                ["style", "width", '222px']
-            ],
-            "${_Text3Copy}": [
-                ["style", "top", '116px'],
-                ["style", "height", '135px'],
-                ["color", "color", 'rgba(183,18,52,1.00)'],
-                ["style", "opacity", '1'],
-                ["style", "left", '524px'],
-                ["style", "width", '169px']
-            ],
-            "${_bot_01Copy}": [
-                ["style", "height", '283px'],
-                ["style", "top", '83px'],
-                ["style", "left", '610px'],
-                ["style", "width", '395px']
             ]
         }
     },
@@ -3610,7 +3605,7 @@ var symbols = {
                 { id: "eid1089", tween: [ "style", "${_WaitingCopy2}", "display", 'none', { fromValue: 'block'}], position: 1000, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid1090", tween: [ "style", "${_WaitingCopy2}", "display", 'block', { fromValue: 'none'}], position: 4000, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid1091", tween: [ "style", "${_WaitingCopy2}", "display", 'none', { fromValue: 'block'}], position: 5000, duration: 0, easing: "easeInOutQuad" },
-                { id: "eid1092", tween: [ "style", "${_Text3Copy}", "left", '50px', { fromValue: '524px'}], position: 1000, duration: 500, easing: "easeInOutQuad" },
+                { id: "eid1092", tween: [ "style", "${_Text3Copy}", "left", '49px', { fromValue: '547px'}], position: 1000, duration: 500, easing: "easeInOutQuad" },
                 { id: "eid1086", tween: [ "style", "${_RunningCopy2}", "display", 'none', { fromValue: 'block'}], position: 1000, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid1087", tween: [ "style", "${_RunningCopy2}", "display", 'block', { fromValue: 'none'}], position: 5000, duration: 0, easing: "easeInOutQuad" },
                 { id: "eid1088", tween: [ "style", "${_RunningCopy2}", "display", 'none', { fromValue: 'block'}], position: 6000, duration: 0, easing: "easeInOutQuad" }            ]
@@ -3630,12 +3625,12 @@ var symbols = {
     content: {
             dom: [
                 {
-                    type: 'text',
                     rect: ['0px', '-89px', '512px', 'auto', 'auto', 'auto'],
+                    font: ['Arial, Helvetica, sans-serif', 44, 'rgba(255,0,0,1)', '400', 'none', 'normal'],
                     id: 'Title',
                     text: 'Upgrade OS',
                     align: 'center',
-                    font: ['Arial, Helvetica, sans-serif', 44, 'rgba(255,0,0,1)', '400', 'none', 'normal']
+                    type: 'text'
                 },
                 {
                     id: 'bot_01',
@@ -3650,39 +3645,39 @@ var symbols = {
                     fill: ['rgba(0,0,0,0)', 'images/bot_speechbubble_01.png', '0px', '0px']
                 },
                 {
-                    type: 'text',
                     rect: ['54px', '116px', '169px', '135px', 'auto', 'auto'],
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     id: 'Text3Copy2',
                     text: 'Upgrading the OS...',
                     align: 'center',
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
+                    type: 'text'
                 },
                 {
-                    type: 'text',
                     rect: ['-120px', '111px', '508px', 'auto', 'auto', 'auto'],
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     align: 'center',
                     id: 'Waiting',
                     text: 'Waiting...',
                     display: 'block',
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
+                    type: 'text'
                 },
                 {
-                    type: 'text',
                     rect: ['-119px', '111px', '508px', 'auto', 'auto', 'auto'],
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     align: 'center',
                     id: 'Running',
                     text: 'Running...',
                     display: 'block',
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
+                    type: 'text'
                 },
                 {
-                    type: 'text',
                     rect: ['-119px', '111px', '508px', 'auto', 'auto', 'auto'],
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     align: 'center',
                     id: 'Done',
                     text: 'Done!',
                     display: 'block',
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
+                    type: 'text'
                 }
             ],
             symbolInstances: [
@@ -3690,12 +3685,6 @@ var symbols = {
         },
     states: {
         "Base State": {
-            "${_bot_01}": [
-                ["style", "top", '83px'],
-                ["style", "height", '283px'],
-                ["style", "left", '610px'],
-                ["style", "width", '395px']
-            ],
             "${_Title}": [
                 ["style", "top", '-89px'],
                 ["style", "left", '0px'],
@@ -3707,10 +3696,6 @@ var symbols = {
                 ["style", "opacity", '1'],
                 ["style", "left", '521px'],
                 ["style", "width", '222px']
-            ],
-            "${symbolSelector}": [
-                ["style", "height", '100%'],
-                ["style", "width", '100%']
             ],
             "${_Running}": [
                 ["style", "top", '111px'],
@@ -3730,6 +3715,12 @@ var symbols = {
                 ["style", "left", '524px'],
                 ["style", "width", '169px']
             ],
+            "${_bot_01}": [
+                ["style", "top", '83px'],
+                ["style", "height", '283px'],
+                ["style", "left", '610px'],
+                ["style", "width", '395px']
+            ],
             "${_Waiting}": [
                 ["style", "top", '111px'],
                 ["style", "width", '508px'],
@@ -3739,6 +3730,10 @@ var symbols = {
                 ["style", "font-weight", '300'],
                 ["style", "left", '-120px'],
                 ["style", "font-size", '18px']
+            ],
+            "${symbolSelector}": [
+                ["style", "height", '100%'],
+                ["style", "width", '100%']
             ],
             "${_Done}": [
                 ["style", "top", '111px'],
@@ -3802,13 +3797,13 @@ var symbols = {
     content: {
             dom: [
                 {
-                    type: 'text',
                     rect: ['4px', '-82px', '508px', 'auto', 'auto', 'auto'],
+                    font: ['Arial, Helvetica, sans-serif', 44, 'rgba(255,0,0,1)', '400', 'none', 'normal'],
                     align: 'center',
                     id: 'Title',
                     text: 'Upgrade app',
                     display: 'block',
-                    font: ['Arial, Helvetica, sans-serif', 44, 'rgba(255,0,0,1)', '400', 'none', 'normal']
+                    type: 'text'
                 },
                 {
                     id: 'bot_01',
@@ -3823,39 +3818,39 @@ var symbols = {
                     fill: ['rgba(0,0,0,0)', 'images/bot_speechbubble_01.png', '0px', '0px']
                 },
                 {
-                    type: 'text',
                     rect: ['54px', '116px', '189px', '135px', 'auto', 'auto'],
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     id: 'Text3',
                     text: 'Upgrading Application...',
                     align: 'center',
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
+                    type: 'text'
                 },
                 {
-                    type: 'text',
                     rect: ['-120px', '111px', '508px', 'auto', 'auto', 'auto'],
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     align: 'center',
                     id: 'WaitingCopy',
                     text: 'Waiting...',
                     display: 'block',
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
+                    type: 'text'
                 },
                 {
-                    type: 'text',
                     rect: ['-119px', '111px', '508px', 'auto', 'auto', 'auto'],
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     align: 'center',
                     id: 'RunningCopy',
                     text: 'Running...',
                     display: 'block',
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
+                    type: 'text'
                 },
                 {
-                    type: 'text',
                     rect: ['-119px', '111px', '508px', 'auto', 'auto', 'auto'],
+                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal'],
                     align: 'center',
                     id: 'DoneCopy',
                     text: 'Done!',
                     display: 'block',
-                    font: ['Roboto, Arial, sans-serif', 18, 'rgba(183,18,52,1.00)', '300', 'none', 'normal']
+                    type: 'text'
                 }
             ],
             symbolInstances: [
@@ -3863,12 +3858,6 @@ var symbols = {
         },
     states: {
         "Base State": {
-            "${_bot_01}": [
-                ["style", "height", '283px'],
-                ["style", "top", '83px'],
-                ["style", "left", '610px'],
-                ["style", "width", '395px']
-            ],
             "${_Title}": [
                 ["style", "top", '-82px'],
                 ["style", "display", 'block'],
@@ -3876,12 +3865,32 @@ var symbols = {
                 ["style", "left", '4px'],
                 ["style", "width", '508px']
             ],
+            "${_WaitingCopy}": [
+                ["style", "top", '111px'],
+                ["style", "font-size", '18px'],
+                ["color", "color", 'rgba(183,18,52,1.00)'],
+                ["style", "font-weight", '300'],
+                ["style", "display", 'block'],
+                ["style", "font-family", 'Roboto, Arial, sans-serif'],
+                ["style", "left", '-120px'],
+                ["style", "width", '508px']
+            ],
+            "${_bot_01}": [
+                ["style", "height", '283px'],
+                ["style", "top", '83px'],
+                ["style", "left", '610px'],
+                ["style", "width", '395px']
+            ],
             "${_bot_speechbubble_01}": [
                 ["style", "top", '53px'],
                 ["style", "height", '151px'],
                 ["style", "opacity", '1'],
                 ["style", "left", '521px'],
                 ["style", "width", '222px']
+            ],
+            "${symbolSelector}": [
+                ["style", "height", '100%'],
+                ["style", "width", '100%']
             ],
             "${_RunningCopy}": [
                 ["style", "top", '111px'],
@@ -3900,20 +3909,6 @@ var symbols = {
                 ["style", "opacity", '1'],
                 ["style", "left", '524px'],
                 ["style", "width", '189px']
-            ],
-            "${symbolSelector}": [
-                ["style", "height", '100%'],
-                ["style", "width", '100%']
-            ],
-            "${_WaitingCopy}": [
-                ["style", "top", '111px'],
-                ["style", "font-size", '18px'],
-                ["color", "color", 'rgba(183,18,52,1.00)'],
-                ["style", "font-weight", '300'],
-                ["style", "display", 'block'],
-                ["style", "font-family", 'Roboto, Arial, sans-serif'],
-                ["style", "left", '-120px'],
-                ["style", "width", '508px']
             ],
             "${_DoneCopy}": [
                 ["style", "top", '111px'],
@@ -4544,6 +4539,87 @@ var symbols = {
             toState: "",
             duration: 0,
             autoPlay: true,
+            timeline: [
+            ]
+        }
+    }
+},
+"ErrorMessage": {
+    version: "4.0.0",
+    minimumCompatibleVersion: "4.0.0",
+    build: "4.0.0.359",
+    baseState: "Base State",
+    scaleToFit: "none",
+    centerStage: "none",
+    initialState: "Base State",
+    gpuAccelerate: false,
+    resizeInstances: false,
+    content: {
+            dom: [
+                {
+                    id: 'ErrorMessage',
+                    type: 'group',
+                    rect: ['0px', '0px', '252', '69', 'auto', 'auto'],
+                    c: [
+                    {
+                        rect: ['0px', '0px', '252px', '69px', 'auto', 'auto'],
+                        borderRadius: ['10px', '10px', '10px', '10px'],
+                        id: 'ErrorMessageBackdrop',
+                        stroke: [1, 'rgba(139,139,139,1.00)', 'solid'],
+                        type: 'rect',
+                        fill: ['rgba(255,255,255,1.00)']
+                    },
+                    {
+                        rect: ['13px', '10px', '225px', '52px', 'auto', 'auto'],
+                        font: ['Roboto, Arial, sans-serif', 13, 'rgba(186,0,0,1.00)', '500', 'none', 'normal'],
+                        align: 'center',
+                        id: 'ErrorMessageText',
+                        opacity: 1,
+                        text: 'MULTIPLE LINE ERROR MESSAGE WILL APPEAR IN THIS SPACE',
+                        type: 'text'
+                    }]
+                }
+            ],
+            symbolInstances: [
+            ]
+        },
+    states: {
+        "Base State": {
+            "${_ErrorMessage}": [
+                ["style", "left", '0px'],
+                ["style", "top", '0px']
+            ],
+            "${symbolSelector}": [
+                ["style", "height", '69px'],
+                ["style", "width", '252px']
+            ],
+            "${_ErrorMessageBackdrop}": [
+                ["style", "top", '0px'],
+                ["color", "border-color", 'rgba(139,139,139,1.00)'],
+                ["style", "border-width", '1px'],
+                ["color", "background-color", 'rgba(255,255,255,1.00)'],
+                ["style", "border-style", 'solid'],
+                ["style", "left", '0px'],
+                ["style", "width", '252px']
+            ],
+            "${_ErrorMessageText}": [
+                ["style", "top", '10px'],
+                ["style", "font-weight", '500'],
+                ["style", "width", '225px'],
+                ["style", "height", '52px'],
+                ["color", "color", 'rgba(186,0,0,1.00)'],
+                ["style", "opacity", '1'],
+                ["style", "left", '13px'],
+                ["style", "font-size", '13px']
+            ]
+        }
+    },
+    timelines: {
+        "Default Timeline": {
+            fromState: "Base State",
+            toState: "",
+            duration: 0,
+            autoPlay: false,
             timeline: [
             ]
         }

@@ -146,6 +146,21 @@
 			"timelineColor3":"0x2a6a61",
 			"timelineColor":"0x00bda4"}},
 	"CompZoomFactor":"100",
+	"symbol_ErrorMessage":{
+		"element_${_ErrorMessage}":{
+			"timelineColor2":"0xb099ce",
+			"timelineColor3":"0x70657c",
+			"timelineColor":"0xceaef4"},
+		"element_${_ErrorMessageText}":{
+			"timelineColor2":"0x5a558a",
+			"timelineColor3":"0x4a485e",
+			"animationEnabled":"false",
+			"timelineColor":"0x63599f"},
+		"element_${_ErrorMessageBackdrop}":{
+			"timelineColor2":"0x5a558a",
+			"timelineColor3":"0x4a485e",
+			"animationEnabled":"false",
+			"timelineColor":"0x63599f"}},
 	"applogo3-Default Timeline_playhead_ms":"0",
 	"symbol_ActionUpgradeOS":{
 		"dummyStageParentWidth":"512px",
@@ -400,6 +415,11 @@
 \"Down-level\": {\
    \"timelines\": {\
 \
+   }},\
+\"ErrorMessage\": {\
+   \"timelines\": {\
+      \"Default Timeline\": {\
+      }\
    }}\
 }",
 	"ChangeOptions-Default Timeline_playhead_ms":"0",
@@ -813,8 +833,8 @@
 			"animationEnabled":"false",
 			"timelineColor":"0x91c767"},
 		"defaultStageParentHeight":"384px"},
-	"TransitionIdCounter":"1359",
-	"viewStartY":"0",
+	"TransitionIdCounter":"1390",
+	"viewStartY":"27",
 	"expanded:images/update_patchos-blank_01.png":"nil",
 	"ActionUpgradeOS-Default Timeline_playhead_ms":"0",
 	"Background-Default Timeline_mark_ms":"-1",
@@ -1184,6 +1204,7 @@
 		"dummyStageParentWidth":"120px"},
 	"OSSymbol-Default Timeline_playhead_ms":"0",
 	"expanded:images/Screen%20Shot%202014-08-18%20at%2010.53.27%20AM.png":"nil",
+	"ErrorMessage-Default Timeline_playhead_ms":"0",
 	"applogo2-Default Timeline_playhead_ms":"0",
 	"symbol_PasswordButton":{
 		"element_${_RoundRect}":{
@@ -1487,17 +1508,22 @@
 			"animationEnabled":"false",
 			"timelineColor":"0x00a096"},
 		"dummyStageParentHeight":"384px",
+		"element_${_FrameDiv}":{
+			"timelineColor2":"0x168c84",
+			"timelineColor3":"0x2a605c",
+			"animationEnabled":"false",
+			"timelineColor":"0x00a096"},
 		"element_${_SuspendButton}":{
 			"timelineColor2":"0x1095d2",
 			"timelineColor3":"0x29647e",
 			"timelineColor":"0x00a9fa",
 			"timelineTreeOpened":"false",
 			"animationEnabled":"true"},
-		"element_${_ErrorMessage}":{
-			"timelineColor2":"0x5a558a",
-			"timelineColor3":"0x4a485e",
-			"animationEnabled":"true",
-			"timelineColor":"0x63599f"},
+		"element_${_ErrorMessageText}":{
+			"timelineColor2":"0xd8b467",
+			"timelineColor3":"0x81714f",
+			"animationEnabled":"false",
+			"timelineColor":"0xffd46d"},
 		"element_${_ShowNowButton}":{
 			"timelineColor2":"0xd35d6e",
 			"timelineColor3":"0x7e4b52",
@@ -1514,6 +1540,28 @@
 			"timelineColor2":"0xcbbd71",
 			"timelineColor3":"0x7b7652",
 			"timelineColor":"0xeedf79",
+			"timelineTreeOpened":"true",
+			"animationEnabled":"true"},
+		"element_${_ErrorMessage}":{
+			"timelineColor2":"0xd35d6e",
+			"timelineColor3":"0x7e4b52",
+			"animationEnabled":"true",
+			"timelineColor":"0xfb657a"},
+		"element_${_PasswordButton5}":{
+			"timelineColor2":"0xba5b89",
+			"timelineColor3":"0x734a5f",
+			"timelineColor":"0xdb619d",
+			"timelineTreeOpened":"true",
+			"animationEnabled":"true"},
+		"element_${_FrameContainer}":{
+			"timelineColor2":"0x1aa38f",
+			"timelineColor3":"0x2a6a61",
+			"animationEnabled":"false",
+			"timelineColor":"0x00bda4"},
+		"element_${_RestartUIButton}":{
+			"timelineColor2":"0x107faa",
+			"timelineColor3":"0x295a6d",
+			"timelineColor":"0x008dc8",
 			"timelineTreeOpened":"false",
 			"animationEnabled":"true"},
 		"element_${_BtnCalibrate}":{
@@ -1521,22 +1569,16 @@
 			"timelineColor3":"0x385063",
 			"animationEnabled":"false",
 			"timelineColor":"0x2f73ad"},
-		"element_${_PasswordButton5}":{
-			"timelineColor2":"0xba5b89",
-			"timelineColor3":"0x734a5f",
-			"timelineColor":"0xdb619d",
-			"timelineTreeOpened":"false",
-			"animationEnabled":"true"},
 		"element_${_UngripButton}":{
 			"timelineColor2":"0x1aa38f",
 			"timelineColor3":"0x2a6a61",
 			"timelineColor":"0x00bda4",
 			"timelineTreeOpened":"false",
 			"animationEnabled":"true"},
-		"element_${_RestartUIButton}":{
-			"timelineColor2":"0x107faa",
-			"timelineColor3":"0x295a6d",
-			"timelineColor":"0x008dc8",
+		"element_${_HomeButton}":{
+			"timelineColor2":"0x1aa38f",
+			"timelineColor3":"0x2a6a61",
+			"timelineColor":"0x00bda4",
 			"timelineTreeOpened":"false",
 			"animationEnabled":"true"},
 		"element_${_Background}":{
@@ -1546,22 +1588,6 @@
 			"timelineTreeOpened":"false",
 			"animationEnabled":"false",
 			"invisible":"false"},
-		"element_${_RoundRect}":{
-			"timelineColor2":"0x5a558a",
-			"timelineColor3":"0x4a485e",
-			"animationEnabled":"false",
-			"timelineColor":"0x63599f"},
-		"element_${_HomeButton}":{
-			"timelineColor2":"0x1aa38f",
-			"timelineColor3":"0x2a6a61",
-			"timelineColor":"0x00bda4",
-			"timelineTreeOpened":"false",
-			"animationEnabled":"true"},
-		"element_${_FrameContainer}":{
-			"timelineColor2":"0x1aa38f",
-			"timelineColor3":"0x2a6a61",
-			"animationEnabled":"false",
-			"timelineColor":"0x00bda4"},
 		"element_${_ShowInFiveButton}":{
 			"timelineColor2":"0xba5b89",
 			"timelineColor3":"0x734a5f",
@@ -1572,14 +1598,14 @@
 			"timelineColor2":"0x4fa275",
 			"timelineColor3":"0x456a55",
 			"timelineColor":"0x50bd82",
-			"timelineTreeOpened":"false",
+			"timelineTreeOpened":"true",
 			"animationEnabled":"true",
 			"invisible":"false"},
 		"element_${_PasswordButton1}":{
 			"timelineColor2":"0x107faa",
 			"timelineColor3":"0x295a6d",
 			"timelineColor":"0x008dc8",
-			"timelineTreeOpened":"false",
+			"timelineTreeOpened":"true",
 			"animationEnabled":"true"},
 		"element_${_GripButton}":{
 			"timelineColor2":"0x168c84",
@@ -1591,13 +1617,13 @@
 			"timelineColor2":"0xd8b467",
 			"timelineColor3":"0x81714f",
 			"timelineColor":"0xffd46d",
-			"timelineTreeOpened":"false",
+			"timelineTreeOpened":"true",
 			"animationEnabled":"true"},
 		"element_${_PasswordButton3}":{
 			"timelineColor2":"0xd35d6e",
 			"timelineColor3":"0x7e4b52",
 			"timelineColor":"0xfb657a",
-			"timelineTreeOpened":"false",
+			"timelineTreeOpened":"true",
 			"animationEnabled":"true"},
 		"defaultStageParentHeight":"384px",
 		"element_${_EnergizeButton}":{
@@ -1606,11 +1632,11 @@
 			"timelineColor":"0x63599f",
 			"timelineTreeOpened":"false",
 			"animationEnabled":"true"},
-		"element_${_FrameDiv}":{
-			"timelineColor2":"0x168c84",
-			"timelineColor3":"0x2a605c",
+		"element_${_ErrorMessageBackdrop}":{
+			"timelineColor2":"0xcbbd71",
+			"timelineColor3":"0x7b7652",
 			"animationEnabled":"false",
-			"timelineColor":"0x00a096"},
+			"timelineColor":"0xeedf79"},
 		"defaultStageParentWidth":"512px",
 		"element_${_ResumeButton}":{
 			"timelineColor2":"0x5a558a",
@@ -1628,7 +1654,7 @@
 			"timelineColor2":"0xb099ce",
 			"timelineColor3":"0x70657c",
 			"timelineColor":"0xceaef4",
-			"timelineTreeOpened":"false",
+			"timelineTreeOpened":"true",
 			"animationEnabled":"true"}},
 	"symbol_Startup":{
 		"dummyStageParentWidth":"512px",
@@ -1762,7 +1788,7 @@
 			"animationEnabled":"true",
 			"timelineColor":"0x91c767"}},
 	"expanded:images/temp_layer_gold_01.png":"nil",
-	"nextElementColorIndex":"10",
+	"nextElementColorIndex":"2",
 	"expanded:images/bot_speechbubble_01.png":"nil",
 	"symbol_AppLogo3":{
 		"dummyStageParentWidth":"137px",
@@ -1902,7 +1928,7 @@
 			"timelineColor3":"0x385063",
 			"timelineColor":"0x2f73ad"}},
 	"expanded:images/status_executing_01.png":"nil",
-	"viewStartMs":"-36.326311803076",
+	"viewStartMs":"-36.326313018799",
 	"loadingDoneCheck-Default Timeline_playhead_ms":"0",
 	"symbol_Build":{
 		"dummyStageParentWidth":"512px",
