@@ -40,7 +40,8 @@ public class CommandProcessor
     private static CommandProcessor cp = null;
     private CommandQueues cmdq = null;
     private ArmOperations ao = null;
-    
+    private static Result activeError = new Result("Startup - Calibration required");
+
     /**
      * Returns a singleton instead of this CommandProcessor
      * 
@@ -65,11 +66,19 @@ public class CommandProcessor
     }
     
     /**
+     * Returns a Result object containing the active error (if any)
+     * 
+     * @return Result with success/fail info
+     */
+    public static Result getActiveError() {
+        return CommandProcessor.activeError;
+    }
+    
+    /**
      * Main command processor thread - blocks and executes command until terminated with kill
      */
     public void processCommands() {
 //        System.out.println("Command processor started");
-        Result activeError = new Result("Startup - Calibration required");
         
         // set up our command arguments to track the arm position
         PositionLookup plt = PositionLookup.getInstance();

@@ -242,7 +242,9 @@
 			if (typeof(autoRedirect) === 'undefined')
 				autoRedirect = true;
 			if (sym.unibot.simulated) {
-				if (isNaN(sym.unibot.mounts[id]))
+				if (id.toString().toLowerCase() == 'error')
+					response = { status: "COMPLETE" };
+				else if (isNaN(sym.unibot.mounts[id]))
 					response = { status: "UNKNOWN" };
 				else {
 					--sym.unibot.mounts[id];
@@ -579,7 +581,7 @@
 	         var inShow = (stage.unibot.getVariable('inShow') == 'show');
 	         if (!inShow) {
 	         	stage.showTimer = 0;
- 				stage.homeResponse = stage.unibot.enqueue('ARM-HOME', { queue: 0, status: 0 });
+					stage.homeResponse = stage.unibot.enqueue('ARM-HOME', { queue: 0, status: 0 });
 	         	sym.play('Start');
 	         }
 	         else 
@@ -598,37 +600,38 @@
 	         	// lookup if our partner is done
 	         	var inUse = (stage.unibot.getVariable('inUse2') == 'active');
 	         	if (!inUse) {
+	         	console.log("In show, timer is " + stage.showTimer);
 	         		// if this is the first second, bring up the sign
 	         		switch (stage.showTimer) {
 	         			case 0:
-	         				stage.signResponse = stage.unibot.enqueue('SHOW-SIGN', { queue: 0, status: 1, layer: window.showNowSign, effect: 'CONTINUOUS' });
+	         				stage.signResponse = stage.unibot.enqueue('SHOW-SIGN', { queue: 0, status: 0, layer: window.showNowSign, effect: 'CONTINUOUS' });
 	         				break;
-	         			case 1:
-	         				var inquiry = stage.unibot.status(stage.signResponse.id, true);
-	         				if ( (inquiry.status == 'PENDING') || (inquiry.status == 'EXECUTING') )
-	         					// not done yet, decrement timer so we do it again
-	         					--stage.showTimer;
-	         				break;
-	         			case 2:
+	         			// after a delay (showTimer number of seconds), auto-calibrate the bot...
+	         /*
+	         			case 10:
 	         				console.log('Executing HOME (during show)');
 	         				stage.homeResponse = stage.unibot.enqueue('ARM-HOME', { queue: 0, status: 1 });
 	         				break;
-	         			case 3:
+	         			case 11:
 	         				var inquiry = stage.unibot.status(stage.homeResponse.id, true);
 	         				if ( (inquiry.status == 'PENDING') || (inquiry.status == 'EXECUTING') )
 	         					// not done yet, decrement timer so we do it again
 	         					--stage.showTimer;
 	         				break;
-	         			case 4:
+	         			case 12:
 	         				console.log('Executing CALIBRATE (during show)');
 	         				stage.calibrateResponse = stage.unibot.enqueue('ARM-CALIBRATE', { queue: 0, status: 1 });
 	         				break;
-	         			case 5:
+	         			case 13:
 	         				var inquiry = stage.unibot.status(stage.calibrateResponse.id, true);
 	         				if ( (inquiry.status == 'PENDING') || (inquiry.status == 'EXECUTING') )
 	         					// not done yet, decrement timer so we do it again
 	         					--stage.showTimer;
 	         				break;
+	         			case 14:
+	         				stage.signResponse = stage.unibot.enqueue('SHOW-SIGN', { queue: 0, status: 0, layer: window.showNowSign, effect: 'CONTINUOUS' });
+	         				break;
+	         */
 	         		}
 	         		// track total time passing (one second per execution)
 	         		++stage.showTimer;
@@ -740,7 +743,7 @@
 						return true;	
 					}
 				});
-		
+			
 				sym.getSymbol('CalibrateButton').$('ButtonLabel').html('Calibrate');
 				sym.getSymbol('CalibrateButton').setVariable('activate', function(sym, execFlag) { 
 					var stage = sym.getComposition().getStage();
@@ -766,7 +769,7 @@
 						return true;	
 					}
 				});
-		
+			
 				sym.getSymbol('EnergizeButton').$('ButtonLabel').html('Energize');
 				sym.getSymbol('EnergizeButton').setVariable('activate', function(sym, execFlag) { 
 					var stage = sym.getComposition().getStage();
@@ -792,7 +795,7 @@
 						return true;	
 					}
 				});
-		
+			
 				sym.getSymbol('DeEnergizeButton').$('ButtonLabel').html('De-energize');
 				sym.getSymbol('DeEnergizeButton').setVariable('activate', function(sym, execFlag) { 
 					var stage = sym.getComposition().getStage();
@@ -818,7 +821,7 @@
 						return true;	
 					}
 				});
-		
+			
 				sym.getSymbol('ShowInFiveButton').$('ButtonLabel').html('Show in five');
 				sym.getSymbol('ShowInFiveButton').setVariable('activate', function(sym, execFlag) { 
 					var stage = sym.getComposition().getStage();
@@ -844,14 +847,14 @@
 						return true;	
 					}
 				});
-		
+			
 				var stage = sym.getComposition().getStage();
 				var inShow = (stage.unibot.getVariable('inShow') == 'show');
 				if (inShow)
 					sym.getSymbol('ShowNowButton').$('ButtonLabel').html('Show over');
 				else
 					sym.getSymbol('ShowNowButton').$('ButtonLabel').html('Show now');
-		
+			
 				sym.getSymbol('ShowNowButton').setVariable('activate', function(sym, execFlag) { 
 					var stage = sym.getComposition().getStage();
 					if (!execFlag) {
@@ -864,7 +867,59 @@
 						return true;	
 					}
 				});
-		
+			
+				sym.getSymbol('GripButton').$('ButtonLabel').html('Grip');
+				sym.getSymbol('GripButton').setVariable('activate', function(sym, execFlag) {
+					var stage = sym.getComposition().getStage();
+					if (execFlag) {
+						stage.homeResponse = stage.unibot.enqueue('ARM-GRIP', { queue: 0, status: 1, grip: 'c' });
+						return false;
+					} else {
+						inquiry = stage.unibot.status(stage.homeResponse.id, false);
+						switch (inquiry.status) {
+							case 'PENDING':
+								return false;
+							case 'EXECUTING':
+								return false;
+							case 'COMPLETE':
+								return true;
+							case 'ERROR':
+								stage.updateButtons();
+								alert('Error: ' + inquiry.error);
+								break;
+							default:
+								alert('Request failed: ' + inquiry.status);
+						}
+						return true;	
+					}
+				});
+			
+				sym.getSymbol('UngripButton').$('ButtonLabel').html('Ungrip');
+				sym.getSymbol('UngripButton').setVariable('activate', function(sym, execFlag) {
+					var stage = sym.getComposition().getStage();
+					if (execFlag) {
+						stage.homeResponse = stage.unibot.enqueue('ARM-GRIP', { queue: 0, status: 1, grip: 'o' });
+						return false;
+					} else {
+						inquiry = stage.unibot.status(stage.homeResponse.id, false);
+						switch (inquiry.status) {
+							case 'PENDING':
+								return false;
+							case 'EXECUTING':
+								return false;
+							case 'COMPLETE':
+								return true;
+							case 'ERROR':
+								stage.updateButtons();
+								alert('Error: ' + inquiry.error);
+								break;
+							default:
+								alert('Request failed: ' + inquiry.status);
+						}
+						return true;	
+					}
+				});
+			
 				var errorMessage = stage.unibot.getVariable('hasError');
 				if (errorMessage == '')
 					sym.getSymbol('SuspendButton').$('ButtonLabel').html('Suspend');
@@ -886,15 +941,16 @@
 						return true;	
 					}
 				});
-		
-				sym.getSymbol('RestartUI').$('ButtonLabel').html('Restart UI');
-				sym.getSymbol('RestartUI').setVariable('activate', function(sym, execFlag) {
+			
+				sym.getSymbol('RestartUIButton').$('ButtonLabel').html('Restart UI');
+				sym.getSymbol('RestartUIButton').setVariable('activate', function(sym, execFlag) {
 					if (!execFlag) {
 						console.log('Restart UI');
 						sym.getComposition().getStage().done(sym, 'Start');
 					}
 					return true;
 				});
+			
 			};
 			sym.getComposition().getStage().updateButtons();
 
@@ -1900,19 +1956,30 @@
 	
 	      
 	
-	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 3000, function(sym, e) {
-	var stage = sym.getComposition().getStage();
-	var hasError = (stage.unibot.getVariable('hasError') != '');
-	if (hasError) {
-		stage.done(sym, 'Error');
-		sym.stop();
-		return;
-	}
+	      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 2000, function(sym, e) {
 	sym.play('Start');
-	
+
 	      });
 	      //Edge binding end
 	
+      Symbol.bindTriggerAction(compId, symbolName, "Default Timeline", 61, function(sym, e) {
+         var stage = sym.getComposition().getStage();
+         // two forms of error tracking - a variable is used ('hasError') whenever we detect an error which
+         // could come from the arm, or internally (such as suspend).  The other form is checking directly
+         // with the arm software.  This later version is mostly just to check for startup errors, though
+         // to be safe we do it in the loop anyway.
+         var hasError = (stage.unibot.getVariable('hasError') != '');
+         if (hasError) {
+         	stage.done(sym, 'Error');
+         	sym.stop();
+         	return;
+         }
+         // see if arm has error.  If so, let the error redirector handle this...
+         stage.unibot.status('ERROR', true);
+
+      });
+      //Edge binding end
+
 	      })("ErrorMonitor");
    //Edge symbol end:'ErrorMonitor'
 

@@ -18,6 +18,7 @@
  */
 package server;
 
+import commandprocessor.CommandProcessor;
 import commandqueue.CommandQueues;
 import commands.*;
 import enums.*;
@@ -299,18 +300,26 @@ public class ServerHooks
         String id;
         JSONObject json = new JSONObject();
         
-        CommandStatus status = CommandStatus.UNKNOWN;
-
-        
         if ((id = params.get(STATUS_ID_KEY)) != null) {
-            // note: we must call getResult before getStatus, because getStatus may remove the
-            // item from the list if it has encountered success/error
-            Result result = cmdq.getResult(id);
-            status = cmdq.getStatus(id);
-            json.put(STATUS_RETURN_STATUS_KEY, status.toString());
-            if (status == CommandStatus.ERROR) {
-                if (result != null)
+            // is this a special status request (id == 'ERROR')?
+            if (id.toLowerCase().equals("error")) {
+                Result result = CommandProcessor.getActiveError();
+                if (result.success())
+                    json.put(STATUS_RETURN_STATUS_KEY, CommandStatus.COMPLETE.toString());
+                else {
+                    json.put(STATUS_RETURN_STATUS_KEY, CommandStatus.ERROR.toString());
                     json.put(STATUS_ERROR_KEY, result.errorMessage);
+                }
+            } else {
+                // note: we must call getResult before getStatus, because getStatus may remove the
+                // item from the list if it has encountered success/error
+                Result result = cmdq.getResult(id);
+                CommandStatus status = cmdq.getStatus(id);
+                json.put(STATUS_RETURN_STATUS_KEY, status.toString());
+                if (status == CommandStatus.ERROR) {
+                    if (result != null)
+                        json.put(STATUS_ERROR_KEY, result.errorMessage);
+                }
             }
         }
         else
