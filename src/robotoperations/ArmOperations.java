@@ -313,25 +313,15 @@ public class ArmOperations
                     curPos = curPos.getDeltaPosition(priorPos, nextPos);
             }
             // add to the dynamic route
-            dr.addPosition(curPos);
+            if (curPos != null)
+                dr.addPosition(curPos);
             
             // save our current position for next time
             priorPos = curPos;
         }
 
         // run the route
-        int routeSpeed = route.getRouteProperties().getRouteSpeed();
-        if (routeSpeed > armSpeed)
-            routeSpeed = armSpeed;
-        int routeAccel = route.getRouteProperties().getRouteAccel();
-        if (routeAccel > armAccel)
-            routeAccel = armAccel;
-        String runRoute = Integer.toString(routeAccel) + " ACCEL ! " + Integer.toString(routeSpeed) + " SPEED ! ROUTE UDTEMP";
-        Result result = runRobotCommand(runRoute);
-        if (!result.success())
-            return result;
-        runRoute = dr.routeCommand();
-        result = runRobotCommand(runRoute);
+        Result result = runDynamicRoute(dr, route.getRouteProperties().getRouteSpeed(), route.getRouteProperties().getRouteAccel());
         if (!result.success())
             return result;
 
@@ -471,9 +461,24 @@ public class ArmOperations
         }
         return moveTo(plungePos);
     }
-
+ 
     /**
-     * Pickup a disc from a shelf. Assumes that the robot is already at the safe
+     * Generic pick front-end to enable using either static or dynamic pick approaches
+     * 
+     * @param cabinet if this is a CP or a desktop
+     * @param shelf shelf within the cabinet
+     * @param stackPosition stack position (when CP) - where 1 is bottom disc,
+     * and 2 is top disc)
+     * @param position current position of the arm
+     * @return Result with success/failure info
+     */
+    public Result pick(CabinetType cabinet, int shelf, int stackPosition, Position position) {
+//        return pickStatic(cabinet, shelf, stackPosition, position);
+        return pickDynamic(cabinet, shelf, stackPosition, position);
+    }
+ 
+    /**
+     * Pickup a disc from a shelf using static moves. Assumes that the robot is already at the safe
      * pickup location for the specified disc, and is not already holding one
      *
      * @param cabinet if this is a CP or a desktop
@@ -483,12 +488,12 @@ public class ArmOperations
      * @param position current position of the arm
      * @return Result with success/failure info
      */
-    public Result pick(CabinetType cabinet, int shelf, int stackPosition, Position position) {
+    public Result pickStatic(CabinetType cabinet, int shelf, int stackPosition, Position position) {
         HashMap<String, Position> plunge = plungePositions(cabinet, shelf, stackPosition, position);
         Result result;
         
         if (armOpsLogging)
-            System.out.println("    ArmOperations: pick from " + cabinet.toString() + " position " + stackPosition + " starting at " + position.getName());
+            System.out.println("    ArmOperations: pick static from " + cabinet.toString() + " position " + stackPosition + " starting at " + position.getName());
 
         // make sure the stackPosition is legit
         if ((stackPosition < 1) || (stackPosition > 2))
@@ -530,10 +535,65 @@ public class ArmOperations
 
         return new Result();
     }
-
     /**
-     * Drop off a disc to a shelf. Assumes that the robot is already at the safe
-     * dropoff location for the specified disc, and is currently holding a disc
+     * Pickup a disc from a shelf using a dynamic route. Assumes that the robot is already at the safe
+     * pickup location for the specified disc, and is not already holding one
+     *
+     * @param cabinet if this is a CP or a desktop
+     * @param shelf shelf within the cabinet
+     * @param stackPosition stack position (when CP) - where 1 is bottom disc,
+     * and 2 is top disc)
+     * @param position current position of the arm
+     * @return Result with success/failure info
+     */
+    public Result pickDynamic(CabinetType cabinet, int shelf, int stackPosition, Position position) {
+        HashMap<String, Position> plunge = plungePositions(cabinet, shelf, stackPosition, position);
+        Result result;
+        
+        if (armOpsLogging)
+            System.out.println("    ArmOperations: pick dynamic from " + cabinet.toString() + " position " + stackPosition + " starting at " + position.getName());
+
+        // make sure the stackPosition is legit
+        if ((stackPosition < 1) || (stackPosition > 2))
+            return new Result("Invalid stackPosition of " + stackPosition + " passed to pick");
+
+        if (armOpsSimulated && !r12OpsSimulated){
+            Utils.sleep(1000);
+            return new Result();
+        }
+
+        // ungrip in prep to get the disc
+        result = runRobotCommand("UNGRIP");
+        if (!result.success())
+            return result;
+
+        DynamicRoute dr = new DynamicRoute();
+        // move into the cabinet
+        dr.addPosition(plunge.get("out-bottom"));
+        dr.addPosition(plunge.get("in-bottom"));
+        
+        // and run the route
+        result = runDynamicRoute(dr, armSpeed, armAccel);
+        if (!result.success())
+            return result;
+
+        // now grip the disc
+        result = runRobotCommand("GRIP");
+        if (!result.success())
+            return result;
+
+        // lift the disc
+        dr.clear();
+        dr.addPosition(plunge.get("in-top"));
+
+        // and return to out-top
+        dr.addPosition(plunge.get("out-top"));
+        result = runDynamicRoute(dr, armSpeed, armAccel);
+        return result;
+    }
+    
+    /**
+     * Drop off a disc - front end to select between dynamic and static methods
      *
      * @param cabinet if this is a CP or a desktop
      * @param shelf shelf within the cabinet
@@ -543,11 +603,27 @@ public class ArmOperations
      * @return Result with success/fail info
      */
     public Result drop(CabinetType cabinet, int shelf, int stackPosition, Position position) {
+//        return dropStatic(cabinet, shelf, stackPosition, position);
+        return dropDynamic(cabinet, shelf, stackPosition, position);
+    }
+
+    /**
+     * Drop off a disc to a shelf using static moves. Assumes that the robot is already at the safe
+     * dropoff location for the specified disc, and is currently holding a disc
+     *
+     * @param cabinet if this is a CP or a desktop
+     * @param shelf shelf within the cabinet
+     * @param stackPosition stack position (when CP) - where 1 is bottom disc,
+     * and 2 is top disc)
+     * @param position off of which the relative route is run
+     * @return Result with success/fail info
+     */
+    public Result dropStatic(CabinetType cabinet, int shelf, int stackPosition, Position position) {
         HashMap<String, Position> plunge = plungePositions(cabinet, shelf, stackPosition, position);
         Result result;
         
         if (armOpsLogging)
-            System.out.println("    ArmOperations: drop at " + cabinet.toString() + " position " + stackPosition + " starting at " + position.getName());
+            System.out.println("    ArmOperations: drop static at " + cabinet.toString() + " position " + stackPosition + " starting at " + position.getName());
 
         // make sure the stackPosition is legit
         if ((stackPosition < 1) || (stackPosition > 2))
@@ -565,6 +641,66 @@ public class ArmOperations
 
         // and down to position
         result = runRobotCommand(plunge.get("in-bottom"));
+        if (!result.success())
+            return result;
+
+        // now ungrip
+        result = runRobotCommand("UNGRIP");
+        if (!result.success())
+            return result;
+
+        // and pull out
+        result = runRobotCommand(plunge.get("out-bottom"));
+        if (!result.success())
+            return result;
+
+        // regrip
+        result = runRobotCommand("GRIP");
+        if (!result.success())
+            return result;
+
+        // and return to out-top
+        result = runRobotCommand(plunge.get("out-top"));
+        if (!result.success())
+            return result;
+
+        return new Result();
+    }
+    
+    /**
+     * Drop off a disc to a shelf using dynamic routes. Assumes that the robot is already at the safe
+     * dropoff location for the specified disc, and is currently holding a disc
+     *
+     * @param cabinet if this is a CP or a desktop
+     * @param shelf shelf within the cabinet
+     * @param stackPosition stack position (when CP) - where 1 is bottom disc,
+     * and 2 is top disc)
+     * @param position off of which the relative route is run
+     * @return Result with success/fail info
+     */
+    public Result dropDynamic(CabinetType cabinet, int shelf, int stackPosition, Position position) {
+        HashMap<String, Position> plunge = plungePositions(cabinet, shelf, stackPosition, position);
+        Result result;
+        
+        if (armOpsLogging)
+            System.out.println("    ArmOperations: drop dynamic at " + cabinet.toString() + " position " + stackPosition + " starting at " + position.getName());
+
+        // make sure the stackPosition is legit
+        if ((stackPosition < 1) || (stackPosition > 2))
+            return new Result("Invalid stackPosition of " + stackPosition + " passed to drop");
+
+        if (armOpsSimulated && !r12OpsSimulated){
+            Utils.sleep(1000);
+            return new Result();
+        }
+
+        DynamicRoute dr = new DynamicRoute();
+
+        // move in
+        dr.addPosition(plunge.get("in-top"));
+        // and down to position
+        dr.addPosition(plunge.get("in-bottom"));
+        result = runDynamicRoute(dr, armSpeed, armAccel);
         if (!result.success())
             return result;
 
@@ -708,6 +844,27 @@ public class ArmOperations
         map.put("in-top", inTop);
 
         return map;
+    }
+
+    /**
+     * Run a dynamic route
+     * 
+     * @param route route that is the basis of the dynamic route
+     * @param dynRoute the dynamic points in the route
+     * @return Result with success/fail info
+     */
+    public Result runDynamicRoute(DynamicRoute dynRoute, int routeSpeed, int routeAccel) {
+        if (routeSpeed > armSpeed)
+            routeSpeed = armSpeed;
+        if (routeAccel > armAccel)
+            routeAccel = armAccel;
+        String runRoute = Integer.toString(routeAccel) + " ACCEL ! " + Integer.toString(routeSpeed) + " SPEED ! ROUTE UDTEMP";
+        Result result = runRobotCommand(runRoute);
+        if (!result.success())
+            return result;
+        runRoute = dynRoute.routeCommand();
+        result = runRobotCommand(runRoute);
+        return result;
     }
 
     /**
