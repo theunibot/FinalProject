@@ -82,7 +82,7 @@ public class R12Operations
         }
         else{
             String responseStr = readNoEcho(command);
-
+System.out.println(responseStr);
             //clean up string
             responseStr = responseStr.replace("\n>", "");//filters the ">" and the new line. Saves all other new lines
             responseStr = responseStr.replace(">", "");//removes any missed ">"
@@ -167,7 +167,7 @@ public class R12Operations
      * @param s command to send, no return needed
      */
     public void write(String s){
-        System.out.println("      > " + s);
+        System.out.println("      > " + s.replaceAll("\r", "\n        > "));
         if (!simulated)
             r12i.write(s + "\r");
     }

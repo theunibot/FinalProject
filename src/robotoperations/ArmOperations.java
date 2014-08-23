@@ -41,8 +41,10 @@ public class ArmOperations
     private final boolean armOpsSimulated = true;
     private final boolean r12OpsSimulated = true;
 
-    public final static int ARM_MAX_SPEED = 20000;
+    public final static int ARM_MAX_SPEED = 3000;
+    public final static int ARM_MAX_ACCEL = 2000;
     private int armSpeed = ARM_MAX_SPEED;
+    private int armAccel = ARM_MAX_ACCEL;
 
     private final boolean armOpsLogging = true;
     private R12Operations r12o = null;
@@ -121,6 +123,9 @@ public class ArmOperations
 
         System.out.println("Read " + initCommands.size() + " command(s) from init commands file " + INIT_COMMANDS_FILEPATH);
 
+        // also set defaults for speed and acceleration
+        initCommands.add(String.valueOf(armSpeed) + " SPEED !");
+        initCommands.add(String.valueOf(armAccel) + " ACCEL !");
         for (String command : initCommands)//runs every command in the file
         {
             Result result = runRobotCommand(command);
@@ -150,8 +155,8 @@ public class ArmOperations
      * @return Result with success of failure information)
      */
     public Result runRoute(Route route, Position start, Position end) {
-//        return runDynamicRoute(route, start, end);
-        return runStaticRoute(route, start, end);
+        return runDynamicRoute(route, start, end);
+//        return runStaticRoute(route, start, end);
     }
 
     /**
@@ -316,8 +321,17 @@ public class ArmOperations
 
         // run the route
         int routeSpeed = route.getRouteProperties().getRouteSpeed();
-        String runRoute = Integer.toString((armSpeed < routeSpeed) ? armSpeed : routeSpeed) + " SPEED ! " + dr.routeCommand();
+        if (routeSpeed > armSpeed)
+            routeSpeed = armSpeed;
+        int routeAccel = route.getRouteProperties().getRouteAccel();
+        if (routeAccel > armAccel)
+            routeAccel = armAccel;
+        String runRoute = Integer.toString(routeAccel) + " ACCEL ! " + Integer.toString(routeSpeed) + " SPEED ! ROUTE UDTEMP";
         Result result = runRobotCommand(runRoute);
+        if (!result.success())
+            return result;
+        runRoute = dr.routeCommand();
+        result = runRobotCommand(runRoute);
         if (!result.success())
             return result;
 
@@ -705,6 +719,8 @@ public class ArmOperations
      */
     public Result calibrate()
     {
+        return new Result();
+        /*
         if (armOpsLogging)
         {
             System.out.println("    ArmOperations: calibrate");
@@ -720,6 +736,7 @@ public class ArmOperations
         }
 
         return runRobotCommand(Integer.toString(armSpeed) + " SPEED ! CALIBRATE");
+        */
     }
 
     /**
@@ -809,6 +826,7 @@ public class ArmOperations
         //return runRobotCommand(position.getName() + " GOTO");
         return runRobotCommand(
                 Integer.toString(armSpeed) + " SPEED ! "
+                + Integer.toString(armAccel) + " ACCEL ! "
                 + position.getPitchStr() + " PITCH ! "
                 + position.getYawStr() + " YAW ! "
                 + position.getRollStr() + " ROLL ! "

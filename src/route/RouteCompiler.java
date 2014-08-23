@@ -145,48 +145,66 @@ public class RouteCompiler
             if (line.startsWith(FileUtils.COMMAND_FILE_METADATA_PREFIX))//new Route
             {
                 int routeSpeed = ArmOperations.ARM_MAX_SPEED;
+                int routeAccel = ArmOperations.ARM_MAX_ACCEL;
                 String[] chunks = line.replaceFirst(FileUtils.COMMAND_FILE_METADATA_PREFIX, "").split(" ");
-
-                //parse for speed param as the last param
-                if (chunks[chunks.length - 1].startsWith("@"))
-                {
-                    //copy the array to chunks, make chunks 1 shorter
-                    String[] tempHolder = new String[chunks.length - 1];
-                    try
+                int chunkLength = chunks.length;
+                
+                // loop while looking for modifiers
+                while (true) {
+                    //parse for speed param as the last param
+                    if (chunks[chunkLength - 1].startsWith("@"))
                     {
-                        int speed = Integer.parseInt(chunks[chunks.length - 1].replace("@", ""));
-                        if (speed < ArmOperations.ARM_MAX_SPEED)
-                            routeSpeed = speed;
+                        --chunkLength;
+                        try
+                        {
+                            int speed = Integer.parseInt(chunks[chunkLength].replace("@", ""));
+                            if (speed < ArmOperations.ARM_MAX_SPEED)
+                                routeSpeed = speed;
+                        }
+                        catch (NumberFormatException ignored)
+                        {
+                            return new Result("Route speed of line " + line + " could not be parsed as it is formatted improperly.");
+                        }
+                        continue;
                     }
-                    catch (NumberFormatException ignored)
+                    //parse for speed param as the last param
+                    if (chunks[chunkLength - 1].startsWith("!"))
                     {
-                        return new Result("Route speed of line " + line + " could not be parsed as it is formatted improperly.");
+                        --chunkLength;
+                        try
+                        {
+                            int accel = Integer.parseInt(chunks[chunkLength].replace("!", ""));
+                            if (accel < ArmOperations.ARM_MAX_ACCEL)
+                                routeAccel = accel;
+                        }
+                        catch (NumberFormatException ignored)
+                        {
+                            return new Result("Route accel of line " + line + " could not be parsed as it is formatted improperly.");
+                        }
+                        continue;
                     }
-                    for (int i = 0; i < chunks.length - 1; i++)
-                    {
-                        tempHolder[i] = chunks[i];
-                    }
-                    chunks = tempHolder;
+                    // no modifiers found - continue on...
+                    break;
                 }
 
                 //check the rest of the params
-                if (chunks.length == 3)
+                if (chunkLength == 3)
                 {
                     RouteProperties props = null;
 
                     String from = chunks[0];
                     String to = chunks[1];
                     String effect = chunks[2];
-                    routeProperties = new RouteProperties(getCabinetType(from), getCabinetType(to), getRouteEffectType(effect), routeSpeed);
+                    routeProperties = new RouteProperties(getCabinetType(from), getCabinetType(to), getRouteEffectType(effect), routeSpeed, routeAccel);
                     route = new Route(routeProperties);
                     rh.addRoute(route);
                 }
-                else if (chunks.length == 7)//clone command
+                else if (chunkLength == 7)//clone command
                 {
                     Route routeToClone = null;
                     if ((routeToClone = rh.getRoute(CabinetType.valueOf(chunks[0]), CabinetType.valueOf(chunks[1]), RouteEffectType.valueOf(chunks[2]))) != null)
                     {
-                        RouteProperties cloneProps = new RouteProperties(CabinetType.valueOf(chunks[4]), CabinetType.valueOf(chunks[5]), RouteEffectType.valueOf(chunks[6]), routeSpeed);
+                        RouteProperties cloneProps = new RouteProperties(CabinetType.valueOf(chunks[4]), CabinetType.valueOf(chunks[5]), RouteEffectType.valueOf(chunks[6]), routeSpeed, routeAccel);
                         Route clone = new Route(cloneProps);
                         if (chunks[3].equals(ROUTE_CLONE_FWD))
                         {

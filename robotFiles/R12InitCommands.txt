@@ -4,9 +4,39 @@
 //All comments must be on their own line and start with "//"
 
 START
+DECIMAL
 ABSOLUTE
 CARTESIAN
-30000 SPEED !
 2000 TON !
 800 TGRIP !
-1500 ACCEL !
+
+//
+// <routepoints> UDROUTE: define and execute a custom route with the specified number of points.
+//
+// After executing this function, numeric values should be provided (six per line ending with \0d) for the
+// XYZPYR coordinates.  One line should be provided per <routepoints> count.  When complete, this route
+// will execute.  A route must be selected in advance (ROUTE <name>) and it will be erased!
+//
+
+: UDR
+ERASE
+// take the # of route points and duplicate so we can use it for both RESERVE and MOVES and set those up
+DUP
+RESERVE
+MOVES E!
+// loop for all lines, capturing and recording the coordinates
+LASTLINE 1+ 1 DO
+   6 0 DO
+      ASK
+      J LINE I 2* + E!
+   LOOP
+   // waiting on David to learn what these are...
+   0 I LINE 12 + E!
+   0 I LINE 14 + E!
+LOOP
+// go ahead and run.  We should consider removing "ADJUST" and setting a specific SPEED/ACCEL (route
+// specific) because ADJUST takes extra processing time for the controller to determine the best speed
+// to run at.  Since our routes are consistent, we should be able to figure this out in advance of execution.
+CONTINUOUS RUN
+;
+

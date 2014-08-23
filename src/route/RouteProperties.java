@@ -33,8 +33,9 @@ public class RouteProperties
     private int uniqueId;
     private boolean reverse = false;
     private int routeSpeed;
+    private int accelSpeed;
 
-    public RouteProperties(CabinetType from, CabinetType to, RouteEffectType effect, int routeSpeed) {
+    public RouteProperties(CabinetType from, CabinetType to, RouteEffectType effect, int routeSpeed, int accelSpeed) {
         this.from = from;
         this.to = to;
         this.effect = effect;        
@@ -42,11 +43,17 @@ public class RouteProperties
         RouteHolder rh = RouteHolder.getInstance();
         this.uniqueId = rh.countSimilarRoutes(getRouteFriendlyShortName());        
         this.routeSpeed = routeSpeed;
+        this.accelSpeed = accelSpeed;
     }
 
     public int getRouteSpeed()
     {
         return routeSpeed;
+    }        
+
+    public int getRouteAccel()
+    {
+        return accelSpeed;
     }        
 
     public String getRouteFriendlyName() {

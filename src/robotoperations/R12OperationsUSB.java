@@ -1,4 +1,4 @@
-///*
+//
 // This file is part of theunibot.
 //
 // theunibot is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 // along with theunibot.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright (c) 2014 Unidesk Corporation
-// */
+// 
 package robotoperations;
 //
 

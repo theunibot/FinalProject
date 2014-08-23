@@ -304,5 +304,6 @@ public abstract class CommandInterface
         
         // success!
         return new Result();
-   }
+    }
+    
 }
