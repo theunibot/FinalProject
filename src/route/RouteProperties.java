@@ -25,79 +25,76 @@ import java.util.List;
 /**
  *
  */
-public class RouteProperties
-{
-    private CabinetType from = null;
-    private CabinetType to = null;
-    private RouteEffectType effect = null;
-    private int uniqueId;
-    private boolean reverse = false;
-    private int routeSpeed;
-    private int accelSpeed;
+public class RouteProperties {
+	private CabinetType from = null;
+	private CabinetType to = null;
+	private RouteEffectType effect = null;
+	private int uniqueId;
+	private boolean reverse = false;
+	private int routeSpeed;
+	private int accelSpeed;
 
-    public RouteProperties(CabinetType from, CabinetType to, RouteEffectType effect, int routeSpeed, int accelSpeed) {
-        this.from = from;
-        this.to = to;
-        this.effect = effect;        
-       // determine how many other routes exist with this name, to give it a unique number
-        RouteHolder rh = RouteHolder.getInstance();
-        this.uniqueId = rh.countSimilarRoutes(getRouteFriendlyShortName());        
-        this.routeSpeed = routeSpeed;
-        this.accelSpeed = accelSpeed;
-    }
+	public RouteProperties(CabinetType from, CabinetType to, RouteEffectType effect, int routeSpeed, int accelSpeed) {
+		this.from = from;
+		this.to = to;
+		this.effect = effect;
+		// determine how many other routes exist with this name, to give it a unique number
+		RouteHolder rh = RouteHolder.getInstance();
+		this.uniqueId = rh.countSimilarRoutes(getRouteFriendlyShortName());
+		this.routeSpeed = routeSpeed;
+		this.accelSpeed = accelSpeed;
+	}
 
-    public int getRouteSpeed()
-    {
-        return routeSpeed;
-    }        
+	public int getRouteSpeed() {
+		return routeSpeed;
+	}
 
-    public int getRouteAccel()
-    {
-        return accelSpeed;
-    }        
+	public int getRouteAccel() {
+		return accelSpeed;
+	}
 
-    public String getRouteFriendlyName() {
-        return getRouteFriendlyShortName() + "_" + (this.uniqueId + 1);
-    }
-    
-    public String getRouteFriendlyShortName() {
-        return from.toString() + "_" + to.toString() + "_" + effect.toString();
-    }
-    
-    public String getRouteIDName() {
-        return 'R' + utils.Utils.hash(getRouteFriendlyName(), 4);
-    }
+	public String getRouteFriendlyName() {
+		return getRouteFriendlyShortName() + "_" + (this.uniqueId + 1);
+	}
 
-    public CabinetType getTo() {
-        return to;
-    }
+	public String getRouteFriendlyShortName() {
+		return from.toString() + "_" + to.toString() + "_" + effect.toString();
+	}
 
-    public CabinetType getFrom() {
-        return from;
-    }
+	public String getRouteIDName() {
+		return 'R' + utils.Utils.hash(getRouteFriendlyName(), 4);
+	}
 
-    public RouteEffectType getEffect() {
-        return effect;
-    }
+	public CabinetType getTo() {
+		return to;
+	}
 
-    public void setTo(CabinetType to) {
-        this.to = to;
-    }
+	public CabinetType getFrom() {
+		return from;
+	}
 
-    public void setFrom(CabinetType from) {
-        this.from = from;
-    }
+	public RouteEffectType getEffect() {
+		return effect;
+	}
 
-    public void setEffect(RouteEffectType effect) {
-        this.effect = effect;
-    }
-    
-    public boolean getReverse() {
-        return reverse;
-    }
-    
-    public void setReverse(boolean reverse) {
-        this.reverse = reverse;
-    }
+	public void setTo(CabinetType to) {
+		this.to = to;
+	}
+
+	public void setFrom(CabinetType from) {
+		this.from = from;
+	}
+
+	public void setEffect(RouteEffectType effect) {
+		this.effect = effect;
+	}
+
+	public boolean getReverse() {
+		return reverse;
+	}
+
+	public void setReverse(boolean reverse) {
+		this.reverse = reverse;
+	}
 
 }

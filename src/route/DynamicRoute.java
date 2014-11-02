@@ -16,7 +16,6 @@
 //
 // Copyright (c) 2014 Unidesk Corporation
 // 
-
 package route;
 
 import utils.Result;
@@ -25,45 +24,46 @@ import utils.Result;
  * Helper class for ArmOperations to build a custom route
  */
 public class DynamicRoute {
-    private StringBuilder routePoints = new StringBuilder();
-    private int pointCount = 0;
+	private StringBuilder routePoints = new StringBuilder();
+	private int pointCount = 0;
 
-    /**
-     * Add a new position into the custom route list
-     * 
-     * @param newPosition Position to add to the route
-     */
-    public void addPosition(Position newPosition) {
-        if (pointCount != 0)
-            routePoints.append("\r");
-        routePoints.append(newPosition.getXStr());
-        routePoints.append("\r");
-        routePoints.append(newPosition.getYStr());
-        routePoints.append("\r");
-        routePoints.append(newPosition.getZStr());
-        routePoints.append("\r");
-        routePoints.append(newPosition.getPitchStr());
-        routePoints.append("\r");
-        routePoints.append(newPosition.getYawStr());
-        routePoints.append("\r");
-        routePoints.append(newPosition.getRollStr());
-        ++pointCount;
-    }
-    
-    /**
-     * Empty the route for a new route generation
-     */
-    public void clear() {
-        routePoints = new StringBuilder();
-        pointCount = 0;
-    }
-    
-    /**
-     * Return the command string to run a route
-     * 
-     * @return String containing the command sequence to send to the controller
-     */
-    public String routeCommand() {
-       return Integer.toString(pointCount) + " UDR\r" + routePoints.toString();
-    }
+	/**
+	 * Add a new position into the custom route list
+	 *
+	 * @param newPosition Position to add to the route
+	 */
+	public void addPosition(Position newPosition) {
+		if (pointCount != 0)
+			routePoints.append("\r");
+		routePoints.append(newPosition.getXStr());
+		routePoints.append("\r");
+		routePoints.append(newPosition.getYStr());
+		routePoints.append("\r");
+		routePoints.append(newPosition.getZStr());
+		routePoints.append("\r");
+		routePoints.append(newPosition.getPitchStr());
+		routePoints.append("\r");
+		routePoints.append(newPosition.getYawStr());
+		routePoints.append("\r");
+		routePoints.append(newPosition.getRollStr());
+		++pointCount;
+	}
+
+	/**
+	 * Empty the route for a new route generation
+	 */
+	public void clear() {
+		routePoints = new StringBuilder();
+		pointCount = 0;
+	}
+
+	/**
+	 * Return the command string to run a route
+	 *
+	 * @return String containing the command sequence to send to the controller
+	 */
+	public String routeCommand() {
+		return Integer.toString(pointCount) + " UDR\r" + routePoints.toString();
+	}
+
 }

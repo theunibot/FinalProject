@@ -24,81 +24,61 @@ import java.util.List;
 /**
  *
  */
-public class Route
-{
+public class Route {
 
-    ArrayList<RoutePosition> commands = new ArrayList<>();
+	ArrayList<RoutePosition> commands = new ArrayList<>();
 
-    private RouteProperties routeProperties = null;
+	private RouteProperties routeProperties = null;
 
-    public Route(RouteProperties routeProperties)
-    {
-        setRouteProperties(routeProperties);
-    }
+	public Route(RouteProperties routeProperties) {
+		setRouteProperties(routeProperties);
+	}
 
-    public void setRouteProperties(RouteProperties rp)
-    {
-        this.routeProperties = rp;
-    }
+	public void setRouteProperties(RouteProperties rp) {
+		this.routeProperties = rp;
+	}
 
-    public int size()
-    {
-        return commands.size();
-    }
+	public int size() {
+		return commands.size();
+	}
 
-    public void add(RoutePosition o)
-    {
-        commands.add(o);
-    }
+	public void add(RoutePosition o) {
+		commands.add(o);
+	}
 
-    public void set(int index, RoutePosition cp)
-    {
-        if (index >= 0 && index < this.size())
-        {
-            commands.set(index, cp);
-        }
-    }
+	public void set(int index, RoutePosition cp) {
+		if (index >= 0 && index < this.size())
+			commands.set(index, cp);
+	}
 
-    public RoutePosition get(int index)
-    {
-        if (index >= 0 && index < this.size())
-        {
-            return commands.get(index);
-        }
-        else
-        {
-            return null;
-        }
-    }
+	public RoutePosition get(int index) {
+		if (index >= 0 && index < this.size())
+			return commands.get(index);
+		else
+			return null;
+	}
 
-    public RoutePosition getLastObject()
-    {
-        if (commands.size() > 0)
-        {
-            return commands.get(commands.size() - 1);
-        }
-        return null;
-    }
+	public RoutePosition getLastObject() {
+		if (commands.size() > 0)
+			return commands.get(commands.size() - 1);
+		return null;
+	}
 
-    public RouteProperties getRouteProperties()
-    {
-        return routeProperties;
-    }
+	public RouteProperties getRouteProperties() {
+		return routeProperties;
+	}
 
-    public ArrayList<String> getRoboforthCommands()
-    {
-        ArrayList<String> commandStrings;
-        commandStrings = new ArrayList<>();
-        commandStrings.add("ROUTE " + this.routeProperties.getRouteIDName());
-        commandStrings.add("ERASE");
-        commandStrings.add(commands.size() + " RESERVE");
-        for (RoutePosition o : commands)
-        {
-            commandStrings.add("LEARN");
-            commandStrings.add(o.toString());
-        }
-        return commandStrings;
-    }
+	public ArrayList<String> getRoboforthCommands() {
+		ArrayList<String> commandStrings;
+		commandStrings = new ArrayList<>();
+		commandStrings.add("ROUTE " + this.routeProperties.getRouteIDName());
+		commandStrings.add("ERASE");
+		commandStrings.add(commands.size() + " RESERVE");
+		for (RoutePosition o : commands) {
+			commandStrings.add("LEARN");
+			commandStrings.add(o.toString());
+		}
+		return commandStrings;
+	}
 
 }
-
