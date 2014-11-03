@@ -58,9 +58,11 @@ LOOP
 0 DRI @ LINE 14 + E!
 ;
 
-// DR3 - run the dynamic route
+// DR3 - run the dynamic route, with adjust
 : DR3
 DR
 ." Dynamic route contains:" CR
 L.
+CONTINUOUS ADJUST RUN
 ;
+
