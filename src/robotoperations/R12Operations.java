@@ -27,7 +27,7 @@ import utils.Result;
  */
 public class R12Operations {
 	//Command Objects
-	private R12Interface r12i = null;
+	private R12InterfaceOld r12i = null;
 	private static R12Operations r12Operations = null;
 
 	//Connect vars
@@ -63,7 +63,7 @@ public class R12Operations {
 		if (simulated)
 			return new Result();
 		else {
-			r12i = R12Interface.getInstance();
+			r12i = R12InterfaceOld.getInstance();
 			loadInfoFromFile();
 			return r12i.init(address, port);
 		}
@@ -127,7 +127,7 @@ public class R12Operations {
 	}
 
 	/**
-	 * Reads using the R12Interface, responds with a usable string.
+	 * Reads using the R12InterfaceOld, responds with a usable string.
 	 *
 	 * @return String including echo of command
 	 */
