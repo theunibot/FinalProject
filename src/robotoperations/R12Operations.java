@@ -20,6 +20,7 @@ package robotoperations;
 
 import java.util.Map;
 import utils.FileUtils;
+import static utils.FileUtils.readINIFile;
 import utils.Result;
 
 /**
@@ -27,23 +28,8 @@ import utils.Result;
  */
 public class R12Operations {
 	//Command Objects
-	private R12InterfaceOld r12i = null;
+	private R12Interface r12i = null;
 	private static R12Operations r12Operations = null;
-
-	//Connect vars
-	private String address = "192.168.1.1";
-	private int port = 1111;
-
-	//INI vars
-	private final String INI_FILENAME = "R12CommSetup.ini";
-	private final String INI_FILE_SECTION_KEY = "vars";
-	private final String INI_FILE_PORT_KEY = "portkey";
-	private final String INI_FILE_ADDRESS_KEY = "addresskey";
-
-	private final String INI_CONTENTS = ";ini file for the setup of the R12 TCP Connection.\n"
-		+ "[vars]\n"
-		+ INI_FILE_ADDRESS_KEY + "=" + address + "\n"
-		+ INI_FILE_PORT_KEY + "=" + port;
 
 	private boolean simulated = false;  // do not change this here - change in ArmOperations
 
@@ -53,20 +39,50 @@ public class R12Operations {
 	private R12Operations() {
 	}
 
-	/**
-	 * initializes object's dependencies
+        /**
+         * Implement a singleton interface to this class
+         * 
+         * @return R12Operations object singleton 
+         */
+	public static R12Operations getInstance() {
+            if (r12Operations == null)
+                r12Operations = new R12Operations();
+            return r12Operations;
+	}
+
+        /**
+	 * Initialize the R12 system, including loading and connecting to the arm with the appropriate interface
 	 *
+         * @param simulated set to true if simulating the R12, false if doing real R12 execution
 	 * @return Result with success/fail info
 	 */
 	public Result init(boolean simulated) {
-		this.simulated = simulated;
-		if (simulated)
-			return new Result();
-		else {
-			r12i = R12InterfaceOld.getInstance();
-			loadInfoFromFile();
-			return r12i.init(address, port);
-		}
+            this.simulated = simulated;
+            if (simulated)
+                    return new Result();
+            else {
+                    // load up the INI file with configuration info
+                    Map<String, String> map = readINIFile(FileUtils.getFilesFolderString() + "R12Setup.ini", 
+                            "interface", new String[] { "driver", "port", "address", "device" });
+                    if (map == null)
+                        return new Result("Unable to load INI file " + FileUtils.getFilesFolderString() + "R12Setup.ini");
+
+                    // now determine which interface to load
+                    if (map.get("driver") == null)
+                        return new Result("Missing [interface] Driver=<type> in R12Setup.ini file");
+
+                    switch (map.get("driver").toLowerCase()) {
+                        case "ip":
+                            r12i = new R12InterfaceIP();
+                            break;
+                        case "serial":
+                            r12i = new R12InterfaceSerial();
+                            break;
+                        default:
+                            return new Result("Uknown driver type in R12Setup.ini: " + map.get("driver"));
+                    }
+                    return r12i.init(map);
+            }
 	}
 
 	/**
@@ -77,43 +93,37 @@ public class R12Operations {
 	 * @return ResponseObject wrapper object for command sent
 	 */
 	public ResponseObject getResponse(String command) {
-		if (simulated)
-			return new ResponseObject(ArmOperations.RESPONSE_OK, true);
-		else {
-			String responseStr = readNoEcho(command);
-			System.out.println(responseStr);
-			//clean up string
-			responseStr = responseStr.replace("\n>", "");//filters the ">" and the new line. Saves all other new lines
-			responseStr = responseStr.replace(">", "");//removes any missed ">"
-			responseStr = responseStr.trim();
-			boolean succesful = false;
-			if (responseStr.endsWith(ArmOperations.RESPONSE_OK))
-				succesful = true;
-			return new ResponseObject(responseStr, succesful);
-
-		}
+            if (simulated)
+                    return new ResponseObject(ArmOperations.RESPONSE_OK, true);
+            else {
+                // adjust protocol based on command being sent
+                int responses = 1;
+                String success = ArmOperations.RESPONSE_OK;
+                switch (command.toLowerCase().trim()) {
+                    case "roboforth":
+                    case "start":
+                        responses = 2;
+                        break;
+                    case "org jump":
+                        success = "1994";
+                        break;
+                }
+                String responseStr = "";
+                for (int responseLoop = 0; responseLoop < responses; ++responseLoop) {
+                    responseStr = readNoEcho(command);
+                    System.out.println(responseStr);
+                }
+                //clean up string
+                responseStr = responseStr.replace("\n>", "");//filters the ">" and the new line. Saves all other new lines
+                responseStr = responseStr.replace(">", "");//removes any missed ">"
+                responseStr = responseStr.trim();
+                boolean succesful = false;
+                if (responseStr.endsWith(success))
+                    succesful = true;
+                return new ResponseObject(responseStr, succesful);
+            }
 	}
 
-	private void loadInfoFromFile() {
-
-		String pathToFile = FileUtils.getFilesFolderString() + INI_FILENAME;
-		/*=====Parsing File===*/
-
-		Map<String, String> map = FileUtils.readINIFileOrGenerate(
-			pathToFile,
-			INI_FILE_SECTION_KEY,
-			new String[]{
-				INI_FILE_PORT_KEY, INI_FILE_ADDRESS_KEY
-			},
-			INI_CONTENTS);
-		String portTemp = map.get(INI_FILE_PORT_KEY);
-		String addressTemp = map.get(INI_FILE_ADDRESS_KEY);
-		if (portTemp != null)
-			port = Integer.parseInt(portTemp);
-		if (addressTemp != null)
-			address = addressTemp;
-		System.out.println("Address: " + address + " Port: " + port);
-	}
 
 	/**
 	 * Returns the response without the echo
@@ -123,27 +133,16 @@ public class R12Operations {
 	 * @return response without the command
 	 */
 	private String readNoEcho(String command) {
-		return read().replaceFirst(command, "").trim();
+            return read().replaceFirst(command, "").trim();
 	}
 
 	/**
-	 * Reads using the R12InterfaceOld, responds with a usable string.
+	 * Reads using the R12Interface, responds with a usable string.
 	 *
 	 * @return String including echo of command
 	 */
 	private String read() {
-		byte[] buffer = new byte[65536];
-		int offsetIterator = 0;//length of the buffer. Actual last pos is this - 1
-		int response = 0;
-		do {
-			response = r12i.read(buffer, offsetIterator);
-			if (response < 0)
-				System.err.println("Error, response was " + response);
-			offsetIterator += response;
-		} while (buffer[offsetIterator - 1] != '>');
-		String s = new String(buffer, 0, offsetIterator);
-//        System.out.println("Read Buffered: " + s);
-		return s;
+            return r12i.read('>');
 	}
 
 	/**
@@ -152,14 +151,9 @@ public class R12Operations {
 	 * @param s command to send, no return needed
 	 */
 	public void write(String s) {
-		System.out.println("      > " + s.replaceAll("\r", "\n        > "));
-		if (!simulated)
-			r12i.write(s + "\r");
+            System.out.println("      > " + s.replaceAll("\r", "\n        > "));
+            if (!simulated)
+                r12i.write(s + "\r");
 	}
 
-	public static R12Operations getInstance() {
-		if (r12Operations == null)
-			r12Operations = new R12Operations();
-		return r12Operations;
-	}
 }

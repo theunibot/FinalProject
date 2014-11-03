@@ -2,13 +2,18 @@
 //Language and are called upon startup by the R12Operations object. 
 //Each command should be seperated by a carriage return.
 //All comments must be on their own line and start with "//"
+//Commands containing "$" and "&" are special instructions to the processor.  $<text> indicates
+//an alternative success text (instead of "OK") to look for.  &<number> indicates that more than
+//one ">" symbol will be found, and the number is how many to look for.
+
 
 // Patch the controller to support a deeper stack depth (about 70-100 items)
 // note: commented out because ORG JUMP (which does cold start) doesn't return OK, so to use
 // this would need to modify code to look for other indications of successful command entry
-//ORG JUMP
-//3FF0 1361 ! 3FF0 8C3 ! 3FF0 8CB ! 3FF0 45B !
-//ORG JUMP
+
+ORG JUMP
+3FF0 1361 ! 3FF0 8C3 ! 3FF0 8CB ! 3FF0 45B !
+ORG JUMP
 
 // start up the controller
 ROBOFORTH
