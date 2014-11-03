@@ -22,25 +22,27 @@ import java.util.Map;
 import utils.Result;
 
 /**
- * Standard interface for communications with the R12 robot arm, to be implemented
- * for specific interfaces (such as IP or serial).  Implements only the base communications,
- * and contains no specific knowledge of the R12 itself.
+ *
+ * @author Chris
  */
-public interface R12Interface {
+public class R12InterfaceUSB implements R12Interface {
     /**
      * Initialize communications channel.  Can start background thread if needed.  Passed a map
      * of keys/value pairs from the configuration INI file.
      * 
-     * @return Result object indicating success/failure
+     * @return Result object indicating success/failure 
      */
-    public Result init(Map<String, String> parameters);
+    public Result init(Map<String, String> parameters) {
+        return new Result("USB interface not implemented");
+    }
     
     /**
      * De-initialize communications channel.  Shuts down background thread(s) if needed.  Must be thread safe
      * so this can be called from a different thread that the communications thread in order to initiate a
      * successful shutdown (and unblock read/write as needed)
      */
-    public void deinit();
+    public void deinit() {
+    }
     
     /**
      * Read data from the communications channel.  Reads bytes until the specified delimiter byte
@@ -49,7 +51,9 @@ public interface R12Interface {
      * @param delimiter character to look for to terminate the reading action
      * @return String with all bytes
      */
-    public String read(char delimiter);
+    public String read(char delimiter) {
+        return null;
+    }
     
     /**
      * Write data to the communications channel.  Writes the specified string buffer to the communications
@@ -58,5 +62,7 @@ public interface R12Interface {
      * @param buffer Buffer to send to the channel
      * @return Result with success/fail info
      */
-    public Result write(String buffer);
+    public Result write(String buffer) {
+        return new Result("USB interface not implemented");
+    }
 }
