@@ -40,8 +40,8 @@ public class ArmOperations {
 	private final boolean armOpsSimulated = false;
 	private final boolean r12OpsSimulated = false;
 
-	public final static int ARM_MAX_SPEED = 3000;
-	public final static int ARM_MAX_ACCEL = 2000;
+	public final static int ARM_MAX_SPEED = 5000;
+	public final static int ARM_MAX_ACCEL = 4000;
 	private int armSpeed = ARM_MAX_SPEED;
 	private int armAccel = ARM_MAX_ACCEL;
 
@@ -823,7 +823,7 @@ public class ArmOperations {
 			routeSpeed = armSpeed;
 		if (routeAccel > armAccel)
 			routeAccel = armAccel;
-		String runRoute = Integer.toString(routeAccel) + " ACCEL ! " + Integer.toString(routeSpeed) + " SPEED ! ROUTE UDTEMP";
+		String runRoute = Integer.toString(routeAccel) + " ACCEL ! " + Integer.toString(routeSpeed) + " SPEED ! UDTEMP";
 		Result result = runRobotCommand(runRoute);
 		if (!result.success())
 			return result;
@@ -840,6 +840,7 @@ public class ArmOperations {
 	 * @return Result with success/fail info
 	 */
 	public Result calibrate() {
+if (false) return new Result();
 		 if (armOpsLogging)
 		 {
 		 System.out.println("    ArmOperations: calibrate");

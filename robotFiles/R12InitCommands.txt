@@ -3,6 +3,15 @@
 //Each command should be seperated by a carriage return.
 //All comments must be on their own line and start with "//"
 
+// Patch the controller to support a deeper stack depth (about 70-100 items)
+// note: commented out because ORG JUMP (which does cold start) doesn't return OK, so to use
+// this would need to modify code to look for other indications of successful command entry
+//ORG JUMP
+//3FF0 1361 ! 3FF0 8C3 ! 3FF0 8CB ! 3FF0 45B !
+//ORG JUMP
+
+// start up the controller
+ROBOFORTH
 START
 DECIMAL
 ABSOLUTE
@@ -11,7 +20,7 @@ CARTESIAN
 800 TGRIP !
 
 //
-// <routepoints> UDROUTE: define and execute a custom route with the specified number of points.
+// <routepoints> UDR: define and execute a custom route with the specified number of points.
 //
 // After executing this function, numeric values should be provided (six per line ending with \0d) for the
 // XYZPYR coordinates.  One line should be provided per <routepoints> count.  When complete, this route
@@ -30,13 +39,43 @@ LASTLINE 1+ 1 DO
       ASK
       J LINE I 2* + E!
    LOOP
-   // waiting on David to learn what these are...
-   0 I LINE 12 + E!
+   // set the route rules.  
+   // Bytes 12/13 are: 0=joint values, 1=relative joint coordinate, 2=cartesian, 3=relative cartesian
+   2 I LINE 12 + E!
+   // must be a zero, else it assumes they are the CFA of a word (???) and it "tries to execute the word" (according to David)
    0 I LINE 14 + E!
 LOOP
 // go ahead and run.  We should consider removing "ADJUST" and setting a specific SPEED/ACCEL (route
 // specific) because ADJUST takes extra processing time for the controller to determine the best speed
 // to run at.  Since our routes are consistent, we should be able to figure this out in advance of execution.
-CONTINUOUS RUN
+CONTINUOUS ADJUST RUN
 ;
+
+: UDS
+ERASE
+// take the # of route points and duplicate so we can use it for both RESERVE and MOVES and set those up
+DUP
+RESERVE
+MOVES E!
+// loop for all lines, capturing and recording the coordinates
+LASTLINE 1+ 1 DO
+   9999 . CR
+   6 0 DO
+      DUP . CR
+      J LINE I 2* + E!
+   LOOP
+   // set the route rules.  
+   // Bytes 12/13 are: 0=joint values, 1=relative joint coordinate, 2=cartesian, 3=relative cartesian
+   2 I LINE 12 + E!
+   // must be a zero, else it assumes they are the CFA of a word (???) and it "tries to execute the word" (according to David)
+   0 I LINE 14 + E!
+LOOP
+// go ahead and run.  We should consider removing "ADJUST" and setting a specific SPEED/ACCEL (route
+// specific) because ADJUST takes extra processing time for the controller to determine the best speed
+// to run at.  Since our routes are consistent, we should be able to figure this out in advance of execution.
+CONTINUOUS ADJUST RUN
+;
+
+// define the UDTEMP route
+ROUTE UDTEMP
 
