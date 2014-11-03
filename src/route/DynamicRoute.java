@@ -26,6 +26,7 @@ import utils.Result;
  */
 public class DynamicRoute {
     private StringBuilder routePoints = new StringBuilder();
+    private StringBuilder routePointsReverse = new StringBuilder();
     private int pointCount = 0;
 
     /**
@@ -34,19 +35,34 @@ public class DynamicRoute {
      * @param newPosition Position to add to the route
      */
     public void addPosition(Position newPosition) {
+    System.out.println("# " + 
+            newPosition.getPitchStr() + " PITCH ! " +
+            newPosition.getYawStr() + " YAW ! " +
+            newPosition.getRollStr() + " ROLL ! " +
+            newPosition.getXStr() + " " +
+            newPosition.getYStr() + " " +
+            newPosition.getZStr() + " MOVETO");
         if (pointCount != 0)
-            routePoints.append("\r");
+            routePoints.append(" \r");
         routePoints.append(newPosition.getXStr());
-        routePoints.append("\r");
+        routePoints.append(" \r");
         routePoints.append(newPosition.getYStr());
-        routePoints.append("\r");
+        routePoints.append(" \r");
         routePoints.append(newPosition.getZStr());
-        routePoints.append("\r");
+        routePoints.append(" \r");
         routePoints.append(newPosition.getPitchStr());
-        routePoints.append("\r");
+        routePoints.append(" \r");
         routePoints.append(newPosition.getYawStr());
-        routePoints.append("\r");
+        routePoints.append(" \r");
         routePoints.append(newPosition.getRollStr());
+        
+        routePointsReverse.insert(0, 
+            newPosition.getRollStr() + " " +
+            newPosition.getYawStr() + " " +
+            newPosition.getPitchStr() + " " +
+            newPosition.getZStr() + " " +
+            newPosition.getYStr() + " " +
+            newPosition.getXStr() + " ");
         ++pointCount;
     }
     
@@ -64,6 +80,7 @@ public class DynamicRoute {
      * @return String containing the command sequence to send to the controller
      */
     public String routeCommand() {
-       return Integer.toString(pointCount) + " UDR\r" + routePoints.toString();
+       return Integer.toString(pointCount) + " UDR\r\000\000" + routePoints.toString();
+//       return routePointsReverse.toString() + Integer.toString(pointCount) + " UDS\r";
     }
 }
