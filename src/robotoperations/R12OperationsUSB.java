@@ -32,208 +32,170 @@ import utils.Result;
 // *
 // */
 
-public class R12OperationsUSB
-{
+public class R12OperationsUSB {
 
-    //Command Objects
-    private SerialPort serialPort;
-    private static R12OperationsUSB r12Operations = null;
+	//Command Objects
+	private SerialPort serialPort;
+	private static R12OperationsUSB r12Operations = null;
 
-    //Connect vars
-    private String serialPortName = "/dev/ttyUSB0";
+	//Connect vars
+	private String serialPortName = "/dev/ttyUSB0";
 
-    //INI vars
-    private final String INI_FILENAME = "R12CommSetupUSB.ini";
-    private final String INI_FILE_SECTION_KEY = "vars";
-    private final String INI_FILE_SERIAL_PORT_KEY = "serialportkey";
+	//INI vars
+	private final String INI_FILENAME = "R12CommSetupUSB.ini";
+	private final String INI_FILE_SECTION_KEY = "vars";
+	private final String INI_FILE_SERIAL_PORT_KEY = "serialportkey";
 
-    private final String INI_CONTENTS = ""
-            + ";ini file for the setup of the R12 TCP Connection.\n"
-            + "[vars]\n"
-            + ";To check the USB serial port name, enter \"ls /dev/ttyUSB*\"\n"
-            + INI_FILE_SERIAL_PORT_KEY + "=" + serialPortName;
+	private final String INI_CONTENTS = ""
+		+ ";ini file for the setup of the R12 TCP Connection.\n"
+		+ "[vars]\n"
+		+ ";To check the USB serial port name, enter \"ls /dev/ttyUSB*\"\n"
+		+ INI_FILE_SERIAL_PORT_KEY + "=" + serialPortName;
 
-    private boolean simulated = false;  // do not change this here - change in ArmOperations
+	private boolean simulated = false;  // do not change this here - change in ArmOperations
 
-    /**
-     * Constructor made private since this is a singleton interface
-     */
-    private R12OperationsUSB()
-    {
-    }
+	/**
+	 * Constructor made private since this is a singleton interface
+	 */
+	private R12OperationsUSB() {
+	}
 
-    /**
-     * initializes object's dependencies
-     *
-     * @return Result with success/fail info
-     */
-    public Result init(boolean simulated)
-    {
-        this.simulated = simulated;
-        if (simulated)
-        {
-            return new Result();
-        }
-        else
-        {
-            loadInfoFromFile();
-            serialPort = new SerialPort(serialPortName);
-            try
-            {
-                serialPort.openPort();//Open port
-                serialPort.purgePort(SerialPort.PURGE_RXABORT + SerialPort.PURGE_RXCLEAR + SerialPort.PURGE_TXABORT + SerialPort.PURGE_TXCLEAR);
-                serialPort.setParams(SerialPort.BAUDRATE_19200, 8, 1, 0);//Set params
-                serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
-            }
-            catch (SerialPortException ex)
-            {
-                return new Result("Serial port startup failed.");
-            }
-            return new Result();
-        }
-    }
+	/**
+	 * initializes object's dependencies
+	 *
+	 * @return Result with success/fail info
+	 */
+	public Result init(boolean simulated) {
+		this.simulated = simulated;
+		if (simulated)
+			return new Result();
+		else {
+			loadInfoFromFile();
+			serialPort = new SerialPort(serialPortName);
+			try {
+				serialPort.openPort();//Open port
+				serialPort.purgePort(SerialPort.PURGE_RXABORT + SerialPort.PURGE_RXCLEAR + SerialPort.PURGE_TXABORT + SerialPort.PURGE_TXCLEAR);
+				serialPort.setParams(SerialPort.BAUDRATE_19200, 8, 1, 0);//Set params
+				serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
+			} catch (SerialPortException ex) {
+				return new Result("Serial port startup failed.");
+			}
+			return new Result();
+		}
+	}
 
-    /**
-     * Returns a wrapper object holding data from response.
-     *
-     * @param command command sent, used to filter out of response.
-     * @return ResponseObject wrapper object for command sent
-     */
-    public ResponseObject getResponse(String command)
-    {
-        if (simulated)
-        {
-            return new ResponseObject(ArmOperations.RESPONSE_OK, true);
-        }
-        else
-        {
-            String responseStr = readNoEcho(command);
+	/**
+	 * Returns a wrapper object holding data from response.
+	 *
+	 * @param command command sent, used to filter out of response.
+	 *
+	 * @return ResponseObject wrapper object for command sent
+	 */
+	public ResponseObject getResponse(String command) {
+		if (simulated)
+			return new ResponseObject(ArmOperations.RESPONSE_OK, true);
+		else {
+			String responseStr = readNoEcho(command);
 
-            //clean up string
-            responseStr = responseStr.replace("\n>", "");//filters the ">" and the new line. Saves all other new lines
-            responseStr = responseStr.replace(">", "");//removes any missed ">"
-            responseStr = responseStr.trim();
-            boolean succesful = false;
-            if (responseStr.endsWith(ArmOperations.RESPONSE_OK))
-            {
-                succesful = true;
-            }
-            return new ResponseObject(responseStr, succesful);
+			//clean up string
+			responseStr = responseStr.replace("\n>", "");//filters the ">" and the new line. Saves all other new lines
+			responseStr = responseStr.replace(">", "");//removes any missed ">"
+			responseStr = responseStr.trim();
+			boolean succesful = false;
+			if (responseStr.endsWith(ArmOperations.RESPONSE_OK))
+				succesful = true;
+			return new ResponseObject(responseStr, succesful);
 
-        }
-    }
+		}
+	}
 
-    private void loadInfoFromFile()
-    {
+	private void loadInfoFromFile() {
 
-        String pathToFile = FileUtils.getFilesFolderString() + INI_FILENAME;
-        /*=====Parsing File===*/
+		String pathToFile = FileUtils.getFilesFolderString() + INI_FILENAME;
+		/*=====Parsing File===*/
 
-        Map<String, String> map = FileUtils.readINIFileOrGenerate(
-                pathToFile,
-                INI_FILE_SECTION_KEY,
-                new String[]
-                {
-                    INI_FILE_SERIAL_PORT_KEY
-                },
-                INI_CONTENTS);
-        String serialPortTemp = map.get(INI_FILE_SERIAL_PORT_KEY);
-        if (serialPortTemp != null)
-        {
-            serialPortName = serialPortTemp;
+		Map<String, String> map = FileUtils.readINIFileOrGenerate(
+			pathToFile,
+			INI_FILE_SECTION_KEY,
+			new String[]{
+				INI_FILE_SERIAL_PORT_KEY
+			},
+			INI_CONTENTS);
+		String serialPortTemp = map.get(INI_FILE_SERIAL_PORT_KEY);
+		if (serialPortTemp != null)
+			serialPortName = serialPortTemp;
+		System.out.println("Serialport: " + serialPortName);
+	}
 
-        }
-        System.out.println("Serialport: " + serialPortName);
-    }
+	/**
+	 * Returns the response without the echo
+	 *
+	 * @param command command to filter out
+	 *
+	 * @return response without the command
+	 */
+	private String readNoEcho(String command) {
+		return read().replaceFirst(command, "").trim();
+	}
 
-    /**
-     * Returns the response without the echo
-     *
-     * @param command command to filter out
-     * @return response without the command
-     */
-    private String readNoEcho(String command)
-    {
-        return read().replaceFirst(command, "").trim();
-    }
+	/**
+	 * Reads using the R12Interface, responds with a usable string.
+	 *
+	 * @return String including echo of command
+	 */
+	private String read() {
+		byte[] bytes = null;
+		byte[] finalByteArray = new byte[65535];
+		int byteIterator = 0;
+		try {
+			//spin wait until data is found
+			while ((bytes = serialPort.readBytes()) == null);
 
-    /**
-     * Reads using the R12Interface, responds with a usable string.
-     *
-     * @return String including echo of command
-     */
-    private String read()
-    {
-        byte[] bytes = null;
-        byte[] finalByteArray = new byte[65535];
-        int byteIterator = 0;
-        try
-        {
-            //spin wait until data is found
-            while ((bytes = serialPort.readBytes()) == null);
+			//read while there still is data and data isn't '>'
+			readData:
+			while (true) {
+				if (bytes != null) {
+					for (int i = 0; i < bytes.length; i++)
+						finalByteArray[i + byteIterator] = bytes[i];
+					byteIterator += bytes.length;
 
-            //read while there still is data and data isn't '>'
-            readData:
-            while (true)
-            {
-                if (bytes != null)
-                {
-                    for (int i = 0; i < bytes.length; i++)
-                    {
-                        finalByteArray[i + byteIterator] = bytes[i];
-                    }
-                    byteIterator += bytes.length;
+					System.out.println(new String(finalByteArray, 0, byteIterator).replace("\r", "\\r").replace("\n", "\\n"));
+					//ends with "\n>"
+					if (byteIterator >= 2 && finalByteArray[(byteIterator - 1)] == (char) ('>') && finalByteArray[(byteIterator - 2)] == (char) ('\n'))
+						break readData;
+				}
+				bytes = serialPort.readBytes();
+			}
+		} catch (SerialPortException ex) {
+			Logger.getLogger(R12OperationsUSB.class.getName()).log(Level.SEVERE, null, ex);
+			return "";
+		}
 
-                    System.out.println(new String(finalByteArray, 0, byteIterator).replace("\r", "\\r").replace("\n", "\\n"));
-                    //ends with "\n>"
-                    if (byteIterator >= 2 && finalByteArray[(byteIterator - 1)] == (char) ('>') && finalByteArray[(byteIterator - 2)] == (char) ('\n'))
-                    {
-                        break readData;
-                    }
-                }
-                bytes = serialPort.readBytes();
-            }
-        }
-        catch (SerialPortException ex)
-        {
-            Logger.getLogger(R12OperationsUSB.class.getName()).log(Level.SEVERE, null, ex);
-            return "";
-        }
-
-        String s = new String(finalByteArray, 0, byteIterator);
+		String s = new String(finalByteArray, 0, byteIterator);
 //        s = s.replace("\r", "\\r");
 //        s = s.replace("\n", "\\n");
-        return new String(s);
+		return new String(s);
 
-    }
+	}
 
-    /**
-     * Writes to the R12 the command. Automatically includes the needed return.
-     *
-     * @param s command to send, no return needed
-     */
-    public void write(String s)
-    {
-        System.out.println("      > " + s);
-        if (!simulated)
-        {
-            try
-            {
-                serialPort.writeString(s + "\r");
-            }
-            catch (SerialPortException ex)
-            {
-                Logger.getLogger(R12OperationsUSB.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
+	/**
+	 * Writes to the R12 the command. Automatically includes the needed return.
+	 *
+	 * @param s command to send, no return needed
+	 */
+	public void write(String s) {
+		System.out.println("      > " + s);
+		if (!simulated)
+			try {
+				serialPort.writeString(s + "\r");
+			} catch (SerialPortException ex) {
+				Logger.getLogger(R12OperationsUSB.class.getName()).log(Level.SEVERE, null, ex);
+			}
+	}
 
-    public static R12OperationsUSB getInstance()
-    {
-        if (r12Operations == null)
-        {
-            r12Operations = new R12OperationsUSB();
-        }
-        return r12Operations;
-    }
+	public static R12OperationsUSB getInstance() {
+		if (r12Operations == null)
+			r12Operations = new R12OperationsUSB();
+		return r12Operations;
+	}
 }
