@@ -19,67 +19,45 @@
 package route;
 
 import utils.Result;
+import java.util.ArrayList;
 
 /**
  * Helper class for ArmOperations to build a custom route
  */
 public class DynamicRoute {
-    private StringBuilder routePoints = new StringBuilder();
-    private StringBuilder routePointsReverse = new StringBuilder();
-    private int pointCount = 0;
-
+    ArrayList<String> routePoints = new ArrayList<String>();
+    
     /**
      * Add a new position into the custom route list
      * 
      * @param newPosition Position to add to the route
      */
     public void addPosition(Position newPosition) {
-    System.out.println("# " + 
-            newPosition.getPitchStr() + " PITCH ! " +
-            newPosition.getYawStr() + " YAW ! " +
-            newPosition.getRollStr() + " ROLL ! " +
-            newPosition.getXStr() + " " +
-            newPosition.getYStr() + " " +
-            newPosition.getZStr() + " MOVETO");
-        if (pointCount != 0)
-            routePoints.append(" \r");
-        routePoints.append(newPosition.getXStr());
-        routePoints.append(" \r");
-        routePoints.append(newPosition.getYStr());
-        routePoints.append(" \r");
-        routePoints.append(newPosition.getZStr());
-        routePoints.append(" \r");
-        routePoints.append(newPosition.getPitchStr());
-        routePoints.append(" \r");
-        routePoints.append(newPosition.getYawStr());
-        routePoints.append(" \r");
-        routePoints.append(newPosition.getRollStr());
-        
-        routePointsReverse.insert(0, 
+        routePoints.add( 
             newPosition.getRollStr() + " " +
             newPosition.getYawStr() + " " +
             newPosition.getPitchStr() + " " +
             newPosition.getZStr() + " " +
             newPosition.getYStr() + " " +
-            newPosition.getXStr() + " ");
-        ++pointCount;
+            newPosition.getXStr() + " DR2");
     }
     
     /**
      * Empty the route for a new route generation
      */
     public void clear() {
-        routePoints = new StringBuilder();
-        pointCount = 0;
+        routePoints = new ArrayList<String>();
     }
     
     /**
      * Return the command string to run a route
      * 
+     * @param index of the item to return, starting at 0.  Returns null if no value at specified index
      * @return String containing the command sequence to send to the controller
      */
-    public String routeCommand() {
-       return Integer.toString(pointCount) + " UDR\r\000\000" + routePoints.toString();
-//       return routePointsReverse.toString() + Integer.toString(pointCount) + " UDS\r";
+    public String routeCommand(int index) {
+        if (index >= routePoints.size())
+            return null;
+        return routePoints.get(index);
     }
 }

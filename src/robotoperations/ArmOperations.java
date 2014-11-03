@@ -823,13 +823,19 @@ public class ArmOperations {
 			routeSpeed = armSpeed;
 		if (routeAccel > armAccel)
 			routeAccel = armAccel;
-		String runRoute = Integer.toString(routeAccel) + " ACCEL ! " + Integer.toString(routeSpeed) + " SPEED ! UDTEMP";
+		String runRoute = Integer.toString(routeAccel) + " ACCEL ! " + Integer.toString(routeSpeed) + " SPEED ! DR1";
 		Result result = runRobotCommand(runRoute);
 		if (!result.success())
 			return result;
-		runRoute = dynRoute.routeCommand();
-		result = runRobotCommand(runRoute);
-		return result;
+                for (int index = 0; true; ++index) {
+                    runRoute = dynRoute.routeCommand(index);
+                    if (runRoute == null)
+                        break;
+                    result = runRobotCommand(runRoute);
+                    if (!result.success())
+                        return result;
+                }
+                return runRobotCommand("DR3");
 	}
 
 	/**

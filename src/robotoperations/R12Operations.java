@@ -94,11 +94,11 @@ public class R12Operations {
 	 */
 	public ResponseObject getResponse(String command) {
             if (simulated)
-                    return new ResponseObject(ArmOperations.RESPONSE_OK, true);
+                    return new ResponseObject("OK", true);
             else {
                 // adjust protocol based on command being sent
                 int responses = 1;
-                String success = ArmOperations.RESPONSE_OK;
+                String success = "OK";
                 switch (command.toLowerCase().trim()) {
                     case "roboforth":
                     case "start":

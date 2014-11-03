@@ -24,63 +24,43 @@ CARTESIAN
 2000 TON !
 800 TGRIP !
 
-//
-// <routepoints> UDR: define and execute a custom route with the specified number of points.
-//
-// After executing this function, numeric values should be provided (six per line ending with \0d) for the
-// XYZPYR coordinates.  One line should be provided per <routepoints> count.  When complete, this route
-// will execute.  A route must be selected in advance (ROUTE <name>) and it will be erased!
-//
+// declare variable DRI (Dynamic Route Index) to index where we are inside a
+// dynamic route construction
+VARIABLE DRI
+// declare the route name we will use for dynamic routes
+ROUTE DR
+100 RESERVE
 
-: UDR
+// DR1 - Dynamic route, phase 1: initializes and clears the dynamic route
+: DR1
+DR
 ERASE
-// take the # of route points and duplicate so we can use it for both RESERVE and MOVES and set those up
-DUP
-RESERVE
-MOVES E!
-// loop for all lines, capturing and recording the coordinates
-LASTLINE 1+ 1 DO
-   6 0 DO
-      ASK
-      J LINE I 2* + E!
-   LOOP
-   // set the route rules.  
-   // Bytes 12/13 are: 0=joint values, 1=relative joint coordinate, 2=cartesian, 3=relative cartesian
-   2 I LINE 12 + E!
-   // must be a zero, else it assumes they are the CFA of a word (???) and it "tries to execute the word" (according to David)
-   0 I LINE 14 + E!
-LOOP
-// go ahead and run.  We should consider removing "ADJUST" and setting a specific SPEED/ACCEL (route
-// specific) because ADJUST takes extra processing time for the controller to determine the best speed
-// to run at.  Since our routes are consistent, we should be able to figure this out in advance of execution.
-CONTINUOUS ADJUST RUN
+0 DRI !
+." Dynamic route has been reset" CR
 ;
 
-: UDS
-ERASE
-// take the # of route points and duplicate so we can use it for both RESERVE and MOVES and set those up
-DUP
-RESERVE
-MOVES E!
-// loop for all lines, capturing and recording the coordinates
-LASTLINE 1+ 1 DO
-   9999 . CR
-   6 0 DO
-      DUP . CR
-      J LINE I 2* + E!
-   LOOP
-   // set the route rules.  
-   // Bytes 12/13 are: 0=joint values, 1=relative joint coordinate, 2=cartesian, 3=relative cartesian
-   2 I LINE 12 + E!
-   // must be a zero, else it assumes they are the CFA of a word (???) and it "tries to execute the word" (according to David)
-   0 I LINE 14 + E!
+// DR2 - learns a single point on the dynamic route path.  Stack should contain 6 values - XYZPYR  RYPZYX (x is top most value)
+: DR2
+DR
+." Filling route index " DRI @ . CR
+// increment to the next index in the route list
+DRI @ 1 + DRI !
+// set the total moves in the route table to support the new line being added
+DRI @ MOVES E!
+// go store the values into the route line
+6 0 DO
+   DRI @ LINE I 2* + E!
 LOOP
-// go ahead and run.  We should consider removing "ADJUST" and setting a specific SPEED/ACCEL (route
-// specific) because ADJUST takes extra processing time for the controller to determine the best speed
-// to run at.  Since our routes are consistent, we should be able to figure this out in advance of execution.
-CONTINUOUS ADJUST RUN
+// set the route rules.  
+// Bytes 12/13 are: 0=joint values, 1=relative joint coordinate, 2=cartesian, 3=relative cartesian
+2 DRI @ LINE 12 + E!
+// must be a zero, else it assumes they are the CFA of a word (???) and it "tries to execute the word" (according to David)
+0 DRI @ LINE 14 + E!
 ;
 
-// define the UDTEMP route
-ROUTE UDTEMP
-
+// DR3 - run the dynamic route
+: DR3
+DR
+." Dynamic route contains:" CR
+L.
+;
