@@ -28,18 +28,24 @@ import utils.Result;
  *
  */
 public class CommandArmCalibrate extends CommandInterface {
-	public CommandArmCalibrate() {
+        Boolean simulate;
+        
+	public CommandArmCalibrate(Boolean simulate) {
+            this.simulate = simulate;
 	}
 
 	public Result execute(CommandArguments args) {
-		ArmOperations ao = ArmOperations.getInstance();
-		args.cabinet = CabinetType.HOME;
-		args.coordinates = PositionLookup.getInstance().shelfToPosition(CabinetType.HOME, 0);
-		return ao.calibrate();
+                if (!this.simulate) {
+                    ArmOperations ao = ArmOperations.getInstance();
+                    args.cabinet = CabinetType.HOME;
+                    args.coordinates = PositionLookup.getInstance().shelfToPosition(CabinetType.HOME, 0);
+                    return ao.calibrate();
+                }
+                return new Result();
 	}
 
 	public String details() {
-		return "Calibrate()";
+		return "Calibrate(" + this.simulate + ")";
 	}
 
 	/**

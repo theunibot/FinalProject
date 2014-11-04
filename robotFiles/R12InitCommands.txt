@@ -37,10 +37,31 @@ ERASE
 ." Dynamic route has been reset" CR
 ;
 
+: SP1
+." SLOW" CR
+1000 SPEED !
+;
+
+: SP2
+." FAST" CR
+5000 SPEED !
+;
+
+VARIABLE G
+VARIABLE U
+FIND SP1 G !
+FIND SP2 U !
+: DRODD
+DRI @ 2 / 2 * DRI @ = IF U @ ELSE G @ THEN
+." IN DRODD" CR
+DUP . CR
+DRI @ LINE 14 + E!
+;
+
 // DR2 - learns a single point on the dynamic route path.  Stack should contain 6 values - XYZPYR  RYPZYX (x is top most value)
 : DR2
 DR
-." Filling route index " DRI @ . CR
+//." Filling route index " DRI @ . CR
 // increment to the next index in the route list
 DRI @ 1 + DRI !
 // set the total moves in the route table to support the new line being added
@@ -53,8 +74,9 @@ LOOP
 // Bytes 12/13 are: 0=joint values, 1=relative joint coordinate, 2=cartesian, 3=relative cartesian
 2 DRI @ LINE 12 + E!
 // must be a zero, or the CFA of a word to execute (see RoboForth manual on CFA for examples, and see
-// the FIND and SET commands (such as FIND cmd EXECUTE or FIND cmd VARIABLE ! to store it and the VARIABLE EXECUTE to execute it)
-0 DRI @ LINE 14 + E!
+// the FIND and SET commands (such as FIND cmd EXECUTE or FIND cmd var ! to store it and then var EXECUTE to execute it)
+DRODD
+//0 DRI @ LINE 14 + E!
 ;
 
 // DR3 - run the dynamic route, with adjust
@@ -62,6 +84,9 @@ LOOP
 DR
 ." Dynamic route contains:" CR
 L.
-CONTINUOUS ADJUST RUN
+//CONTINUOUS ADJUST RUN
+// When running segmented, it shows each segment as it runs; this removes that to enhance performance
+LISTFLAG C0SET
+SEGMENTED RUN
 ;
 

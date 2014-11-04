@@ -73,6 +73,11 @@ public class ServerHooks {
 		RouteEffectType effectEnum = Utils.effectStringToEffectType(effect);
 		String cabinetStr = params.get("cabinet");
 		CabinetType cabinet = null;
+                String simulateStr = params.get("simulate");
+                boolean simulate = false;
+                if (simulateStr != null)
+                    simulate = Boolean.parseBoolean(simulateStr);
+                
 		try {
 			cabinet = CabinetType.valueOf(cabinetStr);
 		} catch (Exception e) {
@@ -136,7 +141,7 @@ public class ServerHooks {
 				cmd = new CommandArmHome();
 				break;
 			case "arm-calibrate":
-				cmd = new CommandArmCalibrate();
+				cmd = new CommandArmCalibrate(simulate);
 				break;
 			case "arm-energize":
 				cmd = new CommandArmEnergize();
