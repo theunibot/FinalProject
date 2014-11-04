@@ -54,7 +54,7 @@ public class CommandCalibratePosition extends CommandInterface {
 	}
 
 	public String details() {
-		return "CalibratePosition(" + cabinet.toString() + ", " + shelf + ", " + plunge + ", " + depth + ", " + speed + ")";
+		return "CalibratePosition(" + cabinet.toString() + ", " + shelf + ", " + plunge + ", " + depth + ")";
 	}
 
 	/**

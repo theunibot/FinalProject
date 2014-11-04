@@ -32,19 +32,21 @@ import utils.Result;
 public class CommandCalibrateAdjust extends CommandInterface {
 	String option;
 	double value;
+	int speed;
 
-	public CommandCalibrateAdjust(String option, double value) {
+	public CommandCalibrateAdjust(String option, double value, int speed) {
 		this.option = option;
 		this.value = value;
+		this.speed = speed;
 	}
 
 	public Result execute(CommandArguments args) {
 		ArmOperations ao = ArmOperations.getInstance();
-		return ao.calibrateAdjust(option, value);
+		return ao.calibrateAdjust(option, value, speed);
 	}
 
 	public String details() {
-		return "CalibrateAdjust(" + option + ", " + value + ")";
+		return "CalibrateAdjust(" + option + ", " + value + ", " + speed + ")";
 	}
 
 	/**

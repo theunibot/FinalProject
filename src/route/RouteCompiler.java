@@ -95,6 +95,7 @@ public class RouteCompiler {
 	 *
 	 * @return Result with success/fail info
 	 */
+	/*
 	public Result programRoutes(String name) {
 		rh = RouteHolder.getInstance();
 		ao = ArmOperations.getInstance();
@@ -119,7 +120,7 @@ public class RouteCompiler {
 		}
 		return new Result();
 	}
-
+*/
 	private Result parseLines(ArrayList<String> lines) {
 		RouteProperties routeProperties = null;
 		Route route = null;       //set route type, D1, D2, etc
@@ -128,8 +129,8 @@ public class RouteCompiler {
 		for (String line : lines) {
 			if (line.startsWith(FileUtils.COMMAND_FILE_METADATA_PREFIX))//new Route
 			{
-				int routeSpeed = ArmOperations.ARM_MAX_SPEED;
-				int routeAccel = ArmOperations.ARM_MAX_ACCEL;
+				int routeSpeed = ArmOperations.armMaxSpeed;
+				int routeAccel = ArmOperations.armMaxAccel;
 				String[] chunks = line.replaceFirst(FileUtils.COMMAND_FILE_METADATA_PREFIX, "").split(" ");
 				int chunkLength = chunks.length;
 
@@ -140,7 +141,7 @@ public class RouteCompiler {
 						--chunkLength;
 						try {
 							int speed = Integer.parseInt(chunks[chunkLength].replace("@", ""));
-							if (speed < ArmOperations.ARM_MAX_SPEED)
+							if (speed < ArmOperations.armMaxSpeed)
 								routeSpeed = speed;
 						} catch (NumberFormatException ignored) {
 							return new Result("Route speed of line " + line + " could not be parsed as it is formatted improperly.");
@@ -152,7 +153,7 @@ public class RouteCompiler {
 						--chunkLength;
 						try {
 							int accel = Integer.parseInt(chunks[chunkLength].replace("!", ""));
-							if (accel < ArmOperations.ARM_MAX_ACCEL)
+							if (accel < ArmOperations.armMaxAccel)
 								routeAccel = accel;
 						} catch (NumberFormatException ignored) {
 							return new Result("Route accel of line " + line + " could not be parsed as it is formatted improperly.");

@@ -75,8 +75,7 @@ and open the template in the editor.
             <div class="menu-item" onclick="menu('empty-inventory');">Empty desktop / inventory</div>
             <div class="menu-item" onclick="menu('sign-management');">Sign management</div>
             <div class="menu-item" onclick="menu('calibration');">Calibration</div>
-            <div class="menu-item" onclick="menu('debugger');">Debugger</div>
-        </div>
+       </div>
             
         <div class="ui">
             <div id="arm-management" class="section default">
@@ -92,9 +91,6 @@ and open the template in the editor.
                     <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=ARM-GRIP&grip=o');">Ungrip</a></div>
                     <div></div>
                     <div><a onclick="r12move(null, -1);">Move to a position</a></div>
-                    <div></div>
-                    <div><a onclick="r12reload('NONE')">Reload positions (no reprogram of routes)</a></div>
-                    <div><a onclick="r12reload('')">Reprogram routes</a></div>
                 </div>
             </div>
             <div id="layer-management" class="section default">
@@ -172,10 +168,10 @@ and open the template in the editor.
                     <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=ARM-GRIP&grip=o');">Ungrip</a></div>
                     <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=ARM-GRIP&grip=c');">Grip</a></div>
                     <div></div>
-                    <div><a onclick="r12CalPosition('out-top');">Move to OUT-TOP</a></div>
-                    <div><a onclick="r12CalPosition('in-top');">Move to IN-TOP</a></div>
-                    <div><a onclick="r12CalPosition('in-bottom');">Move to IN-BOTTOM</a></div>
-                    <div><a onclick="r12CalPosition('out-bottom');">Move to OUT-BOTTOM</a></div>
+                    <div><a onclick="r12CalPosition('out-top', calSpeed);">Move to OUT-TOP</a></div>
+                    <div><a onclick="r12CalPosition('in-top', calSpeed);">Move to IN-TOP</a></div>
+                    <div><a onclick="r12CalPosition('in-bottom', calSpeed);">Move to IN-BOTTOM</a></div>
+                    <div><a onclick="r12CalPosition('out-bottom', calSpeed);">Move to OUT-BOTTOM</a></div>
                     <!--div></div>
                     <div><a onclick="r12runRoute(null, -1, null, -1, null);">Run a route</a></div-->
                     <div></div>
@@ -187,41 +183,8 @@ and open the template in the editor.
                     <div><a onclick="r12CalAdjust('roll', -1);">Adjust Roll</a></div>
                     <div></div>
                     <div><a onclick="r12('ENQUEUE?queue=0&status=0&command=POSITION-CALIBRATE&option=save');">Persist adjustments</a></div>
-                    <div><a onclick="r12reload('NONE')">Reload positions and adjustments</a></div>
                 </div>
             </div>
-            <div id='debugger' class="section">
-                <div class="header">DEBUGGER MAIN</div>
-                <div class='commands'>
-                    <div><a onclick="r12debug('debug=on')">Debug ON</a></div>
-                    <div><a onclick="r12debug('debug=off')">Debug OFF</a></div>
-                    <div></div>
-                    <div><a onclick="r12debug('debug=step')">Debug STEP</a></div>
-                </div>
-                <div class="header">DEBUGGER OPTIONS</div>
-                <div class='commands'>        
-                    <div><a onclick="r12debug('debug=speed&speed=30000')">Debug SPEED 30K</a></div>
-                    <div><a onclick="r12debug('debug=speed&speed=5000')">Debug SPEED 5K</a></div>
-                    <div><a onclick="r12debug('debug=speed&speed=2000')">Debug SPEED 2K</a></div>
-                    <div><a onclick="r12debug('debug=speed&speed=1000')">Debug SPEED 1K</a></div>
-                    <div><a onclick="r12debug('debug=speed&speed=600')">Debug SPEED 600</a></div>
-                    <div><a onclick="r12debug('debug=speed&speed=300')">Debug SPEED 300</a></div>
-                    <div></div>
-                    <div><a onclick="r12debug('debug=skip')">Debug SKIP</a></div>
-                    <div><a onclick="r12debug('debug=fail')">Debug FAIL</a></div>
-                </div>
-                <div class="header">ARM TUNING (in debug only; does not persist adjustment)</div>
-                <div class="commands">
-                    <div><a onclick="r12adjust('x');">Adjust X</a></div>
-                    <div><a onclick="r12adjust('y');">Adjust Y</a></div>
-                    <div><a onclick="r12adjust('z');">Adjust Z</a></div>
-                    <div><a onclick="r12adjust('pitch');">Adjust Pitch</a></div>
-                    <div><a onclick="r12adjust('yaw');">Adjust Yaw</a></div>
-                    <div><a onclick="r12adjust('roll');">Adjust Roll</a></div>
-                    <div></div>
-                    <div><a onclick="r12reload('')">Reload positions and routes</a></div>
-                </div>
-            </div>   
         </div>
     </body>
 </html>

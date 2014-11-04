@@ -21,6 +21,7 @@ package robotoperations;
 import enums.CabinetType;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Semaphore;
 import route.DynamicRoute;
 import route.Position;
@@ -29,6 +30,7 @@ import route.Route;
 import route.RouteCompiler;
 import route.RouteHolder;
 import utils.FileUtils;
+import static utils.FileUtils.readINIFile;
 import utils.Result;
 import utils.Utils;
 
@@ -37,29 +39,17 @@ import utils.Utils;
  */
 public class ArmOperations {
 
-	private final boolean armOpsSimulated = false;
-	private final boolean r12OpsSimulated = false;
-
-	public final static int ARM_MAX_SPEED = 15000;
-	public final static int ARM_MAX_ACCEL = 3000;
-	private int armSpeed = ARM_MAX_SPEED;
-	private int armAccel = ARM_MAX_ACCEL;
+	private boolean armOpsSimulated = false;
+	private boolean r12OpsSimulated = false;
+	
+	public static int armMaxSpeed = 30000;
+	public static int armMaxAccel = 3000;
 
 	private final boolean armOpsLogging = true;
 	private R12Operations r12o = null;
 	private RouteCompiler rc = null;
 	private PositionLookup plt = null;
-	private RouteHolder rh = null;
 	private static ArmOperations armOperations = null;
-	private boolean debugMode = false;
-	private int speed;
-	private boolean changeSpeed = false;
-	private Semaphore debugSemaphore = new Semaphore(0);
-	private boolean debugSkip = false;
-	private boolean debugFail = false;
-	private boolean debugAdjust = false;
-	private String debugAdjustAxis;
-	private double debugAdjustValue;
 	private Position calibratePosition = null;
 	private Position adjustmentPosition = null;
 	private CabinetType calibrateCabinet = null;
@@ -67,57 +57,78 @@ public class ArmOperations {
 	private String calibratePlunge;
 	private int calibrateDepth;
 
-	//Regular Objects
-	private ArrayList<String> initCommands = null;
 
-	//Strings
-	public static final String RESPONSE_OK = "OK";
-
-	private final String INIT_COMMANDS_FILENAME = "R12InitCommands.txt";
-	private final String INIT_COMMANDS_FILEPATH = FileUtils.getFilesFolderString() + INIT_COMMANDS_FILENAME;
-
-	private final String INIT_FILE_HEADER = ""
-		+ "//This is the R12 Robot Init File. This file is where commands are placed in the RoboForth"
-		+ "\n//Language and are called upon startup by the ThreadCommand thread. "
-		+ "\n//Each command should be seperated by a carriage return."
-		+ "\n//All comments must be on their own line and start with \"//\"";
-
+	/**
+	 * Constructor is private since this is a singleton
+	 */
 	private ArmOperations() {
-
 	}
 
+	/**
+	 * initialize the various modules for controlling the arm
+	 * 
+	 * @return Result w/success or fail info
+	 */
 	public Result init() {
 		r12o = R12Operations.getInstance();
 		rc = RouteCompiler.getInstance();
 		plt = PositionLookup.getInstance();
-		rh = RouteHolder.getInstance();
 
 		Result result;
+		
+		// load up the INI file to establish our settings
+		// load up the INI file with configuration info
+		Map<String, String> map = readINIFile(FileUtils.getFilesFolderString() + "R12Setup.ini", 
+				"arm", new String[] { "max_speed", "max_accel", "simulate" });
+		if (map == null)
+			return new Result("Unable to load INI file " + FileUtils.getFilesFolderString() + "R12Setup.ini");
 
-		if (!(armOpsSimulated && !r12OpsSimulated)) {
-			result = r12o.init(r12OpsSimulated);
+		// now load the values from the map
+		if ( (map.get("simulate") != null) && 
+			(map.get("simulate").toLowerCase().equals("true")) )
+			armOpsSimulated = true;
+		else
+			armOpsSimulated = false;
+		if (map.get("max_speed") != null)
+			armMaxSpeed = Integer.parseInt(map.get("max_speed"));
+		if (map.get("max_accel") != null)
+			armMaxAccel = Integer.parseInt(map.get("max_accel"));
+		
+		// if not simulated, proceed to initialize the r12 ops
+		if (!armOpsSimulated) {
+			result = r12o.init();
 			if (!result.success())
 				return result;
+			// track if r12 is simulated
+			r12OpsSimulated = r12o.simulated();
 		}
 
+		// run the controller initialization commands (program forth, etc)
 		result = runInitCommands();
 		if (!result.success())
 			return result;
 
+		// initialize the route compiler
 		result = rc.init();
 		return result;
 	}
 
 	private Result runInitCommands() {
+		final String INIT_COMMANDS_FILEPATH = FileUtils.getFilesFolderString() + "R12InitCommands.txt";
+		final String INIT_FILE_HEADER = ""
+			+ "//This is the R12 Robot Init File. This file is where commands are placed in the RoboForth"
+			+ "\n//Language and are called upon startup by the ThreadCommand thread. "
+			+ "\n//Each command should be seperated by a carriage return."
+			+ "\n//All comments must be on their own line and start with \"//\"";
 
 		//if init command file exists, read all the commands and write them out to the 
-		initCommands = FileUtils.readCommandFileOrGenEmpty(INIT_COMMANDS_FILEPATH, INIT_FILE_HEADER);
+		ArrayList<String> initCommands = FileUtils.readCommandFileOrGenEmpty(INIT_COMMANDS_FILEPATH, INIT_FILE_HEADER);
 
 		System.out.println("Read " + initCommands.size() + " command(s) from init commands file " + INIT_COMMANDS_FILEPATH);
 
 		// also set defaults for speed and acceleration
-		initCommands.add(String.valueOf(armSpeed) + " SPEED !");
-		initCommands.add(String.valueOf(armAccel) + " ACCEL !");
+//		initCommands.add(String.valueOf(armSpeed) + " SPEED !");
+//		initCommands.add(String.valueOf(armAccel) + " ACCEL !");
 		for (String command : initCommands)//runs every command in the file
 		{
 			Result result = runRobotCommand(command);
@@ -133,120 +144,7 @@ public class ArmOperations {
 		return armOperations;
 	}
 
-	/**
-	 * Front-end for running routes, to make it easy to switch between dynamic
-	 * and static routes
-	 *
-	 * @param route the route to run
-	 * @param start the starting coordinate to use on the route
-	 * @param end   the ending coordinate to use on the route
-	 *
-	 * @return Result with success of failure information)
-	 */
-	public Result runRoute(Route route, Position start, Position end) {
-		return runDynamicRoute(route, start, end);
-//        return runStaticRoute(route, start, end);
-	}
-
-	/**
-	 * Run a static route, with a modified starting and ending Position
-	 * coordinates
-	 *
-	 * @param route the route to run
-	 * @param start the starting coordinate to use on the route
-	 * @param end   the ending coordinate to use on the route
-	 *
-	 * @return Result with success of failure information)
-	 */
-	public Result runStaticRoute(Route route, Position start, Position end) {
-		if (armOpsLogging)
-			System.out.println("    ArmOperations: runRoute " + route.getRouteProperties().getRouteFriendlyName()
-				+ " from " + ((start != null) ? start.getName() : "undefined") + " to "
-				+ ((end != null) ? end.getName() : "undefined"));
-
-		if (armOpsSimulated && !r12OpsSimulated) {
-			Utils.sleep(2000);
-			return new Result();
-		}
-
-		ResponseObject response;
-		if (route.size() >= 2) {
-			//must have start and end pos to modify
-			if (start != null) {
-				//run the modify start command
-				String modStart = positionCommandToRouteModifyString(start, route.getRouteProperties().getRouteIDName(), 1);
-				Result result = runRobotCommand(modStart);
-				if (!result.success())
-					return result;
-			}
-
-			if (end != null) {
-				//run the modify end command
-				String modEnd = positionCommandToRouteModifyString(end, route.getRouteProperties().getRouteIDName(), route.size());
-				Result result = runRobotCommand(modEnd);
-				if (!result.success())
-					return result;
-			}
-
-			// see if any positions in the route require delta adjustment
-			Position priorPos = null;
-			for (int routeIndex = 0; routeIndex < route.size(); ++routeIndex) {
-				Position curPos;
-
-				// determine the current route position in the route
-				if (routeIndex == 0)
-					curPos = start;
-				else if (routeIndex == (route.size() - 1))
-					curPos = end;
-				else
-					curPos = route.get(routeIndex).getPosition();
-
-//System.out.println("***** Processing " + routeIndex + ": " + curPos);
-				if ((curPos != null) && (curPos.hasDelta())) {
-//System.out.println("***** Has delta");
-					// determine prior position
-					Position nextPos;
-
-					if (routeIndex >= (route.size() - 2))
-						nextPos = end;
-					else
-						nextPos = route.get(routeIndex + 1).getPosition();
-
-					// this line is a delta - so compute the varient position
-//System.out.println("***** prior: " + priorPos);
-//System.out.println("***** next: " + nextPos);
-					Position adjPos;
-					if (route.getRouteProperties().getReverse())
-						adjPos = curPos.getDeltaPosition(nextPos, priorPos);
-					else
-						adjPos = curPos.getDeltaPosition(priorPos, nextPos);
-//System.out.println("***** adusted is: " + adjPos);
-					String modMiddle = positionCommandToRouteModifyString(adjPos, route.getRouteProperties().getRouteIDName(), routeIndex + 1);
-					// execute the route change
-					Result result = runRobotCommand(modMiddle);
-					if (!result.success())
-						return result;
-					// save our adjusted position for next time...
-					priorPos = adjPos;
-				} else
-					// save our current position for next time
-					priorPos = curPos;
-
-			}
-
-			// run the route
-			int routeSpeed = route.getRouteProperties().getRouteSpeed();
-			String runRoute = Integer.toString((armSpeed < routeSpeed) ? armSpeed : routeSpeed) + " SPEED !  CONTINUOUS ADJUST " + route.getRouteProperties().getRouteIDName() + " RUN";
-			Result result = runRobotCommand(runRoute);
-			if (!result.success())
-				return result;
-
-			return new Result();
-		} else
-			//not enough pos to modify start and end routes
-			return new Result("Route named " + route.getRouteProperties().getRouteFriendlyName() + " has " + route.size() + " coordinates; must have at least two (start and end)");
-	}
-
+	
 	/**
 	 * Run a dynamic route (one not previously programmed)
 	 *
@@ -256,7 +154,7 @@ public class ArmOperations {
 	 *
 	 * @return Result with success of failure information)
 	 */
-	public Result runDynamicRoute(Route route, Position start, Position end) {
+	public Result runRoute(Route route, Position start, Position end) {
 
 		if (armOpsLogging)
 			System.out.println("    ArmOperations: runDynamicRoute " + route.getRouteProperties().getRouteFriendlyName()
@@ -331,7 +229,7 @@ public class ArmOperations {
 	 *                       out-top, out-bottom)
 	 * @param depth          Plunge depth (1 for desktop, 1=bottom and 2=top for
 	 *                       cachepoint)
-	 * @param speed          Speed to set the arm to before doing the move
+	 * @param speed			 Speed to run at, or -1 for default
 	 *
 	 * @return Result with success/fail info
 	 */
@@ -344,22 +242,14 @@ public class ArmOperations {
 
 		if (armOpsLogging)
 			System.out.println("    ArmOperations: calibratePoint " + cabinet.toString()
-				+ ", shelf " + shelf + ", plungePosition " + plungePosition + ", depth " + depth + ", speed " + speed);
-
-		// set speed for all actions
-		if (armSpeed < ARM_MAX_SPEED)
-			armSpeed = speed;
+				+ ", shelf " + shelf + ", plungePosition " + plungePosition + ", depth " + depth);
+		
 		// determine our move position, our adjustments to alter, and the various plunge positions
 		calibratePosition = PositionLookup.getInstance().shelfToPosition(cabinet, shelf);
 		if (calibratePosition == null)
 			return new Result("Unable to locate cabinet " + cabinet.toString() + " shelf " + shelf);
 		adjustmentPosition = PositionLookup.getInstance().shelfToAdjustmentPosition(cabinet, shelf);
 		HashMap<String, Position> plungeMap = plungePositions(cabinet, shelf, depth, calibratePosition);
-
-		// set the speed
-		Result result = runRobotCommand(String.valueOf(speed) + " SPEED !");
-		if (!result.success())
-			return result;
 
 		// move to the requested position
 		Position plungePos;
@@ -369,7 +259,12 @@ public class ArmOperations {
 				return new Result("Unable to locate plungePosition " + calibratePlunge);
 		} else
 			plungePos = calibratePosition;
-		return moveTo(plungePos);
+
+		// adjust speed
+		if ( (speed == -1) || (speed > armMaxSpeed) )
+			speed = armMaxSpeed;
+		// move the arm
+		return moveTo(plungePos, speed);
 	}
 
 	/**
@@ -383,13 +278,17 @@ public class ArmOperations {
 	 *
 	 * @param axis  Axis to adjust (x, y, z, pitch, yaw, roll)
 	 * @param value Value to move by (in mm)
+	 * @param speed Speed to move at
 	 *
 	 * @return Result with success/fail info
 	 */
-	public Result calibrateAdjust(String axis, double value) {
+	public Result calibrateAdjust(String axis, double value, int speed) {
 		if (armOpsLogging)
 			System.out.println("    ArmOperations: calibrateAdjust, axis " + axis + ", value " + value);
 
+		if (speed > armMaxSpeed)
+			speed = armMaxSpeed;
+		
 		if (adjustmentPosition == null)
 			return new Result("Unknown calibrate location");
 
@@ -424,86 +323,9 @@ public class ArmOperations {
 		Position plungePos = plungeMap.get(calibratePlunge);
 		if (plungePos == null)
 			return new Result("Unable to locate plungePosition " + calibratePlunge);
-		return moveTo(plungePos);
+		return moveTo(plungePos, speed);
 	}
 
-	/**
-	 * Generic pick front-end to enable using either static or dynamic pick
-	 * approaches
-	 *
-	 * @param cabinet       if this is a CP or a desktop
-	 * @param shelf         shelf within the cabinet
-	 * @param stackPosition stack position (when CP) - where 1 is bottom disc,
-	 *                      and 2 is top disc)
-	 * @param position      current position of the arm
-	 *
-	 * @return Result with success/failure info
-	 */
-	public Result pick(CabinetType cabinet, int shelf, int stackPosition, Position position) {
-//        return pickStatic(cabinet, shelf, stackPosition, position);
-		return pickDynamic(cabinet, shelf, stackPosition, position);
-	}
-
-	/**
-	 * Pickup a disc from a shelf using static moves. Assumes that the robot is
-	 * already at the safe pickup location for the specified disc, and is not
-	 * already holding one
-	 *
-	 * @param cabinet       if this is a CP or a desktop
-	 * @param shelf         shelf within the cabinet
-	 * @param stackPosition stack position (when CP) - where 1 is bottom disc,
-	 *                      and 2 is top disc)
-	 * @param position      current position of the arm
-	 *
-	 * @return Result with success/failure info
-	 */
-	public Result pickStatic(CabinetType cabinet, int shelf, int stackPosition, Position position) {
-		HashMap<String, Position> plunge = plungePositions(cabinet, shelf, stackPosition, position);
-		Result result;
-
-		if (armOpsLogging)
-			System.out.println("    ArmOperations: pick static from " + cabinet.toString() + " position " + stackPosition + " starting at " + position.getName());
-
-		// make sure the stackPosition is legit
-		if ((stackPosition < 1) || (stackPosition > 2))
-			return new Result("Invalid stackPosition of " + stackPosition + " passed to pick");
-
-		if (armOpsSimulated && !r12OpsSimulated) {
-			Utils.sleep(1000);
-			return new Result();
-		}
-
-		result = runRobotCommand(plunge.get("out-bottom"));
-		if (!result.success())
-			return result;
-
-		// ungrip in prep to get the disc
-		result = runRobotCommand("UNGRIP");
-		if (!result.success())
-			return result;
-
-		// move into the cabinet
-		result = runRobotCommand(plunge.get("in-bottom"));
-		if (!result.success())
-			return result;
-
-		// now grip the disc
-		result = runRobotCommand("GRIP");
-		if (!result.success())
-			return result;
-
-		// lift the disc
-		result = runRobotCommand(plunge.get("in-top"));
-		if (!result.success())
-			return result;
-
-		// and return to out-top
-		result = runRobotCommand(plunge.get("out-top"));
-		if (!result.success())
-			return result;
-
-		return new Result();
-	}
 
 	/**
 	 * Pickup a disc from a shelf using a dynamic route. Assumes that the robot
@@ -518,7 +340,7 @@ public class ArmOperations {
 	 *
 	 * @return Result with success/failure info
 	 */
-	public Result pickDynamic(CabinetType cabinet, int shelf, int stackPosition, Position position) {
+	public Result pick(CabinetType cabinet, int shelf, int stackPosition, Position position) {
 		HashMap<String, Position> plunge = plungePositions(cabinet, shelf, stackPosition, position);
 		Result result;
 
@@ -545,7 +367,7 @@ public class ArmOperations {
 		dr.addPosition(plunge.get("in-bottom"));
 
 		// and run the route
-		result = runDynamicRoute(dr, armSpeed, armAccel);
+		result = runDynamicRoute(dr, armMaxSpeed, armMaxAccel);
 		if (!result.success())
 			return result;
 
@@ -560,86 +382,8 @@ public class ArmOperations {
 
 		// and return to out-top
 		dr.addPosition(plunge.get("out-top"));
-		result = runDynamicRoute(dr, armSpeed, armAccel);
+		result = runDynamicRoute(dr, armMaxSpeed, armMaxAccel);
 		return result;
-	}
-
-	/**
-	 * Drop off a disc - front end to select between dynamic and static methods
-	 *
-	 * @param cabinet       if this is a CP or a desktop
-	 * @param shelf         shelf within the cabinet
-	 * @param stackPosition stack position (when CP) - where 1 is bottom disc,
-	 *                      and 2 is top disc)
-	 * @param position      off of which the relative route is run
-	 *
-	 * @return Result with success/fail info
-	 */
-	public Result drop(CabinetType cabinet, int shelf, int stackPosition, Position position) {
-//        return dropStatic(cabinet, shelf, stackPosition, position);
-		return dropDynamic(cabinet, shelf, stackPosition, position);
-	}
-
-	/**
-	 * Drop off a disc to a shelf using static moves. Assumes that the robot is
-	 * already at the safe dropoff location for the specified disc, and is
-	 * currently holding a disc
-	 *
-	 * @param cabinet       if this is a CP or a desktop
-	 * @param shelf         shelf within the cabinet
-	 * @param stackPosition stack position (when CP) - where 1 is bottom disc,
-	 *                      and 2 is top disc)
-	 * @param position      off of which the relative route is run
-	 *
-	 * @return Result with success/fail info
-	 */
-	public Result dropStatic(CabinetType cabinet, int shelf, int stackPosition, Position position) {
-		HashMap<String, Position> plunge = plungePositions(cabinet, shelf, stackPosition, position);
-		Result result;
-
-		if (armOpsLogging)
-			System.out.println("    ArmOperations: drop static at " + cabinet.toString() + " position " + stackPosition + " starting at " + position.getName());
-
-		// make sure the stackPosition is legit
-		if ((stackPosition < 1) || (stackPosition > 2))
-			return new Result("Invalid stackPosition of " + stackPosition + " passed to drop");
-
-		if (armOpsSimulated && !r12OpsSimulated) {
-			Utils.sleep(1000);
-			return new Result();
-		}
-
-		// move in
-		result = runRobotCommand(plunge.get("in-top"));
-		if (!result.success())
-			return result;
-
-		// and down to position
-		result = runRobotCommand(plunge.get("in-bottom"));
-		if (!result.success())
-			return result;
-
-		// now ungrip
-		result = runRobotCommand("UNGRIP");
-		if (!result.success())
-			return result;
-
-		// and pull out
-		result = runRobotCommand(plunge.get("out-bottom"));
-		if (!result.success())
-			return result;
-
-		// regrip
-		result = runRobotCommand("GRIP");
-		if (!result.success())
-			return result;
-
-		// and return to out-top
-		result = runRobotCommand(plunge.get("out-top"));
-		if (!result.success())
-			return result;
-
-		return new Result();
 	}
 
 	/**
@@ -655,7 +399,7 @@ public class ArmOperations {
 	 *
 	 * @return Result with success/fail info
 	 */
-	public Result dropDynamic(CabinetType cabinet, int shelf, int stackPosition, Position position) {
+	public Result drop(CabinetType cabinet, int shelf, int stackPosition, Position position) {
 		HashMap<String, Position> plunge = plungePositions(cabinet, shelf, stackPosition, position);
 		Result result;
 
@@ -677,7 +421,7 @@ public class ArmOperations {
 		dr.addPosition(plunge.get("in-top"));
 		// and down to position
 		dr.addPosition(plunge.get("in-bottom"));
-		result = runDynamicRoute(dr, armSpeed, armAccel);
+		result = runDynamicRoute(dr, armMaxSpeed, armMaxAccel);
 		if (!result.success())
 			return result;
 
@@ -687,7 +431,7 @@ public class ArmOperations {
 			return result;
 
 		// and pull out
-		result = runRobotCommand(plunge.get("out-bottom"));
+		result = moveTo(plunge.get("out-bottom"));
 		if (!result.success())
 			return result;
 
@@ -697,7 +441,7 @@ public class ArmOperations {
 			return result;
 
 		// and return to out-top
-		result = runRobotCommand(plunge.get("out-top"));
+		result = moveTo(plunge.get("out-top"));
 		if (!result.success())
 			return result;
 
@@ -819,10 +563,10 @@ public class ArmOperations {
 	 * @return Result with success/fail info
 	 */
 	public Result runDynamicRoute(DynamicRoute dynRoute, int routeSpeed, int routeAccel) {
-		if (routeSpeed > armSpeed)
-			routeSpeed = armSpeed;
-		if (routeAccel > armAccel)
-			routeAccel = armAccel;
+		if (routeSpeed > armMaxSpeed)
+			routeSpeed = armMaxSpeed;
+		if (routeAccel > armMaxAccel)
+			routeAccel = armMaxAccel;
 		String runRoute = Integer.toString(routeAccel) + " ACCEL ! " + Integer.toString(routeSpeed) + " SPEED ! DR1";
 		Result result = runRobotCommand(runRoute);
 		if (!result.success())
@@ -852,16 +596,13 @@ if (false) return new Result();
 		 System.out.println("    ArmOperations: calibrate");
 		 }
 
-		 // reset speed to fast
-		 armSpeed = ARM_MAX_SPEED;
-
 		 if (armOpsSimulated && !r12OpsSimulated)
 		 {
 		 Utils.sleep(2000);
 		 return new Result();
 		 }
 
-		 return runRobotCommand(Integer.toString(armSpeed) + " SPEED ! CALIBRATE");
+		 return runRobotCommand(Integer.toString(armMaxSpeed) + " SPEED ! CALIBRATE");
 	}
 
 	/**
@@ -924,85 +665,35 @@ if (false) return new Result();
 	 * @return Result with success/fail info
 	 */
 	public Result moveTo(Position position) {
+		return moveTo(position, armMaxSpeed);
+	}
+	
+	/**
+	 * move the robot arm to a specific position at a specific speed
+	 *
+	 * @param speed speed to move at
+	 * @param position position to move to
+	 *
+	 * @return Result with success/fail info
+	 */
+	public Result moveTo(Position position, int speed) {
 		if (armOpsLogging)
-			System.out.println("    ArmOperations: position to " + position.getName());
+			System.out.println("    ArmOperations: position to " + position.getName() + ", speed " + speed);
 
 		if (armOpsSimulated && !r12OpsSimulated) {
 			Utils.sleep(1000);
 			return new Result();
 		}
 
-		//return runRobotCommand(position.getName() + " GOTO");
 		return runRobotCommand(
-			Integer.toString(armSpeed) + " SPEED ! "
-			+ Integer.toString(armAccel) + " ACCEL ! "
+			Integer.toString(speed) + " SPEED ! "
+			+ Integer.toString(armMaxAccel) + " ACCEL ! "
 			+ position.getPitchStr() + " PITCH ! "
 			+ position.getYawStr() + " YAW ! "
 			+ position.getRollStr() + " ROLL ! "
 			+ position.getXStr() + " "
 			+ position.getYStr() + " "
 			+ position.getZStr() + " MOVETO");
-	}
-
-	/**
-	 * tell the robot to persist all settings into flash memory
-	 *
-	 * @return Result with success/fail info
-	 */
-	public Result persist() {
-		if (armOpsLogging)
-			System.out.println("    ArmOperations: persist");
-
-		if (armOpsSimulated && !r12OpsSimulated) {
-			Utils.sleep(500);
-			return new Result();
-		}
-
-		return runRobotCommand("USAVE");
-	}
-
-	/**
-	 * Program a route into the robot controller
-	 *
-	 * @param route route to add to the controller
-	 *
-	 * @return Result with success/fail info
-	 */
-	public Result learnRoute(Route route) {
-		if (armOpsLogging)
-			System.out.println("    ArmOperations: learnRoute " + route.getRouteProperties().getRouteFriendlyName());
-
-		if (armOpsSimulated && !r12OpsSimulated)
-			return new Result();
-
-		ArrayList<String> routeCommands = route.getRoboforthCommands();
-
-		//input the Fwd commands
-		for (String commandString : routeCommands) {
-			Result result = runRobotCommand(commandString);
-			if (!result.success())
-				return result;
-		}
-		return new Result();
-	}
-
-	/**
-	 * Learn an individual point on the robot
-	 *
-	 * @param position Point to learn
-	 *
-	 * @return Result with success/failure
-	 */
-	public Result learnPoint(Position position) {
-		if (armOpsLogging)
-			System.out.println("    ArmOperations: learnPoint " + position.getName());
-
-		if (armOpsSimulated && !r12OpsSimulated) {
-			Utils.sleep(100);
-			return new Result();
-		}
-
-		return runRobotCommand(position.getRoboforth());
 	}
 
 	/**
@@ -1040,145 +731,6 @@ if (false) return new Result();
 	}
 
 	/**
-	 * restart the controller, which resets all routes and points and starts
-	 * fresh
-	 *
-	 * @return Result with success/fail info
-	 */
-	public Result restartController() {
-		if (armOpsLogging)
-			System.out.println("    ArmOperations: restartController");
-
-		if (armOpsSimulated && !r12OpsSimulated)
-			return new Result();
-
-		Result result = runRobotCommand("ROBOFORTH");
-		if (!result.success())
-			return result;
-		return runRobotCommand("START");
-	}
-
-	/**
-	 * Turns on/off robot debugging mode, which lets you step through robot
-	 * commands one at a time
-	 *
-	 * @param enable true to enable, false to disable (and return to normal
-	 *               operations)
-	 *
-	 * @return Result w/success/fail info
-	 */
-	public Result debug(boolean enable) {
-		// are we changing mode?
-		if (debugMode == enable)
-			return new Result();
-
-		// are we currently in debug mode?  If so, make sure nobody is blocked from execution
-		if (debugMode) // ending debug mode - release any blocked operation
-		
-			debugSemaphore.release();
-		else // starting debug mode - make sure no permits are pending
-		
-			debugSemaphore.drainPermits();
-		// set the mode
-		debugMode = enable;
-		return new Result();
-	}
-
-	/**
-	 * Changes the robot speed. Only works when in debug mode.
-	 *
-	 * @param speed speed to change robot to
-	 *
-	 * @return Result w/success/fail info
-	 */
-	public Result debugSpeed(int speed) {
-		if (debugMode) {
-			this.speed = speed;
-			this.changeSpeed = true;
-			// tell the other thread it can do something
-			debugSemaphore.release();
-			return new Result();
-		}
-		return new Result("Robot not in debug mode; change not change speed");
-	}
-
-	/**
-	 * When in debug mode, steps the robot one roboforth statement
-	 *
-	 * @return Result w/success/fail info
-	 */
-	public Result debugStep() {
-		if (debugMode) {
-			// release one instruction worth of execution
-			debugSemaphore.release();
-			return new Result();
-		}
-		return new Result("Robot not in debug mode; cannot step");
-	}
-
-	/**
-	 * When in debug mode, skips over the next roboforth statement
-	 *
-	 * @return Result w/success/fail info
-	 */
-	public Result debugSkip() {
-		if (debugMode) {
-			debugSkip = true;
-			debugSemaphore.release();
-			return new Result();
-		}
-		return new Result("Robot not in debug mode; nothing skipped");
-	}
-
-	/**
-	 * When in debug mode, causes next RF statement to fail
-	 *
-	 * @return Result w/success/fail info
-	 */
-	public Result debugFail() {
-		if (debugMode) {
-			debugFail = true;
-			debugSemaphore.release();
-			return new Result();
-		}
-		return new Result("Robot not in debug mode; cannot set failure");
-	}
-
-	/**
-	 * Adjusts the robot x/y/z/raw/pitch/roll by a specific amount (live)
-	 *
-	 * @param axis  one of "x", "y", "z", "yaw", "pitch", or "roll"
-	 * @param value number of 10th mm to move
-	 *
-	 * @return Result with success/fail info
-	 */
-	public Result debugAdjust(String axis, double value) {
-		if (debugMode) {
-			debugAdjust = true;
-			debugAdjustAxis = axis;
-			debugAdjustValue = value;
-			debugSemaphore.release();
-			return new Result();
-		}
-		return new Result("Robot not in debug mode; can not adjust");
-	}
-
-	/**
-	 * Move the arm to the specified absolute position
-	 *
-	 * @param position Absolute position to move to
-	 *
-	 * @return Result with success/failure
-	 */
-	private Result runRobotCommand(Position position) {
-		String command = position.getPitchStr() + " PITCH ! "
-			+ position.getYawStr() + " YAW ! "
-			+ position.getRollStr() + " ROLL ! "
-			+ position.getXStr() + " " + position.getYStr() + " " + position.getZStr() + " MOVETO";
-		return runRobotCommand(command);
-	}
-
-	/**
 	 * Sends an individual command to robot and looks for errors
 	 *
 	 * @param commandString command to execute
@@ -1186,72 +738,7 @@ if (false) return new Result();
 	 * @return Result with success/fail info
 	 */
 	private Result runRobotCommand(String commandString) {
-		// are we in debug mode?
-		while (debugMode) {
-			System.out.println("      Debug: Next command is: " + commandString);
-			try {
-				debugSemaphore.acquire();
-			} catch (InterruptedException e) {
-				// let things roll...
-			}
-			// are we being asked to change speed?
-			if (this.changeSpeed) {
-				this.changeSpeed = false;
-				String speedCmd = String.valueOf(this.speed) + " SPEED !";
-				r12o.write(speedCmd);
-				armSpeed = this.speed;
-				ResponseObject response = r12o.getResponse(speedCmd);
-				if (!response.isSuccessful())
-					return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-				// return to the debug loop
-				continue;
-			}
-			// do we need to execute an adjustment?
-			if (this.debugAdjust) {
-				String adjustCmd = "";
-				this.debugAdjust = false;
-				switch (this.debugAdjustAxis) {
-					case "x":
-						adjustCmd = String.valueOf(this.debugAdjustValue) + " 0 0 MOVE";
-						break;
-					case "y":
-						adjustCmd = "0 " + String.valueOf(this.debugAdjustValue) + " 0 MOVE";
-						break;
-					case "z":
-						adjustCmd = "0 0 " + String.valueOf(this.debugAdjustValue) + " MOVE";
-						break;
-					case "pitch":
-						adjustCmd = String.valueOf(this.debugAdjustValue) + " PITCH +! 0 0 0 MOVE";
-						break;
-					case "yaw":
-						adjustCmd = String.valueOf(this.debugAdjustValue) + " YAW +! 0 0 0 MOVE";
-						break;
-					case "roll":
-						adjustCmd = String.valueOf(this.debugAdjustValue) + " ROLL +! 0 0 0 MOVE";
-						break;
-				}
-				r12o.write(adjustCmd);
-				ResponseObject response = r12o.getResponse(adjustCmd);
-				if (!response.isSuccessful())
-					return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
-				// return to the debug loop
-				continue;
-			}
-			// were we asked to skip this instruction?
-			if (debugSkip) {
-				debugSkip = false;
-				System.out.println("        Debug: SKIPPING: " + commandString);
-				return new Result();
-			}
-			if (debugFail) {
-				debugFail = false;
-				System.out.println("        Debug: FAILING: " + commandString);
-				return new Result("Debug fail requested");
-			}
-			break;
-		}
-
-		// we got a command - go execute it
+		// make sure we are not simulated
 		if (!(armOpsSimulated && !r12OpsSimulated)) {
 			r12o.write(commandString);
 			ResponseObject response = r12o.getResponse(commandString);
@@ -1260,20 +747,6 @@ if (false) return new Result();
 				return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
 		}
 		return new Result();
-	}
-
-	/**
-	 * Converts the Position object into a RoboForth String to modify the given
-	 * route at the given position.
-	 *
-	 * @param c         Position point
-	 * @param routeName Name of the Route to modify
-	 * @param pos       Position in the route to modify
-	 *
-	 * @return RoboForth String to modify the given route at the given position
-	 */
-	private String positionCommandToRouteModifyString(Position c, String routeName, int pos) {
-		return "DECIMAL " + c.getRollStr() + " " + c.getYawStr() + " " + c.getPitchStr() + " " + c.getZStr() + " " + c.getYStr() + " " + c.getXStr() + " " + routeName + " " + pos + " LINE DLD";
 	}
 
 }

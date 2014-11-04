@@ -151,10 +151,12 @@ public class ServerHooks {
 					grip = false;
 				cmd = new CommandArmGripper(grip);
 				break;
+				/*
 			case "program-controller":
 				String name = params.get("name");
 				cmd = new CommandProgramController((name != null) ? name.toLowerCase() : null);
 				break;
+					*/
 			case "position-calibrate":
 				String option = params.get("option");
 				if (option == null)
@@ -196,8 +198,14 @@ public class ServerHooks {
 						if (valueStr == null)
 							return Utils.genericEnqueueFail("Position-calibrate '" + option + "' option missing value parameter");
 
+						speedStr = params.get("speed");
+						if (speedStr == null)
+							return Utils.genericEnqueueFail("Position-calibrate 'move' option missing speed parameter");
+						speed = Integer.valueOf(speedStr);
+
+
 						Double value = Double.valueOf(valueStr);
-						cmd = new CommandCalibrateAdjust(option.toLowerCase(), value);
+						cmd = new CommandCalibrateAdjust(option.toLowerCase(), value, speed);
 						break;
 					case "save":
 						Result result = PositionLookup.getInstance().saveAdjustmentFile();
@@ -318,70 +326,6 @@ public class ServerHooks {
 		else
 			json.put(STATUS_ERROR_KEY, "Missing id value for status request");
 
-		return json.toString();
-	}
-
-	private final String DEBUG_COMMAND_KEY = "debug";
-
-	public String debug(Map<String, String> params) {
-		JSONObject json = new JSONObject();
-		ArmOperations ao = ArmOperations.getInstance();
-		Result result = new Result();
-
-		String debug = params.get(DEBUG_COMMAND_KEY);
-		if (debug != null)
-			switch (debug.toLowerCase()) {
-				case "on":
-					result = ao.debug(true);
-					break;
-				case "off":
-					result = ao.debug(false);
-					break;
-				case "step":
-					result = ao.debugStep();
-					break;
-				case "skip":
-					result = ao.debugSkip();
-					break;
-				case "fail":
-					result = ao.debugFail();
-					break;
-				case "speed":
-					String speedStr = params.get("speed");
-					if (speedStr != null) {
-						int speed = Integer.valueOf(speedStr);
-						result = ao.debugSpeed(speed);
-					} else {
-						System.err.println("Debug speed command missing speed parameter");
-						json.put(STATUS_ERROR_KEY, "Debug speed command missing speed parameter");
-					}
-					break;
-				case "x":
-				case "y":
-				case "z":
-				case "yaw":
-				case "pitch":
-				case "roll":
-					String valueStr = params.get("value");
-					if (valueStr != null) {
-						Double value = Double.valueOf(valueStr);
-						result = ao.debugAdjust(debug.toLowerCase(), value);
-					} else {
-						System.err.println("Debug " + debug.toLowerCase() + " command missing value parameter");
-						json.put(STATUS_ERROR_KEY, "Debug " + debug.toLowerCase() + " command missing value parameter");
-					}
-					break;
-				default:
-					System.err.println("Unknown debug command " + debug);
-					json.put(STATUS_ERROR_KEY, "Unknown debug command " + debug);
-					break;
-			}
-		else {
-			System.err.println("Missing debug command");
-			json.put(STATUS_ERROR_KEY, "Missing debug command");
-		}
-		if (!result.success())
-			json.put(STATUS_ERROR_KEY, result.errorMessage);
 		return json.toString();
 	}
 

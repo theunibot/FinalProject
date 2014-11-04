@@ -118,8 +118,6 @@ public class WebServer extends NanoHTTPD {
 				responseStr = sh.enqueue(params);
 			else if (uri.startsWith(STATUS))
 				responseStr = sh.status(params);
-			else if (uri.startsWith(DEBUG))
-				responseStr = sh.debug(params);
 			else if (uri.startsWith(CLEAR_QUEUE))
 				responseStr = sh.clearQueue(params);
 			else if (uri.startsWith(GET_VAR))

@@ -68,15 +68,15 @@ function r12move(cabinet, shelf, effect) {
     console.log('r12move: moving to ' + cmd);
     r12(cmd);
     console.log('r12move: now setting cal position: ' + cmd);
-    r12CalPosition('out-top');
+    r12CalPosition('out-top', -1);
 }
 
-function r12CalPosition(plunge) {
+function r12CalPosition(plunge, speed) {
     if ( (plunge == null) || (plunge == -1) || (plunge == "") )
         if ((plunge = prompt('Plunge position?', calPlunge)) == null)
             return;
     cmd = "ENQUEUE?queue=0&status=0&command=POSITION-CALIBRATE&option=move&cabinet=" + routeToCabinet +
-            "&shelf=" + routeToShelf + "&plunge=" + plunge + "&depth=" + calDepth + "&speed=" + calSpeed;
+            "&shelf=" + routeToShelf + "&plunge=" + plunge + "&depth=" + calDepth + "&speed=" + speed;
     r12(cmd);
     calPlunge = plunge;
 }
@@ -88,23 +88,8 @@ function r12CalAdjust(axis, distance) {
     if (distance == -1)
         if ((distance = prompt("Move amount (positive or negative, mm or degrees)?")) == null)
             return;
-    cmd = "ENQUEUE?queue=0&status=0&command=POSITION-CALIBRATE&option=" + axis + "&value=" + distance;
+    cmd = "ENQUEUE?queue=0&status=0&command=POSITION-CALIBRATE&option=" + axis + "&value=" + distance + "&speed=" + calSpeed;
     r12(cmd);
-}
-
-function r12reload(name) {
-    if (name == '')
-        if ((name = prompt('Reload filter (empty is all; examples are CPL0, CPR23, D1_2, CPL_D1)?')) == null)
-            return;
-    cmd = 'ENQUEUE?queue=0&status=0&command=PROGRAM-CONTROLLER&name=' + name;
-    r12(cmd);
-}
-
-
-function r12adjust(cmd) {
-    if ((amount = prompt('Amount to adjust ' + cmd + ' in mm?')) == null)
-        return;
-    r12debug('debug=' + cmd + '&value=' + amount);
 }
 
 function r12mount(desktop, layer, shelf) {
@@ -120,10 +105,6 @@ function r12mount(desktop, layer, shelf) {
     cmd = 'ENQUEUE?status=0&command=MOUNT-LAYER&queue=' + desktop + '&desktop=' + desktop + 
         '&layer=' + layer + '&shelf=' + shelf + '&effect=efficient';
     r12(cmd);
-}
-
-function r12debug(cmd) {
-    r12('DEBUG?' + cmd);
 }
 
 function r12(str) {

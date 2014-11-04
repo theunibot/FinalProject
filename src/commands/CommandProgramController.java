@@ -26,6 +26,7 @@ import utils.Result;
 /**
  *
  */
+/*
 public class CommandProgramController extends CommandInterface {
 	private String name;
 
@@ -59,14 +60,16 @@ public class CommandProgramController extends CommandInterface {
 			return "ProgramController()";
 		return "ProgramController(" + name + ")";
 	}
-
+*/
 	/**
 	 * This command should be allowed to run, even if we have outstanding robot
 	 * errors
 	 *
 	 * @return true to indicate we should run even during errors
 	 */
+/*
 	public boolean ignoreErrors() {
 		return true;
 	}
 }
+*/

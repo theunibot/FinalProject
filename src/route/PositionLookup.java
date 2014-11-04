@@ -112,6 +112,7 @@ public class PositionLookup {
 	/**
 	 * Program the array of positions into the robot
 	 */
+	/*
 	public Result programPositions(String name) {
 		ArmOperations ao = ArmOperations.getInstance();
 
@@ -144,7 +145,7 @@ public class PositionLookup {
 		}
 		return new Result();
 	}
-
+*/
 	/**
 	 * Converts the given cabinet and shelf to a Position coord.
 	 *
