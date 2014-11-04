@@ -1,10 +1,4 @@
-//This is the R12 Robot Route Compiler file.
-
-//Each command should be on its own line.
-//All comments must be on their own line and start with "//"
-//
-//To Be Implemented: To declare a route to be available for use the syntax "include: <name of route." to ensure
-//the route is added to a usable list for the program
+// This is the R12 Robot Route declarations
 
 // X Y Z P Y R
 
