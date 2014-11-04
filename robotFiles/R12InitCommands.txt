@@ -54,7 +54,8 @@ LOOP
 // set the route rules.  
 // Bytes 12/13 are: 0=joint values, 1=relative joint coordinate, 2=cartesian, 3=relative cartesian
 2 DRI @ LINE 12 + E!
-// must be a zero, else it assumes they are the CFA of a word (???) and it "tries to execute the word" (according to David)
+// must be a zero, or the CFA of a word to execute (see RoboForth manual on CFA for examples, and see
+// the FIND and SET commands (such as FIND cmd EXECUTE or FIND cmd VARIABLE ! to store it and the VARIABLE EXECUTE to execute it)
 0 DRI @ LINE 14 + E!
 ;
 
