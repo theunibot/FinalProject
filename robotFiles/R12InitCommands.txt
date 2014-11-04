@@ -7,10 +7,8 @@
 //one ">" symbol will be found, and the number is how many to look for.
 
 
-// Patch the controller to support a deeper stack depth (about 70-100 items)
-// note: commented out because ORG JUMP (which does cold start) doesn't return OK, so to use
-// this would need to modify code to look for other indications of successful command entry
-
+// Patch the controller to support a deeper stack depth (about 70-100 items).  This may
+// no longer be needed since we are not pushing tons of route points onto the stack...
 ORG JUMP
 3FF0 1361 ! 3FF0 8C3 ! 3FF0 8CB ! 3FF0 45B !
 ORG JUMP
