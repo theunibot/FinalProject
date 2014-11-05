@@ -1,10 +1,7 @@
 //This is the R12 Robot Init File. This file is where commands are placed in the RoboForth
 //Language and are called upon startup by the R12Operations object. 
-//Each command should be seperated by a carriage return.
+//Each command should be separated by a carriage return.
 //All comments must be on their own line and start with "//"
-//Commands containing "$" and "&" are special instructions to the processor.  $<text> indicates
-//an alternative success text (instead of "OK") to look for.  &<number> indicates that more than
-//one ">" symbol will be found, and the number is how many to look for.
 
 
 // Patch the controller to support a deeper stack depth (about 70-100 items).  This may
@@ -37,25 +34,21 @@ ERASE
 ." Dynamic route has been reset" CR
 ;
 
-: SP1
-." SLOW" CR
-1000 SPEED !
-;
 
-: SP2
-." FAST" CR
-5000 SPEED !
-;
-
-VARIABLE G
-VARIABLE U
-FIND SP1 G !
-FIND SP2 U !
-: DRODD
-DRI @ 2 / 2 * DRI @ = IF U @ ELSE G @ THEN
-." IN DRODD" CR
-DUP . CR
-DRI @ LINE 14 + E!
+// set up variable S to have the CFA of the SPEED command
+VARIABLE S
+FIND SPEED S !
+: DRS
+// increment DRI variable to indicate our index in the route table
+DRI @ 1 + DRI !
+// adjust MOVES to reflect the total lines in route
+DRI @ MOVES E!
+// take value on stack and store in first entry in line (speed value)
+DRI @ LINE E!
+// take CFA of SPEED command and store in position 12 (to execute SPEED command)
+S @ DRI @ LINE 12 + E!
+// make sure 14 is zero (we don't use objects)
+0 DRI @ LINE 14 + E!
 ;
 
 // DR2 - learns a single point on the dynamic route path.  Stack should contain 6 values - XYZPYR  RYPZYX (x is top most value)
@@ -71,12 +64,12 @@ DRI @ MOVES E!
    DRI @ LINE I 2* + E!
 LOOP
 // set the route rules.  
-// Bytes 12/13 are: 0=joint values, 1=relative joint coordinate, 2=cartesian, 3=relative cartesian
-2 DRI @ LINE 12 + E!
-// must be a zero, or the CFA of a word to execute (see RoboForth manual on CFA for examples, and see
+// Bytes 12/13 are: 0=joint values, 1=relative joint coordinate, 2=cartesian, 3=relative cartesian,
+// or, the CFA of a word to execute (see RoboForth manual on CFA for examples, and see
 // the FIND and SET commands (such as FIND cmd EXECUTE or FIND cmd var ! to store it and then var EXECUTE to execute it)
-DRODD
-//0 DRI @ LINE 14 + E!
+2 DRI @ LINE 12 + E!
+// must be a zero (reference to objects, which we don't use)
+0 DRI @ LINE 14 + E!
 ;
 
 // DR3 - run the dynamic route, with adjust
@@ -84,7 +77,7 @@ DRODD
 DR
 ." Dynamic route contains:" CR
 L.
-//CONTINUOUS ADJUST RUN
+//CONTINUOUS RUN
 // When running segmented, it shows each segment as it runs; this removes that to enhance performance
 LISTFLAG C0SET
 SEGMENTED RUN

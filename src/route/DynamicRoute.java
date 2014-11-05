@@ -39,7 +39,8 @@ public class DynamicRoute {
             newPosition.getPitchStr() + " " +
             newPosition.getZStr() + " " +
             newPosition.getYStr() + " " +
-            newPosition.getXStr() + " DR2");
+            newPosition.getXStr() + " DR2 " +
+			routePoints.size() * 1000 + " DRS");
     }
     
     /**
