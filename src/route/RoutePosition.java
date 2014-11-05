@@ -55,11 +55,7 @@ public class RoutePosition {
 	public void setLine(int line) {
 		this.line = line;
 	}
-
-	public boolean isRouteDefine() {
-		return false;
-	}
-
+/*
 	public String toString() {
 		return "DECIMAL " + position.getRollStr() + " "
 			+ position.getYawStr() + " "
@@ -69,4 +65,5 @@ public class RoutePosition {
 			+ position.getXStr() + " "
 			+ routeName + " " + line + " LINE DLD\r";
 	}
+*/
 }
