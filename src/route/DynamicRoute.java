@@ -34,13 +34,15 @@ public class DynamicRoute {
      */
     public void addPosition(Position newPosition) {
         routePoints.add( 
+            //((routePoints.size() > 0) ? "6000 DRS " : "") +
             newPosition.getRollStr() + " " +
             newPosition.getYawStr() + " " +
             newPosition.getPitchStr() + " " +
             newPosition.getZStr() + " " +
             newPosition.getYStr() + " " +
-            newPosition.getXStr() + " DR2 " +
-			(((routePoints.size() % 2) == 0) ? 1000 : 15000) + " DRS");
+            newPosition.getXStr() + " DR2" +
+//                " " + ((routePoints.size() == 0) ? "9200 DRS" : "") +
+                "");
     }
     
     /**

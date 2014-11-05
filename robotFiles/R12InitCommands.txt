@@ -77,9 +77,11 @@ LOOP
 DR
 ." Dynamic route contains:" CR
 L.
+//DRY ADJUST RUN
+DRY RUN
 //CONTINUOUS RUN
 // When running segmented, it shows each segment as it runs; this removes that to enhance performance
-LISTFLAG C0SET
-SEGMENTED RUN
+//LISTFLAG C0SET
+//SEGMENTED RUN
 ;
 

@@ -67,8 +67,8 @@ function r12move(cabinet, shelf, effect) {
     routeEffect = effect;
     console.log('r12move: moving to ' + cmd);
     r12(cmd);
-    console.log('r12move: now setting cal position: ' + cmd);
-    r12CalPosition('out-top', -1);
+//    console.log('r12move: now setting cal position: ' + cmd);
+//    r12CalPosition('out-top', -1);
 }
 
 function r12CalPosition(plunge, speed) {
