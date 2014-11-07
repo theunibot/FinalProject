@@ -27,18 +27,20 @@ import server.nanohttpd.ServerRunner;
  */
 public class Main {
 
-	public static final boolean DEBUG = false;
+    public static final boolean DEBUG = false;
 
-	/**
-	 * @param args the command line arguments
-	 */
-	public static void main(String[] args) {
-		ThreadCommand threadCommand = new ThreadCommand();
-		threadCommand.start();
-		// start up the web server
-		ServerRunner.run(WebServer.class);
-		// web server is down; make sure the command thread is down
-		threadCommand.kill();
-	}
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        // merge stdout and stderr so we have a clean output
+        System.setErr(System.out);
 
+        ThreadCommand threadCommand = new ThreadCommand();
+        threadCommand.start();
+        // start up the web server
+        ServerRunner.run(WebServer.class);
+        // web server is down; make sure the command thread is down
+        threadCommand.kill();
+    }
 }

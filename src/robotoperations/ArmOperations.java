@@ -567,7 +567,7 @@ public class ArmOperations {
 			routeSpeed = armMaxSpeed;
 		if (routeAccel > armMaxAccel)
 			routeAccel = armMaxAccel;
-		String runRoute = Integer.toString(routeAccel) + " ACCEL ! " + Integer.toString(routeSpeed) + " SPEED ! DR1";
+		String runRoute = "DRINIT";
 		Result result = runRobotCommand(runRoute);
 		if (!result.success())
 			return result;
@@ -579,7 +579,7 @@ public class ArmOperations {
                     if (!result.success())
                         return result;
                 }
-                return runRobotCommand("DR3");
+                return runRobotCommand(Integer.toString(routeAccel) + " ACCEL ! " + Integer.toString(routeSpeed) + " SPEED ! DRTEST");
 	}
 
 	/**

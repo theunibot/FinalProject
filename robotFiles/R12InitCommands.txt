@@ -4,13 +4,13 @@
 //All comments must be on their own line and start with "//"
 
 
-// Patch the controller to support a deeper stack depth (about 70-100 items).  This may
+// Patch the controller to support a deeper stack depth (about 70-100 items).  This is
 // no longer be needed since we are not pushing tons of route points onto the stack...
-ORG JUMP
-3FF0 1361 ! 3FF0 8C3 ! 3FF0 8CB ! 3FF0 45B !
-ORG JUMP
+//ORG JUMP
+//3FF0 1361 ! 3FF0 8C3 ! 3FF0 8CB ! 3FF0 45B !
+//ORG JUMP
 
-// start up the controller
+// start up the controller with default values
 ROBOFORTH
 START
 DECIMAL
@@ -26,8 +26,8 @@ VARIABLE DRI
 ROUTE DR
 100 RESERVE
 
-// DR1 - Dynamic route, phase 1: initializes and clears the dynamic route
-: DR1
+// DRINIT - Dynamic route, phase 1: initializes and clears the dynamic route
+: DRINIT
 DR
 ERASE
 0 DRI !
@@ -35,24 +35,8 @@ ERASE
 ;
 
 
-// set up variable S to have the CFA of the SPEED command
-VARIABLE S
-FIND SPEED S !
-: DRS
-// increment DRI variable to indicate our index in the route table
-DRI @ 1 + DRI !
-// adjust MOVES to reflect the total lines in route
-DRI @ MOVES E!
-// take value on stack and store in first entry in line (speed value)
-DRI @ LINE E!
-// take CFA of SPEED command and store in position 12 (to execute SPEED command)
-S @ DRI @ LINE 12 + E!
-// make sure 14 is zero (we don't use objects)
-0 DRI @ LINE 14 + E!
-;
-
-// DR2 - learns a single point on the dynamic route path.  Stack should contain 6 values - XYZPYR  RYPZYX (x is top most value)
-: DR2
+// DRPOINT - learns a single point on the dynamic route path.  Stack should contain 6 values - XYZPYR  RYPZYX (x is top most value)
+: DRPOINT
 DR
 //." Filling route index " DRI @ . CR
 // increment to the next index in the route list
@@ -72,16 +56,36 @@ LOOP
 0 DRI @ LINE 14 + E!
 ;
 
-// DR3 - run the dynamic route, with adjust
-: DR3
+// DRSPEED - learn a speed value on the dynamic route
+// set up variable S to have the CFA of the SPEED command
+VARIABLE S
+FIND SPEED S !
+: DRSPEED
+// increment DRI variable to indicate our index in the route table
+DRI @ 1 + DRI !
+// adjust MOVES to reflect the total lines in route
+DRI @ MOVES E!
+// take value on stack and store in first entry in line (speed value)
+DRI @ LINE E!
+// take CFA of SPEED command and store in position 12 (to execute SPEED command)
+S @ DRI @ LINE 12 + E!
+// make sure 14 is zero (we don't use objects)
+0 DRI @ LINE 14 + E!
+;
+
+
+// DRRUN - run the dynamic route, with adjust
+: DRRUN
 DR
 ." Dynamic route contains:" CR
 L.
-//DRY ADJUST RUN
-DRY RUN
-//CONTINUOUS RUN
-// When running segmented, it shows each segment as it runs; this removes that to enhance performance
-//LISTFLAG C0SET
-//SEGMENTED RUN
+CONTINUOUS RUN
 ;
 
+// DRTEST - test the dyamic route
+: DRTEST
+DR
+." Dyamic route contains:" CR
+L.
+DRY RUN
+;
