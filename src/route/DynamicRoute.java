@@ -25,7 +25,7 @@ import java.util.ArrayList;
  * Helper class for ArmOperations to build a custom route
  */
 public class DynamicRoute {
-    ArrayList<String> routePoints = new ArrayList<String>();
+    ArrayList<Position> routePoints = new ArrayList<Position>();
     
     /**
      * Add a new position into the custom route list
@@ -33,20 +33,14 @@ public class DynamicRoute {
      * @param newPosition Position to add to the route
      */
     public void addPosition(Position newPosition) {
-        routePoints.add( 
-            newPosition.getRollStr() + " " +
-            newPosition.getYawStr() + " " +
-            newPosition.getPitchStr() + " " +
-            newPosition.getZStr() + " " +
-            newPosition.getYStr() + " " +
-            newPosition.getXStr() + " DRPOINT");
+        routePoints.add(newPosition);
     }
     
     /**
      * Empty the route for a new route generation
      */
     public void clear() {
-        routePoints = new ArrayList<String>();
+        routePoints = new ArrayList<Position>();
     }
     
     /**
@@ -58,6 +52,13 @@ public class DynamicRoute {
     public String routeCommand(int index) {
         if (index >= routePoints.size())
             return null;
-        return routePoints.get(index);
+        Position pos = routePoints.get(index);
+        return 
+            pos.getRollStr() + " " +
+            pos.getYawStr() + " " +
+            pos.getPitchStr() + " " +
+            pos.getZStr() + " " +
+            pos.getYStr() + " " +
+            pos.getXStr() + " DRPOINT";
     }
 }
