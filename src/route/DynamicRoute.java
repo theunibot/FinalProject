@@ -34,7 +34,7 @@ public class DynamicRoute {
      */
     public void addPosition(Position newPosition) {
         routePoints.add( 
-            //((routePoints.size() > 0) ? "6000 DRS " : "") +
+            ((routePoints.size() == 2) ? "4000 DRS " : "") +
             newPosition.getRollStr() + " " +
             newPosition.getYawStr() + " " +
             newPosition.getPitchStr() + " " +
