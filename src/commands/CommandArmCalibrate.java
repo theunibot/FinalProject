@@ -35,13 +35,14 @@ public class CommandArmCalibrate extends CommandInterface {
 	}
 
 	public Result execute(CommandArguments args) {
+                ArmOperations ao = ArmOperations.getInstance();
                 if (!this.simulate) {
-                    ArmOperations ao = ArmOperations.getInstance();
                     args.cabinet = CabinetType.HOME;
                     args.coordinates = PositionLookup.getInstance().shelfToPosition(CabinetType.HOME, 0);
                     return ao.calibrate();
                 }
-                return new Result();
+                // simulating ... just do a HOME
+                return ao.home();
 	}
 
 	public String details() {

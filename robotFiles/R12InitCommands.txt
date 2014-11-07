@@ -79,7 +79,7 @@ S @ DRI @ LINE 12 + E!
 DR
 ." Dynamic route contains:" CR
 L.
-CONTINUOUS RUN
+CONTINUOUS ADJUST RUN
 ;
 
 // DRTEST - test the dyamic route
