@@ -42,12 +42,17 @@ public class DynamicRoute {
     ArrayList<RoutePosition> routePositions = new ArrayList<RoutePosition>();
 	// define a static table of compiled routes that have been vetted for max speed on the controller.  This is a very
 	// expensive process, so it's important that we cache and persist it to improve performance
-	static HashMap<String, DynamicRoute> compiledRoutes = new HashMap<String, DynamicRoute>();
+	static HashMap<String, DynamicRoute> compiledRoutes = null;
     
 	/**
 	 * Default constructor - nothing special
 	 */
 	public DynamicRoute() {	
+		// load the compiled routes cache, if available
+		if (compiledRoutes == null) {
+			compiledRoutes = new HashMap<String, DynamicRoute>();
+			load();
+		}
 	}
 
 	/**
@@ -270,7 +275,50 @@ public class DynamicRoute {
     }
 	
 	/**
-	 * Persists compiled routes to disk
+	 * Load compiled routes cache from disk (RouteCache.txt)
+	 */
+	void load() {
+		ArrayList<String> lines = FileUtils.readCommandFileOrGenEmpty(FileUtils.getFilesFolderString() + "RouteCache.txt", "");
+		if (lines == null) {
+			System.out.println("Unable to load RouteCache.txt file; using blank cache for now");
+			return;
+		}
+		System.out.println("Loading RouteCache.txt file; found " + lines.size() + " lines");
+		
+		// loop through the lines, breaking into sets of routes which are deliniated by a "#" character
+		DynamicRoute dr = null;
+		String hash = "";
+		for (String line : lines) {
+			if (line.startsWith("#")) {
+				// define a new route - decode the hash value
+				hash = line.substring(1);
+				// create new route
+				dr = new DynamicRoute();
+				// and place in cache
+				compiledRoutes.put(hash, dr);
+			} else {
+				// its a point in the route
+				RoutePosition rp = new RoutePosition();
+				// decode the values for it, which are Speed Size X Y Z P Y R
+				String[] chunks = line.split(" ");
+				rp.actualSpeed = Integer.parseInt(chunks[0]);
+				rp.actualAccel = Integer.parseInt(chunks[1]);
+				rp.position = new Position(hash, 
+					Double.parseDouble(chunks[2]),
+					Double.parseDouble(chunks[3]),
+					Double.parseDouble(chunks[4]),
+					Double.parseDouble(chunks[5]),
+					Double.parseDouble(chunks[6]),
+					Double.parseDouble(chunks[7]));
+
+				dr.routePositions.add(rp);
+			}
+		}
+		System.out.println("Total of " + compiledRoutes.size() + " routes loaded");
+	}
+	
+	/**
+	 * Persist compiled routes cache to disk (RouteCache.txt)
 	 */
 	void persist() {
 		StringBuilder output = new StringBuilder();
@@ -294,8 +342,8 @@ public class DynamicRoute {
 			}
 		}	
 		// now record to the file
-		if (!FileUtils.createFile(FileUtils.getFilesFolderString() + "DynamicRoutes.txt", output.toString()))
-			System.err.println("Unable to create DynamicRoutes file " + FileUtils.getFilesFolderString() + "DynamicRoutes.txt");
+		if (!FileUtils.createFile(FileUtils.getFilesFolderString() + "RouteCache.txt", output.toString()))
+			System.err.println("Unable to create DynamicRoutes file " + FileUtils.getFilesFolderString() + "RouteCache.txt");
 	}
 
 	/**
