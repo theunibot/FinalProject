@@ -19,13 +19,13 @@
 package route;
 
 import utils.Result;
-import java.util.ArrayList;
 import robotoperations.ArmOperations;
 import static robotoperations.ArmOperations.armMaxAccel;
 import static robotoperations.ArmOperations.armMaxSpeed;
 import utils.Utils;
-import java.util.HashMap;
-
+import java.util.*;
+import java.io.*;
+import utils.FileUtils;
 /**
  * Helper class for ArmOperations to build a custom route
  */
@@ -44,6 +44,32 @@ public class DynamicRoute {
 	// expensive process, so it's important that we cache and persist it to improve performance
 	static HashMap<String, DynamicRoute> compiledRoutes = new HashMap<String, DynamicRoute>();
     
+	/**
+	 * Default constructor - nothing special
+	 */
+	public DynamicRoute() {	
+	}
+
+	/**
+	 * Object duplication constructor
+	 * 
+	 * @param dr DynamicRoute to clone
+	 */
+	public DynamicRoute(DynamicRoute dr) {
+		// duplicate the route positions
+		for (RoutePosition rp : dr.routePositions) {
+			// duplicate the properties
+			RoutePosition newRp = new RoutePosition();
+			newRp.maxSpeed = rp.maxSpeed;
+			newRp.maxAccel = rp.maxAccel;
+			newRp.actualSpeed = rp.actualSpeed;
+			newRp.actualAccel = rp.actualAccel;
+			// note: this isn't a true clone, but we can get away with same referenced object here...
+			newRp.position = rp.position;
+			this.routePositions.add(newRp);
+		}
+	}
+	
     /**
      * Add a new position into the custom route list 
      * 
@@ -117,15 +143,20 @@ public class DynamicRoute {
 			System.out.println("Route cache hit failure; compiling route");
 			// we need to compile this route by sending the route with various speeds to the controller
 			// and vetting the best speed for each segment
-			Result result  = compile(routeAccel);
+			compiled = new DynamicRoute(this);
+			Result result  = compiled.compile(routeAccel);
 			if (!result.success())
 				return result;
-			compiled = this;
 			// add to the hash map
-			compiledRoutes.put(hash, this);
+			compiledRoutes.put(hash, compiled);
+			// and persist to disk
+			persist();
 		} else
 			System.out.println("Route cache hit SUCCESS!");
-		return compiled.armRun(routeSpeed, routeAccel, false);
+		Result result = compiled.armRun(routeSpeed, routeAccel, false);
+		// clear out our points so future operations start fresh
+		clear();
+		return result;
 	}
 	
 	/**
@@ -235,13 +266,37 @@ public class DynamicRoute {
                 return result;
         }
         // run the actual route
-        result = ArmOperations.getInstance().runRobotCommand(Integer.toString(routeAccel) + " ACCEL ! " + Integer.toString(routeSpeed) + " SPEED ! " + (runTest ? "DRTEST" : "DRRUN"));
-        // zero out the route - even if there is an error - so we don't keep the data hanging around
-		if (!runTest)
-	        clear();
-        // return success/fail
-        return result;
+        return ArmOperations.getInstance().runRobotCommand(Integer.toString(routeAccel) + " ACCEL ! " + Integer.toString(routeSpeed) + " SPEED ! " + (runTest ? "DRTEST" : "DRRUN"));
     }
+	
+	/**
+	 * Persists compiled routes to disk
+	 */
+	void persist() {
+		StringBuilder output = new StringBuilder();
+		
+		// loop over the entire hash table
+		for (Map.Entry<String, DynamicRoute> entry : compiledRoutes.entrySet()) {
+			// get the hash and the route entry
+			String hash = entry.getKey();
+			DynamicRoute route = compiledRoutes.get(hash); //entry.getValue();
+			// now serialize them
+			output.append("#" + hash + "\n");
+			for (RoutePosition rp : route.routePositions) {
+				output.append(rp.actualSpeed + " ");
+				output.append(rp.actualAccel + " ");
+				output.append(Utils.formatDouble(rp.position.getX()) + " ");
+				output.append(Utils.formatDouble(rp.position.getY()) + " ");
+				output.append(Utils.formatDouble(rp.position.getZ()) + " ");
+				output.append(Utils.formatDouble(rp.position.getPitch()) + " ");
+				output.append(Utils.formatDouble(rp.position.getYaw()) + " ");
+				output.append(Utils.formatDouble(rp.position.getRoll()) + "\n");
+			}
+		}	
+		// now record to the file
+		if (!FileUtils.createFile(FileUtils.getFilesFolderString() + "DynamicRoutes.txt", output.toString()))
+			System.err.println("Unable to create DynamicRoutes file " + FileUtils.getFilesFolderString() + "DynamicRoutes.txt");
+	}
 
 	/**
 	 * Calculate a unique hashcode for this route to help locating a tested/compiled version for fast execution
