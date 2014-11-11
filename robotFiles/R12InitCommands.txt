@@ -19,6 +19,10 @@ CARTESIAN
 2000 TON !
 800 TGRIP !
 
+// adjust axis 5 encoder tolerance
+110 ENCTOLS 6 + !
+-305 ENCRATIOS 8 + !
+
 // declare variable DRI (Dynamic Route Index) to index where we are inside a
 // dynamic route construction
 VARIABLE DRI
@@ -28,16 +32,14 @@ ROUTE DR
 
 // DRINIT - Dynamic route, phase 1: initializes and clears the dynamic route
 : DRINIT
-DR
 ERASE
+100 RESERVE
 0 DRI !
 ." Dynamic route has been reset" CR
 ;
 
-
 // DRPOINT - learns a single point on the dynamic route path.  Stack should contain 6 values - XYZPYR  RYPZYX (x is top most value)
 : DRPOINT
-DR
 //." Filling route index " DRI @ . CR
 // increment to the next index in the route list
 DRI @ 1 + DRI !
@@ -73,10 +75,22 @@ S @ DRI @ LINE 12 + E!
 0 DRI @ LINE 14 + E!
 ;
 
+VARIABLE S1
+VARIABLE L1
+// DRLS - TEMPORARY - Line Speed setting.  <line> <speed> DRLS
+: DRLS
+S1 !
+L1 !
+S1 @ L1 @ LINE E!
+S @ L1 @ LINE 12 + E!
+0 L1 @ LINE 14 + E!
+;
+
+
 
 // DRRUN - run the dynamic route, with adjust
 : DRRUN
-DR
+//DR
 ." Dynamic route contains:" CR
 L.
 CONTINUOUS ADJUST RUN
@@ -84,7 +98,7 @@ CONTINUOUS ADJUST RUN
 
 // DRTEST - test the dyamic route
 : DRTEST
-DR
+//DR
 ." Dyamic route contains:" CR
 L.
 DRY RUN

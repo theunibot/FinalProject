@@ -368,7 +368,7 @@ public class ArmOperations {
         result = ungrip();
         if (!result.success())
             return result;
-
+		
         // move into the cabinet
         dynRoute.addPosition(plunge.get("out-bottom"));
         dynRoute.addPosition(plunge.get("in-bottom"));

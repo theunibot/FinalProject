@@ -152,6 +152,7 @@ public class DynamicRoute {
 			Result result  = compiled.compile(routeAccel);
 			if (!result.success())
 				return result;
+
 			// add to the hash map
 			compiledRoutes.put(hash, compiled);
 			// and persist to disk
@@ -174,13 +175,21 @@ public class DynamicRoute {
 	 * @return Result with success/fail info
 	 */
 	private Result compile(int routeAccel) {
-		// initialize all actuals to get things started
-		for (RoutePosition position : routePositions) {
+		return new Result();
+		/*
+		// does this route have more than one point?
+		if (routePositions.size() <= 1)
+			return new Result();
+		
+		// initialize all actuals to get things started (skipping first one)
+		for (int posIndex = 1; posIndex < routePositions.size(); ++posIndex) {
+			RoutePosition position = routePositions.get(posIndex);
 			position.actualAccel = routeAccel;
-			position.actualSpeed = 1;
+			position.actualSpeed = 500;
 		}
-		// process every line in the route
-		for (RoutePosition position : routePositions) {
+		// process every line in the route (though we skip the first one, since it runs at default speed)
+		for (int posIndex = 1; posIndex < routePositions.size(); ++posIndex) {
+			RoutePosition position = routePositions.get(posIndex);
 			// establish the brackets for the run
 			int bracketLow = 1;
 			int bracketHigh = 30001;
@@ -190,7 +199,7 @@ public class DynamicRoute {
 				// and set the starting point
 				int newSpeed = (bracketHigh - bracketLow) / 2 + bracketLow;
 				// have we tried all possibilities?
-				if (newSpeed == position.actualSpeed)
+				if ((newSpeed / 100) == (position.actualSpeed / 100))
 					break;
 				// set the speed into the route
 				position.actualSpeed = newSpeed;
@@ -215,6 +224,7 @@ public class DynamicRoute {
 			position.actualSpeed = bestSpeed;
 		}
 		return new Result();
+		*/
 	}
 	
 	/**
@@ -226,9 +236,11 @@ public class DynamicRoute {
 	 * 
 	 * @return Result with success/fail info
 	 */
-	private Result armRun(int routeSpeed, int routeAccel, boolean runTest) {        
+private static int routeID = 1;
+private Result armRun(int routeSpeed, int routeAccel, boolean runTest) {        
         // initialize the dynamic route
-        String runRoute = "DRINIT";
+
+		String runRoute = "ROUTE R" + routeID++ + " 40 RESERVE DRINIT";
         Result result = ArmOperations.getInstance().runRobotCommand(runRoute);
         if (!result.success()) {
             clear();
@@ -243,21 +255,22 @@ public class DynamicRoute {
 			runRoute = "";
 			
 			// determine what speed and accel we run at
+			/*
 			int rpSpeed = (rp.actualSpeed == 0) ? routeSpeed : rp.actualSpeed;
 			if (rpSpeed > routeSpeed)
 				rpSpeed = routeSpeed;
 			if (rpSpeed != currentSpeed) {
 				currentSpeed = rpSpeed;
-				runRoute += currentSpeed + " DRS ";
+				runRoute += currentSpeed + " DRSPEED ";
 			}
 			int rpAccel = (rp.actualAccel == 0) ? routeSpeed : rp.actualAccel;
 			if (rpAccel > routeAccel)
 				rpAccel = routeAccel;
 			if (rpAccel != currentAccel) {
 				currentAccel = rpAccel;
-				runRoute += currentAccel + " DRS ";
+				runRoute += currentAccel + " DRACCEL";
 			}
-			
+*/
 			// program up the route position itself
             runRoute += 
                 rp.position.getRollStr() + " " +
