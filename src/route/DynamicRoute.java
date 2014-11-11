@@ -22,6 +22,7 @@ import utils.Result;
 import robotoperations.ArmOperations;
 import static robotoperations.ArmOperations.armMaxAccel;
 import static robotoperations.ArmOperations.armMaxSpeed;
+import robotoperations.ResponsePattern;
 import utils.Utils;
 import java.util.*;
 import java.io.*;
@@ -30,18 +31,13 @@ import utils.FileUtils;
  * Helper class for ArmOperations to build a custom route
  */
 public class DynamicRoute {
-	// define the data for an individual point in the route
-	private class RoutePosition {
-		public Position position = null;	// the next position in the route (XYZPYR)
-		public int maxSpeed = 0;			// max speed this segment is allowed to run at
-		public int maxAccel = 0;			// max acceleration that this segment is allowed to run at
-		public int actualSpeed = 0;			// best speed we can use, after testing the route on the controller
-		public int actualAccel = 0;			// best acceleration we can use, after testing the route on the controller
-	}
+	private int adjustedSpeed = 0;			// speed that has been found for this route at the specified accel once compiled
+	private int accel = 0;					// acceleration that this route is compiled for
+	
 	// define the collection of points that makes up this route
-    ArrayList<RoutePosition> routePositions = new ArrayList<RoutePosition>();
-	// define a static table of compiled routes that have been vetted for max speed on the controller.  This is a very
-	// expensive process, so it's important that we cache and persist it to improve performance
+    private ArrayList<Position> routePositions = new ArrayList<Position>();
+	
+	// define a static table of compiled routes that have been vetted for speed
 	static HashMap<String, DynamicRoute> compiledRoutes = null;
     
 	/**
@@ -54,7 +50,7 @@ public class DynamicRoute {
 			load();
 		}
 	}
-
+	
 	/**
 	 * Object duplication constructor
 	 * 
@@ -62,54 +58,50 @@ public class DynamicRoute {
 	 */
 	public DynamicRoute(DynamicRoute dr) {
 		// duplicate the route positions
-		for (RoutePosition rp : dr.routePositions) {
-			// duplicate the properties
-			RoutePosition newRp = new RoutePosition();
-			newRp.maxSpeed = rp.maxSpeed;
-			newRp.maxAccel = rp.maxAccel;
-			newRp.actualSpeed = rp.actualSpeed;
-			newRp.actualAccel = rp.actualAccel;
+		for (Position rp : dr.routePositions) {
 			// note: this isn't a true clone, but we can get away with same referenced object here...
-			newRp.position = rp.position;
-			this.routePositions.add(newRp);
+			this.routePositions.add(rp);
 		}
 	}
 	
-    /**
-     * Add a new position into the custom route list 
-     * 
-     * @param newPosition Position to add to the route
-     */
-    public void addPosition(Position newPosition) {
-        addPosition(newPosition, armMaxSpeed, armMaxAccel);
-    }
-    
+	/**
+	 * Sets the compiled speed for this route
+	 * 
+	 * @param adjustedSpeed 
+	 */
+	private void setSpeed(int adjustedSpeed) {
+		this.adjustedSpeed = adjustedSpeed;
+	}
+	
+	/**
+	 * Gets the compiled speed for this route (0 if not yet compiled)
+	 * 
+	 * @return Speed
+	 */
+	public int getSpeed() {
+		return this.adjustedSpeed;
+	}
+	
     /**
      * Add a new position into the custom route list with custom speed/accel
      * 
      * @param newPosition Position to add to the route
-     * @param speed Speed to run this at (0=default)
-     * @param accel Accel to run this at (0=default)
      */
-    public void addPosition(Position newPosition, int speed, int accel) {
+    public void addPosition(Position newPosition) {
         // is this position any different than the last one?  If not, just ignore it
         if (routePositions.size() > 0) {
-            Position oldPosition = routePositions.get(routePositions.size() - 1).position;
+            Position oldPosition = routePositions.get(routePositions.size() - 1);
             if (oldPosition.equals(newPosition))
                 return;
         }
-		RoutePosition rp = new RoutePosition();
-		rp.position = newPosition;
-		rp.maxSpeed = speed;
-		rp.maxAccel = accel;
-        routePositions.add(rp);
+        routePositions.add(newPosition);
     }
     
     /**
      * Empty the route for a new route generation
      */
     public void clear() {
-        routePositions = new ArrayList<RoutePosition>();
+        routePositions = new ArrayList<Position>();
     }
     
     /**
@@ -159,7 +151,7 @@ public class DynamicRoute {
 			persist();
 		} else
 			System.out.println("Route cache hit SUCCESS!");
-		Result result = compiled.armRun(routeSpeed, routeAccel, false);
+		Result result = compiled.armRun(routeSpeed, routeAccel, false, null);
 		// clear out our points so future operations start fresh
 		clear();
 		return result;
@@ -167,80 +159,43 @@ public class DynamicRoute {
 	
 	/**
 	 * Compile the current route by sending it to the controller with binary searching on possible speeds at
-	 * each route position until we find the optimal performance for the route.  This adds the actualSpeed and
-	 * actualAccel values into the route.
+	 * each route position until we find the optimal performance for the route.  This adds the actualSpeed 
+	 * value into the route.
 	 * 
 	 * @param routeAccel acceleration to use for the compilation
 	 * 
 	 * @return Result with success/fail info
 	 */
 	private Result compile(int routeAccel) {
-		return new Result();
-		/*
-		// does this route have more than one point?
-		if (routePositions.size() <= 1)
-			return new Result();
+		// do a DRY ADJUST RUN and capture the speed...
+		ResponsePattern responsePattern = new ResponsePattern();
+		responsePattern.define("speed", "/SPEED = ([0-9]*)/");
+		Result result = armRun(30000, routeAccel, true, responsePattern);
+		if (!result.success())
+			return result;
 		
-		// initialize all actuals to get things started (skipping first one)
-		for (int posIndex = 1; posIndex < routePositions.size(); ++posIndex) {
-			RoutePosition position = routePositions.get(posIndex);
-			position.actualAccel = routeAccel;
-			position.actualSpeed = 500;
-		}
-		// process every line in the route (though we skip the first one, since it runs at default speed)
-		for (int posIndex = 1; posIndex < routePositions.size(); ++posIndex) {
-			RoutePosition position = routePositions.get(posIndex);
-			// establish the brackets for the run
-			int bracketLow = 1;
-			int bracketHigh = 30001;
-			int bestSpeed = -1;
-			// loop until we find a good value for position
-			while (true) {
-				// and set the starting point
-				int newSpeed = (bracketHigh - bracketLow) / 2 + bracketLow;
-				// have we tried all possibilities?
-				if ((newSpeed / 100) == (position.actualSpeed / 100))
-					break;
-				// set the speed into the route
-				position.actualSpeed = newSpeed;
-				// now test the value...
-				Result result = armRun(30000, routeAccel, true);
-				// failure indicates we went too fast, success means we might be able to go faster!
-				if (result.success()) {
-					System.out.println("SUCCESS - setting LOW bracket to " + position.actualSpeed);
-					// success, so maybe we can go faster ... set this speed as the new bracket low
-					bracketLow = position.actualSpeed;
-					bestSpeed = position.actualSpeed;
-				}
-				else {
-					System.out.println("FAILURE - setting HIGH bracket to " + position.actualSpeed);
-					// failure, so don't try anything faster tha this
-					bracketHigh = position.actualSpeed;
-				}
-			}
-			// set the speed
-			if (bestSpeed == -1)
-				return new Result("Unable to find acceptable speed for route");
-			position.actualSpeed = bestSpeed;
-		}
-		return new Result();
-		*/
+		if (responsePattern.lookup("speed") == null)
+			return new Result("Missing SPEED result value");
+		
+		this.adjustedSpeed = Integer.parseInt(responsePattern.lookup("speed"));
+		System.out.println("*******************   Resulting speed was: " + this.adjustedSpeed);
+		return result;
 	}
 	
 	/**
 	 * Run the route on the arm (actually sends the routing commands)
 	 * 
-	 * @param routeSpeed maximum speed
+	 * @param routeSpeed maximum speed (but route may say to go slower)
 	 * @param routeAccel maximum accel
 	 * @param runTest true if do a dry run test, false if a real run
+	 * @param pattern ResponsePattern to use (if any) on the resulting message from the robot
 	 * 
 	 * @return Result with success/fail info
 	 */
-private static int routeID = 1;
-private Result armRun(int routeSpeed, int routeAccel, boolean runTest) {        
+	private Result armRun(int routeSpeed, int routeAccel, boolean runTest, ResponsePattern pattern) {        
         // initialize the dynamic route
-
-		String runRoute = "ROUTE R" + routeID++ + " 40 RESERVE DRINIT";
+//***** NEED TO FLIP TO USING CRUN and ?SPEED and DSPASSUME, assuming we can learn about failures...
+		String runRoute = "DRINIT";
         Result result = ArmOperations.getInstance().runRobotCommand(runRoute);
         if (!result.success()) {
             clear();
@@ -248,43 +203,32 @@ private Result armRun(int routeSpeed, int routeAccel, boolean runTest) {
         }
         // send down each coordinate
 		int currentSpeed = routeSpeed;
-		int currentAccel = routeAccel;
-        for (int index = 0; index < routePositions.size(); ++index) {
+		if ( (this.adjustedSpeed < currentSpeed) && (this.adjustedSpeed != 0) )
+			currentSpeed = this.adjustedSpeed;
+
+		for (int index = 0; index < routePositions.size(); ++index) {
             // build up the next position
-            RoutePosition rp = routePositions.get(index);
+            Position rp = routePositions.get(index);
 			runRoute = "";
 			
-			// determine what speed and accel we run at
-			/*
-			int rpSpeed = (rp.actualSpeed == 0) ? routeSpeed : rp.actualSpeed;
-			if (rpSpeed > routeSpeed)
-				rpSpeed = routeSpeed;
-			if (rpSpeed != currentSpeed) {
-				currentSpeed = rpSpeed;
-				runRoute += currentSpeed + " DRSPEED ";
-			}
-			int rpAccel = (rp.actualAccel == 0) ? routeSpeed : rp.actualAccel;
-			if (rpAccel > routeAccel)
-				rpAccel = routeAccel;
-			if (rpAccel != currentAccel) {
-				currentAccel = rpAccel;
-				runRoute += currentAccel + " DRACCEL";
-			}
-*/
 			// program up the route position itself
             runRoute += 
-                rp.position.getRollStr() + " " +
-                rp.position.getYawStr() + " " +
-                rp.position.getPitchStr() + " " +
-                rp.position.getZStr() + " " +
-                rp.position.getYStr() + " " +
-                rp.position.getXStr() + " DRPOINT";
+                rp.getRollStr() + " " +
+                rp.getYawStr() + " " +
+                rp.getPitchStr() + " " +
+                rp.getZStr() + " " +
+                rp.getYStr() + " " +
+                rp.getXStr() + " DRPOINT";
             result = ArmOperations.getInstance().runRobotCommand(runRoute);
             if (!result.success())
                 return result;
         }
-        // run the actual route
-        return ArmOperations.getInstance().runRobotCommand(Integer.toString(routeAccel) + " ACCEL ! " + Integer.toString(routeSpeed) + " SPEED ! " + (runTest ? "DRTEST" : "DRRUN"));
+ 
+		// go run it
+		result = ArmOperations.getInstance().runRobotCommand(Integer.toString(routeAccel) + " ACCEL ! " + 
+				Integer.toString(currentSpeed) + " SPEED ! " +
+				((runTest) ? "DRTEST" : "DRRUN"), pattern);
+		return result;
     }
 	
 	/**
@@ -303,26 +247,27 @@ private Result armRun(int routeSpeed, int routeAccel, boolean runTest) {
 		String hash = "";
 		for (String line : lines) {
 			if (line.startsWith("#")) {
+				// decode values, which are hash speed
+				String[] chunks = line.split(" ");
 				// define a new route - decode the hash value
-				hash = line.substring(1);
+				hash = chunks[0].substring(1);
+				// and get the speed
+				int speed = Integer.parseInt(chunks[1]);
 				// create new route
 				dr = new DynamicRoute();
+				dr.setSpeed(speed);
 				// and place in cache
 				compiledRoutes.put(hash, dr);
 			} else {
-				// its a point in the route
-				RoutePosition rp = new RoutePosition();
-				// decode the values for it, which are Speed Size X Y Z P Y R
+				// decode the values for it, which are X Y Z P Y R
 				String[] chunks = line.split(" ");
-				rp.actualSpeed = Integer.parseInt(chunks[0]);
-				rp.actualAccel = Integer.parseInt(chunks[1]);
-				rp.position = new Position(hash, 
+				Position rp = new Position(hash, 
+					Double.parseDouble(chunks[0]),
+					Double.parseDouble(chunks[1]),
 					Double.parseDouble(chunks[2]),
 					Double.parseDouble(chunks[3]),
 					Double.parseDouble(chunks[4]),
-					Double.parseDouble(chunks[5]),
-					Double.parseDouble(chunks[6]),
-					Double.parseDouble(chunks[7]));
+					Double.parseDouble(chunks[5]));
 
 				dr.routePositions.add(rp);
 			}
@@ -342,16 +287,14 @@ private Result armRun(int routeSpeed, int routeAccel, boolean runTest) {
 			String hash = entry.getKey();
 			DynamicRoute route = compiledRoutes.get(hash); //entry.getValue();
 			// now serialize them
-			output.append("#" + hash + "\n");
-			for (RoutePosition rp : route.routePositions) {
-				output.append(rp.actualSpeed + " ");
-				output.append(rp.actualAccel + " ");
-				output.append(Utils.formatDouble(rp.position.getX()) + " ");
-				output.append(Utils.formatDouble(rp.position.getY()) + " ");
-				output.append(Utils.formatDouble(rp.position.getZ()) + " ");
-				output.append(Utils.formatDouble(rp.position.getPitch()) + " ");
-				output.append(Utils.formatDouble(rp.position.getYaw()) + " ");
-				output.append(Utils.formatDouble(rp.position.getRoll()) + "\n");
+			output.append("#" + hash + " " + route.adjustedSpeed + "\n");
+			for (Position rp : route.routePositions) {
+				output.append(Utils.formatDouble(rp.getX()) + " ");
+				output.append(Utils.formatDouble(rp.getY()) + " ");
+				output.append(Utils.formatDouble(rp.getZ()) + " ");
+				output.append(Utils.formatDouble(rp.getPitch()) + " ");
+				output.append(Utils.formatDouble(rp.getYaw()) + " ");
+				output.append(Utils.formatDouble(rp.getRoll()) + "\n");
 			}
 		}	
 		// now record to the file
@@ -368,15 +311,13 @@ private Result armRun(int routeSpeed, int routeAccel, boolean runTest) {
 	String hash(int accel) {
 		StringBuilder serialize = new StringBuilder();
 		serialize.append(accel);
-		for (RoutePosition rp : routePositions) {
-			serialize.append(rp.position.getX());
-			serialize.append(rp.position.getY());
-			serialize.append(rp.position.getZ());
-			serialize.append(rp.position.getRoll());
-			serialize.append(rp.position.getYaw());
-			serialize.append(rp.position.getPitch());
-			serialize.append(rp.maxSpeed);
-			serialize.append(rp.maxAccel);
+		for (Position rp : routePositions) {
+			serialize.append(rp.getX());
+			serialize.append(rp.getY());
+			serialize.append(rp.getZ());
+			serialize.append(rp.getRoll());
+			serialize.append(rp.getYaw());
+			serialize.append(rp.getPitch());
 		}
 		return Utils.hash(serialize.toString(), 32);
 	}

@@ -75,25 +75,13 @@ S @ DRI @ LINE 12 + E!
 0 DRI @ LINE 14 + E!
 ;
 
-VARIABLE S1
-VARIABLE L1
-// DRLS - TEMPORARY - Line Speed setting.  <line> <speed> DRLS
-: DRLS
-S1 !
-L1 !
-S1 @ L1 @ LINE E!
-S @ L1 @ LINE 12 + E!
-0 L1 @ LINE 14 + E!
-;
-
-
 
 // DRRUN - run the dynamic route, with adjust
 : DRRUN
 //DR
 ." Dynamic route contains:" CR
 L.
-CONTINUOUS ADJUST RUN
+CONTINUOUS RUN
 ;
 
 // DRTEST - test the dyamic route
@@ -101,5 +89,5 @@ CONTINUOUS ADJUST RUN
 //DR
 ." Dyamic route contains:" CR
 L.
-DRY RUN
+DRY ADJUST RUN
 ;

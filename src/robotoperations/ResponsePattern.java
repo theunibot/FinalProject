@@ -19,23 +19,24 @@
 package robotoperations;
 
 /**
- * Wrapper object holding if successful and possible error message.
+ * R12 response pattern manager - to look for specific patterns in the response and capture their values
  */
-public class ResponseObject {
+public class ResponsePattern {
 
-	private String msg;
-	private boolean successful;
-
-	public ResponseObject(String msg, boolean successful) {
-		this.msg = msg;
-		this.successful = successful;
+	public void define(String name, String regex) {
+		
+	}
+	
+	public String lookup(String name) {
+		return null;
 	}
 
-	public String getMsg() {
-		return msg;
-	}
-
-	public boolean isSuccessful() {
-		return successful;
+	/**
+	 * process a response string according to the established patterns
+	 * 
+	 * @param responseMessage message from the R12 robot
+	 */
+	public void process(String responseMessage) {
+		System.out.println("****** ResponsePattern: " + responseMessage + " END****");
 	}
 }

@@ -204,7 +204,7 @@ public class ArmOperations {
             }   
             // add to the dynamic route
             if (curPos != null)
-                dynRoute.addPosition(curPos, route.getRouteProperties().getRouteSpeed(), route.getRouteProperties().getRouteAccel());
+                dynRoute.addPosition(curPos);
 
             // save our current position for next time
             priorPos = curPos;
@@ -756,6 +756,28 @@ public class ArmOperations {
             r12o.write(commandString);
             ResponseObject response = r12o.getResponse(commandString);
 
+            if (!response.isSuccessful())
+                return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
+        }
+        return new Result();
+    }
+
+    /**
+     * Sends an individual command to robot and looks for errors
+     *
+     * @param commandString command to execute
+	 * @param pattern A response pattern to process against the resulting message
+     *
+     * @return Result with success/fail info
+     */
+    public Result runRobotCommand(String commandString, ResponsePattern pattern) {
+        // make sure we are not simulated
+        if (!(armOpsSimulated && !r12OpsSimulated)) {
+            r12o.write(commandString);
+            ResponseObject response = r12o.getResponse(commandString);
+			if (pattern != null)
+				pattern.process(response.getMsg());
+			
             if (!response.isSuccessful())
                 return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());
         }

@@ -128,8 +128,8 @@ public class R12Operations {
                     System.out.println(responseStr);
                 }
                 //clean up string
-                responseStr = responseStr.replace("\n>", "");//filters the ">" and the new line. Saves all other new lines
-                responseStr = responseStr.replace(">", "");//removes any missed ">"
+                responseStr = responseStr.replace("\n>", "");		//filters the ">" and the new line. Saves all other new lines
+                responseStr = responseStr.replace(">", "");			//removes any missed ">"
                 responseStr = responseStr.trim();
                 boolean succesful = false;
                 if (responseStr.endsWith(success))
