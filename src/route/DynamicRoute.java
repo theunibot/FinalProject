@@ -31,8 +31,10 @@ import utils.FileUtils;
  * Helper class for ArmOperations to build a custom route
  */
 public class DynamicRoute {
-	private int adjustedSpeed = 0;			// speed that has been found for this route at the specified accel once compiled
-	private int accel = 0;					// acceleration that this route is compiled for
+	private int adjustedSpeed = 0;				// speed that has been found for this route at the specified accel once compiled
+	private int accel = 0;						// acceleration that this route is compiled for
+	private Position swapOldPosition = null;	// when using neighborXYZSwapForward, defines the old position to be looking for in the route
+	private Position swapNewPosition = null;	// when using neighborXYZSwapForward, defines the new position to insert into the route
 	
 	// define the collection of points that makes up this route
     private ArrayList<Position> routePositions = new ArrayList<Position>();
@@ -88,6 +90,18 @@ public class DynamicRoute {
      * @param newPosition Position to add to the route
      */
     public void addPosition(Position newPosition) {
+		// before we add this position, check if neighborXYZSwapForward has been declared...
+		if (swapOldPosition != null) {
+			// see if this position is within range of swapOldPosition...
+			if ((newPosition.distance(swapOldPosition)) < 1) {
+				// it is the old position, so swap it to the new position
+				newPosition.setXYZ(swapNewPosition);
+			} else {
+				// not within range, so clear out the tracking
+				swapOldPosition = null;
+				swapNewPosition = null;
+			}
+		}
         // is this position any different than the last one?  If not, just ignore it
         if (routePositions.size() > 0) {
             Position oldPosition = routePositions.get(routePositions.size() - 1);
@@ -103,7 +117,43 @@ public class DynamicRoute {
     public void clear() {
         routePositions = new ArrayList<Position>();
     }
-    
+	
+	/**
+	 * Determines if the neighbor positions in the route (looking backward into the route
+	 * tables) are at the same position as 'oldPosition', and if so, swap the XYZ with
+	 * 'newPosition'.  This is to help reduce total route segments when needing to position
+	 * at slightly different locations such as out-bottom being swapped with out-top.
+	 * 
+	 * @param oldPosition
+	 * @param newPosition 
+	 */
+	public void neighborXYZSwapBackward(Position oldPosition, Position newPosition) {
+		for (int index = routePositions.size() - 1; index > 0; --index) {
+			Position dynPosition = routePositions.get(index);
+			if (oldPosition.distance(dynPosition) < 1) {
+				System.out.println("Chaging position " + index);
+				dynPosition.setXYZ(newPosition);
+			}
+			else
+				break;
+		}
+		System.out.println("UPDATED Dynamic route is " + toString());
+	}
+	
+	/**
+	 * Determines if the neighbor positions in the route (looking foward, into route positions
+	 * that have not yet been added to the route table) are at the same position as 'oldPosition',
+	 * and if so, swap the XYZ with 'newPosition'.  This is to help reduce total route segments when
+	 * needing to position at slightly different locations such as out-bottom being swapped with out-top.
+	 * 
+	 * @param oldPosition
+	 * @param newPosition 
+	 */
+	public void neighborXYZSwapForward(Position oldPosition, Position newPosition) {
+		this.swapOldPosition = oldPosition;
+		this.swapNewPosition = newPosition;
+	}
+	
     /**
      * Run a dynamic route with standard speed and accel
      * 
@@ -176,9 +226,7 @@ public class DynamicRoute {
 		
 		if (responsePattern.lookup("speed") == null)
 			return new Result("Missing SPEED result value");
-		
 		this.adjustedSpeed = Integer.parseInt(responsePattern.lookup("speed"));
-		System.out.println("*******************   Resulting speed was: " + this.adjustedSpeed);
 		return result;
 	}
 	
@@ -194,7 +242,7 @@ public class DynamicRoute {
 	 */
 	private Result armRun(int routeSpeed, int routeAccel, boolean runTest, ResponsePattern pattern) {        
         // initialize the dynamic route
-//***** NEED TO FLIP TO USING CRUN and ?SPEED and DSPASSUME, assuming we can learn about failures...
+//***** NEED TO FLIP TO USING CRUN and ?SPEED and DSPASSUME and ENCCHECK
 		String runRoute = "DRINIT";
         Result result = ArmOperations.getInstance().runRobotCommand(runRoute);
         if (!result.success()) {
@@ -320,5 +368,25 @@ public class DynamicRoute {
 			serialize.append(rp.getPitch());
 		}
 		return Utils.hash(serialize.toString(), 32);
+	}
+	
+	/**
+	 * Overrides toString to contain all information about this route
+	 * 
+	 * @return String with dynamic route information
+	 */
+	public String toString() {
+		StringBuilder dump = new StringBuilder();
+		int pos = 1;
+		for (Position rp : routePositions) {
+			dump.append("Pos " + pos++ + ": ");
+			dump.append(rp.getX() + ", ");
+			dump.append(rp.getY() + ", ");
+			dump.append(rp.getZ() + " [");
+			dump.append(rp.getRoll() + ", ");
+			dump.append(rp.getYaw() + ", ");
+			dump.append(rp.getPitch() + "]\n");
+		}
+		return dump.toString();
 	}
 }

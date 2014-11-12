@@ -363,14 +363,22 @@ public class ArmOperations {
             Utils.sleep(1000);
             return new Result();
         }
-
+		
+		// before we ungrip (which will dequeue the dynamic route), let's see if we can optimize
+		// the position of the head.  The normal route ends with the last two positions in the out-top
+		// position, but then swinging the gripper into position.  Let's see if that is the case, and
+		// if so, let's update that to instead use the out-bottom position.
+		Position outTop = plunge.get("out-top");
+		Position outBottom = plunge.get("out-bottom");
+		dynRoute.neighborXYZSwapBackward(outTop, outBottom);
+		
         // ungrip in prep to get the disc
         result = ungrip();
         if (!result.success())
             return result;
 		
         // move into the cabinet
-        dynRoute.addPosition(plunge.get("out-bottom"));
+        dynRoute.addPosition(outBottom);
         dynRoute.addPosition(plunge.get("in-bottom"));
 
         // now grip the disc
@@ -429,7 +437,14 @@ public class ArmOperations {
         dynRoute.addPosition(plunge.get("out-bottom"));
 
         // and return to out-top
-        dynRoute.addPosition(plunge.get("out-top"));
+// dropping this, because we no longer need to return to the original starting spot
+//        dynRoute.addPosition(plunge.get("out-top"));
+		
+		// and inform dynamic route that it's ok to do switching of positions
+		// from out-top (which is likely the next two positions in the route) 
+		// to the current position's XYZ coordinates (this is a hyper optimization
+		// that eliminates one unnecessary movement of the arm)
+		dynRoute.neighborXYZSwapForward(plunge.get("out-top"), plunge.get("out-bottom"));
 
         return new Result();
     }

@@ -20,6 +20,7 @@ package commands;
 
 import enums.*;
 import inventory.Inventory;
+import java.util.HashMap;
 import robotoperations.ArmOperations;
 import route.Position;
 import route.PositionLookup;

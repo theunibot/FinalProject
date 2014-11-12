@@ -53,7 +53,7 @@ public class ResponsePattern {
 		// run the regex to see if we have a match
 		Matcher matcher = pattern.matcher(message);
 		if (matcher.find())
-			return matcher.group();
+			return matcher.group(1);
 		return null;
 	}
 

@@ -167,6 +167,15 @@ public class Position {
 				newPos.roll = referencePositionPrior.roll + this.roll;
 		return newPos;
 	}
+	
+	public double distance(Position secondPosition) {
+		// compute the distance between this point and a secondary point
+		double xDist = secondPosition.getX() - this.getX();
+		double yDist = secondPosition.getY() - this.getY();
+		double zDist = secondPosition.getZ() - this.getZ();
+		double dist = Math.sqrt(xDist*xDist + yDist*yDist + zDist*zDist);
+		return dist;
+	}
 
 	public String getRoboforth() {
 		return getXStr() + " X ! " + getYStr() + " Y ! " + getZStr() + " Z ! " + getPitchStr() + " PITCH ! " + getYawStr() + " YAW ! " + getRollStr() + " ROLL ! POINT " + getName();
@@ -218,6 +227,12 @@ public class Position {
 
 	public void setZ(double z) {
 		this.z = z;
+	}
+	
+	public void setXYZ(Position other) {
+		this.x = other.x;
+		this.y = other.y;
+		this.z = other.z;
 	}
 
 	public double getPitch() {
