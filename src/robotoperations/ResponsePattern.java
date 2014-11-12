@@ -18,16 +18,42 @@
  */
 package robotoperations;
 
+import java.util.HashMap;
+import java.util.regex.*;
+
 /**
  * R12 response pattern manager - to look for specific patterns in the response and capture their values
  */
 public class ResponsePattern {
-
+	private String message = null;				// the message to match against
+	HashMap<String, Pattern> patternMap = new HashMap<String, Pattern>();
+	
+	/**
+	 * Define a possible RegEx match for the output string
+	 * 
+	 * @param name A key name (anything) to describe/lookup this match
+	 * @param regex A regular expression to locate within the results
+	 */
 	public void define(String name, String regex) {
-		
+		Pattern pattern = Pattern.compile(regex);
+		patternMap.put(name, pattern);
 	}
 	
+	/**
+	 * Locate a regular expression match based on a key defined in 'define'
+	 * 
+	 * @param name key defined in prior call to 'define'
+	 * @return Matching string if found, null if none
+	 */
 	public String lookup(String name) {
+		// locate the key for the pattern
+		Pattern pattern = patternMap.get(name);
+		if (pattern == null)
+			return null;
+		// run the regex to see if we have a match
+		Matcher matcher = pattern.matcher(message);
+		if (matcher.find())
+			return matcher.group();
 		return null;
 	}
 
@@ -37,6 +63,7 @@ public class ResponsePattern {
 	 * @param responseMessage message from the R12 robot
 	 */
 	public void process(String responseMessage) {
-		System.out.println("****** ResponsePattern: " + responseMessage + " END****");
+		// store away the result for later processing if requested
+		this.message = responseMessage;
 	}
 }

@@ -169,7 +169,7 @@ public class DynamicRoute {
 	private Result compile(int routeAccel) {
 		// do a DRY ADJUST RUN and capture the speed...
 		ResponsePattern responsePattern = new ResponsePattern();
-		responsePattern.define("speed", "/SPEED = ([0-9]*)/");
+		responsePattern.define("speed", "SPEED = ([0-9]*)");
 		Result result = armRun(30000, routeAccel, true, responsePattern);
 		if (!result.success())
 			return result;
