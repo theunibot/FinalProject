@@ -22,6 +22,7 @@ import java.util.Map;
 import utils.FileUtils;
 import static utils.FileUtils.readINIFile;
 import utils.Result;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -147,7 +148,7 @@ public class R12Operations {
 	 * @return response without the command
 	 */
 	private String readNoEcho(String command) {
-            return read().replaceFirst(command, "").trim();
+            return read().replaceFirst(Pattern.quote(command), "").trim();
 	}
 
 	/**

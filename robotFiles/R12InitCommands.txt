@@ -58,6 +58,23 @@ LOOP
 0 DRI @ LINE 14 + E!
 ;
 
+// DRSTART - start executing an async route
+: DRSTART
+DRY RUN
+//CRUN
+;
+
+// DRCOMPLETE - finish execution of an async route
+: DRCOMPLETE
+?STOP ( wait for the last route to complete )
+DSPASSUME ( read current position from DSP )
+FSTOP 1 = IF STOPABORT THEN ( if stopped, cause error )
+ENCCHECK ( make sure encoders are ok )
+;
+
+
+// ****** THE FOLLOWING ARE OBSOLETE OR NEARLY OBSOLETE ******
+
 // DRSPEED - learn a speed value on the dynamic route
 // set up variable S to have the CFA of the SPEED command
 VARIABLE S
@@ -81,7 +98,7 @@ S @ DRI @ LINE 12 + E!
 //DR
 ." Dynamic route contains:" CR
 L.
-CONTINUOUS RUN
+DRY RUN
 ;
 
 // DRTEST - test the dyamic route
