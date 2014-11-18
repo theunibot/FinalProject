@@ -33,7 +33,6 @@ ROUTE DR
 // DRINIT - Dynamic route, phase 1: initializes and clears the dynamic route
 : DRINIT
 ERASE
-100 RESERVE
 0 DRI !
 ." Dynamic route has been reset" CR
 ;
@@ -62,6 +61,11 @@ LOOP
 : DRSTART
 DRY RUN
 //CRUN
+;
+
+// DRDRY - execute route DRY to determine speed
+: DRDRY
+DRY ADJUST RUN
 ;
 
 // DRCOMPLETE - finish execution of an async route

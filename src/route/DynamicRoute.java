@@ -160,8 +160,7 @@ public class DynamicRoute {
     public Result run() {
         return run(0, 0);
     }
-    
-    
+	
     /**
      * Run a dynamic route with custom speed and accel
      *
@@ -189,6 +188,7 @@ public class DynamicRoute {
 			// we need to compile this route by sending the route with various speeds to the controller
 			// and vetting the best speed for each segment
 			compiled = new DynamicRoute(this);
+			compiled.accel = routeAccel;
 			Result result  = compiled.compile(routeAccel);
 			if (!result.success())
 				return result;
@@ -204,163 +204,193 @@ public class DynamicRoute {
 		clear();
 		return result;
 	}
+	/**
+	 * Define the return value fro the compileSegment method, which encapsulates a result and a speed value
+	 */
+	private class CompiledResult {
+		Result result;
+		int speed;
+		
+		public CompiledResult(Result newResult) {
+			result = newResult;
+		}
+		public CompiledResult() {
+			result = null;
+		}
+		public CompiledResult(Result newResult, int newSpeed) {
+			result = newResult;
+			speed = newSpeed;
+		}
+		public CompiledResult(int newSpeed) {
+			result = new Result();
+			speed = newSpeed;
+		}
+	}
 	
 	/**
-	 * Compile the current route by sending it to the controller with binary searching on possible speeds at
-	 * each route position until we find the optimal performance for the route.  This adds the actualSpeed 
-	 * value into the route.
+	 * Compile a set of points (aka, segment) within a route - asking the controller for the fastest speed at which that
+	 * segment can run at the given acceleration
+	 * @param routeAccel
+	 * @param startIndex
+	 * @param endIndex
+	 * 
+	 * @return CompiledResult with the results
+	 */
+	private CompiledResult compileSegment(int routeAccel, int startIndex, int endIndex) {
+
+		// do a DRY ADJUST RUN and capture the speed...
+		ResponsePattern responsePattern = new ResponsePattern();
+		responsePattern.define("speed", "SPEED = ([0-9]*)");
+		Result result = armSegmentDryRun(startIndex, endIndex, routeAccel, responsePattern);
+		if (!result.success())
+			return new CompiledResult(result);
+		
+		if (responsePattern.lookup("speed") == null)
+			return new CompiledResult(new Result("Missing SPEED result value"));
+
+		return new CompiledResult(Integer.parseInt(responsePattern.lookup("speed")));
+	}
+		
+
+	/**
+	 * Compile the current route by finding the best speeds for various sections within the 
+	 * route.  This is done by trying the route with the ADJUST feature of the controller to 
+	 * see what speeds can be performed.  The route is walked by trying the segment adding
+	 * one position at a time, and checking to see if speed remains within tolerance (looking both
+	 * for going too slow as well as opportunity to go faster).  The route speeds are then set for
+	 * the various segments so that when the route is run, it is broken down into individual
+	 * routes for highest performance.
 	 * 
 	 * @param routeAccel acceleration to use for the compilation
 	 * 
 	 * @return Result with success/fail info
 	 */
 	private Result compile(int routeAccel) {
-		// fake out the actual speed analysis...
-		for (RoutePosition rp : this.routePositions)
-			rp.speed = 30000;
-		return new Result();
-		
-		/*
-		Route of ABCDEF:
-		
-		AB - store speed
-		ABC - within tolerance? YES...
-		BC - much faster? NO...
-		ABCD - within tolerance?  Yes...
-		CD - much faster?  YES...
-		[ABC]
-		
-		CD - store speed
-		CDE - within tolerance?  YES...
-		DE - much faster?  NO...
-		CDEF - within tolerance?  NO...
-		[CDE]
-		
-		F - only a single point, so done.
-		[F]
-		
-		set startIndex = 0
-		set endIndex = 1
-		send down points startIndex to endIndex
-		capture effective speed
-		loop
-			send down points startIndex to endIndex + 1
-			is speed within range?
-				No - mark points startIndex thru endIndex with this speed
-				set startIndex to endIndex
-				set endIndex to startIndex + 1
-			
-		
-		Given start/end, verify next slot - is it end of this segment, or do we increment end to next position?
-		Then walk each one to figure out what happens
-		When a segment ends, go back and set speed
-	
-		So this function will need to return:
-		- Continue or terminate
-		- Speed of next segment (if known)
-		Passed:
-		- start/end
-		- startingSpeed (speed of the first route pair)
-
-		private class RouteValidate {
-			bool terminate;
-			int segmentSpeed = 0;
-			Result result;
-		}
-
-		private RouteValidate validate(int firstSegment, int lastSegment, int startingSpeed)
-		
-		// if we have at least two segments, if not, we are done because 30000 is fine with
-		// a single segment, though we need to deal with that somehow
-		if (we have only one segment)
-			set segment speed = 30000;
-			done/return;
-		
-		firstSegment = 0;
-		lastSegment = 1;
-		bestSpeed = 0;
-		segmentSpeed = 0;
-		
-		RouteValidate rv = validate(firstSegment, lastSegment, bestSpeed);
-		if (!rv.result.success())
-			return rv.result;
-		// do we terminate or continue?
-		if (rv.terminate) {
-			// mark everything from firstSegment to lastSegment with segmentSpeed
-		} else {
-			++lastSegment;
-			segmentSpeed = rv.segmentSpeed;
+		// if the route has less than two points, just get out
+		if (routePositions.isEmpty())
+			return new Result();
+		if (routePositions.size() == 1) {
+			routePositions.get(0).speed = 30000;
+			return new Result();
 		}
 		
-		-- maybe this is all backwards...  another approach:
+		// set up the initial parameters for scanning the route
+		int startIndex = 0;
+		int endIndex = 1;
+		int bestSpeed = 0;
+		int nextSpeed = 0;
+		int saveSpeed = 0;
 		
-		firstSegment = 1;
-		while (firstSegment < routePositions.size())
-			result = validateSegment()
-			if (!result.success())
-				return result;
+		// process the route  
+		while (endIndex < routePositions.size()) {
+			boolean breakRoute = false;
+System.out.println("***** Testing route from " + startIndex + " to " + endIndex + " bestSpeed is " + bestSpeed + ", saveSpeed is " + saveSpeed);
 
-		Result validateSegment() {
-			// starting at firstSegment, determine the number of segments that should be in this route based on speed
-			lastSegment = firstSegment + 1;
-			// is only one segment remains, run it at high speed
-			if (lastSegment == routePositions.size()) {
-				routePositions.get(firstSegment).speed = 30000;
-				return new Result();
+			// get the speed for the current positions
+			CompiledResult cr = compileSegment(routeAccel, startIndex, endIndex);
+			if (!cr.result.success())
+				return cr.result;
+			// is this within tolerance?
+			if (bestSpeed == 0) {
+				bestSpeed = cr.speed;
+				saveSpeed = cr.speed;
 			}
-			// validate the segments, trying sequences of positive and negative, looking for best speeds
-			bestSpeed = 0;
-			loop incrementing lastSegment until no more segments
-				speed/result = dryRun(firstSegment, lastSegment)
-				if (!result.success())
-					return result;
-				if (bestSpeed == 0)
-					bestSpeed = speed;
-				else if (speed is not within X% of bestSpeed)
-					set speeds on firstSegment through lastSegment - 1
-					set firstSegment to lastSegment - 1
-					return success on firstSegment through lastSegment - 1
-				else if (there is at least one more segment)
-					try again with lastSegment thru lastSegment +1
-					if (speed is more than Y% better than last speed)
-						somehow save speed so next run can start with it rather than running it again (optional)
-						return success on prior segment;
-				else
-					// speed is good enough, and no more segments
-					set speed on firstSegment through lastSegment
-					return success
-				
-		
-		
-		*/
-		
-		/*
-			We want to run the route DRY multiple times, building up routes until we
-			see the DRY RUN speed degrade too much.  Then we assign the "best speed" and
-			go again with the new route segment(s).  The problem with this is that we
-			won't find opportunities to speed up ... only to slow down.
-		
-			So instead, we try two segments.  That becomes baseline speed.  We add a third
-			segment and capture it's speed.  If much slower, it is a breakpoint.  If not, we 
-			take the 2nd and 3rd and try them.  If they are much faster, we have a break point.  
-		
-			This should be designed so that the number we span is configurable.  We may find that
-			we are better working in sets of three than two, for continuous to look good.
-		*/
-//		// do a DRY ADJUST RUN and capture the speed...
-//		ResponsePattern responsePattern = new ResponsePattern();
-//		responsePattern.define("speed", "SPEED = ([0-9]*)");
-//		Result result = armRun(30000, routeAccel, true, responsePattern);
-//		if (!result.success())
-//			return result;
-//		
-//		if (responsePattern.lookup("speed") == null)
-//			return new Result("Missing SPEED result value");
-//// TODO: Figure out the new compile and save speed accordingly
-////		this.adjustedSpeed = Integer.parseInt(responsePattern.lookup("speed"));
-//		return result;
+			else if (compileThreshold(bestSpeed, cr.speed, endIndex - startIndex + 1, true)) {
+				// we have dropped speed too much.  break this apart.
+				nextSpeed = 0;
+				breakRoute = true;
+				// revert back one segment section - as this new segment slowed us down too much
+				endIndex--;
+System.out.println("***** Break route due to too much speed drop on primary route, at speed " + saveSpeed);
+			}
+			else {
+				// speed remains acceptable, so check if we could be going faster.  Start
+				// by making sure there is at least one more point for us to process
+				if (endIndex < (routePositions.size() - 1)) {
+					// see if the new position plus the prior could run even faster
+					CompiledResult crNext = compileSegment(routeAccel, endIndex - 1, endIndex);
+					if (!crNext.result.success())
+						return cr.result;
+					// is it running subtantially faster?
+					if (compileThreshold(crNext.speed, cr.speed, endIndex - startIndex + 1, false)) {
+						// yes - break the route apart
+						nextSpeed = crNext.speed;
+						breakRoute = true;
+System.out.println("***** Break route due to next segment being faster (speed was " + crNext.speed + ", saveSpeed is " + saveSpeed + " and cr.speed is " + cr.speed + ")");
+						endIndex--;
+					}
+				}
+			}
+			
+			// are we done with this route?
+			if (endIndex == (routePositions.size() - 1)) {
+				breakRoute = true;
+				saveSpeed = cr.speed;
+System.out.println("***** Break route due to end of segments");
+			}
+			
+			// do we need to break this route apart?
+			if (breakRoute) {
+System.out.println("***** Breaking route from " + startIndex + " to " + endIndex + " to speed " + saveSpeed);
+				// set the speed on the prior route segments
+				for (int index = startIndex; index <= endIndex; ++index)
+					routePositions.get(index).speed = saveSpeed;
+				// update the index values and speed
+				startIndex = endIndex;
+				endIndex = (nextSpeed == 0) ? (startIndex + 1) : (startIndex + 2);
+				bestSpeed = nextSpeed;
+				saveSpeed = nextSpeed;
+			} else {
+				// advance to the next segment
+				endIndex++;
+				saveSpeed = cr.speed;
+			}
+		}
+		return new Result();
 	}
 	
+	/**
+	 * compare a dry run speed with a prior speed and determine if it exceeds a threshold and needs to break the route apart
+	 * 
+	 * @param newSpeed new speed of the tested route
+	 * @param priorSpeed prior speed for shorter or prior route
+	 * @param segmentSize number of elements in this segment (used to optimize threshold analysis)
+	 * @param thresholdTooSlow true if checking if the new point is too slow, false if checking if the new route is faster
+	 * 
+	 * @return boolean true if break route apart, false if not
+	 */
+	private boolean compileThreshold(int newSpeed, int priorSpeed, int segmentSize, boolean thresholdTooSlow) {
+System.out.println("***** Checking " + newSpeed + " against " + priorSpeed + " segment size " + segmentSize + " looking for " + (thresholdTooSlow ? "slow" : "fast"));
+		// determine delta between speeds
+		int delta = newSpeed - priorSpeed;
+		if (!thresholdTooSlow)
+			delta = -delta;
+		// if negative, then we are done
+		if (delta < 0) {
+System.out.println("***** Speed was better than expected, no need to break");			
+			return false;
+		}
+		
+		// determine the acceptable max range
+		int factor;
+		switch (segmentSize) {
+			case 1:
+			case 2:
+				factor = 3;
+				break;
+			case 3:
+				factor = 4;
+				break;
+			default:
+				factor = 5;
+				break;
+		}
+		int range = priorSpeed / factor;
+		
+		// determine if we must break apart this segment
+System.out.println("***** Speed is " + ((delta > range) ? "within acceptable loss" : "excessive and needs to be broken"));
+		return (delta > range);
+	}
 
 	/**
 	 * Run the route on the arm (actually sends the routing commands)
@@ -467,7 +497,32 @@ public class DynamicRoute {
 		}
 		return new Result();
 	}
-	
+
+	/**
+	 * Execute a dry run of a segment on the controller to learn a speed
+	 * 
+	 * @param firstSegment first segment to run (base 0)
+	 * @param lastSegment last segment to run
+	 * @param routeAccel accel to use with run
+	 * @param responsePattern pattern to use when matching result messages from the controller
+	 * 
+	 * @return Result with success/fail info
+	 */
+	private Result armSegmentDryRun(int firstSegment, int lastSegment, int routeAccel, ResponsePattern pattern) {
+		// send down the points
+		Result result = armSegmentPoints(firstSegment, lastSegment);
+		if (!result.success()) {
+			clear();
+			return result;
+		}
+		
+		// execute the route, including potentially waiting on the prior segment to complete
+		String command = Integer.toString(routeAccel) + " ACCEL ! " + 
+				"30000 SPEED ! DRDRY";
+		result = ArmOperations.getInstance().runRobotCommand(command, pattern);
+		return result;
+	}
+		
 	/**
 	 * Program the points for a segment of a dynamic route into the controller
 	 * 
@@ -526,16 +581,21 @@ public class DynamicRoute {
 		DynamicRoute dr = null;
 		String hash = "";
 		for (String line : lines) {
+			String[] chunks;
+			
 			if (line.startsWith("#")) {
-				// define a new route - decode the hash value
-				hash = line.substring(1);
+				// define a new route - decode the hash value and accel
+				chunks = line.split(" ");
+				hash = chunks[0].substring(1);
+				int accel = Integer.parseInt(chunks[1]);
 				// create new route
 				dr = new DynamicRoute();
+				dr.accel = accel;
 				// and place in cache
 				compiledRoutes.put(hash, dr);
 			} else {
 				// decode the values for it, which are X Y Z P Y R SPEED
-				String[] chunks = line.split(" ");
+				chunks = line.split(" ");
 				RoutePosition rp = new RoutePosition();
 				rp.position = new Position(hash, 
 					Double.parseDouble(chunks[0]),
@@ -553,6 +613,50 @@ public class DynamicRoute {
 	}
 	
 	/**
+	 * Invalidate the dynamic route cache, by setting all speed values to 0.  Future
+	 * calls to recompile will build back the cache until all routes are completed.
+	 */
+	public void invalidate() {
+		for (Map.Entry<String, DynamicRoute> entry : compiledRoutes.entrySet()) {
+			// get the hash and the route entry
+			String hash = entry.getKey();
+			DynamicRoute route = compiledRoutes.get(hash);
+			// reset to 0
+			for (RoutePosition rp : route.routePositions)
+				rp.speed = 0;
+		}
+		// and persist the changes
+		persist();
+	}
+	
+	/**
+	 * Runs the route compiler on the next route in the compiledRoutes list that is lacking
+	 * speed information.
+	 * 
+	 * @return Result with success/fail info, or null if no more routes to execute 
+	 */
+	public Result recompile() {
+		for (Map.Entry<String, DynamicRoute> entry : compiledRoutes.entrySet()) {
+			// get the hash and the route entry
+			String hash = entry.getKey();
+			DynamicRoute route = compiledRoutes.get(hash);
+			// does this one have speed values?
+			if (route.routePositions.get(0).speed == 0) {
+				// compile this route
+				Result result = route.compile(route.accel);
+				if (!result.success())
+					return result;
+				// and persist the changes
+				persist();
+				return new Result();
+			}
+		}
+		// done - nothing left to compile
+		return null;
+	}
+    
+    
+	/**
 	 * Persist compiled routes cache to disk (RouteCache.txt)
 	 */
 	void persist() {
@@ -564,7 +668,7 @@ public class DynamicRoute {
 			String hash = entry.getKey();
 			DynamicRoute route = compiledRoutes.get(hash); //entry.getValue();
 			// now serialize them
-			output.append("#" + hash + "\n");
+			output.append("#" + hash + " " + route.accel + "\n");
 			for (RoutePosition rp : route.routePositions) {
 				output.append(Utils.formatDouble(rp.position.getX()) + " ");
 				output.append(Utils.formatDouble(rp.position.getY()) + " ");
