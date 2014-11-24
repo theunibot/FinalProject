@@ -73,11 +73,15 @@ public class ServerHooks {
 		RouteEffectType effectEnum = Utils.effectStringToEffectType(effect);
 		String cabinetStr = params.get("cabinet");
 		CabinetType cabinet = null;
-                String simulateStr = params.get("simulate");
-                boolean simulate = false;
-                if (simulateStr != null)
-                    simulate = Boolean.parseBoolean(simulateStr);
-                
+		String simulateStr = params.get("simulate");
+		boolean simulate = false;
+		if (simulateStr != null)
+			simulate = Boolean.parseBoolean(simulateStr);
+		String invalidateStr = params.get("invalidate");
+		boolean invalidate = false;
+		if (invalidateStr != null)
+			invalidate = Boolean.parseBoolean(invalidateStr);
+        
 		try {
 			cabinet = CabinetType.valueOf(cabinetStr);
 		} catch (Exception e) {
@@ -136,6 +140,9 @@ public class ServerHooks {
 				if (effectEnum == null)
 					return Utils.genericEnqueueFail("Request failure: unknown 'effect' parameter " + effect);
 				cmd = new CommandShowSign(layerInt, effectEnum);
+				break;
+			case "recompile":
+				cmd = new CommandRecompile(invalidate);
 				break;
 			case "arm-home":
 				cmd = new CommandArmHome();

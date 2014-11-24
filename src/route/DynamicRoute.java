@@ -183,11 +183,14 @@ public class DynamicRoute {
 		// do we already have this route compiled?
 		String hash = hash(routeAccel);
 		DynamicRoute compiled = compiledRoutes.get(hash);
-		if (compiled == null) {
+		// if not compiled route found, or if we found it but the first position has
+		// a speed of zero, then we need to compile it
+		if ( (compiled == null) || (compiled.routePositions.get(0).speed == 0) ) {
 			System.out.println("Route cache hit failure; compiling route");
 			// we need to compile this route by sending the route with various speeds to the controller
 			// and vetting the best speed for each segment
-			compiled = new DynamicRoute(this);
+			if (compiled == null)
+				compiled = new DynamicRoute(this);
 			compiled.accel = routeAccel;
 			Result result  = compiled.compile(routeAccel);
 			if (!result.success())
