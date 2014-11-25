@@ -22,13 +22,12 @@ import enums.CabinetType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Semaphore;
+import route.Calibration;
 import route.DynamicRoute;
 import route.Position;
 import route.PositionLookup;
 import route.Route;
 import route.RouteCompiler;
-import route.RouteHolder;
 import utils.FileUtils;
 import static utils.FileUtils.readINIFile;
 import utils.Result;
@@ -51,12 +50,14 @@ public class ArmOperations {
     private PositionLookup plt = null;
     private static ArmOperations armOperations = null;
     private Position calibratePosition = null;
-    private Position adjustmentPosition = null;
+/*
+	private Position adjustmentPosition = null;
     private CabinetType calibrateCabinet = null;
     private int calibrateShelf;
     private String calibratePlunge;
     private int calibrateDepth;
-
+*/
+	
     private DynamicRoute dynRoute = new DynamicRoute();
     private enum Gripper { UNKNOWN, GRIPPED, UNGRIPPED }
     private Gripper isGripped = Gripper.UNKNOWN;
@@ -235,11 +236,13 @@ public class ArmOperations {
      */
     public Result calibratePoint(CabinetType cabinet, int shelf, String plungePosition, int depth, int speed) {
         // save our cabinet and shelf
+		/*
         calibrateCabinet = cabinet;
         calibrateShelf = shelf;
         calibratePlunge = plungePosition;
         calibrateDepth = depth;
-        
+        */
+		
         // make sure the dynamic route is empty - drop it on the floor since we are doing a calibrate so we
         // can safely ignore it
         dynRoute.clear();
@@ -252,15 +255,15 @@ public class ArmOperations {
         calibratePosition = PositionLookup.getInstance().shelfToPosition(cabinet, shelf);
         if (calibratePosition == null)
             return new Result("Unable to locate cabinet " + cabinet.toString() + " shelf " + shelf);
-        adjustmentPosition = PositionLookup.getInstance().shelfToAdjustmentPosition(cabinet, shelf);
+//        adjustmentPosition = Calibration.getInstance().get(calibratePosition);
         HashMap<String, Position> plungeMap = plungePositions(cabinet, shelf, depth, calibratePosition);
 
         // move to the requested position
         Position plungePos;
         if (plungeMap != null) {
-            plungePos = plungeMap.get(calibratePlunge);
+            plungePos = plungeMap.get(plungePosition);
             if (plungePos == null)
-                    return new Result("Unable to locate plungePosition " + calibratePlunge);
+                    return new Result("Unable to locate plungePosition " + plungePosition);
         } else
             plungePos = calibratePosition;
 
@@ -297,9 +300,12 @@ public class ArmOperations {
         if (speed > armMaxSpeed)
             speed = armMaxSpeed;
 
-        if (adjustmentPosition == null)
+        if (calibratePosition == null)
             return new Result("Unknown calibrate location");
 
+		// locate the adjustment position
+		Position adjustmentPosition = Calibration.getInstance().get(calibratePosition);
+		
         // record the adjustment
         switch (axis) {
             case "x":
@@ -322,6 +328,7 @@ public class ArmOperations {
                 break;
         }
 
+		/*
         // now locate the point again (which will execute the adjustment) and move to it
         Position newPosition = PositionLookup.getInstance().shelfToPosition(calibrateCabinet, calibrateShelf);
         if (newPosition == null)
@@ -332,6 +339,10 @@ public class ArmOperations {
         if (plungePos == null)
             return new Result("Unable to locate plungePosition " + calibratePlunge);
         return moveTo(plungePos, speed);
+		*/
+		
+		// now move the arm into the new calibration position
+		return moveTo(Calibration.getInstance().adjust(calibratePosition), speed);
     }
 
 
@@ -488,14 +499,7 @@ public class ArmOperations {
         double offsetZ = posOffsetInfo.getZ();
         double offsetYaw = posOffsetInfo.getYaw();
 
-// because we are hand computing Yaw from an X/Y position, we need to adjust offSetYaw
-        // by the Adustment table amount for Yaw.  The other positions will already have that
-        // value taken into account
-        Position adjustmentPos = plt.shelfToAdjustmentPosition(cabinet, shelf);
-        if (adjustmentPos != null)
-                offsetYaw += adjustmentPos.getYaw();
-
-        // setup deltaZ based on the cabinet type and stack position
+		// setup deltaZ based on the cabinet type and stack position
         double deltaZ = (desktopZval);
         if (cabinet == CabinetType.CPL || cabinet == CabinetType.CPM || cabinet == CabinetType.CPR)
                 deltaZ = (stackPosition == 2) ? smallZval : bigZval;

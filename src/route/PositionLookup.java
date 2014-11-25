@@ -33,9 +33,9 @@ import utils.Utils;
 public class PositionLookup {
 
 	private final String POSITION_FILE_NAME = "Positions.txt";
-	private final String ADJUSTMENT_FILE_NAME = "Adjustments.txt";
+//	private final String ADJUSTMENT_FILE_NAME = "Adjustments.txt";
 	private HashMap<CabinetType, HashMap<Integer, Position>> positions;
-	private HashMap<CabinetType, HashMap<Integer, Position>> adjustments;
+//	private HashMap<CabinetType, HashMap<Integer, Position>> adjustments;
 
 	private boolean USE_LINE_NUMS = true;
 
@@ -52,6 +52,7 @@ public class PositionLookup {
 		+ "// or 0 0 0 if no prior value used.\n"
 		+ "//\n";
 
+/*
 	private String ADJUSTMENT_FILE_CONTENTS = ""
 		+ "//\n"
 		+ "// This file defines all adjustments for all known positions of each shelf\n"
@@ -65,7 +66,8 @@ public class PositionLookup {
 		+ "// except that each line defines the relative offset, rather than the absolute\n"
 		+ "// position.\n"
 		+ "//\n";
-
+*/
+	
 	private static PositionLookup plt = null;
 
 	/**
@@ -92,18 +94,20 @@ public class PositionLookup {
 	 */
 	public Result init() {
 		positions = new HashMap<CabinetType, HashMap<Integer, Position>>();
-		adjustments = new HashMap<CabinetType, HashMap<Integer, Position>>();
+//		adjustments = new HashMap<CabinetType, HashMap<Integer, Position>>();
 
 		Result result = loadPositionFile(POSITION_FILE_NAME, POSITION_FILE_CONTENTS, positions);
 		if (!result.success())
 			return result;
 
+		/*
 		result = loadPositionFile(ADJUSTMENT_FILE_NAME, ADJUSTMENT_FILE_CONTENTS, adjustments);
 		if (!result.success())
 			return result;
-
+		*/
+		
 		if (main.Main.DEBUG)
-			System.out.println("Positions (and adjustments) loaded");
+			System.out.println("Positions loaded");
 
 		// and program the positions into the controller
 		return new Result();
@@ -172,6 +176,7 @@ public class PositionLookup {
 		// clone the position, so changes are local instance and not affecting the original database
 		pos = new Position(pos.getName(), pos);
 
+		/*
 		// see if we have an adjustment position for this
 		HashMap<Integer, Position> adjustCabinetPositions = adjustments.get(cabinet);
 		if (adjustCabinetPositions != null) {
@@ -180,7 +185,8 @@ public class PositionLookup {
 				// apply the adjustments
 				pos.offsetPositions(adjustPos);
 		}
-
+		*/
+		
 		return pos;
 	}
 
@@ -201,6 +207,7 @@ public class PositionLookup {
 	 *
 	 * @return Position from the adjustment table
 	 */
+	/*
 	public Position shelfToAdjustmentPosition(CabinetType cabinet, int shelf) {
 		// create cabinet if it doesn't already exist
 		if (adjustments.get(cabinet) == null)
@@ -222,7 +229,7 @@ public class PositionLookup {
 			return newPos;
 		}
 	}
-
+	*/
     //<editor-fold defaultstate="collapsed" desc="Parse File Stuff">
 	/**
 	 * Loads the position file into memory as a collection of positions
@@ -351,6 +358,7 @@ public class PositionLookup {
 	 *
 	 * @return Result with success/fail information
 	 */
+	/*
 	public Result saveAdjustmentFile() {
 		StringBuilder builder = new StringBuilder();
 
@@ -397,5 +405,6 @@ public class PositionLookup {
 
 		return new Result();
 	}
+	*/
     //</editor-fold>
 }

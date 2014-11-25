@@ -301,6 +301,18 @@ public class Position {
 			+ (rollDelta ? (rollDeltaForward ? ">" : "<") : "") + getRollStr() + ")";
 	}
 
+	public String hash() {
+		StringBuilder serialize = new StringBuilder();
+		serialize.append(getX());
+		serialize.append(getY());
+		serialize.append(getZ());
+		serialize.append(getRoll());
+		serialize.append(getYaw());
+		serialize.append(getPitch());
+
+		return Utils.hash(serialize.toString(), 32);
+	}
+	
 	public void posDeltaX(boolean forward) {
 		xDelta = true;
 		xDeltaForward = forward;

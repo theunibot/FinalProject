@@ -23,12 +23,11 @@ import commandqueue.CommandQueues;
 import commands.*;
 import enums.*;
 import inventory.*;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.json.simple.JSONObject;
-import robotoperations.ArmOperations;
+import route.Calibration;
 import route.Position;
 import route.PositionLookup;
 import utils.Result;
@@ -220,7 +219,7 @@ public class ServerHooks {
 						cmd = new CommandCalibrateAdjust(option.toLowerCase(), value, speed);
 						break;
 					case "save":
-						Result result = PositionLookup.getInstance().saveAdjustmentFile();
+						Result result = Calibration.getInstance().save();
 						if (!result.success())
 							return Utils.genericEnqueueFail(result.errorMessage);
 						break;
