@@ -85,7 +85,7 @@ public class ArmOperations {
         // load up the INI file to establish our settings
         // load up the INI file with configuration info
         Map<String, String> map = readINIFile(FileUtils.getFilesFolderString() + "R12Setup.ini", 
-            "arm", new String[] { "max_speed", "max_accel", "simulate", "speed-offset" });
+            "arm", new String[] { "max_speed", "max_accel", "simulate", "speed_offset" });
         if (map == null)
             return new Result("Unable to load INI file " + FileUtils.getFilesFolderString() + "R12Setup.ini");
 
@@ -800,8 +800,12 @@ public class ArmOperations {
         if (!(armOpsSimulated && !r12OpsSimulated)) {
             r12o.write(commandString);
             ResponseObject response = r12o.getResponse(commandString);
-			if (pattern != null)
-				pattern.process(response.getMsg());
+			if (pattern != null) {
+				if (!r12OpsSimulated)
+					pattern.process(response.getMsg());
+				else
+					pattern.process("SPEED = 12000 OK");
+			}
 			
             if (!response.isSuccessful())
                 return new Result("Command Failed! Cmd: " + commandString + " Response Msg: " + response.getMsg());

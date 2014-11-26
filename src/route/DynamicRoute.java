@@ -178,12 +178,6 @@ public class DynamicRoute {
         // make sure speed and accel are acceptable
         if ( (routeSpeed > armMaxSpeed) || (routeSpeed == 0) )
             routeSpeed = armMaxSpeed;
-		else
-			// we are not resetting the speed, so make sure we offset the speed
-			// by the speed_offset value in the R12Setup.ini file to ensure that
-			// the minor changes we make during calibration don't impact our ability
-			// to reach max speed
-			routeSpeed -= armSpeedOffset;
         if ( (routeAccel > armMaxAccel) || (routeAccel == 0) )
             routeAccel = armMaxAccel;
 		
@@ -429,8 +423,21 @@ System.out.println("***** Speed is " + ((delta > range) ? "within acceptable los
 			
 			// is this route over (either speed change or end)?			
 			if ( (rp.speed != speed) || (index == (routePositions.size() - 1)) ) {
+				// adjust speed to run at.  If route speed exceeds our R12Setup.ini setting, then
+				// bring it down to that speed.  Then further refine the speed by offseting
+				// by armSpeedOffset (from R12Setup.ini) to deal with minor speed limitations from
+				// slight calibration variations.
+				int runSpeed = speed;
+				if (runSpeed > routeSpeed)
+					runSpeed = routeSpeed;
+				// remove armSpeedOffset, but only if we are running at least twice as fast as the offset - just
+				// to make sure we don't go negative, and at a really low speed nearly all movement adjustments due
+				// to calibration will "just work" (famous last words...)
+				if (runSpeed > (armSpeedOffset * 2))
+					runSpeed -= armSpeedOffset;
+				
 				// run this next segment (and complete the prior if appropriate)
-				result = armSegmentExecute(startingSegment, index, (speed > routeSpeed) ? routeSpeed : speed, routeAccel);				
+				result = armSegmentExecute(startingSegment, index, runSpeed, routeAccel);				
 				if (!result.success())
 					return result;
 

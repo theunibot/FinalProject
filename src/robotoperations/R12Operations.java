@@ -32,7 +32,7 @@ public class R12Operations {
 	private R12Interface r12i = null;
 	private static R12Operations r12Operations = null;
 
-	private boolean simulated = false;  // do not change this here - change in ArmOperations
+	private boolean simulated = false; 
 
 	/**
 	 * Constructor made private since this is a singleton interface
