@@ -22,6 +22,7 @@ import utils.Result;
 import robotoperations.ArmOperations;
 import static robotoperations.ArmOperations.armMaxAccel;
 import static robotoperations.ArmOperations.armMaxSpeed;
+import static robotoperations.ArmOperations.armSpeedOffset;
 import robotoperations.ResponsePattern;
 import utils.Utils;
 import java.util.*;
@@ -177,6 +178,12 @@ public class DynamicRoute {
         // make sure speed and accel are acceptable
         if ( (routeSpeed > armMaxSpeed) || (routeSpeed == 0) )
             routeSpeed = armMaxSpeed;
+		else
+			// we are not resetting the speed, so make sure we offset the speed
+			// by the speed_offset value in the R12Setup.ini file to ensure that
+			// the minor changes we make during calibration don't impact our ability
+			// to reach max speed
+			routeSpeed -= armSpeedOffset;
         if ( (routeAccel > armMaxAccel) || (routeAccel == 0) )
             routeAccel = armMaxAccel;
 		
@@ -551,14 +558,17 @@ System.out.println("***** Speed is " + ((delta > range) ? "within acceptable los
             // build up the next position
             RoutePosition rp = routePositions.get(index);
 			
+			// and adjust based on calibration
+			Position adj = Calibration.getInstance().adjust(rp.position);
+			
 			// program up the route position itself
             runRoute = 
-                rp.position.getRollStr() + " " +
-                rp.position.getYawStr() + " " +
-                rp.position.getPitchStr() + " " +
-                rp.position.getZStr() + " " +
-                rp.position.getYStr() + " " +
-                rp.position.getXStr() + " DRPOINT";
+                adj.getRollStr() + " " +
+                adj.getYawStr() + " " +
+                adj.getPitchStr() + " " +
+                adj.getZStr() + " " +
+                adj.getYStr() + " " +
+                adj.getXStr() + " DRPOINT";
             result = ArmOperations.getInstance().runRobotCommand(runRoute);
             if (!result.success()) {
 				clear();

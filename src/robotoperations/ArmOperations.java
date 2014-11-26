@@ -43,6 +43,7 @@ public class ArmOperations {
 
     public static int armMaxSpeed = 30000;
     public static int armMaxAccel = 3000;
+	public static int armSpeedOffset = 250;
 
     private final boolean armOpsLogging = true;
     private R12Operations r12o = null;
@@ -84,7 +85,7 @@ public class ArmOperations {
         // load up the INI file to establish our settings
         // load up the INI file with configuration info
         Map<String, String> map = readINIFile(FileUtils.getFilesFolderString() + "R12Setup.ini", 
-            "arm", new String[] { "max_speed", "max_accel", "simulate" });
+            "arm", new String[] { "max_speed", "max_accel", "simulate", "speed-offset" });
         if (map == null)
             return new Result("Unable to load INI file " + FileUtils.getFilesFolderString() + "R12Setup.ini");
 
@@ -98,6 +99,8 @@ public class ArmOperations {
             armMaxSpeed = Integer.parseInt(map.get("max_speed"));
         if (map.get("max_accel") != null)
             armMaxAccel = Integer.parseInt(map.get("max_accel"));
+		if (map.get("speed_offset") != null)
+			armSpeedOffset = Integer.parseInt(map.get("speed_offset"));
 
         // if not simulated, proceed to initialize the r12 ops
         if (!armOpsSimulated) {
@@ -681,6 +684,9 @@ public class ArmOperations {
             Utils.sleep(1000);
             return new Result();
         }
+		
+		// get an adjusted position using Calibration tables
+		position = Calibration.getInstance().adjust(position);
 
         return runRobotCommand(
             Integer.toString(speed) + " SPEED ! "
