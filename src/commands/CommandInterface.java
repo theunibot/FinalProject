@@ -299,7 +299,12 @@ public abstract class CommandInterface {
 //            if (!result.success())
 //                return result;
 //        }
-
+		
+		// make sure we flush the route execution
+		result = ao.flush();
+		if (!result.success())
+			return result;
+		
 		// update args to reflect our new position
 		if (toShelf != -1) {
 			args.cabinet = toCabinet;

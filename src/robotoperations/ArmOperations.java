@@ -216,6 +216,15 @@ public class ArmOperations {
 
         return new Result();
     }
+	
+	/**
+	 * Flushes any pending dynamic route to the robot controller
+	 * 
+	 * @return Result with success/fail info
+	 */
+	public Result flush() {
+		return dynRoute.run();
+	}
 
     /**
      * Executes calibration services for the arm for a specific point. Moves the
@@ -274,7 +283,11 @@ public class ArmOperations {
         if ( (speed == -1) || (speed > armMaxSpeed) )
             speed = armMaxSpeed;
         // move the arm
-        return moveTo(plungePos, speed);
+        Result result = moveTo(plungePos, speed);
+		if (!result.success())
+			return result;
+		// and drain the route to ensure we complete the movements
+		return dynRoute.run();
     }
 
     /**

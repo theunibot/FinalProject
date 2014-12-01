@@ -39,7 +39,8 @@ public class CommandPosition extends CommandInterface {
 	}
 
 	public Result execute(CommandArguments args) {
-		return movePosition(args, cabinet, shelf, effect);
+		movePosition(args, cabinet, shelf, effect);
+		return new Result();
 	}
 
 	public String details() {
