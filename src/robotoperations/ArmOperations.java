@@ -50,7 +50,9 @@ public class ArmOperations {
     private RouteCompiler rc = null;
     private PositionLookup plt = null;
     private static ArmOperations armOperations = null;
-    private Position calibratePosition = null;
+    private Position calibratePosition = null;				// tracks current arm position when doing calibration, at the OUT-TOP plunge position
+	private String calibratePlunge = "OUT-TOP";				// tracks current arm plunge position when doing calibration
+	private HashMap<String, Position> calibratePlungeMap;	// tracks the plunge map for the current calibrate position
 /*
 	private Position adjustmentPosition = null;
     private CabinetType calibrateCabinet = null;
@@ -268,27 +270,16 @@ public class ArmOperations {
         if (calibratePosition == null)
             return new Result("Unable to locate cabinet " + cabinet.toString() + " shelf " + shelf);
 //        adjustmentPosition = Calibration.getInstance().get(calibratePosition);
-        HashMap<String, Position> plungeMap = plungePositions(cabinet, shelf, depth, calibratePosition);
+		
+		// and store the plunge away for further adjustments in calibrateAdjust
+		calibratePlunge = plungePosition;
+		// and store the plunge map as well
+        calibratePlungeMap = plungePositions(cabinet, shelf, depth, calibratePosition);
 
-        // move to the requested position
-        Position plungePos;
-        if (plungeMap != null) {
-            plungePos = plungeMap.get(plungePosition);
-            if (plungePos == null)
-                    return new Result("Unable to locate plungePosition " + plungePosition);
-        } else
-            plungePos = calibratePosition;
+		return _calibrateMoveArm(speed);
+	}
+	
 
-        // adjust speed
-        if ( (speed == -1) || (speed > armMaxSpeed) )
-            speed = armMaxSpeed;
-        // move the arm
-        Result result = moveTo(plungePos, speed);
-		if (!result.success())
-			return result;
-		// and drain the route to ensure we complete the movements
-		return dynRoute.run();
-    }
 
     /**
      * Calibrate the last point specified to the calibrate call. Use this
@@ -319,48 +310,113 @@ public class ArmOperations {
         if (calibratePosition == null)
             return new Result("Unknown calibrate location");
 
-		// locate the adjustment position
-		Position adjustmentPosition = Calibration.getInstance().get(calibratePosition);
-		
-        // record the adjustment
-        switch (axis) {
-            case "x":
-                adjustmentPosition.setX(adjustmentPosition.getX() + value);
-                break;
-            case "y":
-                adjustmentPosition.setY(adjustmentPosition.getY() + value);
-                break;
-            case "z":
-                adjustmentPosition.setZ(adjustmentPosition.getZ() + value);
-                break;
-            case "pitch":
-                adjustmentPosition.setPitch(adjustmentPosition.getPitch() + value);
-                break;
-            case "yaw":
-                adjustmentPosition.setYaw(adjustmentPosition.getYaw() + value);
-                break;
-            case "roll":
-                adjustmentPosition.setRoll(adjustmentPosition.getRoll() + value);
-                break;
-        }
+		// perform the adjustment for all four plunge positions
+		String plunge;
+		for (int index = 0; index < 4; ++index) {
+			
+			switch (index) {
+				case 0:
+					plunge = "in-top";
+					break;
+				case 1:
+					plunge = "in-bottom";
+					break;
+				case 2:
+					plunge = "out-top";
+					break;
+				case 3:
+					plunge = "out-bottom";
+					break;
+				default:
+					plunge = null;
+					break;
+			}
+			Position plungePos;
+			
+			if (calibratePlungeMap != null) {
+				plungePos = calibratePlungeMap.get(plunge);
+				if (plungePos == null)
+						return new Result("Unable to locate plungePosition " + plunge);
+			} else if (index == 0)
+				plungePos = calibratePosition;
+			else
+				// no plunge map, and we already did the first index ... so we are done
+				break;
+			
+			// locate the adjustment position
+			Position adjustmentPosition = Calibration.getInstance().get(plungePos);
 
+			// record the adjustment
+			switch (axis) {
+				case "x":
+					adjustmentPosition.setX(adjustmentPosition.getX() + value);
+					break;
+				case "y":
+					adjustmentPosition.setY(adjustmentPosition.getY() + value);
+					break;
+				case "z":
+					adjustmentPosition.setZ(adjustmentPosition.getZ() + value);
+					break;
+				case "pitch":
+					adjustmentPosition.setPitch(adjustmentPosition.getPitch() + value);
+					break;
+				case "yaw":
+					adjustmentPosition.setYaw(adjustmentPosition.getYaw() + value);
+					break;
+				case "roll":
+					adjustmentPosition.setRoll(adjustmentPosition.getRoll() + value);
+					break;
+			}
+		}
+		
 		/*
         // now locate the point again (which will execute the adjustment) and move to it
         Position newPosition = PositionLookup.getInstance().shelfToPosition(calibrateCabinet, calibrateShelf);
         if (newPosition == null)
             return new Result("calibrateAdjust unable to locate cabinet " + calibrateCabinet.toString() + " shelf " + calibrateShelf);
 
-        HashMap<String, Position> plungeMap = plungePositions(calibrateCabinet, calibrateShelf, calibrateDepth, newPosition);
-        Position plungePos = plungeMap.get(calibratePlunge);
+        HashMap<String, Position> calibratePlungeMap = plungePositions(calibrateCabinet, calibrateShelf, calibrateDepth, newPosition);
+        Position plungePos = calibratePlungeMap.get(calibratePlunge);
         if (plungePos == null)
             return new Result("Unable to locate plungePosition " + calibratePlunge);
         return moveTo(plungePos, speed);
 		*/
 		
 		// now move the arm into the new calibration position
-		return moveTo(Calibration.getInstance().adjust(calibratePosition), speed);
+		return _calibrateMoveArm(speed);
     }
 
+		/**
+	 * Private method that does the actual arm movement for the calibration methods
+	 * 
+	 * @param speed preferred speed to run at
+	 * @return Result with success/fail
+	 */
+	private Result _calibrateMoveArm(int speed) {
+		// adjust the position to offset based on calibration
+		Position adjustedPostion = Calibration.getInstance().adjust(calibratePosition);
+
+		// move to the requested plunge position
+        Position plungePos;
+        if (calibratePlungeMap != null) {
+            plungePos = calibratePlungeMap.get(calibratePlunge);
+            if (plungePos == null)
+                    return new Result("Unable to locate plungePosition " + calibratePlunge);
+        } else
+            plungePos = adjustedPostion;
+		
+        // adjust speed
+        if ( (speed == -1) || (speed > armMaxSpeed) )
+            speed = armMaxSpeed;
+		
+        // move the arm
+        Result result = moveTo(plungePos, speed);
+		if (!result.success())
+			return result;
+		
+		// and drain the route to ensure we complete the movements
+		return dynRoute.run();
+    }
 
     /**
      * Pickup a disc from a shelf using a dynamic route. Assumes that the robot

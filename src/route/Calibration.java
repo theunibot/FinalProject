@@ -33,7 +33,7 @@ import utils.Utils;
  */
 public class Calibration {
 	// define the singleton instance of this class
-	private static Calibration calibration = new Calibration();
+	private static Calibration calibration = null;
 	// define the map of a position hash to an adjustment value.  The hash is an MD5 of
 	// the original (non-adjusted) position (position.hash()) and the resulting
 	// Position is the delta adjustment to that position.
@@ -45,7 +45,6 @@ public class Calibration {
 		Ensure this is a singleton interface
 	*/
 	private Calibration() {
-		load();
 	}
 	
 	/**
@@ -54,6 +53,8 @@ public class Calibration {
 	 * @return Calibration singleton
 	 */
 	public static Calibration getInstance() {
+		if (calibration == null)
+			load();
 		return calibration;
 	}
 	
@@ -105,7 +106,9 @@ public class Calibration {
 	 * @return Result with success/fail information
 	 */
 	private static Result load() {
-
+		// set up the new instance
+		calibration = new Calibration();
+		
 		// load the file into memory
 		ArrayList<String> lines = FileUtils.readCommandFileOrGenEmpty(FileUtils.getFilesFolderString() + ADJUSTMENT_FILE_NAME, "");
 		if (lines != null) {
@@ -115,7 +118,7 @@ public class Calibration {
 				// break up the line into multiple pieces split on spaces
 				String[] splitLinePieces = line.trim().split(" ");
 				// make sure there are 7 items
-				if (splitLinePieces.length != 7)
+				if (splitLinePieces.length != 8)
 					return new Result(ADJUSTMENT_FILE_NAME + " invalid syntax: " + line);
 
 				// break it apart
